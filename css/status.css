@@ -8,10 +8,14 @@
 .s-navigation { margin-top: 17px; }
 .s-summary { }
 
-.s-tomorrow-planner { background: #eee; margin: 0 25px -15px; padding: 6px 10px 1px; border-top-left-radius: 2px; border-radius-top-right: 2px; }
-.s-tomorrow-planner h3 { padding: 1px; color: #888; font-size: 1.4rem; }
+.s-day { background: #fff; margin: 0 25px 0px; padding: 5px 10px 5px; }
+.s-day.s-tomorrow-planner { background: #eee; margin-top: 10px; padding: 6px 10px 1px; border-top-left-radius: 2px; border-radius-top-right: 2px; }
+.s-day.s-tomorrow-planner h3 { padding: 1px; color: #888; font-size: 1.4rem; }
+.s-day.s-this-week { background: #eee; }
 
-.s-daily-editor { }
+.s-week-divider { margin: 20px 25px 0; }
+
+.s-daily-editor { margin-top: 0; margin-bottom: 0; z-index: 1; position: relative; }
 .s-daily-status { border-radius: 1rem; background: rgba(0,0,0,0.1); padding: 1rem; }
 .s-daily-slider { padding: 10px 0; display: flex; width: 100%; }
 .s-daily-slider .s-daily-slider-total { flex: 0 0 100px; }

@@ -104,7 +104,7 @@
                 <div class="content right200px">
 
                     <!-- Tomorrow: SET TAG ONLY: Office / Remote / Ill / Day off / Custom tag -->
-                    <div class="s-tomorrow-planner">
+                    <div class="s-day s-tomorrow-planner">
                         <div class="float-right">
                             <ul class="menu-h dropdown">
                                 <li>
@@ -135,7 +135,7 @@
                         <h3>
                             [`Tomorrow`]
                             <span class="hint">
-                                {date('Y-m-d', $smarty.now+86400)|wa_date:humandate}
+                                {date('Y-m-d', $smarty.now + 86400)|wa_date:humandate}
                                 <!-- <span title="[`Weekend`]">🏖️Sunday / Saturday</span> -->
                                 <!-- <span title="[`Birthday`]">🎂Birtday</span> -->
                             </span>
@@ -241,8 +241,24 @@
                             </div>
                         </div>
 
-
                     </div>
+
+                    {$_showing_this_week = 1}
+                    {for $i=1 to 30}
+                        {$_ts = $smarty.now - 86400*$i}
+                        {if !date('w',$_ts)}
+                            {* SUNDAY => week header *}
+                            {$_showing_this_week = 0}
+                            <div class="s-week-divider">
+                                <h5 class="heading">WEEK #{date('W',$_ts)}</h5>
+                                <hr>
+                            </div>
+                        {/if}
+                        <div class="s-day{if $_showing_this_week} s-this-week{/if}">
+                            <h3>{date('Y-m-d', $_ts)|wa_date:humandate}</h3>
+                        </div>
+                    {/for}
+
 
 
 
