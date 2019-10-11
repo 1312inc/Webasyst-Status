@@ -1,0 +1,38 @@
+/*
+  Status app for Webasyst
+  Copyright 1312 Inc.
+  */
+
+.icon16.color { width: 13px; height: 13px; border: none; margin: 1px; }
+
+.s-navigation { margin-top: 17px; }
+.s-summary { }
+
+.s-tomorrow-planner { background: #eee; margin: 0 25px -15px; padding: 6px 10px 1px; border-top-left-radius: 2px; border-radius-top-right: 2px; }
+.s-tomorrow-planner h3 { padding: 1px; color: #888; font-size: 1.4rem; }
+
+.s-daily-editor { }
+.s-daily-status { border-radius: 1rem; background: rgba(0,0,0,0.1); padding: 1rem; }
+.s-daily-slider { padding: 10px 0; display: flex; width: 100%; }
+.s-daily-slider .s-daily-slider-total { flex: 0 0 100px; }
+.s-daily-slider .s-daily-slider-total h2 { color: #555; }
+.s-daily-slider .s-daily-slider-control { flex: 1; padding-top: 10px; }
+.s-daily-slider .s-daily-slider-control .s-daily-slider-projects { margin-top: 20px; }
+.s-daily-slider .s-daily-slider-control .s-daily-slider-projects label { margin-right: 1rem; color: #aaa; }
+.s-daily-slider .s-daily-slider-control .s-daily-slider-projects label i.icon16.color { display: none; }
+.s-daily-slider .s-daily-slider-control .s-daily-slider-projects label .s-project-share { display: none; padding: 2px 5px; border-radius: 4px; }
+.s-daily-slider .s-daily-slider-control .s-daily-slider-projects label.selected { color: #000; font-weight: bold; }
+.s-daily-slider .s-daily-slider-control .s-daily-slider-projects label.selected i.icon16.color { display: inline-block; }
+.s-daily-slider .s-daily-slider-control .s-daily-slider-projects label.selected .s-project-share { display: inline; }
+.s-daily-slider .s-daily-slider-aux { flex: 0 0 150px; text-align: center; padding-top: 3px; }
+.s-daily-summary {}
+.s-daily-summary textarea.s-daily-comment { width: 100%; outline: 0 none; -webkit-appearance: none; border: 0; font-size: 1.1em; min-height: 5rem; }
+.s-daily-summary .s-daily-logged-apps { border-top: 1px solid #eee; padding-top: 20px; }
+.s-daily-summary .s-daily-logged-app-counter { display: inline-block; margin-right: 1rem; }
+.s-daily-summary .s-daily-logged-app-counter i.icon16.s-app-icon { background-size: 16px 16px; }
+.s-daily-summary .s-daily-commit { float: right; padding-top: 18px; }
+
+#s-daily-slider-slider.ui-slider { width: 100%; }
+#s-daily-slider-slider.ui-slider-horizontal .ui-widget-header { top: -4px; height: 11px; }
+
+.s-daytag { border-radius: 5px; background: #aaa; padding: 2px 4px; font-size: 0.8em; color: #fff; }

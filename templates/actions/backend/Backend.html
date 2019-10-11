@@ -5,44 +5,247 @@
     <title>{$wa->appName()} &mdash; {$wa->accountName()}</title>
     {$wa->css()}
     <link type="text/css" rel="stylesheet" href="{$wa_app_static_url}css/status.css?v{$wa->version()}">
-    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery/jquery-1.8.2.min.js"></script>
+    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery/jquery-1.11.1.min.js"></script>
+    <script src="/wa-content/js/jquery/jquery-migrate-1.2.1.min.js"></script>
     <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-wa/wa.core.js?v{$wa->version(true)}"></script>
+
+    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.core.min.js?v{$wa->version(true)}"></script>
+    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.widget.min.js?v{$wa->version(true)}"></script>
+    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.mouse.min.js?v{$wa->version(true)}"></script>
+    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.slider.min.js?v{$wa->version(true)}"></script>
+
     <script type="text/javascript" src="{$wa_app_static_url}js/status.js?v{$wa->version()}"></script>
+
+    {$users = [
+            [ 'User 1', '23h', '' ],
+            [ 'User 2', '13h 12m', 'Remote' ],
+            [ 'User 3', '0h', '' ]
+        ]}
+
+    {$projects = [
+            [ 'gold', 'Project 1', '7h' ],
+            [ 'lime', 'Project 2', '2h 30m' ],
+            [ 'rebeccapurple', 'Project 3', '13h' ],
+            [ 'pink', 'Project 4', '0h' ]
+        ]}
 
 </head>
 <body>
     <div id="wa">
         {$wa->header()}
         <div id="wa-app">
-            <div class="sidebar left200px">
+            <div class="sidebar left200px s-navigation">
                 <div class="block">
                     <ul class="menu-v with-icons">
-                         <li class="selected">
-                             <a href="#" class="bold"><i class="icon16 smiley"></i>[`Hello world`]</a>
+                         <li class="selected bottom-padded">
+                             <a href="#" class="bold">
+                                 <span class="count hint">8h 30m</span>
+                                 <i class="icon16 userpic20"></i>[`My status`]
+                             </a>
                          </li>
+                         {foreach $users as $u}
+                         <li>
+                             <a href="#">
+                                 <span class="count hint">{$u[1]}</span>
+                                 <i class="icon16 userpic20"></i>
+                                 {$u[0]}
+                                 {if $u[2]}<span class="s-daytag">{$u[2]}</span>{/if}
+                             </a>
+                         </li>
+                         {/foreach}
                     </ul>
                 </div>
                 <div class="block">
-                    <h5 class="heading top-padded"><b>[`Navigation`]</b></h5>
-                    <ul class="menu-v with-icons collapsible">
+                    <h5 class="heading top-padded">
+                        <a href="#" class="count"><i class="icon16 add"></i></a>
+                        [`Projects`]
+                    </h5>
+                    <ul class="menu-v with-icons">
+                         {foreach $projects as $p}
                          <li>
-                             <a href="#"><i class="icon16 folder"></i>[`Menu item 1`]</a>
+                             <a href="#">
+                                 <span class="count hint">{$p[2]}</span>
+                                 <i class="icon16 color" style="background: {$p[0]};"></i>
+                                 {$p[1]}
+                             </a>
+                         </li>
+                         {/foreach}
+                         <li>
+                             <a href="#">
+                                 <span class="count hint">3h</span>
+                                 <i class="icon16 color" style="background: white;"></i>
+                                 <span class="gray">[`No project`]</span>
+                             </a>
+                         </li>
+                    </ul>
+                    <hr>
+                    <ul class="menu-v with-icons">
+                         <li>
+                             <a href="#"><i class="icon16 plugins"></i>[`Plugins`]</a>
                          </li>
                          <li>
-                             <a href="#"><i class="icon16 folder"></i>[`Menu item 2`]</a>
+                             <a href="#"><i class="icon16 widgets"></i>[`Widgets`]</a>
                          </li>
                          <li>
-                             <a href="#"><i class="icon16 folder"></i>[`Menu item 3`]</a>
+                             <a href="#"><i class="icon16 settings"></i>[`Settings`]</a>
                          </li>
                     </ul>
                 </div>
+
             </div>
             <div class="content left200px">
-                <div id="content">
+                <div class="sidebar right200px s-summary">
                     <div class="block">
-                        <h1>{$message|escape}</h1>
-                        <p>[`Woohoo, Webasyst app is ready!`]</p>
+                        <h5 class="heading align-center">[`This week`]</h5>
+                        M 8h
+                        PL 13h
                     </div>
+                </div>
+                <div class="content right200px">
+
+                    <!-- Tomorrow: SET TAG ONLY: Office / Remote / Ill / Day off / Custom tag -->
+                    <div class="s-tomorrow-planner">
+                        <div class="float-right">
+                            <ul class="menu-h dropdown">
+                                <li>
+                                    <a href="#" class="inline-link gray"><b><i>[`Status for tomorrow`]</i></b> <i class="icon10 darr"></i></a>
+                                    <ul class="menu-v">
+                                        <li class="selected">
+                                            <a href="#" class="inline-link"><b><i>[`Office`]</i></b></a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="inline-link"><b><i>[`Remote`]</i></b></a>
+                                        </li>
+                                        <li class="selected">
+                                            <a href="#">Team Calendar 1</a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Team Calendar 2</a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Team Calendar 3</a>
+                                        </li>
+                                        <li>
+                                            <a href="#">[`Enter tag`]</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <h3>
+                            [`Tomorrow`]
+                            <span class="hint">
+                                {date('Y-m-d', $smarty.now+86400)|wa_date:humandate}
+                                <!-- <span title="[`Weekend`]">🏖️Sunday / Saturday</span> -->
+                                <!-- <span title="[`Birthday`]">🎂Birtday</span> -->
+                            </span>
+                        </h3>
+                    </div>
+
+                    <!-- DAY EDIT UI -->
+                    <div class="s-daily-editor shadowed">
+
+                        <!-- TIME & STATUS -->
+                        <div class="block double-padded">
+
+                            <div class="float-right block half-padded">
+                                <ul class="menu-h dropdown">
+                                    <li>
+                                        <a href="#" class="s-daily-status inline-link gray"><b><i><strong>[`Status for today`]</strong></i></b> <i class="icon10 darr"></i></a>
+                                        <ul class="menu-v">
+                                            <li class="selected">
+                                                <a href="#" class="inline-link"><b><i>[`Office`]</i></b></a>
+                                            </li>
+                                            <li>
+                                                <a href="#" class="inline-link"><b><i>[`Remote`]</i></b></a>
+                                            </li>
+                                            <li class="selected">
+                                                <a href="#">Team Calendar 1</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">Team Calendar 2</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">Team Calendar 3</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">[`Enter tag`]</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <h1>
+                                [`Today`]
+                                <span class="hint">
+                                    {date('Y-m-d')|wa_date:humandate}
+                                    <!-- <span title="[`Weekend`]">🏖️Sunday / Saturday</span> -->
+                                    <!-- <span title="[`Birthday`]">🎂Birtday</span> -->
+                                </span>
+                            </h1>
+
+                            <div class="s-daily-slider">
+                                <div class="s-daily-slider-total">
+                                    <h2>8h 31m</h2>
+                                </div>
+                                <div class="s-daily-slider-control">
+                                    <div id="s-daily-slider-slider"></div>
+                                    <div class="s-daily-slider-projects">
+                                        {foreach $projects as $p}
+                                            {$_selected = rand(0,1)}
+                                            <label{if $_selected} class="selected"{/if}>
+                                                <input type="checkbox"{if $_selected} checked="checked"{/if}>
+                                                <!-- <i class="icon16 color" style="background: {$p[0]};"></i> -->
+                                                {$p[1]}
+                                                <span class="s-project-share" style="background: {$p[0]};"><a href="#" class="inline-link"><b><i>3h</i></b></a></span>
+                                            </label>
+                                        {/foreach}
+
+                                        <style>
+                                            #s-daily-slider-slider.ui-slider-horizontal .ui-widget-header {
+
+                                                background: #ffd60a; /* Old browsers */
+                                                background: -moz-linear-gradient(left,  #ffd60a 40%, #1e5799 40%, #1e5799 78%, #c62bdb 78%); /* FF3.6-15 */
+                                                background: -webkit-linear-gradient(left,  #ffd60a 40%,#1e5799 40%,#1e5799 78%,#c62bdb 78%); /* Chrome10-25,Safari5.1-6 */
+                                                background: linear-gradient(to right,  #ffd60a 40%,#1e5799 40%,#1e5799 78%,#c62bdb 78%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+                                                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffd60a', endColorstr='#c62bdb',GradientType=1 ); /* IE6-9 */
+
+                                            }
+                                        </style>
+
+                                    </div>
+                                </div>
+                                <div class="s-daily-slider-aux">
+                                    <label>
+                                        <input type="checkbox">
+                                        [`Break`]
+                                        <span class="hint">-1h</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- COMMENT & LOGGED ENTITIES -->
+                        <div class="s-daily-summary block double-padded blank">
+                            <textarea class="s-daily-comment" placeholder="[`Enter your daily report here...`]"></textarea>
+                            <div class="s-daily-commit">
+                                <a class="button gray">[`Saved`] <i class="icon16 yes-bw"></i></a>
+                            </div>
+                            <div class="s-daily-logged-apps">
+                                <a href="#" class="s-daily-logged-app-counter inline-link"><i class="icon16 s-app-icon" style="background-image: url('/wa-apps/shop/img/shop.png');"></i><b><i>3</i></b></a>
+                                <a href="#" class="s-daily-logged-app-counter inline-link"><i class="icon16 s-app-icon" style="background-image: url('/wa-apps/pocketlists/img/pocketlists48.png');"></i><b><i>15</i></b></a>
+                                <a href="#" class="s-daily-logged-app-counter inline-link"><i class="icon16 s-app-icon" style="background-image: url('/wa-apps/blog/img/blog.png');"></i><b><i>1</i></b></a>
+                                <a href="#" class="s-daily-logged-app-counter inline-link"><i class="icon16 s-app-icon" style="background-image: url('/wa-apps/tasks/img/tasks.png');"></i><b><i>7</i></b></a>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+
                 </div>
             </div>
         </div>
