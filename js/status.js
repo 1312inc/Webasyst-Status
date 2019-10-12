@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-    $( "#s-daily-slider-slider" ).slider({
+    $( "#s-editor-slider-slider" ).slider({
       range: true,
       min: 0,
       max: 1440,
