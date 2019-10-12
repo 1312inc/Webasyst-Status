@@ -15,10 +15,7 @@
 .s-timeline { width: 100%; height: 2px; background: #ccc; position: relative; margin: 10px 0 20px; }
 .s-timeline .s-timeline-content { position: absolute; top: -2px; bottom: -2px; background: gold; }
 
-.s-tomorrow-planner { background: #eee; margin: 10px 25px 0px; padding: 6px 10px 1px; border-top-left-radius: 2px; border-radius-top-right: 2px; cursor: default; }
-.s-tomorrow-planner h3 { padding: 1px; color: #888; font-size: 1.4rem; }
-
-.s-day { background: #fff; margin: 0 25px 0px; padding: 10px 10px 5px; display: flex; }
+.s-day { background: #fff; margin: 0 225px 0px 25px; padding: 10px 10px 5px; display: flex; }
 .s-day .s-day-date { flex: 0 0 170px; }
 .s-day .s-day-summary { flex: 1; }
 .s-day .s-day-summary-timeline {  }
@@ -31,10 +28,28 @@
 .s-day.s-this-week { background: #f3f3f3; }
 .s-day.s-this-week:hover { background: #e7e7e7; }
 
+/* Week Status
+-------------- */
+
 .s-week-divider { margin: 90px 35px 30px; }
 .s-week-divider h5 { border-bottom: 2px solid #ddd; padding-bottom: 10px; }
 
-.s-editor { margin-top: 0; margin-bottom: 0; z-index: 1; position: relative; }
+.s-week-summary { float: right; width: 200px; text-align: center; }
+.s-week-summary .s-week-projects { line-height: 1.3rem; text-align: left; display: inline-block; }
+
+.s-donut-chart-container { overflow: hidden; }
+.s-donut-chart { position: relative; width: 150px; height: 150px; margin: 2rem auto; border-radius: 100%; }
+.s-donut-chart .center { background: #fff; position: absolute; top: 20px; left: 20px; height: 65px; width: 110px; border-radius: 70px; font-size: 1.3rem; font-weight: bold; padding-top: 45px; }
+.s-donut-chart .clip { border-radius: 50%; clip: rect(0px, 150px, 150px, 75px); height: 100%; position: absolute; width: 100%; }
+.s-donut-chart .item { border-radius: 50%; clip: rect(0px, 75px, 150px, 0px); height: 100%; position: absolute; width: 100%; font-family: monospace; font-size: 1.5rem; }
+
+/* Day Editor
+------------- */
+
+.s-tomorrow-planner { background: #eee; margin: 10px 225px 0px 25px; padding: 6px 10px 1px; border-top-left-radius: 2px; border-radius-top-right: 2px; cursor: default; }
+.s-tomorrow-planner h3 { padding: 1px; color: #888; font-size: 1.4rem; }
+
+.s-editor { margin: 0 215px 0 15px; z-index: 1; position: relative; }
 .s-editor-status { border-radius: 1rem; background: rgba(0,0,0,0.1); padding: 1rem; }
 .s-editor-slider { padding: 10px 0; display: flex; width: 100%; }
 .s-editor-slider .s-editor-slider-total { flex: 0 0 100px; text-align: center; }
