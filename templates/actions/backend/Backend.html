@@ -13,6 +13,8 @@
     <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.widget.min.js?v{$wa->version(true)}"></script>
     <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.mouse.min.js?v{$wa->version(true)}"></script>
     <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.slider.min.js?v{$wa->version(true)}"></script>
+    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-wa/wa.dialog.js"
+  type="text/javascript"></script>
 
     <script type="text/javascript" src="{$wa_app_static_url}js/status.js?v{$wa->version()}"></script>
 
@@ -32,7 +34,7 @@
     {function name=_draw_weekly_donut}
         <div class="s-donut-chart-container">
             <div class="s-donut-chart">
-              <div id="section1" class="clip" title="Project X: Nh">
+              <div id="section1" class="clip" title="[`No project`]">
                 <div class="item"></div>
               </div>
               <div id="section2" class="clip" title="Project X: Nh">
@@ -41,7 +43,10 @@
               <div id="section3" class="clip" title="Project X: Nh">
                 <div class="item"></div>
               </div>
-              <div id="section4" class="clip" title="[`32 out of 40 clocked hours (84%)`]">
+              <div id="section4" class="clip" title="Project X: Nh">
+                <div class="item"></div>
+              </div>
+              <div id="section5" class="clip" title="[`32 out of 40 clocked hours (84%)`]">
                 <div class="item"></div>
               </div>
               <div class="center">32h 4m</div>
@@ -49,13 +54,15 @@
         </div>
         <style>
             .s-donut-chart #section1 { transform: rotate(0deg); }
-            .s-donut-chart #section1 .item { background-color: gold; transform: rotate(76deg); }
-            .s-donut-chart #section2 { transform: rotate(76deg); }
-            .s-donut-chart #section2 .item { background-color: #1e5799; transform: rotate(140deg); }
-            .s-donut-chart #section3 { transform: rotate(215deg); }
-            .s-donut-chart #section3 .item { background-color: #c62bdb; transform: rotate(113deg); }
-            .s-donut-chart #section4 { transform: rotate(-32deg); }
-            .s-donut-chart #section4 .item { background-color: #ddd; transform: rotate(32deg); }
+            .s-donut-chart #section1 .item { background-color: #00a8ff; background-image: linear-gradient(45deg, #00a8ff 25%, #34c2ff 25%, #34c2ff 50%, #00a8ff 50%, #00a8ff 75%, #34c2ff 75%, #34c2ff 100%); background-size: 13px 13px; transform: rotate(116deg); }
+            .s-donut-chart #section2 { transform: rotate(116deg); }
+            .s-donut-chart #section2 .item { background-color: gold; transform: rotate(136deg); }
+            .s-donut-chart #section3 { transform: rotate(136deg); }
+            .s-donut-chart #section3 .item { background-color: #1e5799; transform: rotate(215deg); }
+            .s-donut-chart #section4 { transform: rotate(215deg); }
+            .s-donut-chart #section4 .item { background-color: #c62bdb; transform: rotate(113deg); }
+            .s-donut-chart #section5 { transform: rotate(-32deg); }
+            .s-donut-chart #section5 .item { background-color: #f3f3f3; transform: rotate(32deg); }
         </style>
 
         <div class="s-week-projects">
@@ -65,6 +72,32 @@
                 <span class="hint bold">{rand(3,10)}h</span><br>
             {/foreach}
         </div>
+    {/function}
+
+    {function name=_draw_status_selector}
+        <ul class="menu-v with-icons s-status-selector">
+            <li class="selected">
+                <a href="#"><i class="icon16 color" style="background-color: gray;"></i>Удаленно</a>
+            </li>
+            <li>
+                <a href="#"><i class="icon16 color" style="background-color: yellow;"></i>Мотаюсь</a>
+            </li>
+            <li>
+                <a href="#"><i class="icon16 color" style="background-color: yellow;"></i>Встречи</a>
+            </li>
+            <li>
+                <a href="#"><i class="icon16 color" style="background-color: lime;"></i>Отпуск</a>
+            </li>
+            <li>
+                <a href="#"><i class="icon16 color" style="background-color: lime;"></i>Прогулял</a>
+            </li>
+            <li>
+                <a href="#"><i class="icon16 color" style="background-color: red;"></i>Болею</a>
+            </li>
+            <li>
+                <a href="#" class="s-status-custom-status">[`Custom status...`]</a>
+            </li>
+        </ul>
     {/function}
 
 </head>
@@ -77,7 +110,7 @@
                     <ul class="menu-v with-icons">
                          <li class="selected bottom-padded">
                              <a href="#" class="bold">
-                                 <span class="count hint">8h 30m</span>
+                                 <span class="count hint">32h 4m</span>
                                  <i class="icon16 userpic20"></i>[`My status`]
                              </a>
                          </li>
@@ -85,12 +118,17 @@
                          <li>
                              <a href="#">
                                  <span class="count hint">{$u[1]}</span>
-                                 <i class="icon16 userpic20"></i>
-                                 {$u[0]}
-                                 {if $u[2]}<span class="s-daytag" title="[`Status for today`]">{$u[2]}</span>{/if}
+                                 <i class="icon16 userpic20"></i>{$u[0]}
+                                 {if $u[2]}<span class="s-status" title="[`Status`]">{$u[2]}</span>{/if}
                              </a>
                          </li>
                          {/foreach}
+                         <li>
+                             <a href="#">
+                                 <span class="count hint">87h</span>
+                                 <span class="gray">[`All users`]</span>
+                             </a>
+                         </li>
                     </ul>
                 </div>
                 <div class="block">
@@ -110,9 +148,9 @@
                          {/foreach}
                          <li>
                              <a href="#">
-                                 <span class="count hint">3h</span>
+                                 <span class="count hint">42h</span>
                                  <i class="icon16 color" style="background: white;"></i>
-                                 <span class="gray">[`No project`]</span>
+                                 <span class="gray">[`All projects`]</span>
                              </a>
                          </li>
                     </ul>
@@ -146,27 +184,8 @@
                     <div class="float-right">
                         <ul class="menu-h dropdown">
                             <li>
-                                <a href="#" class="inline-link gray"><b><i>[`Status for tomorrow`]</i></b> <i class="icon10 darr"></i></a>
-                                <ul class="menu-v">
-                                    <li class="selected">
-                                        <a href="#" class="inline-link"><b><i>[`Office`]</i></b></a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="inline-link"><b><i>[`Remote`]</i></b></a>
-                                    </li>
-                                    <li class="selected">
-                                        <a href="#">Team Calendar 1</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Team Calendar 2</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">Team Calendar 3</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">[`Enter tag`]</a>
-                                    </li>
-                                </ul>
+                                <a href="#" class="inline-link gray"><b><i>[`Status`]</i></b> <i class="icon10 darr"></i></a>
+                                {_draw_status_selector}
                             </li>
                         </ul>
                     </div>
@@ -189,27 +208,8 @@
                         <div class="float-right block half-padded">
                             <ul class="menu-h dropdown">
                                 <li>
-                                    <a href="#" class="s-editor-status inline-link gray"><b><i><strong>[`Status for today`]</strong></i></b> <i class="icon10 darr"></i></a>
-                                    <ul class="menu-v">
-                                        <li class="selected">
-                                            <a href="#" class="inline-link"><b><i>[`Office`]</i></b></a>
-                                        </li>
-                                        <li>
-                                            <a href="#" class="inline-link"><b><i>[`Remote`]</i></b></a>
-                                        </li>
-                                        <li class="selected">
-                                            <a href="#">Team Calendar 1</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Team Calendar 2</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Team Calendar 3</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">[`Enter tag`]</a>
-                                        </li>
-                                    </ul>
+                                    <a href="#" class="s-editor-status inline-link gray"><b><i><strong>[`Status`]</strong></i></b> <i class="icon10 darr"></i></a>
+                                    {_draw_status_selector}
                                 </li>
                             </ul>
                         </div>
@@ -226,19 +226,21 @@
                         <div class="s-editor-slider">
                             <div class="s-editor-slider-control">
                                 <div id="s-editor-slider-slider"></div>
-                                <div class="s-editor-slider-projects">
+                                <div class="s-editor-slider-projects" style="display: none;">
                                     {foreach $projects as $p}
-                                        {$_selected = rand(0,1)}
-                                        <label{if $_selected} class="selected"{/if}>
-                                            <input type="checkbox"{if $_selected} checked="checked"{/if}>
+                                        <label class="s-editor-project">
+                                            <input type="checkbox">
                                             <!-- <i class="icon16 color" style="background: {$p[0]};"></i> -->
                                             {$p[1]}
-                                            <span class="s-project-share" style="background: {$p[0]};"><a href="#" class="inline-link"><b><i>3h</i></b></a></span>
+                                            <span class="s-duration s-editor-project-share">
+                                                <a href="#" class="inline-link s-duration-label" style="background: {$p[0]};"><b><i>3h</i></b></a>
+                                                <input type="input" class="s-duration-input" value="1">
+                                            </span>
                                         </label>
                                     {/foreach}
 
                                     <style>
-                                        #s-editor-slider-slider.ui-slider-horizontal .ui-widget-header {
+                                        #s-editor-slider-slider.ui-slider-horizontal .ui-widget-header.s-colorized-1312-demo-purpose-class-only {
 
                                             background: #ffd60a; /* Old browsers */
                                             background: -moz-linear-gradient(left,  #ffd60a 40%, #1e5799 40%, #1e5799 78%, #c62bdb 78%); /* FF3.6-15 */
@@ -258,11 +260,14 @@
                                 <label>
                                     <input type="checkbox">
                                     [`Break`]
-                                    <span class="hint">-1h</span>
+                                    <span class="s-duration">
+                                        <a href="#" class="inline-link s-duration-label"><b><i>1h</i></b></a>
+                                        <input type="input" class="s-duration-input" value="1">
+                                    </span>
                                 </label>
                             </div>
                             <div class="s-editor-slider-more">
-                                <i class="icon16 add"></i>
+                                <a href="#" title="[`Add another interval for today`]"><i class="icon16 add"></i></a>
                             </div>
                         </div>
 
@@ -272,7 +277,8 @@
                     <div class="s-editor-summary block double-padded blank">
                         <textarea class="s-editor-comment" placeholder="[`Enter your daily report here...`]"></textarea>
                         <div class="s-editor-commit">
-                            <a class="button gray">[`Saved`] <i class="icon16 yes-bw"></i></a>
+                            <input type="button" value="[`Save`]" class="button yellow s-editor-commit-button" />
+                            <span class="s-editor-commit-indicator italic gray">[`Saved`] <i class="icon16 yes-bw"></i></span>
                         </div>
                         <div class="s-logged-apps">
                             <a href="#" class="s-logged-app-counter inline-link"><i class="icon16 s-app-icon" style="background-image: url('/wa-apps/shop/img/shop.png');"></i><b><i>3</i></b></a>
@@ -313,14 +319,18 @@
                         <div class="s-day-summary">
                             <div class="s-day-summary-timeline">
                                 <div class="s-timeline">
-                                    <div class="s-timeline-content" style="left: {rand(20,40)}%; right: {rand(20,40)}%;" id="s-timeline-content-{$i}" title="Project 1: Nh, Project 2: Mh, Project 3: Lh"></div>
-                                    <style>
-                                        #s-timeline-content-{$i} {
+                                    {if rand(0,1)}
+                                        <div class="s-timeline-content" style="left: {rand(20,40)}%; right: {rand(20,40)}%;" id="s-timeline-content-{$i}" title="Project 1: Nh, Project 2: Mh, Project 3: Lh"></div>
+                                        {if rand(0,1)}
+                                        <style>
+                                            #s-timeline-content-{$i} {
 
-                                            background: -webkit-linear-gradient(left,  #ffd60a 40%,#1e5799 40%,#1e5799 78%,#c62bdb 78%); /* Chrome10-25,Safari5.1-6 */
+                                                background: -webkit-linear-gradient(left,  #ffd60a 40%,#1e5799 40%,#1e5799 78%,#c62bdb 78%); /* Chrome10-25,Safari5.1-6 */
 
-                                        }
-                                    </style>
+                                            }
+                                        </style>
+                                        {/if}
+                                    {/if}
                                 </div>
                             </div>
 
@@ -330,6 +340,7 @@
                                     <h5 class="s-username">
                                         <i class="icon16 userpic20"></i>
                                         User 1
+                                        {if rand(0,1)}<span class="s-status" title="[`Status for today`]">Remote</span>{/if}
                                     </h5>
                                     {if rand(0,1)}
                                         <div class="s-logged-apps">
