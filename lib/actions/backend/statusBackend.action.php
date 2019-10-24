@@ -1,10 +1,24 @@
 <?php
-class statusBackendAction extends waViewAction
+
+/**
+ * Class statusBackendAction
+ */
+class statusBackendAction extends statusViewAction
 {
-    public function execute()
+    /**
+     * @param null|array $params
+     *
+     * @return mixed
+     * @throws Exception
+     */
+    public function runAction($params = null)
     {
-        
-        $message = 'Hello world!';
-        $this->view->assign('message', $message);
+        $this->view->assign(
+            [
+                'currentWeek'  => statusWeekFactory::createCurrentWeek(),
+                'weeks'        => statusWeekFactory::createLastNWeeks(),
+                'sidebar_html' => (new statusBackendSidebarAction())->display(),
+            ]
+        );
     }
 }

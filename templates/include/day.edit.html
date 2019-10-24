@@ -1,0 +1,90 @@
+<!-- DAY EDIT UI -->
+<div class="s-editor shadowed">
+
+    <!-- TIME & STATUS -->
+    <div class="block double-padded">
+
+        <div class="float-right block half-padded">
+            <ul class="menu-h dropdown">
+                <li>
+                    <a href="#" class="s-editor-status inline-link gray"><b><i><strong>[`Status`]</strong></i></b> <i class="icon10 darr"></i></a>
+                    {_draw_status_selector}
+                </li>
+            </ul>
+        </div>
+
+        <h1>
+            [`Today`]
+            <span class="hint">
+                                {date('D')}, {date('Y-m-d')|wa_date:humandate}
+                                <!-- <span title="[`Weekend`]">🏖️Sunday / Saturday</span> -->
+                <!-- <span title="[`Birthday`]">🎂Birtday</span> -->
+                            </span>
+        </h1>
+
+        <div class="s-editor-slider">
+            <div class="s-editor-slider-control">
+                <div id="s-editor-slider-slider"></div>
+                <div class="s-editor-slider-projects" style="display: none;">
+                    {foreach $projects as $p}
+                        <label class="s-editor-project">
+                            <input type="checkbox">
+                            <!-- <i class="icon16 color" style="background: {$p[0]};"></i> -->
+                            {$p[1]}
+                            <span class="s-duration s-editor-project-share">
+                                                <a href="#" class="inline-link s-duration-label" style="background: {$p[0]};"><b><i>3h</i></b></a>
+                                                <input type="input" class="s-duration-input" value="1">
+                                            </span>
+                        </label>
+                    {/foreach}
+
+                    <style>
+                        #s-editor-slider-slider.ui-slider-horizontal .ui-widget-header.s-colorized-1312-demo-purpose-class-only {
+
+                            background: #ffd60a; /* Old browsers */
+                            background: -moz-linear-gradient(left,  #ffd60a 40%, #1e5799 40%, #1e5799 78%, #c62bdb 78%); /* FF3.6-15 */
+                            background: -webkit-linear-gradient(left,  #ffd60a 40%,#1e5799 40%,#1e5799 78%,#c62bdb 78%); /* Chrome10-25,Safari5.1-6 */
+                            background: linear-gradient(to right,  #ffd60a 40%,#1e5799 40%,#1e5799 78%,#c62bdb 78%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+                            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffd60a', endColorstr='#c62bdb',GradientType=1 ); /* IE6-9 */
+
+                        }
+                    </style>
+
+                </div>
+            </div>
+            <div class="s-editor-slider-total">
+                <h2>8h 31m</h2>
+            </div>
+            <div class="s-editor-slider-break">
+                <label>
+                    <input type="checkbox">
+                    [`Break`]
+                    <span class="s-duration">
+                                        <a href="#" class="inline-link s-duration-label"><b><i>1h</i></b></a>
+                                        <input type="input" class="s-duration-input" value="1">
+                                    </span>
+                </label>
+            </div>
+            <div class="s-editor-slider-more">
+                <a href="#" title="[`Add another interval for today`]"><i class="icon16 add"></i></a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- COMMENT & LOGGED ENTITIES -->
+    <div class="s-editor-summary block double-padded blank">
+        <textarea class="s-editor-comment" placeholder="[`Enter your daily report here...`]"></textarea>
+        <div class="s-editor-commit">
+            <input type="button" value="[`Save`]" class="button yellow s-editor-commit-button" />
+            <span class="s-editor-commit-indicator italic gray">[`Saved`] <i class="icon16 yes-bw"></i></span>
+        </div>
+        <div class="s-logged-apps">
+            <a href="#" class="s-logged-app-counter inline-link"><i class="icon16 s-app-icon" style="background-image: url('/wa-apps/shop/img/shop.png');"></i><b><i>3</i></b></a>
+            <a href="#" class="s-logged-app-counter inline-link"><i class="icon16 s-app-icon" style="background-image: url('/wa-apps/pocketlists/img/pocketlists48.png');"></i><b><i>15</i></b></a>
+            <a href="#" class="s-logged-app-counter inline-link"><i class="icon16 s-app-icon" style="background-image: url('/wa-apps/blog/img/blog.png');"></i><b><i>1</i></b></a>
+            <a href="#" class="s-logged-app-counter inline-link"><i class="icon16 s-app-icon" style="background-image: url('/wa-apps/tasks/img/tasks.png');"></i><b><i>7</i></b></a>
+        </div>
+    </div>
+
+</div>

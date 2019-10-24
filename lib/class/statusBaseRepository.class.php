@@ -145,7 +145,7 @@ class statusBaseRepository
      * @param bool $all
      * @param bool $limit
      *
-     * @return pocketlistsEntity[]|pocketlistsEntity
+     * @return statusAbstractEntity[]|statusAbstractEntity
      * @throws waException
      */
     public function findByFields($field, $value = null, $all = false, $limit = false)
@@ -162,7 +162,7 @@ class statusBaseRepository
     }
 
     /**
-     * @return pocketlistsEntity[]|pocketlistsEntity
+     * @return statusAbstractEntity[]|statusAbstractEntity
      * @throws waException
      */
     public function findAll()
@@ -179,21 +179,27 @@ class statusBaseRepository
      * @return array|mixed
      * @throws waException
      */
-    public function generateWithData(array $data, $all = false)
+    public function generateWithData($data, $all = false)
     {
-        if ($all === false) {
+        if (empty($data)) {
+            return null;
+        }
+
+        if (!$all) {
             $data = [$data];
         }
 
-        $lists = [];
+        $objects = [];
 
+        $factory = stts()->getEntityFactory($this->entity);
         foreach ($data as $datum) {
-            $obj = pl2()->getHydrator()->hydrate(stts()->getEntityFactory($this->entity)->createNew(), $datum);
+            $entity = $factory->createNew();
+            $obj = stts()->getHydrator()->hydrate($entity, $datum);
 
-            $lists[] = $obj;
+            $objects[] = $obj;
         }
 
-        return $all === false ? reset($lists) : $lists;
+        return !$all ? reset($objects) : $objects;
     }
 
     /**

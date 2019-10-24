@@ -5,5 +5,5 @@
  */
 class statusUserModel extends statusModel
 {
-    protected $table = 'status_model';
+    protected $table = 'status_user';
 }

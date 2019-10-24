@@ -7,21 +7,21 @@ class statusUserFactory extends statusBaseFactory
 {
     /**
      * @return statusUser
-     * @throws waException
      */
     public function createNew()
     {
-        return new statusUser(new waContact());
+        return new statusUser();
     }
 
     /**
      * @param waContact $contact
      *
      * @return statusUser
+     * @throws kmwaLogicException
      */
     public function createNewWithContact(waContact $contact)
     {
-        $user = new statusUser($contact);
+        $user = (new statusUser())->setContact($contact);
 
         return $user;
     }

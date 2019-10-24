@@ -1,0 +1,64 @@
+<div class="sidebar left200px s-navigation">
+    <div class="block">
+        <ul class="menu-v with-icons">
+             <li class="selected bottom-padded">
+                 <a href="#" class="bold">
+                     {$stts->getUser()->getId()|print_r}
+                     <span class="count hint">32h 4m</span>
+                     <i class="icon16 userpic20"></i>[`My status`]
+                 </a>
+             </li>
+             {foreach $users as $u}
+             <li>
+                 <a href="{$u->getId()}">
+                     <span class="count hint"></span>time
+                     <i class="icon16 userpic20" style="background-image: {$u->getContact()->getPhoto()}"></i>{$u->getName()|escape}
+                     <span class="s-status" title="[`Status`]">group?</span>
+                 </a>
+             </li>
+             {/foreach}
+             <li>
+                 <a href="#">
+                     <span class="count hint">87h</span>
+                     <span class="gray">[`All users`]</span>
+                 </a>
+             </li>
+        </ul>
+    </div>
+    <div class="block">
+        <h5 class="heading top-padded">
+            <a href="#" class="count"><i class="icon16 add"></i></a>
+            [`Projects`]
+        </h5>
+        <ul class="menu-v with-icons">
+             {foreach $projects as $p}
+             <li>
+                 <a href="#">
+                     <span class="count hint">time</span>
+                     <i class="icon16 color" style="background: {$p->getColor()};"></i>
+                     {$p->getName()|escape}
+                 </a>
+             </li>
+             {/foreach}
+             <li>
+                 <a href="#">
+                     <span class="count hint">42h</span>
+                     <i class="icon16 color" style="background: white;"></i>
+                     <span class="gray">[`All projects`]</span>
+                 </a>
+             </li>
+        </ul>
+        <hr>
+        <ul class="menu-v with-icons">
+             <li>
+                 <a href="#"><i class="icon16 plugins"></i>[`Plugins`]</a>
+             </li>
+             <li>
+                 <a href="#"><i class="icon16 widgets"></i>[`Widgets`]</a>
+             </li>
+             <li>
+                 <a href="#"><i class="icon16 settings"></i>[`Settings`]</a>
+             </li>
+        </ul>
+    </div>
+</div>

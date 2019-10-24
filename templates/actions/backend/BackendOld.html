@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>{$wa->appName()} &mdash; {$wa->accountName()}</title>
+    {$wa->css()}
+    <link type="text/css" rel="stylesheet" href="{$wa_app_static_url}css/status.css?v{$wa->version()}">
+    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery/jquery-1.11.1.min.js"></script>
+    <script src="/wa-content/js/jquery/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-wa/wa.core.js?v{$wa->version(true)}"></script>
+
+    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.core.min.js?v{$wa->version(true)}"></script>
+    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.widget.min.js?v{$wa->version(true)}"></script>
+    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.mouse.min.js?v{$wa->version(true)}"></script>
+    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.slider.min.js?v{$wa->version(true)}"></script>
+    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-wa/wa.dialog.js"
+            type="text/javascript"></script>
+
+    <script type="text/javascript" src="{$wa_app_static_url}js/statusold.js?v{$wa->version()}"></script>
+
+    {$users = [
+    [ 'User 1', '23h', '' ],
+    [ 'User 2', '13h 12m', 'Remote' ],
+    [ 'User 3', '0h', '' ]
+    ]}
+
+    {$projects = [
+    [ 'gold', 'Project 1', '7h' ],
+    [ 'lime', 'Project 2', '2h 30m' ],
+    [ '#1e5799', 'Project 3', '13h' ],
+    [ '#c62bdb', 'Project 4', '0h' ]
+    ]}
+
+    {function name=_draw_weekly_donut}
+        <div class="s-donut-chart-container">
+            <div class="s-donut-chart">
+                <div id="section1" class="clip" title="[`No project`]">
+                    <div class="item"></div>
+                </div>
+                <div id="section2" class="clip" title="Project X: Nh">
+                    <div class="item"></div>
+                </div>
+                <div id="section3" class="clip" title="Project X: Nh">
+                    <div class="item"></div>
+                </div>
+                <div id="section4" class="clip" title="Project X: Nh">
+                    <div class="item"></div>
+                </div>
+                <div id="section5" class="clip" title="[`32 out of 40 clocked hours (84%)`]">
+                    <div class="item"></div>
+                </div>
+                <div class="center">32h 4m</div>
+            </div>
+        </div>
+        <style>
+            .s-donut-chart #section1 { transform: rotate(0deg); }
+            .s-donut-chart #section1 .item { background-color: #00a8ff; background-image: linear-gradient(45deg, #00a8ff 25%, #34c2ff 25%, #34c2ff 50%, #00a8ff 50%, #00a8ff 75%, #34c2ff 75%, #34c2ff 100%); background-size: 13px 13px; transform: rotate(116deg); }
+            .s-donut-chart #section2 { transform: rotate(116deg); }
+            .s-donut-chart #section2 .item { background-color: gold; transform: rotate(136deg); }
+            .s-donut-chart #section3 { transform: rotate(136deg); }
+            .s-donut-chart #section3 .item { background-color: #1e5799; transform: rotate(215deg); }
+            .s-donut-chart #section4 { transform: rotate(215deg); }
+            .s-donut-chart #section4 .item { background-color: #c62bdb; transform: rotate(113deg); }
+            .s-donut-chart #section5 { transform: rotate(-32deg); }
+            .s-donut-chart #section5 .item { background-color: #f3f3f3; transform: rotate(32deg); }
+        </style>
+
+        <div class="s-week-projects">
+            {foreach $projects as $p}
+                <i class="icon16 color" style="background: {$p[0]};"></i>
+                {$p[1]}
+                <span class="hint bold">{rand(3,10)}h</span><br>
+            {/foreach}
+        </div>
+    {/function}
+
+    {function name=_draw_status_selector}
+        <ul class="menu-v with-icons s-status-selector">
+            <li class="selected">
+                <a href="#"><i class="icon16 color" style="background-color: gray;"></i>Удаленно</a>
+            </li>
+            <li>
+                <a href="#"><i class="icon16 color" style="background-color: yellow;"></i>Мотаюсь</a>
+            </li>
+            <li>
+                <a href="#"><i class="icon16 color" style="background-color: yellow;"></i>Встречи</a>
+            </li>
+            <li>
+                <a href="#"><i class="icon16 color" style="background-color: lime;"></i>Отпуск</a>
+            </li>
+            <li>
+                <a href="#"><i class="icon16 color" style="background-color: lime;"></i>Прогулял</a>
+            </li>
+            <li>
+                <a href="#"><i class="icon16 color" style="background-color: red;"></i>Болею</a>
+            </li>
+            <li>
+                <a href="#" class="s-status-custom-status">[`Custom status...`]</a>
+            </li>
+        </ul>
+    {/function}
+
+</head>
+<body>
+<div id="wa">
+    {$wa->header()}
+    <div id="wa-app">
+        <div class="sidebar left200px s-navigation">
+            <div class="block">
+                <ul class="menu-v with-icons">
+                    <li class="selected bottom-padded">
+                        <a href="#" class="bold">
+                            <span class="count hint">32h 4m</span>
+                            <i class="icon16 userpic20"></i>[`My status`]
+                        </a>
+                    </li>
+                    {foreach $users as $u}
+                        <li>
+                            <a href="#">
+                                <span class="count hint">{$u[1]}</span>
+                                <i class="icon16 userpic20"></i>{$u[0]}
+                                {if $u[2]}<span class="s-status" title="[`Status`]">{$u[2]}</span>{/if}
+                            </a>
+                        </li>
+                    {/foreach}
+                    <li>
+                        <a href="#">
+                            <span class="count hint">87h</span>
+                            <span class="gray">[`All users`]</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="block">
+                <h5 class="heading top-padded">
+                    <a href="#" class="count"><i class="icon16 add"></i></a>
+                    [`Projects`]
+                </h5>
+                <ul class="menu-v with-icons">
+                    {foreach $projects as $p}
+                        <li>
+                            <a href="#">
+                                <span class="count hint">{$p[2]}</span>
+                                <i class="icon16 color" style="background: {$p[0]};"></i>
+                                {$p[1]}
+                            </a>
+                        </li>
+                    {/foreach}
+                    <li>
+                        <a href="#">
+                            <span class="count hint">42h</span>
+                            <i class="icon16 color" style="background: white;"></i>
+                            <span class="gray">[`All projects`]</span>
+                        </a>
+                    </li>
+                </ul>
+                <hr>
+                <ul class="menu-v with-icons">
+                    <li>
+                        <a href="#"><i class="icon16 plugins"></i>[`Plugins`]</a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="icon16 widgets"></i>[`Widgets`]</a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="icon16 settings"></i>[`Settings`]</a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+        <div class="content left200px">
+
+            <div class="s-week-summary">
+
+                <h5 class="heading align-center">[`This week`]</h5>
+
+                {_draw_weekly_donut}
+
+            </div>
+
+            <!-- Tomorrow: SET TAG ONLY: Office / Remote / Ill / Day off / Custom tag -->
+            <div class="s-tomorrow-planner">
+                <div class="float-right">
+                    <ul class="menu-h dropdown">
+                        <li>
+                            <a href="#" class="inline-link gray"><b><i>[`Status`]</i></b> <i class="icon10 darr"></i></a>
+                            {_draw_status_selector}
+                        </li>
+                    </ul>
+                </div>
+                <h3>
+                    [`Tomorrow`]
+                    <span class="hint">
+                            {date('D', $smarty.now + 86400)}, {date('Y-m-d', $smarty.now + 86400)|wa_date:humandate}
+                            <!-- <span title="[`Weekend`]">🏖️Sunday / Saturday</span> -->
+                        <!-- <span title="[`Birthday`]">🎂Birtday</span> -->
+                        </span>
+                </h3>
+            </div>
+
+            <!-- DAY EDIT UI -->
+            <div class="s-editor shadowed">
+
+                <!-- TIME & STATUS -->
+                <div class="block double-padded">
+
+                    <div class="float-right block half-padded">
+                        <ul class="menu-h dropdown">
+                            <li>
+                                <a href="#" class="s-editor-status inline-link gray"><b><i><strong>[`Status`]</strong></i></b> <i class="icon10 darr"></i></a>
+                                {_draw_status_selector}
+                            </li>
+                        </ul>
+                    </div>
+
+                    <h1>
+                        [`Today`]
+                        <span class="hint">
+                                {date('D')}, {date('Y-m-d')|wa_date:humandate}
+                                <!-- <span title="[`Weekend`]">🏖️Sunday / Saturday</span> -->
+                            <!-- <span title="[`Birthday`]">🎂Birtday</span> -->
+                            </span>
+                    </h1>
+
+                    <div class="s-editor-slider">
+                        <div class="s-editor-slider-control">
+                            <div id="s-editor-slider-slider"></div>
+                            <div class="s-editor-slider-projects" style="display: none;">
+                                {foreach $projects as $p}
+                                    <label class="s-editor-project">
+                                        <input type="checkbox">
+                                        <!-- <i class="icon16 color" style="background: {$p[0]};"></i> -->
+                                        {$p[1]}
+                                        <span class="s-duration s-editor-project-share">
+                                                <a href="#" class="inline-link s-duration-label" style="background: {$p[0]};"><b><i>3h</i></b></a>
+                                                <input type="input" class="s-duration-input" value="1">
+                                            </span>
+                                    </label>
+                                {/foreach}
+
+                                <style>
+                                    #s-editor-slider-slider.ui-slider-horizontal .ui-widget-header.s-colorized-1312-demo-purpose-class-only {
+
+                                        background: #ffd60a; /* Old browsers */
+                                        background: -moz-linear-gradient(left,  #ffd60a 40%, #1e5799 40%, #1e5799 78%, #c62bdb 78%); /* FF3.6-15 */
+                                        background: -webkit-linear-gradient(left,  #ffd60a 40%,#1e5799 40%,#1e5799 78%,#c62bdb 78%); /* Chrome10-25,Safari5.1-6 */
+                                        background: linear-gradient(to right,  #ffd60a 40%,#1e5799 40%,#1e5799 78%,#c62bdb 78%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+                                        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffd60a', endColorstr='#c62bdb',GradientType=1 ); /* IE6-9 */
+
+                                    }
+                                </style>
+
+                            </div>
+                        </div>
+                        <div class="s-editor-slider-total">
+                            <h2>8h 31m</h2>
+                        </div>
+                        <div class="s-editor-slider-break">
+                            <label>
+                                <input type="checkbox">
+                                [`Break`]
+                                <span class="s-duration">
+                                        <a href="#" class="inline-link s-duration-label"><b><i>1h</i></b></a>
+                                        <input type="input" class="s-duration-input" value="1">
+                                    </span>
+                            </label>
+                        </div>
+                        <div class="s-editor-slider-more">
+                            <a href="#" title="[`Add another interval for today`]"><i class="icon16 add"></i></a>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- COMMENT & LOGGED ENTITIES -->
+                <div class="s-editor-summary block double-padded blank">
+                    <textarea class="s-editor-comment" placeholder="[`Enter your daily report here...`]"></textarea>
+                    <div class="s-editor-commit">
+                        <input type="button" value="[`Save`]" class="button yellow s-editor-commit-button" />
+                        <span class="s-editor-commit-indicator italic gray">[`Saved`] <i class="icon16 yes-bw"></i></span>
+                    </div>
+                    <div class="s-logged-apps">
+                        <a href="#" class="s-logged-app-counter inline-link"><i class="icon16 s-app-icon" style="background-image: url('/wa-apps/shop/img/shop.png');"></i><b><i>3</i></b></a>
+                        <a href="#" class="s-logged-app-counter inline-link"><i class="icon16 s-app-icon" style="background-image: url('/wa-apps/pocketlists/img/pocketlists48.png');"></i><b><i>15</i></b></a>
+                        <a href="#" class="s-logged-app-counter inline-link"><i class="icon16 s-app-icon" style="background-image: url('/wa-apps/blog/img/blog.png');"></i><b><i>1</i></b></a>
+                        <a href="#" class="s-logged-app-counter inline-link"><i class="icon16 s-app-icon" style="background-image: url('/wa-apps/tasks/img/tasks.png');"></i><b><i>7</i></b></a>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- CHRONOLOGY -->
+            {$_showing_this_week = 1}
+            {for $i=1 to 30}
+                {$_ts = $smarty.now - 86400*$i}
+                {if !date('w',$_ts)}
+                    {* SUNDAY => week header *}
+                    {$_showing_this_week = 0}
+                    <div class="s-week-divider">
+                        <h5 class="heading">WEEK #{date('W',$_ts)}</h5>
+                    </div>
+                    <div class="s-week-summary">
+                        <div class="block">
+                            <h5 class="heading align-center">WEEK #{date('W',$_ts)}<br> SUMMARY</h5>
+
+                            {_draw_weekly_donut}
+
+                        </div>
+                    </div>
+                {/if}
+                <div class="s-day{if $_showing_this_week} s-this-week{/if}">
+                    <div class="s-day-date">
+                        <h3>
+                            {date('Y-m-d', $_ts)|wa_date:humandate}
+                            <span class="hint">{date('D', $_ts)}</span>
+                        </h3>
+                    </div>
+                    <div class="s-day-summary">
+                        <div class="s-day-summary-timeline">
+                            <div class="s-timeline">
+                                {if rand(0,1)}
+                                    <div class="s-timeline-content" style="left: {rand(20,40)}%; right: {rand(20,40)}%;" id="s-timeline-content-{$i}" title="Project 1: Nh, Project 2: Mh, Project 3: Lh"></div>
+                                    {if rand(0,1)}
+                                        <style>
+                                            #s-timeline-content-{$i} {
+
+                                                background: -webkit-linear-gradient(left,  #ffd60a 40%,#1e5799 40%,#1e5799 78%,#c62bdb 78%); /* Chrome10-25,Safari5.1-6 */
+
+                                            }
+                                        </style>
+                                    {/if}
+                                {/if}
+                            </div>
+                        </div>
+
+                        {if rand(0,1)}
+                            <div class="s-day-summary-user-report">
+                                <div class="s-author">
+                                    <h5 class="s-username">
+                                        <i class="icon16 userpic20"></i>
+                                        User 1
+                                        {if rand(0,1)}<span class="s-status" title="[`Status for today`]">Remote</span>{/if}
+                                    </h5>
+                                    {if rand(0,1)}
+                                        <div class="s-logged-apps">
+                                            <a href="#" class="s-logged-app-counter inline-link"><i class="icon16 s-app-icon" style="background-image: url('/wa-apps/shop/img/shop.png');"></i><b><i>3</i></b></a>
+                                            <a href="#" class="s-logged-app-counter inline-link"><i class="icon16 s-app-icon" style="background-image: url('/wa-apps/pocketlists/img/pocketlists48.png');"></i><b><i>15</i></b></a>
+                                            <a href="#" class="s-logged-app-counter inline-link"><i class="icon16 s-app-icon" style="background-image: url('/wa-apps/blog/img/blog.png');"></i><b><i>1</i></b></a>
+                                            <a href="#" class="s-logged-app-counter inline-link"><i class="icon16 s-app-icon" style="background-image: url('/wa-apps/tasks/img/tasks.png');"></i><b><i>7</i></b></a>
+                                        </div>
+                                    {else}
+                                        <div class="s-logged-apps gray">
+                                            [`No app activity logged`]
+                                        </div>
+                                    {/if}
+                                </div>
+                                {if rand(0,1)}
+                                    <p>
+                                        Так, ну что-то у меня сегодня не шибко много прогресса практического - исправил вроде бы me.get на пуш, по крайней мере перерыл просто весь код, изучил мануалы по lifecycle приложения при пуше, вроде не должно быть пуша в ближайшем билде)<br><br>
+                                        По остальному - изучал по новым фичам возможности. По watch independency вопрос сложный, надо будет прямо довольно много всего переделывать, так как там не сильно рассчитана текущая модель на хранение данных и синхронизацию. Но если как-то параллельно с рефакторингом это будем сделать, то можно будет попробовать как-то это совместить.<br><br>
+                                        По Sign in with Apple - вот это крутая фича и сделать ее будет не сильно сложно, я вроде вник более менее, только опробовать не смог - сегодня еще поставлю бету макоси и xcode, чтобы можно было это опробовать - как разберусь, скину мануалы на то, что именно нужно сделать на апи и обсудим, какие именно credentials будем получать и передавать на сервер (там есть разные опции). Эту штуку мы точно в первую очередь можем реализовать.<br>
+                                        Ну а как поставлю бету, остальные относящиеся к iOS 13 задачи можно будет тоже посмотреть и сделать).
+                                    </p>
+                                {/if}
+                            </div>
+                        {/if}
+
+                    </div>
+
+                    <div class="s-day-total">
+                        <h4>7h 14m</h4>
+                    </div>
+
+                </div>
+            {/for}
+
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -6,15 +6,15 @@
 class statusEntityPersist
 {
     /**
-     * @param pocketlistsHydratableInterface $entity
-     * @param array                          $fields
-     * @param int                            $type
+     * @param statusAbstractEntity $entity
+     * @param array                $fields
+     * @param int                  $type
      *
      * @return bool
      * @throws waException
      */
     public function insert(
-        pocketlistsHydratableInterface $entity,
+        statusAbstractEntity $entity,
         $fields = [],
         $type = waModel::INSERT_ON_DUPLICATE_KEY_UPDATE
     ) {
@@ -26,7 +26,7 @@ class statusEntityPersist
          *
          * @event entity_insert.before
          *
-         * @param statusEventInterface $event Event with statusEntity object
+         * @param kmwaEventInterface $event Event with statusAbstractEntity object
          *
          * @return array Entity data to merge and insert
          */
@@ -52,7 +52,7 @@ class statusEntityPersist
              *
              * @event entity_insert.after
              *
-             * @param statusEvent $event Event with statusEntity object
+             * @param statusEvent $event Event with statusAbstractEntity object
              *
              * @return void
              */
@@ -66,12 +66,12 @@ class statusEntityPersist
     }
 
     /**
-     * @param statusEntity $entity
+     * @param statusAbstractEntity $entity
      *
      * @return bool
      * @throws waException
      */
-    public function delete(pocketlistsHydratableInterface $entity)
+    public function delete(statusAbstractEntity $entity)
     {
         if (method_exists($entity, 'getId')) {
             /**
@@ -79,7 +79,7 @@ class statusEntityPersist
              *
              * @event entity_delete.before
              *
-             * @param statusEventInterface $event Event with statusEntity object
+             * @param kmwaEventInterface $event Event with statusAbstractEntity object
              *
              * @return bool If false - entity delete will be canceled
              */
@@ -91,14 +91,15 @@ class statusEntityPersist
                 }
             }
 
-            $deleted = $this->getModel()->deleteById($entity->getId());
+            $model = stts()->getModel(get_class($entity));
+            $deleted = $model->deleteById($entity->getId());
 
             /**
              * After every entity delete
              *
              * @event entity_delete.after
              *
-             * @param statusEventInterface $event Event with statusEntity object
+             * @param kmwaEventInterface $event Event with statusAbstractEntity object
              *
              * @return void
              */
@@ -112,23 +113,28 @@ class statusEntityPersist
     }
 
     /**
-     * @param statusEntity $entity
-     * @param array        $fields
+     * @param statusAbstractEntity $entity
+     * @param array                $fields
      *
      * @return bool|waDbResultUpdate|null
      * @throws waException
      */
-    public function update(statusEntity $entity, $fields = [])
+    public function update(statusAbstractEntity $entity, $fields = [])
     {
         if (method_exists($entity, 'getId')) {
-            $data = stts()->getHydrator()->extract($entity, $fields, $this->getDbFields());
+            $model = stts()->getModel(get_class($entity));
+            $data = stts()->getHydrator()->extract(
+                $entity,
+                $fields,
+                $model->getMetadata()
+            );
 
             /**
              * Before every entity update
              *
              * @event entity_update.before
              *
-             * @param statusEventInterface $event Event with statusEntity object
+             * @param kmwaEventInterface $event Event with statusAbstractEntity object
              *
              * @return array Entity data to merge and update
              */
@@ -142,7 +148,7 @@ class statusEntityPersist
 
             unset($data['id']);
 
-            $updated = $this->getModel()->updateById($entity->getId(), $data);
+            $updated = $model->updateById($entity->getId(), $data);
 
             if ($updated) {
                 /**
@@ -150,7 +156,7 @@ class statusEntityPersist
                  *
                  * @event entity_update.after
                  *
-                 * @param statusEvent $event Event with statusEntity object
+                 * @param statusEvent $event Event with statusAbstractEntity object
                  *
                  * @return void
                  */
@@ -165,13 +171,13 @@ class statusEntityPersist
     }
 
     /**
-     * @param statusEntity $entity
-     * @param array        $fields
+     * @param statusAbstractEntity $entity
+     * @param array                $fields
      *
      * @return bool|waDbResultUpdate|null
      * @throws waException
      */
-    public function save(statusEntity $entity, $fields = [])
+    public function save(statusAbstractEntity $entity, $fields = [])
     {
         if (method_exists($entity, 'getId')) {
             if ($entity->getId()) {

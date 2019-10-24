@@ -38,6 +38,11 @@ class statusConfig extends waAppConfig
     protected $eventDispatcher;
 
     /**
+     * @var statusEntityPersist
+     */
+    protected $persister;
+
+    /**
      * @param string $type
      *
      * @return waCache
@@ -70,11 +75,11 @@ class statusConfig extends waAppConfig
     }
 
     /**
-     * @param pocketlistsEvent $event
+     * @param kmwaEventInterface $event
      *
      * @return array
      */
-    public function waDispatchEvent(pocketlistsEvent $event)
+    public function waDispatchEvent(kmwaEventInterface $event)
     {
         return wa(self::APP_ID)->event($event->getName(), $event);
     }
@@ -111,7 +116,7 @@ class statusConfig extends waAppConfig
     public function getEntityFactory($entity)
     {
         if (isset($this->factories[$entity])) {
-            return $this->factories[$entity]->resetLimitAndOffset();
+            return $this->factories[$entity];
         }
 
         $factoryClass = sprintf('%sFactory', $entity);
@@ -164,7 +169,7 @@ class statusConfig extends waAppConfig
     public function getEntityRepository($entity)
     {
         if (isset($this->repositories[$entity])) {
-            return $this->repositories[$entity];
+            return $this->repositories[$entity]->resetLimitAndOffset();
         }
 
         $repositoryClass = sprintf('%sRepository', $entity);
@@ -235,6 +240,7 @@ class statusConfig extends waAppConfig
 
     /**
      * @return statusUser
+     * @throws kmwaLogicException
      */
     public function getUser()
     {
@@ -260,15 +266,27 @@ class statusConfig extends waAppConfig
         ];
     }
 
+    /**
+     * @return statusEntityPersist
+     */
+    public function getEntityPersister()
+    {
+        if ($this->persister === null) {
+            $this->persister = new statusEntityPersist();
+        }
+
+        return $this->persister;
+    }
+
     private function registerGlobal()
     {
         if (!function_exists('stts')) {
             /**
-             * @return statusConfig
+             * @return statusConfig|SystemConfig|waAppConfig
              */
             function stts()
             {
-                return wa(self::APP_ID)->getConfig();
+                return wa(statusConfig::APP_ID)->getConfig();
             }
         }
     }
@@ -300,6 +318,13 @@ class statusConfig extends waAppConfig
                 'kmwaHydratableInterface',
                 'kmwaHydrator',
                 'kmwaHydratorInterface',
+            ],
+            'lib/vendor/kmwa/Wa/View'   => [
+                'kmwaWaJsonActions',
+                'kmwaWaJsonController',
+                'kmwaWaViewAction',
+                'kmwaWaViewActions',
+                'kmwaWaViewTrait',
             ],
         ];
 

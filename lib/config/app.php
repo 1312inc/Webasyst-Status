@@ -9,4 +9,6 @@ return array (
   'version' => '1.0.0',
   'vendor' => '1021997',
   'plugins' => true,
+  'rights' => true,
+
 );

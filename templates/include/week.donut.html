@@ -1,0 +1,27 @@
+<div class="s-donut-chart-container">
+    <div class="s-donut-chart">
+        <div id="section1" class="clip" title="[`No project`]">
+            <div class="item"></div>
+        </div>
+        {foreach $donut->projects as $p}
+        <div id="section2" class="clip" title="Project {$p->name|escape}: {$p->time}">
+            <div class="item"></div>
+        </div>
+        {/foreach}
+        <div class="center">{$donut->time}</div>
+    </div>
+</div>
+<style>
+    {foreach $donut->projects as $p}
+    .s-donut-chart #section{$p->number} { transform: rotate({$p->rotateFrom}deg); }
+    .s-donut-chart #section{$p->number} .item { background-color: {$p->color}; transform: rotate({$p->rotateTo}deg); }
+    {/foreach}
+</style>
+
+<div class="s-week-projects">
+    {foreach $donut->projects as $p}
+        <i class="icon16 color" style="background: {$p->color};"></i>
+        {$p->name|escape}
+        <span class="hint bold">{$p->time}</span><br>
+    {/foreach}
+</div>
