@@ -27,6 +27,17 @@ class statusUserRepository extends statusBaseRepository
     }
 
     /**
+     * @param waContact $contact
+     *
+     * @return statusUser|null
+     * @throws waException
+     */
+    public function findByContact(waContact $contact)
+    {
+        return $this->findByContactId($contact->getId());
+    }
+
+    /**
      * @return statusUser[]
      * @throws waException
      */

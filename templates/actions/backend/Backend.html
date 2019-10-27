@@ -7,17 +7,17 @@
     <link type="text/css" rel="stylesheet" href="{$wa_app_static_url}css/status.css?v{$wa->version()}">
     <script type="text/javascript" src="{$wa_url}wa-content/js/jquery/jquery-1.11.1.min.js"></script>
     <script src="/wa-content/js/jquery/jquery-migrate-1.2.1.min.js"></script>
-    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-wa/wa.core.js?v{$wa->version(true)}"></script>
+    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-wa/wa.core.js?v{if !waSystemConfig::isDebug()}{$wa->version()}{/if}"></script>
     <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-plugins/jquery.store.js"></script>
 
-    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.core.min.js?v{$wa->version(true)}"></script>
-    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.widget.min.js?v{$wa->version(true)}"></script>
-    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.mouse.min.js?v{$wa->version(true)}"></script>
-    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.slider.min.js?v{$wa->version(true)}"></script>
+    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.core.min.js?v{if !waSystemConfig::isDebug()}{$wa->version()}{/if}"></script>
+    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.widget.min.js?v{if !waSystemConfig::isDebug()}{$wa->version()}{/if}"></script>
+    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.mouse.min.js?v{if !waSystemConfig::isDebug()}{$wa->version()}{/if}"></script>
+    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.slider.min.js?v{if !waSystemConfig::isDebug()}{$wa->version()}{/if}"></script>
     <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-wa/wa.dialog.js"
   type="text/javascript"></script>
 
-    <script type="text/javascript" src="{$wa_app_static_url}js/status.js?v{$wa->version()}"></script>
+    <script type="text/javascript" src="{$wa_app_static_url}js/status.js?v{if !waSystemConfig::isDebug()}{$wa->version()}{/if}"></script>
 
     {function name=_draw_status_selector}
         <ul class="menu-v with-icons s-status-selector">
@@ -88,40 +88,26 @@
 
                 <!-- CHRONOLOGY -->
 
-                {foreach $weeks as $week}
-                    <div class="s-week-divider">
-                        <h5 class="heading">WEEK #{$week->getNumber()}</h5>
-                    </div>
-
-                    <div class="s-week-summary">
-                        <div class="block">
-                            <h5 class="heading align-center">
-                                {if $week->isCurrent()}THIS WEEK{else}WEEK #{$week->getNumber()}{/if}<br> SUMMARY
-                            </h5>
-
-                            {include inline file='./../../include/week.donut.html' donut=$week->makeDonut()}
-
-                        </div>
-                    </div>
-
-                    {foreach $week->getDays() as $day}
-                        {include inline file='./../../include/day.show.html' day=$day}
-                    {/foreach}
-                {/foreach}
-
+                {include inline file='./../chronology/ChronologyLoadWeeks.html' weeks=$weeks}
             </div>
         </div>
 
         <script>
             'use strict';
 
-            (function () {
+            // $(function () {
                 $.status.init({
                     account_name: '{$wa->accountName()|escape}',
                     isAdmin: {$isAdmin},
-                    userId: {$wa->getUser()->getId()}
-                })
-            }());
+                    userId: {$stts->getUser()->getContactId()}
+                });
+
+                $.status.lazyLoad({
+                    $loading: $('#chronology .lazyloading'),
+                    html_selector: '#olderWeeks',
+                    url: '?module=chronology&action=loadWeeks'
+                });
+            // });
         </script>
     </div>
 </body>

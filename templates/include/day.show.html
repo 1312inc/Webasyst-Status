@@ -5,30 +5,32 @@
             <span class="hint">{$day->getDate()->format('D')}</span>
         </h3>
     </div>
-    <div class="s-day-summary">
-        <div class="s-day-summary-timeline">
-            <div class="s-timeline">
-                {if rand(0,1)}
-                    <div class="s-timeline-content" style="left: {rand(20,40)}%; right: {rand(20,40)}%;" id="s-timeline-content-{$day->getDate()->format('Y-m-d')}" title="Project 1: Nh, Project 2: Mh, Project 3: Lh"></div>
+
+    <div class="checkins">
+        {foreach $day->getCheckins() as $checkin}
+        <div class="checkin">
+        <div class="s-day-summary">
+            <div class="s-day-summary-timeline">
+                <div class="s-timeline">
                     {if rand(0,1)}
-                        <style>
-                            #s-timeline-content-{$day->getDate()->format('Y-m-d')} {
+                        <div class="s-timeline-content" style="left: {rand(20,40)}%; right: {rand(20,40)}%;" id="s-timeline-content-{$checkin->getId()}" title="Project 1: Nh, Project 2: Mh, Project 3: Lh"></div>
+                        {if rand(0,1)}
+                            <style>
+                                #s-timeline-content-{$checkin->getId()} {
 
-                                background: -webkit-linear-gradient(left,  #ffd60a 40%,#1e5799 40%,#1e5799 78%,#c62bdb 78%); /* Chrome10-25,Safari5.1-6 */
+                                    background: -webkit-linear-gradient(left,  #ffd60a 40%,#1e5799 40%,#1e5799 78%,#c62bdb 78%); /* Chrome10-25,Safari5.1-6 */
 
-                            }
-                        </style>
+                                }
+                            </style>
+                        {/if}
                     {/if}
-                {/if}
+                </div>
             </div>
-        </div>
-
-        {if rand(0,1)}
             <div class="s-day-summary-user-report">
                 <div class="s-author">
                     <h5 class="s-username">
                         <i class="icon16 userpic20"></i>
-                        User 1
+                        {$checkin->getUser()->getName()|escape}
                         {if rand(0,1)}<span class="s-status" title="[`Status for today`]">Remote</span>{/if}
                     </h5>
                     {if rand(0,1)}
@@ -44,21 +46,19 @@
                         </div>
                     {/if}
                 </div>
-                {if rand(0,1)}
+                {if $checkin->getComment()}
                     <p>
-                        Так, ну что-то у меня сегодня не шибко много прогресса практического - исправил вроде бы me.get на пуш, по крайней мере перерыл просто весь код, изучил мануалы по lifecycle приложения при пуше, вроде не должно быть пуша в ближайшем билде)<br><br>
-                        По остальному - изучал по новым фичам возможности. По watch independency вопрос сложный, надо будет прямо довольно много всего переделывать, так как там не сильно рассчитана текущая модель на хранение данных и синхронизацию. Но если как-то параллельно с рефакторингом это будем сделать, то можно будет попробовать как-то это совместить.<br><br>
-                        По Sign in with Apple - вот это крутая фича и сделать ее будет не сильно сложно, я вроде вник более менее, только опробовать не смог - сегодня еще поставлю бету макоси и xcode, чтобы можно было это опробовать - как разберусь, скину мануалы на то, что именно нужно сделать на апи и обсудим, какие именно credentials будем получать и передавать на сервер (там есть разные опции). Эту штуку мы точно в первую очередь можем реализовать.<br>
-                        Ну а как поставлю бету, остальные относящиеся к iOS 13 задачи можно будет тоже посмотреть и сделать).
+                        {$checkin->getComment()|escape}
                     </p>
                 {/if}
             </div>
-        {/if}
+        </div>
 
-    </div>
-
-    <div class="s-day-total">
-        <h4>7h 14m</h4>
+        <div class="s-day-total">
+            <h4>7h 14m</h4>
+        </div>
+        </div>
+    {/foreach}
     </div>
 
 </div>

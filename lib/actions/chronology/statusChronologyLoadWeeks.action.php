@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Class statusBackendAction
+ * Class statusChronologyLoadWeeksAction
  */
-class statusBackendAction extends statusViewAction
+class statusChronologyLoadWeeksAction extends statusViewAction
 {
     /**
      * @param null|array $params
@@ -13,16 +13,20 @@ class statusBackendAction extends statusViewAction
      */
     public function runAction($params = null)
     {
-        $weeks = statusWeekFactory::createLastNWeeks();
-        $currentWeek = statusWeekFactory::createCurrentWeek();
+        $offset = waRequest::get('offset', 0, waRequest::TYPE_INT);
+
+        $weeks = statusWeekFactory::createLastNWeeks(
+            statusWeekFactory::DEFAULT_WEEKS_LOAD,
+            false,
+            statusWeekFactory::DEFAULT_WEEKS_LOAD * $offset
+        );
 
         /** @var statusCheckinRepository $checkinRepository */
         $checkinRepository = stts()->getEntityRepository(statusCheckin::class);
 
-        $allWeeks = array_merge([$currentWeek], $weeks);
-        $checkins = $checkinRepository->findByWeeks($allWeeks);
+        $checkins = $checkinRepository->findByWeeks($weeks);
         /** @var statusWeek $week */
-        foreach ($allWeeks as $week) {
+        foreach ($weeks as $week) {
             /** @var statusDay $day */
             foreach ($week->getDays() as $day) {
                 if (isset($checkins[$day->getDate()->format('Y-m-d')])) {
@@ -31,13 +35,6 @@ class statusBackendAction extends statusViewAction
             }
         }
 
-        $this->view->assign(
-            [
-                'currentWeek'  => $currentWeek,
-                'weeks'        => $weeks,
-                'checkins'     => $checkins,
-                'sidebar_html' => (new statusBackendSidebarAction())->display(),
-            ]
-        );
+        $this->view->assign(['weeks' => $weeks]);
     }
 }

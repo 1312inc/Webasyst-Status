@@ -1,0 +1,28 @@
+<section id="chronology">
+    <div id="olderWeeks">
+        {foreach $weeks as $week}
+            <div class="s-week-divider">
+                <h5 class="heading">WEEK #{$week->getNumber()}</h5>
+            </div>
+
+            <div class="s-week-summary">
+                <div class="block">
+                    <h5 class="heading align-center">
+                        WEEK #{$week->getNumber()}<br> SUMMARY
+                    </h5>
+
+                    {include inline file='./../../include/week.donut.html' donut=$week->makeDonut()}
+
+                </div>
+            </div>
+
+            {foreach $week->getDays() as $day}
+                {include inline file='./../../include/day.show.html' day=$day}
+            {/foreach}
+        {/foreach}
+    </div>
+
+    <div class="block double-padded lazyloading" style="display: none;">
+        <i class="icon16 loading"></i> [`Loading...`]
+    </div>
+</section>

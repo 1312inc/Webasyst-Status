@@ -51,6 +51,11 @@ class statusCheckin extends statusAbstractEntity
     private $timezone;
 
     /**
+     * @var statusUser
+     */
+    private $user;
+
+    /**
      * @return int
      */
     public function getId()
@@ -228,5 +233,20 @@ class statusCheckin extends statusAbstractEntity
         $this->timezone = $timezone;
 
         return $this;
+    }
+
+    /**
+     * @return statusUser
+     * @throws waException
+     */
+    public function getUser()
+    {
+        if ($this->user === null) {
+            /** @var statusUserRepository $factory */
+            $factory = stts()->getEntityRepository(statusUser::class);
+            $this->user = $factory->findByContactId($this->contact_id);
+        }
+
+        return $this->user;
     }
 }

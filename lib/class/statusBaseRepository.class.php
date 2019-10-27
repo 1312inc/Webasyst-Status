@@ -151,14 +151,14 @@ class statusBaseRepository
     public function findByFields($field, $value = null, $all = false, $limit = false)
     {
         if (is_array($field)) {
-            $limit = $all;
-            $all = $value;
-            $value = false;
+            $data = $this->getModel()->getByField($field, $all, $limit);
+        } else {
+            $data = $this->getModel()->getByField($field, $value, $all, $limit);
         }
 
-        $data = $this->getModel()->getByField($field, $value, $all, $limit);
+        $objs = $this->generateWithData($data, $all);
 
-        return $this->generateWithData($data, $all);
+        return $all ? ($objs ?: []) : $objs;
     }
 
     /**
@@ -185,7 +185,7 @@ class statusBaseRepository
             return null;
         }
 
-        if (!$all) {
+        if ($all === false) {
             $data = [$data];
         }
 

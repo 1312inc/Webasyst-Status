@@ -25,11 +25,12 @@ abstract class kmwaWaViewAction extends waViewAction
     public function execute($params = null)
     {
         try {
-            $defaultViewVars = $this->getDefaultViewVars();
-            $this->view->assign($defaultViewVars);
+            foreach ($this->getDefaultViewVars() as $key => $value) {
+                $this->view->smarty->assignGlobal($key, $value);
+            }
 
             $this->runAction($params);
-        } catch (waException $ex) {
+        } catch (Exception $ex) {
             $this->view->assign(
                 'error',
                 [

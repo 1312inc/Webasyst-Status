@@ -16,15 +16,20 @@ class statusDay
     private $isToday = false;
 
     /**
+     * @var statusWeek
+     */
+    private $week;
+
+    /**
      * @var statusCheckin[]
      */
     private $checkins;
 
     /**
-     * @var statusWeek
+     * statusDay constructor.
+     *
+     * @param DateTime $date
      */
-    private $week;
-
     public function __construct(DateTime $date)
     {
         $this->date = $date;
@@ -43,20 +48,6 @@ class statusDay
     }
 
     /**
-     * @return statusCheckin[]
-     * @throws waException
-     */
-    public function getCheckins()
-    {
-        if ($this->checkins === null) {
-            $this->checkins = stts()->getEntityRepository(statusCheckin::class)->findByDate($this->getDate());
-            $this->checkins = $this->checkins ?: [];
-        }
-
-        return $this->checkins;
-    }
-
-    /**
      * @param statusCheckin[] $checkins
      *
      * @return statusDay
@@ -66,6 +57,14 @@ class statusDay
         $this->checkins = $checkins;
 
         return $this;
+    }
+
+    /**
+     * @return statusCheckin[]
+     */
+    public function getCheckins()
+    {
+        return $this->checkins;
     }
 
     /**
