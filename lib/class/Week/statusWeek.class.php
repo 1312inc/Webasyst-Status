@@ -39,7 +39,7 @@ class statusWeek
         $sourceDay->setISODate($sourceDay->format('Y'), $this->number);
 
         $today = new DateTime(date('Y-m-d'));
-        for ($day = 7; $day > 0; $day--) {
+        for ($day = 7; $day >= 0; $day--) {
             $dayDate = new DateTime($sourceDay->format('Y-m-d'));
             $dayDate->modify("+$day days");
             if ($dayDate > $today) {

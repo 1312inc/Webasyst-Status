@@ -1,4 +1,4 @@
-<div class="s-day{if $day->getWeek()->isCurrent()} s-this-week{/if}">
+<div class="s-day{if $day->getWeek()->isCurrent()} s-this-week{/if}" data-status-day-date="{$day->getDate()->format('Y-m-d')}">
     <div class="s-day-date">
         <h3>
             {$day->getDate()->format('Y-m-d')|wa_date:humandate}

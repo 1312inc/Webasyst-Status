@@ -11,13 +11,13 @@
                         WEEK #{$week->getNumber()}<br> SUMMARY
                     </h5>
 
-                    {include inline file='./../../include/week.donut.html' donut=$week->makeDonut()}
+                    {include inline file='./../../actions/week/WeekDonut.html' donut=$week->makeDonut()}
 
                 </div>
             </div>
 
             {foreach $week->getDays() as $day}
-                {include inline file='./../../include/day.show.html' day=$day}
+                {include inline file='./../../actions/day/DayShow.html' day=$day}
             {/foreach}
         {/foreach}
     </div>

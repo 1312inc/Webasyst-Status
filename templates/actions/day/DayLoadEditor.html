@@ -8,7 +8,7 @@
             <ul class="menu-h dropdown">
                 <li>
                     <a href="#" class="s-editor-status inline-link gray"><b><i><strong>[`Status`]</strong></i></b> <i class="icon10 darr"></i></a>
-                    {_draw_status_selector}
+{*                    {_draw_status_selector}*}
                 </li>
             </ul>
         </div>
@@ -16,7 +16,7 @@
         <h1>
             [`Today`]
             <span class="hint">
-                                {date('D')}, {date('Y-m-d')|wa_date:humandate}
+                                {$day->getDate()->format('D')}, {$day->getDate()->format('Y-m-d')|wa_date:humandate}
                                 <!-- <span title="[`Weekend`]">🏖️Sunday / Saturday</span> -->
                 <!-- <span title="[`Birthday`]">🎂Birtday</span> -->
                             </span>
@@ -26,17 +26,17 @@
             <div class="s-editor-slider-control">
                 <div id="s-editor-slider-slider"></div>
                 <div class="s-editor-slider-projects" style="display: none;">
-                    {foreach $projects as $p}
-                        <label class="s-editor-project">
-                            <input type="checkbox">
-                            <!-- <i class="icon16 color" style="background: {$p[0]};"></i> -->
-                            {$p[1]}
-                            <span class="s-duration s-editor-project-share">
-                                                <a href="#" class="inline-link s-duration-label" style="background: {$p[0]};"><b><i>3h</i></b></a>
-                                                <input type="input" class="s-duration-input" value="1">
-                                            </span>
-                        </label>
-                    {/foreach}
+{*                    {foreach $projects as $p}*}
+{*                        <label class="s-editor-project">*}
+{*                            <input type="checkbox">*}
+{*                            <!-- <i class="icon16 color" style="background: {$p[0]};"></i> -->*}
+{*                            {$p[1]}*}
+{*                            <span class="s-duration s-editor-project-share">*}
+{*                                                <a href="#" class="inline-link s-duration-label" style="background: {$p[0]};"><b><i>3h</i></b></a>*}
+{*                                                <input type="input" class="s-duration-input" value="1">*}
+{*                                            </span>*}
+{*                        </label>*}
+{*                    {/foreach}*}
 
                     <style>
                         #s-editor-slider-slider.ui-slider-horizontal .ui-widget-header.s-colorized-1312-demo-purpose-class-only {

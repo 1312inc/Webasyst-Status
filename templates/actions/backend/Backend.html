@@ -58,7 +58,7 @@
 
                     <h5 class="heading align-center">[`This week`]</h5>
 
-                    {include inline file='./../../include/week.donut.html' donut=$currentWeek->makeDonut()}
+                    {include inline file='./../week/WeekDonut.html' donut=$currentWeek->makeDonut()}
 
                 </div>
 
@@ -83,7 +83,7 @@
                 </div>
 
                 {foreach $currentWeek->getDays() as $day}
-                    {include inline file='./../../include/day.show.html' day=$day}
+                    {include inline file='./../day/DayShow.html' day=$day}
                 {/foreach}
 
                 <!-- CHRONOLOGY -->
