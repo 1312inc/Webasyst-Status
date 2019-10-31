@@ -3,7 +3,7 @@
 /**
  * Class statusDayLoadEditorAction
  */
-class statusDayLoadEditorAction extends statusViewAction
+class statusDayEditorAction extends statusViewAction
 {
     /**
      * @param null|array $params
@@ -33,6 +33,13 @@ class statusDayLoadEditorAction extends statusViewAction
         $checkinRep = stts()->getEntityRepository(statusCheckin::class);
         $checkins = $checkinRep->findByDayAndUser($day, $user);
 
-        $this->view->assign(['checkins' => $checkins, 'day' => $day]);
+        $dayDto = new statusDayEditorDto($day, $checkins);
+
+        $this->view->assign(
+            [
+                'checkins' => $checkins,
+                'day' => $dayDto,
+            ]
+        );
     }
 }

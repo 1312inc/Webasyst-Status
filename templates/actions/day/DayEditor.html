@@ -1,5 +1,5 @@
 <!-- DAY EDIT UI -->
-<div class="s-editor shadowed">
+<div class="s-editor shadowed" data-status-day-date="{$day->date}">
 
     <!-- TIME & STATUS -->
     <div class="block double-padded">
@@ -14,29 +14,33 @@
         </div>
 
         <h1>
-            [`Today`]
+            {if $day->today}[`Today`]{/if}
             <span class="hint">
-                                {$day->getDate()->format('D')}, {$day->getDate()->format('Y-m-d')|wa_date:humandate}
-                                <!-- <span title="[`Weekend`]">🏖️Sunday / Saturday</span> -->
+                {$day->dayname}, {$day->date|wa_date:humandate}
+                <!-- <span title="[`Weekend`]">🏖️Sunday / Saturday</span> -->
                 <!-- <span title="[`Birthday`]">🎂Birtday</span> -->
-                            </span>
+            </span>
         </h1>
 
-        <div class="s-editor-slider">
+        {foreach $day->checkins as $checkin}
+        <div class="s-editor-slider" data-status-checkin="{$checkin->id}">
             <div class="s-editor-slider-control">
-                <div id="s-editor-slider-slider"></div>
+                <div class="s-editor-slider-slider"
+                     data-status-checkin-min="{$checkin->min}"
+                     data-status-checkin-max="{$checkin->max}"
+                ></div>
                 <div class="s-editor-slider-projects" style="display: none;">
-{*                    {foreach $projects as $p}*}
-{*                        <label class="s-editor-project">*}
-{*                            <input type="checkbox">*}
-{*                            <!-- <i class="icon16 color" style="background: {$p[0]};"></i> -->*}
-{*                            {$p[1]}*}
-{*                            <span class="s-duration s-editor-project-share">*}
-{*                                                <a href="#" class="inline-link s-duration-label" style="background: {$p[0]};"><b><i>3h</i></b></a>*}
-{*                                                <input type="input" class="s-duration-input" value="1">*}
-{*                                            </span>*}
-{*                        </label>*}
-{*                    {/foreach}*}
+                    {*                    {foreach $projects as $p}*}
+                    {*                        <label class="s-editor-project">*}
+                    {*                            <input type="checkbox">*}
+                    {*                            <!-- <i class="icon16 color" style="background: {$p[0]};"></i> -->*}
+                    {*                            {$p[1]}*}
+                    {*                            <span class="s-duration s-editor-project-share">*}
+                    {*                                                <a href="#" class="inline-link s-duration-label" style="background: {$p[0]};"><b><i>3h</i></b></a>*}
+                    {*                                                <input type="input" class="s-duration-input" value="1">*}
+                    {*                                            </span>*}
+                    {*                        </label>*}
+                    {*                    {/foreach}*}
 
                     <style>
                         #s-editor-slider-slider.ui-slider-horizontal .ui-widget-header.s-colorized-1312-demo-purpose-class-only {
@@ -60,9 +64,9 @@
                     <input type="checkbox">
                     [`Break`]
                     <span class="s-duration">
-                                        <a href="#" class="inline-link s-duration-label"><b><i>1h</i></b></a>
-                                        <input type="input" class="s-duration-input" value="1">
-                                    </span>
+                                    <a href="#" class="inline-link s-duration-label"><b><i>1h</i></b></a>
+                                    <input type="input" class="s-duration-input" value="1">
+                                </span>
                 </label>
             </div>
             <div class="s-editor-slider-more">
@@ -70,11 +74,12 @@
             </div>
         </div>
 
+        {/foreach}
     </div>
 
     <!-- COMMENT & LOGGED ENTITIES -->
     <div class="s-editor-summary block double-padded blank">
-        <textarea class="s-editor-comment" placeholder="[`Enter your daily report here...`]"></textarea>
+        <textarea class="s-editor-comment" placeholder="[`Enter your daily report here...`]" name="">{$day->firstCheckin->comment|escape}</textarea>
         <div class="s-editor-commit">
             <input type="button" value="[`Save`]" class="button yellow s-editor-commit-button" />
             <span class="s-editor-commit-indicator italic gray">[`Saved`] <i class="icon16 yes-bw"></i></span>

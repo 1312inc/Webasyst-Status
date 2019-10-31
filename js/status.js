@@ -312,7 +312,7 @@
 
             function editor($day) {
                 var date = $day.data('status-day-date');
-                $.get('?module=day&action=loadEditor', {date: date}, function (html) {
+                $.get('?module=day&action=editor', {date: date}, function (html) {
                     close();
                     $dayEl = $day;
                     init(html);
