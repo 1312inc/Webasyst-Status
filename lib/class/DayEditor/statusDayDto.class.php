@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Class statusDayEditorDto
+ * Class statusDayDto
  */
-class statusDayEditorDto
+class statusDayDto
 {
     /**
      * @var string
@@ -21,12 +21,12 @@ class statusDayEditorDto
     public $today;
 
     /**
-     * @var statusDayEditorCheckinDto[]
+     * @var statusDayCheckinDto[]
      */
     public $checkins;
 
     /**
-     * @var statusDayEditorCheckinDto[]
+     * @var statusDayCheckinDto[]
      */
     public $firstCheckin;
 
@@ -41,10 +41,17 @@ class statusDayEditorDto
     public $endTime = 0;
 
     /**
+     * @var bool
+     */
+    public $isFromCurrentWeek = false;
+
+    /**
      * statusDayEditorDto constructor.
      *
      * @param statusDay       $day
      * @param statusCheckin[] $checkins
+     *
+     * @throws Exception
      */
     public function __construct(statusDay $day, array $checkins)
     {
@@ -52,11 +59,11 @@ class statusDayEditorDto
         foreach ($checkins as $checkin) {
             $this->startTime = min($this->startTime, $checkin->getStartTime());
             $this->endTime = max($this->endTime, $checkin->getEndTime());
-            $this->checkins[] = new statusDayEditorCheckinDto($checkin);
+            $this->checkins[] = new statusDayCheckinDto($checkin);
         }
 
         if (empty($this->checkins)) {
-            $this->checkins[] = new statusDayEditorCheckinDto(
+            $this->checkins[] = new statusDayCheckinDto(
                 stts()->getEntityFactory(statusCheckin::class)->createNew()
             );
         }

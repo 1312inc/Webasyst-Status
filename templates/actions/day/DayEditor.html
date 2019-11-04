@@ -1,6 +1,5 @@
 <!-- DAY EDIT UI -->
 <div class="s-editor shadowed" data-status-day-date="{$day->date}">
-
     <!-- TIME & STATUS -->
     <div class="block double-padded">
 
@@ -23,12 +22,18 @@
         </h1>
 
         {foreach $day->checkins as $checkin}
-        <div class="s-editor-slider" data-status-checkin="{$checkin->id}">
+        <div class="s-editor-slider"
+             data-checkin="{$checkin->id}"
+             {if $checkin->id == $day->firstCheckin->id}data-checkin-first{/if}
+             data-checkin-min="{$checkin->min}"
+             data-checkin-max="{$checkin->max}"
+             data-checkin-id="{$checkin->id}"
+             data-checkin-date="{$day->date}"
+             data-checkin-duration="{$checkin->duration}"
+             data-checkin-break="{$checkin->break}"
+        >
             <div class="s-editor-slider-control">
-                <div class="s-editor-slider-slider"
-                     data-status-checkin-min="{$checkin->min}"
-                     data-status-checkin-max="{$checkin->max}"
-                ></div>
+                <div class="s-editor-slider-slider"></div>
                 <div class="s-editor-slider-projects" style="display: none;">
                     {*                    {foreach $projects as $p}*}
                     {*                        <label class="s-editor-project">*}
@@ -57,23 +62,22 @@
                 </div>
             </div>
             <div class="s-editor-slider-total">
-                <h2>8h 31m</h2>
+                <h2></h2>
             </div>
             <div class="s-editor-slider-break">
                 <label>
-                    <input type="checkbox">
+                    <input type="checkbox" {if $checkin->break}checked{/if} name="checkin[break]">
                     [`Break`]
                     <span class="s-duration">
-                                    <a href="#" class="inline-link s-duration-label"><b><i>1h</i></b></a>
-                                    <input type="input" class="s-duration-input" value="1">
-                                </span>
+                        <a href="#" class="inline-link s-duration-label"><b><i>{$checkin->breakString}</i></b></a>
+                        <input type="input" class="s-duration-input" value="{$checkin->break|default:1}" name="checkin[break_duration]">
+                    </span>
                 </label>
             </div>
             <div class="s-editor-slider-more">
-                <a href="#" title="[`Add another interval for today`]"><i class="icon16 add"></i></a>
+                <a href="#" data-checkin-action="new" title="[`Add another interval for today`]"><i class="icon16 add"></i></a>
             </div>
         </div>
-
         {/foreach}
     </div>
 
@@ -91,5 +95,4 @@
             <a href="#" class="s-logged-app-counter inline-link"><i class="icon16 s-app-icon" style="background-image: url('/wa-apps/tasks/img/tasks.png');"></i><b><i>7</i></b></a>
         </div>
     </div>
-
 </div>

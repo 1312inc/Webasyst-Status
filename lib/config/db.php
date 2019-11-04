@@ -10,6 +10,8 @@ return array(
         'total_duration' => array('int', 11, 'default' => '0'),
         'comment' => array('text'),
         'timezone' => array('tinyint', 4),
+        'create_datetime' => array('datetime'),
+        'update_datetime' => array('datetime'),
         ':keys' => array(
             'PRIMARY' => 'id',
         ),

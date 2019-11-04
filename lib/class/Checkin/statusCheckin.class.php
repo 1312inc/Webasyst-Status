@@ -51,9 +51,30 @@ class statusCheckin extends statusAbstractEntity
     private $timezone;
 
     /**
+     * @var DateTime|string
+     */
+    private $create_datetime;
+
+    /**
+     * @var DateTime|string
+     */
+    private $update_datetime;
+
+    /**
      * @var statusUser
      */
     private $user;
+
+    /**
+     * statusCheckin constructor.
+     *
+     * @throws waException
+     */
+    public function __construct()
+    {
+        $this->timezone = (new DateTimeZone(stts()->getUser()->getContact()->getTimezone()))->getOffset(new DateTime()) / 60 / 60;
+        $this->contact_id = stts()->getUser()->getContactId();
+    }
 
     /**
      * @return int
@@ -248,5 +269,70 @@ class statusCheckin extends statusAbstractEntity
         }
 
         return $this->user;
+    }
+
+    /**
+     * @return DateTime|string
+     */
+    public function getCreateDatetime()
+    {
+        return $this->create_datetime;
+    }
+
+    /**
+     * @param DateTime|string $create_datetime
+     *
+     * @return statusCheckin
+     */
+    public function setCreateDatetime($create_datetime)
+    {
+        $this->create_datetime = $create_datetime;
+
+        return $this;
+    }
+
+    /**
+     * @return DateTime|string
+     */
+    public function getUpdateDatetime()
+    {
+        return $this->update_datetime;
+    }
+
+    /**
+     * @param DateTime|string $update_datetime
+     *
+     * @return statusCheckin
+     */
+    public function setUpdateDatetime($update_datetime)
+    {
+        $this->update_datetime = $update_datetime;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     * @throws kmwaLogicException
+     */
+    public function beforeSave()
+    {
+        if (!$this->id) {
+            $this->create_datetime = date('Y-m-d H:i:s');
+        }
+        $this->update_datetime = date('Y-m-d H:i:s');
+
+        if ($this->start_time > $this->end_time) {
+            list($this->end_time, $this->start_time) = [$this->start_time, $this->end_time];
+        }
+
+        $this->total_duration = $this->end_time - $this->start_time;
+        $this->break_duration = min(($this->break_duration * statusTimeHelper::MINUTES_IN_HOUR), statusTimeHelper::MINUTES_IN_DAY);
+
+        if ($this->break_duration + $this->total_duration > statusTimeHelper::MINUTES_IN_DAY) {
+            throw new kmwaLogicException('Break and total duration can not be more then 24');
+        }
+
+        return true;
     }
 }

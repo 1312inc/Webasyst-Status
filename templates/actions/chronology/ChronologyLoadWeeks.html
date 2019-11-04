@@ -2,21 +2,21 @@
     <div id="olderWeeks">
         {foreach $weeks as $week}
             <div class="s-week-divider">
-                <h5 class="heading">WEEK #{$week->getNumber()}</h5>
+                <h5 class="heading">WEEK #{$week->number}</h5>
             </div>
 
             <div class="s-week-summary">
                 <div class="block">
                     <h5 class="heading align-center">
-                        WEEK #{$week->getNumber()}<br> SUMMARY
+                        WEEK #{$week->number}<br> SUMMARY
                     </h5>
 
-                    {include inline file='./../../actions/week/WeekDonut.html' donut=$week->makeDonut()}
+                    {include inline file='./../../actions/week/WeekDonut.html' donut=$week->donut}
 
                 </div>
             </div>
 
-            {foreach $week->getDays() as $day}
+            {foreach $week->days as $day}
                 {include inline file='./../../actions/day/DayShow.html' day=$day}
             {/foreach}
         {/foreach}

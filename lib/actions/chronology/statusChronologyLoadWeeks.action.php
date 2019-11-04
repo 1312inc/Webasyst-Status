@@ -20,6 +20,7 @@ class statusChronologyLoadWeeksAction extends statusViewAction
             false,
             statusWeekFactory::DEFAULT_WEEKS_LOAD * $offset
         );
+        $weeksDto = [];
 
         /** @var statusCheckinRepository $checkinRepository */
         $checkinRepository = stts()->getEntityRepository(statusCheckin::class);
@@ -27,14 +28,9 @@ class statusChronologyLoadWeeksAction extends statusViewAction
         $checkins = $checkinRepository->findByWeeks($weeks);
         /** @var statusWeek $week */
         foreach ($weeks as $week) {
-            /** @var statusDay $day */
-            foreach ($week->getDays() as $day) {
-                if (isset($checkins[$day->getDate()->format('Y-m-d')])) {
-                    $day->setCheckins($checkins[$day->getDate()->format('Y-m-d')]);
-                }
-            }
+            $weeksDto[] = new statusWeekDto($week, $checkins);
         }
 
-        $this->view->assign(['weeks' => $weeks]);
+        $this->view->assign(['weeks' => $weeksDto]);
     }
 }

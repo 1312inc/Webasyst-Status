@@ -68,4 +68,12 @@ abstract class statusAbstractEntity implements kmwaHydratableInterface
     public function afterExtract(array &$fields)
     {
     }
+
+    /**
+     * @return bool
+     */
+    public function beforeSave()
+    {
+        return true;
+    }
 }

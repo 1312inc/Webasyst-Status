@@ -218,89 +218,262 @@
         },
         day: function () {
             var $editorHtml,
-                $dayEl;
+                $dayEl,
+                lastSavedData = '';
+
+            function getDataFromCheckin($checkin) {
+                return {
+                    'start_time': $checkin.data('checkin-min'),
+                    'end_time': $checkin.data('checkin-max'),
+                    'id': $checkin.data('checkin-id'),
+                    'date': $checkin.data('checkin-date'),
+                    'break_duration': $checkin.data('checkin-break')
+                }
+            }
+
+            var brk = function ($wrapper) {
+                var $durationInput = $wrapper.find('input.s-duration-input'),
+                    $durationLabel = $wrapper.find('.s-duration-label'),
+                    $durationCheckbox = $wrapper.find('input:checkbox'),
+                    $checkin = $durationInput.closest('[data-checkin]');
+
+                function value() {
+                    return parseInt($durationInput.val());
+                }
+
+                // var currentTimeStr = timeValueToStr(value());
+                // $durationLabel.text(currentTimeStr ? currentTimeStr : 0);
+
+                //любоу duration (перерыва и по проекту в чекине) — по клику открываем мини-инпут для ввода количества часов (можно ввести дробное количество 2.5, и тогда по focusout будет пересчитано в часа-минутых 2h 30m)
+                $durationLabel.on('click.stts', function(e){
+                    e.preventDefault();
+
+                    $durationLabel.hide();
+                    $durationInput.show().select();
+                    if (!value()) {
+                        $durationInput.val(1);
+                    }
+                    //$('.s-break-duration-input').select();
+                });
+
+                $durationCheckbox.on('change.stts', function () {
+                    if ($durationCheckbox.is(':checked') && value() == 0) {
+                        $durationInput.val(1);
+                    }
+
+                    $durationInput.trigger('breakChanged.stts');
+                });
+
+                $durationInput.on('focusout.stts', function(e){
+                    var data = getDataFromCheckin($checkin),
+                        time = value();
+
+                    $durationLabel.show().text(timeValueToStr(time));
+                    $durationInput.hide();
+                    $durationCheckbox.prop('checked', !!time);
+                    if (data.break_duration != time) {
+                        $durationInput.trigger('breakChanged.stts');
+                    }
+                });
+
+                return {
+                    value: value,
+                    isOn: function(){
+                        return $durationCheckbox.is(':checked') && value();
+                    },
+                    wrapper: $wrapper,
+                    input: $durationInput,
+                    checkbox: $durationCheckbox,
+                }
+            };
+
+            function initCheckin($el) {
+                var $slider = $el.find('.s-editor-slider-slider'),
+                    $checkinDuration = $el.find('.s-editor-slider-total h2'),
+                    checkinBreak = brk($el.find('.s-editor-slider-break')),
+                    data = getDataFromCheckin($el),
+                    getSliderMinMax = function() {
+                        var breakDuration = checkinBreak.value() * 60,
+                            min = 0,
+                            max = 1440;
+
+                        if (checkinBreak.isOn()) {
+                            min = breakDuration / 2;
+                            max = 1440 - breakDuration / 2;
+                        }
+
+                        return {'min':min,'max':max};
+                    },
+                    minMax = getSliderMinMax();
+
+                $checkinDuration.text(timeValueToStr($el.data('checkin-duration')/60));
+
+                checkinBreak.input.on('breakChanged.stts', function () {
+                    var minMax = getSliderMinMax();
+
+                    $slider.slider('option', 'max', minMax.max);
+                    $slider.slider('option', 'min', minMax.min);
+                    var values = $slider.slider('option', 'values'),
+                        values2 = [];
+
+                    values2.push(values[0] < minMax.min ? minMax.min : values[0]);
+                    values2.push(values[1] > minMax.max ? minMax.max : values[1]);
+                    $checkinDuration.text(timeValueToStr((values2[1] - values2[0])/60));
+
+                    $slider.slider('option', 'values', values2);
+                });
+
+                $slider.slider('destroy');
+                $slider.slider({
+                    range: true,
+                    min: minMax.min,
+                    max: minMax.max,
+                    values: [ data.start_time, data.end_time ],
+                    slide: function( event, ui ) {
+                        var duration = ui.values[1] - ui.values[0];
+
+                        //меняем цвет слайдера на s-active, чтобы показать, что данные сохранились
+                        $el.find('.ui-slider').addClass('s-active');
+
+                        if (checkinBreak.isOn() && duration > (24 - checkinBreak.value()) * 60) {
+                            return false;
+                        }
+
+                        $checkinDuration.text(timeValueToStr(duration/60));
+                    },
+                    change: function( event, ui ) {
+                        //показываем опциаональную детализацию по проектам
+                        var data = getDataFromCheckin($el);
+
+                        $el.find('.s-editor-slider-projects').slideDown(200);
+                        data.start_time = ui.values[0];
+                        data.end_time = ui.values[1];
+                        if (!checkinBreak.isOn()) {
+                            data.break_duration = 0;
+                        } else {
+                            data.break_duration = checkinBreak.value();
+                        }
+
+                        save(data, $el);
+                    }
+                });
+
+                //при выборе проектов закрашиваем слайдер цветами проектов в заданных пропорциях. делаем это средствами градиентов css.
+                // $el
+                    // .on('click', '.s-editor-project input[type="checkbox"]', function(){
+                    //     $('#s-editor-slider-slider.ui-slider-horizontal .ui-widget-header').addClass('s-colorized-1312-demo-purpose-class-only');
+                    //     $(this).closest('.s-editor-project').addClass('selected');
+                    // })
+                    //перерыв просто уменьшает общее время
+            }
+
+            function savedOk($checkin, data) {
+                $editorHtml.find('.s-editor-commit-indicator i.icon16').removeClass('loading').addClass('yes-bw');
+
+                if ($checkin) {
+                    $checkin
+                        .data('checkin', data['id'])
+                        .data('checkin-id', data['id'])
+                        .data('checkin-min', data['start_time'])
+                        .data('checkin-max', data['end_time'])
+                        .data('checkin-break', data['break_duration']);
+                }
+            }
+
+            function save(data, $checkin) {
+                if (lastSavedData === JSON.stringify(data)) {
+                    return;
+                }
+
+                lastSavedData = JSON.stringify(data);
+
+                //индикатор сохранения — показываем крутилку
+                $editorHtml.find('.s-editor-commit-indicator').show();
+                $editorHtml.find('.s-editor-commit-indicator i.icon16').removeClass('yes-bw').addClass('loading');
+
+                $.post('?module=checkin&action=save', {checkin: data}, function (r) {
+                    if (r.status === 'ok') {
+                        savedOk($checkin, r.data);
+                    }
+                });
+            }
+
+            function timeValueToStr(hrs) {
+                var secs = hrs * 60 * 60,
+                    divisor_for_minutes = secs % (60 * 60),
+                    hours = Math.floor(hrs % 24),
+                    minutes = Math.floor(divisor_for_minutes / 60),
+                    divisor_for_seconds = divisor_for_minutes % 60,
+                    seconds = Math.ceil(divisor_for_seconds),
+                    str = [];
+
+                if (hours) {
+                    str.push(hours + $_('h'));
+                }
+                if (minutes) {
+                    str.push(minutes + $_('m'))
+                }
+
+                return str.join(' ');
+            }
 
             function init(editorHtml) {
                 $editorHtml = $(editorHtml);
                 $dayEl.hide().after($editorHtml);
 
-                $editorHtml.on('click', function (e) {
-                    e.preventDefault();
+                //init sliders
+                $editorHtml.find('[data-checkin]').each(function () {
+                    initCheckin($(this));
                 });
 
+                $editorHtml
+                    //если вводят текстовый отчет за день, то индикатор заменяется на кнопку сохранения
+                    .on('input.stts propertychange.stts', '.s-editor-comment', function(){
+                        $editorHtml.find('.s-editor-commit-button').show();
+                        $editorHtml.find('.s-editor-commit-indicator').hide();
+                    })
+                    .on('click.stts', '.s-editor-commit-button', function(){
+                        $editorHtml.find('.s-editor-commit-button').hide();
+                        $editorHtml.find('.s-editor-commit-indicator').show();
+                        var data = getDataFromCheckin($('[data-checkin]:first'));
+                        data['comment'] = $editorHtml.find('.s-editor-comment').val();
+                        save(data);
+                    })
+                    //+ напротив слайдера добавляет еще один слайдер за этот день
+                    .on('click.stts', '[data-checkin-action="new"]', function(e){
+                        e.preventDefault();
 
-                //init slider
-                $( "#s-editor-slider-slider" ).slider({
-                    range: true,
-                    min: 0,
-                    max: 1440,
-                    values: [ 540, 1080 ],
-                    slide: function( event, ui ) {
-                        //меняем цвет слайдера на s-active, чтобы показать, что данные сохранились
-                        $('#s-editor-slider-slider.ui-slider').addClass('s-active');
-                    },
-                    change: function( event, ui ) {
-                        //показываем опциаональную детализацию по проектам
-                        $('.s-editor-slider-projects').slideDown(200);
-                        //индикатор сохранения — показываем крутилку
-                        $('.s-editor-commit-indicator').show();
-                        $('.s-editor-commit-indicator i.icon16').removeClass('yes-bw').addClass('loading');
-                        setTimeout(function(){
-                            //тут на самом деле просто ждем ответа от сервера и показываем снова галочку "сохранено" (в прототипе интерфейса индикатор привязан только к слайдеру, но вообще стоит его использовать для любых аяксов внутри s-editor)
-                            $('.s-editor-commit-indicator i.icon16').removeClass('loading').addClass('yes-bw');
-                        }, 1312);
-                    }
-                });
+                        var $sourceCheckin = $(this).closest('[data-checkin]'),
+                            $newCheckin = $sourceCheckin.clone();
 
-                //при выборе проектов закрашиваем слайдер цветами проектов в заданных пропорциях. делаем это средствами градиентов css.
-                $('.s-editor-project input[type="checkbox"]').click(function(){
-                    $('#s-editor-slider-slider.ui-slider-horizontal .ui-widget-header').addClass('s-colorized-1312-demo-purpose-class-only');
-                    $(this).closest('.s-editor-project').addClass('selected');
-                });
+                        $newCheckin
+                            .data('checkin', 0)
+                            .attr('data-checkin', 0)
+                            .data('checkin-id', 0)
+                            .attr('data-checkin-id', 0)
+                            .data('checkin-break', 0)
+                            .attr('data-checkin-break', 0)
+                                .find('input.s-duration-input').val(1)
+                            .end()
+                                .find('input:checkbox').prop('checked', false)
+                            .end()
+                                .find('.s-editor-slider-slider').empty()
+                        ;
 
-                //перерыв просто уменьшает общее время
-                $('.s-editor-slider-break input[type="checkbox"]').click(function(){
-                    $('.s-editor-slider-total h2').text('7h 31m');
-                });
+                        $sourceCheckin.after($newCheckin);
 
-                //если вводят текстовый отчет за день, то индикатор заменяется на кнопку сохранения
-                $('.s-editor-comment').bind('input propertychange',function(){
-                    $('.s-editor-commit-button').show();
-                    $('.s-editor-commit-indicator').hide();
-                });
-                $('.s-editor-commit-button').click(function(){
-                    $('.s-editor-commit-button').hide();
-                    $('.s-editor-commit-indicator').show();
-                });
-
-                //+ напротив слайдера добавляет еще один слайдер за этот день
-                $('.s-editor-slider-more a').click(function(){
-                    alert('клонирует всю группу .s-editor-slider, позволяя добавить на этот день еще один интервал');
-                    return false;
-                });
-
-                //любоу duration (перерыва и по проекту в чекине) — по клику открываем мини-инпут для ввода количества часов (можно ввести дробное количество 2.5, и тогда по focusout будет пересчитано в часа-минутых 2h 30m)
-                $('.s-duration-label').click(function(){
-                    $(this).hide();
-                    $(this).closest('.s-duration').children('.s-duration-input').show().select();
-                    //$('.s-break-duration-input').select();
-                    return false;
-                });
-                $('.s-duration-input').focusout(function(){
-                    $('.s-duration-label').show();
-                    $('.s-duration-input').hide();
-                });
-
-                $('.s-status-custom-status').click(function(){
-                    $('<div>input: <b>[ enter custom status label ]</b><br><br> radio:<br> <b>(*) calendar name</b><br><b>( ) calendar name</b><br><b>( ) calendar name</b></div>').waDialog({
-                        'height' : '400px',
-                        'width' : '660px',
-                        'onClose' : function(f) {
-                            $(this).remove;
-                        },
-                        'esc' : true,
+                        initCheckin($newCheckin);
+                    })
+                    .on('click.stts', '.s-status-custom-status', function(){
+                        $('<div>input: <b>[ enter custom status label ]</b><br><br> radio:<br> <b>(*) calendar name</b><br><b>( ) calendar name</b><br><b>( ) calendar name</b></div>').waDialog({
+                            'height' : '400px',
+                            'width' : '660px',
+                            'onClose' : function(f) {
+                                $(this).remove;
+                            },
+                            'esc' : true,
+                        });
                     });
-                });
             }
 
             function close() {
@@ -335,17 +508,11 @@
 
             self.routing.init(self.options.routingOptions);
 
-            self.$wa.on('click', '.s-day', function (e) {
-                e.preventDefault();
+            self.$wa.on('click.stts', '.s-day', function (e) {
+                // e.preventDefault();
 
                 self.dayEditor($(this));
             })
         }
     }
 }(jQuery));
-
-
-$(document).ready(function(){
-
-
-});

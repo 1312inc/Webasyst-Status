@@ -31,12 +31,24 @@ class statusBaseFactory
     }
 
     /**
-     * @return mixed
+     * @return statusAbstractEntity
      */
     public function createNew()
     {
         $entity = $this->getEntity();
 
         return new $entity();
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return statusAbstractEntity|object
+     */
+    public function createNewWithData(array $data)
+    {
+        $entity = $this->createNew();
+
+        return stts()->getHydrator()->hydrate($entity, $data);
     }
 }

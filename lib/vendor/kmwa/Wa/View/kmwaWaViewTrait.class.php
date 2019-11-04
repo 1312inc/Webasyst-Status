@@ -6,6 +6,11 @@
 trait kmwaWaViewTrait
 {
     /**
+     * @var array
+     */
+    protected $idNamesFromRequest = ['id'];
+
+    /**
      * @param int $id
      *
      * @return int|mixed
@@ -13,11 +18,12 @@ trait kmwaWaViewTrait
      */
     protected function getId($id = 0)
     {
-        $id = $id
-            ?: waRequest::request('id', 0, waRequest::TYPE_INT)
-                ?: waRequest::request('item_id', 0, waRequest::TYPE_INT)
-                    ?: waRequest::request('list_id', 0, waRequest::TYPE_INT)
-                        ?: waRequest::request('pocket_id', 0, waRequest::TYPE_INT);
+        foreach ($this->idNamesFromRequest as $idName) {
+            $id = $id ?: waRequest::request($idName, 0, waRequest::TYPE_INT);
+            if ($id) {
+                break;
+            }
+        }
 
         if (!$id) {
             throw new kmwaNotFoundException();

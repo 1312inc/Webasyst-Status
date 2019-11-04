@@ -18,6 +18,10 @@ class statusEntityPersist
         $fields = [],
         $type = waModel::INSERT_ON_DUPLICATE_KEY_UPDATE
     ) {
+        if (!$entity->beforeSave()) {
+            return false;
+        }
+
         $model = stts()->getModel(get_class($entity));
         $data = stts()->getHydrator()->extract($entity, $fields, $model->getMetadata());
 
@@ -122,6 +126,10 @@ class statusEntityPersist
     public function update(statusAbstractEntity $entity, $fields = [])
     {
         if (method_exists($entity, 'getId')) {
+            if (!$entity->beforeSave()) {
+                return false;
+            }
+
             $model = stts()->getModel(get_class($entity));
             $data = stts()->getHydrator()->extract(
                 $entity,

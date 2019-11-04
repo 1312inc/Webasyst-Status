@@ -39,7 +39,7 @@ class statusWeek
         $sourceDay->setISODate($sourceDay->format('Y'), $this->number);
 
         $today = new DateTime(date('Y-m-d'));
-        for ($day = 7; $day >= 0; $day--) {
+        for ($day = 6; $day >= 0; $day--) {
             $dayDate = new DateTime($sourceDay->format('Y-m-d'));
             $dayDate->modify("+$day days");
             if ($dayDate > $today) {
@@ -75,31 +75,5 @@ class statusWeek
     public function isCurrent()
     {
         return $this->current;
-    }
-
-    /**
-     * @return statusWeekDonutDto
-     * @throws waException
-     */
-    public function makeDonut()
-    {
-        if ($this->donut === null) {
-            $this->donut = new statusWeekDonutDto();
-            $this->donut->week = $this;
-            $pNum = 1;
-            /** @var statusProject $project */
-            foreach (stts()->getEntityRepository(statusProject::class)->findByWeek($this) as $project) {
-                $projectDto = new statusWeekDonutProjectDto();
-                $projectDto->name = $project->getName();
-                $projectDto->time = 0;
-                $projectDto->color = $project->getColor();
-                $projectDto->num = $pNum++;
-                $projectDto->rotate = 0;
-
-                $this->donut->projects[] = $projectDto;
-            }
-        }
-
-        return $this->donut;
     }
 }

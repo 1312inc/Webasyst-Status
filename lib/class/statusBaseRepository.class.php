@@ -193,10 +193,7 @@ class statusBaseRepository
 
         $factory = stts()->getEntityFactory($this->entity);
         foreach ($data as $datum) {
-            $entity = $factory->createNew();
-            $obj = stts()->getHydrator()->hydrate($entity, $datum);
-
-            $objects[] = $obj;
+            $objects[] = $factory->createNewWithData($datum);
         }
 
         return !$all ? reset($objects) : $objects;

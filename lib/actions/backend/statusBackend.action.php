@@ -13,29 +13,24 @@ class statusBackendAction extends statusViewAction
      */
     public function runAction($params = null)
     {
-        $weeks = statusWeekFactory::createLastNWeeks();
-        $currentWeek = statusWeekFactory::createCurrentWeek();
+        $weeks = statusWeekFactory::createLastNWeeks(5, true);
 
         /** @var statusCheckinRepository $checkinRepository */
         $checkinRepository = stts()->getEntityRepository(statusCheckin::class);
 
-        $allWeeks = array_merge([$currentWeek], $weeks);
-        $checkins = $checkinRepository->findByWeeks($allWeeks);
+        $weeksDto = [];
+        $checkins = $checkinRepository->findByWeeks($weeks);
         /** @var statusWeek $week */
-        foreach ($allWeeks as $week) {
-            /** @var statusDay $day */
-            foreach ($week->getDays() as $day) {
-                if (isset($checkins[$day->getDate()->format('Y-m-d')])) {
-                    $day->setCheckins($checkins[$day->getDate()->format('Y-m-d')]);
-                }
-            }
+        foreach ($weeks as $week) {
+            $weeksDto[] = new statusWeekDto($week, $checkins);
         }
+
+        $currentWeek = array_shift($weeksDto);
 
         $this->view->assign(
             [
                 'currentWeek'  => $currentWeek,
-                'weeks'        => $weeks,
-                'checkins'     => $checkins,
+                'weeks'        => $weeksDto,
                 'sidebar_html' => (new statusBackendSidebarAction())->display(),
             ]
         );
