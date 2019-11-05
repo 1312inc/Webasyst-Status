@@ -13,6 +13,6 @@ class statusProjectFactory extends statusBaseFactory
     {
         return (new statusProject())
             ->setCreatedBy(stts()->getUser()->getId())
-            ->setCreatedDatetime(new DateTime());
+            ->setCreateDatetime(new DateTime());
     }
 }

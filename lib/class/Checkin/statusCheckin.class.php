@@ -314,6 +314,7 @@ class statusCheckin extends statusAbstractEntity
     /**
      * @return bool
      * @throws kmwaLogicException
+     * @throws waException
      */
     public function beforeSave()
     {

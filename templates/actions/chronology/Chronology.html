@@ -1,0 +1,61 @@
+<section id="chronology">
+<div class="content left200px">
+
+    <div class="s-week-summary">
+
+        <h5 class="heading align-center">[`This week`]</h5>
+
+        {include inline file='./../week/WeekDonut.html' donut=$currentWeek->donut}
+
+    </div>
+
+    <!-- Tomorrow: SET TAG ONLY: Office / Remote / Ill / Day off / Custom tag -->
+    <div class="s-tomorrow-planner">
+        <div class="float-right">
+            <ul class="menu-h dropdown">
+                <li>
+                    <a href="#" class="inline-link gray"><b><i>[`Status`]</i></b> <i class="icon10 darr"></i></a>
+{*                    {_draw_status_selector}*}
+                </li>
+            </ul>
+        </div>
+        <h3>
+            [`Tomorrow`]
+            <span class="hint">
+                            {date('D', $smarty.now + 86400)}, {date('Y-m-d', $smarty.now + 86400)|wa_date:humandate}
+                            <!-- <span title="[`Weekend`]">🏖️Sunday / Saturday</span> -->
+                <!-- <span title="[`Birthday`]">🎂Birtday</span> -->
+                        </span>
+        </h3>
+    </div>
+
+    {foreach $currentWeek->days as $day}
+        {include inline file='./../day/DayShow.html' day=$day}
+    {/foreach}
+
+    <!-- CHRONOLOGY -->
+
+    {include inline file='./../chronology/ChronologyLoadWeeks.html' weeks=$weeks}
+</div>
+</section>
+
+<script>
+    'use strict';
+    (function(){
+        var currentContactId = '{$current_contact_id}';
+
+        $.status.lazyLoad({
+            $loading: $('#chronology .lazyloading'),
+            html_selector: '#olderWeeks',
+            url: '?module=chronology&action=loadWeeks&contact_id={$current_contact_id}'
+        });
+
+        if (currentContactId == $.status.options.userId) {
+            $('#chronology')
+                .off('click.stts', '.s-day')
+                .on('click.stts', '.s-day', function (e) {
+                    $.status.dayEditor($(this));
+                });
+        }
+    }());
+</script>

@@ -4,6 +4,7 @@
     $.status = {
         $loading: $('<i class="icon16 loading">'),
         $wa: null,
+        $core_sidebar: null,
         defaults: {
             isAdmin: false,
             routingOptions: {},
@@ -12,12 +13,13 @@
         options: {},
         routing: {
             options: {
+                self: null,
                 user_id: 0,
-                $content: $('#status-content')
+                content_selector: '#status-content'
             },
             init: function (options) {
                 var that = this;
-                that.options = options;
+                that.options = $.extend({}, that.options, options);
                 if (typeof ($.History) != "undefined") {
                     $.History.bind(function () {
                         that.dispatch();
@@ -139,9 +141,7 @@
                             console.info('dispatch', [actionName + 'Action', attr]);
                             this[actionName + 'Action'].apply(this, attr);
 
-                            if (actionName !== 'debug') {
-                                $.storage.set('/status/hash/' + this.options.user_id, hash.join('/'));
-                            }
+                            $.storage.set('/status/hash/' + this.options.user_id, hash.join('/'));
                             this.postExecute(actionName);
                         } else {
                             console.info('Invalid action name:', actionName + 'Action');
@@ -162,10 +162,25 @@
                 this.dispatch();
             },
             defaultAction: function () {
+                this.contactAction(0);
+                $.storage.set('/status/hash/' + this.options.user_id, '');
+            },
+            contactAction: function (id) {
+                var that = this;
+                $.get('?module=chronology&contact_id=' + id, function (html) {
+                    $('#status-content').html(html);
+                });
+            },
+            projectAction: function (id) {
+                var that = this;
+                $.get('?module=chronology&project_id=' + id, function (html) {
+                    $('#status-content').html(html);
+                });
             },
             preExecute: function () {
             },
             postExecute: function () {
+                this.options.self.highlightSidebar();
             },
         },
         lazyLoad: function (config) {
@@ -214,6 +229,51 @@
                     }
                     prev_scroll_pos = scroll_pos;
                 });
+            }
+        },
+        skipHighlightSidebar: false,
+        highlightSidebar: function ($li, href) {
+            if (this.skipHighlightSidebar) {
+                return;
+            }
+
+            var self = this;
+
+            var $all_li = self.$core_sidebar.find('li');
+            if ($li) {
+                $all_li.removeClass('selected');
+                $li.addClass('selected');
+            } else if (href) {
+                $all_li.removeClass('selected');
+                $li = self.$core_sidebar.find('a[href^="' + href + '"]').first().closest('li');
+                $li.addClass('selected');
+            } else {
+                var hash = self.routing.getHash(),
+                    $a = self.$core_sidebar.find('a[href="' + hash + '"]');
+
+                if (hash) {
+                    $all_li.removeClass('selected');
+                }
+                if ($a.length) { // first find full match
+                    $a.closest('li').addClass('selected');
+                } else { // more complex hash
+                    hash = hash.split("/");
+                    if (hash[1]) {
+                        while(hash.length) {
+                            hash.pop();
+                            var href = hash.join('/');
+
+                            var $found_li = self.$core_sidebar.find('a[href^="' + href + '"]').first().closest('li');
+                            if ($found_li.length) {
+                                $found_li.addClass('selected');
+                                break;
+                            }
+                        }
+                    } else {
+                        $all_li.removeClass('selected')
+                            .first().addClass('selected');
+                    }
+                }
             }
         },
         day: function () {
@@ -502,17 +562,12 @@
             self.dayEditor = self.day();
             self.options = $.extend({}, self.defaults, o);
             self.$wa = $('#wa-app');
-            self.day();
+            self.$core_sidebar = $('#status-left-sidebar');
 
             self.options.routingOptions.user_id = self.options.userId;
+            self.options.routingOptions.self = self;
 
             self.routing.init(self.options.routingOptions);
-
-            self.$wa.on('click.stts', '.s-day', function (e) {
-                // e.preventDefault();
-
-                self.dayEditor($(this));
-            })
         }
     }
 }(jQuery));

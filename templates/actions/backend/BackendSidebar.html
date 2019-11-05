@@ -10,7 +10,7 @@
              </li>
              {foreach $users as $u}
              <li>
-                 <a href="{$u->getId()}">
+                 <a href="#/contact/{$u->getContactId()}">
                      <span class="count hint"></span>time
                      <i class="icon16 userpic20" style="background-image: {$u->getContact()->getPhoto()}"></i>{$u->getName()|escape}
                      <span class="s-status" title="[`Status`]">group?</span>
@@ -33,7 +33,7 @@
         <ul class="menu-v with-icons">
              {foreach $projects as $p}
              <li>
-                 <a href="#">
+                 <a href="#/project/">
                      <span class="count hint">time</span>
                      <i class="icon16 color" style="background: {$p->getColor()};"></i>
                      {$p->getName()|escape}

@@ -3,7 +3,7 @@
 /**
  * Class statusChronologyLoadWeeksAction
  */
-class statusChronologyLoadWeeksAction extends statusViewAction
+class statusChronologyLoadWeeksAction extends statusChronologyAction
 {
     /**
      * @param null|array $params
@@ -14,23 +14,8 @@ class statusChronologyLoadWeeksAction extends statusViewAction
     public function runAction($params = null)
     {
         $offset = waRequest::get('offset', 0, waRequest::TYPE_INT);
+        $projectId = waRequest::get('project_id', 0, waRequest::TYPE_INT);
 
-        $weeks = statusWeekFactory::createLastNWeeks(
-            statusWeekFactory::DEFAULT_WEEKS_LOAD,
-            false,
-            statusWeekFactory::DEFAULT_WEEKS_LOAD * $offset
-        );
-        $weeksDto = [];
-
-        /** @var statusCheckinRepository $checkinRepository */
-        $checkinRepository = stts()->getEntityRepository(statusCheckin::class);
-
-        $checkins = $checkinRepository->findByWeeks($weeks);
-        /** @var statusWeek $week */
-        foreach ($weeks as $week) {
-            $weeksDto[] = new statusWeekDto($week, $checkins);
-        }
-
-        $this->view->assign(['weeks' => $weeksDto]);
+        $this->view->assign(['weeks' => statusWeekFactory::getWeeksDto($offset)]);
     }
 }

@@ -42,4 +42,31 @@ class statusWeekFactory
     {
         return new statusWeek(new DateTime());
     }
+
+    /**
+     * @param statusUser $user
+     * @param int        $n
+     * @param bool       $withCurrent
+     * @param int        $offset
+     *
+     * @return statusWeekDto[]
+     * @throws waException
+     * @throws Exception
+     */
+    public static function getWeeksDto(statusUser $user, $n = self::DEFAULT_WEEKS_LOAD, $withCurrent = false, $offset = 0)
+    {
+        $weeks = self::createLastNWeeks($n, $withCurrent, self::DEFAULT_WEEKS_LOAD * $offset);
+        $weeksDto = [];
+
+        /** @var statusCheckinRepository $checkinRepository */
+        $checkinRepository = stts()->getEntityRepository(statusCheckin::class);
+
+        $checkins = $checkinRepository->findByWeeks($weeks, $user);
+        /** @var statusWeek $week */
+        foreach ($weeks as $week) {
+            $weeksDto[] = new statusWeekDto($week, $checkins);
+        }
+
+        return $weeksDto;
+    }
 }

@@ -23,7 +23,7 @@ class statusProject extends statusAbstractEntity
     /**
      * @var DateTime|string
      */
-    private $created_datetime;
+    private $create_datetime;
 
     /**
      * @var DateTime|string
@@ -110,17 +110,17 @@ class statusProject extends statusAbstractEntity
      */
     public function getCreatedDatetime()
     {
-        return $this->created_datetime;
+        return $this->create_datetime;
     }
 
     /**
-     * @param DateTime|string $created_datetime
+     * @param DateTime|string $create_datetime
      *
      * @return statusProject
      */
-    public function setCreatedDatetime($created_datetime)
+    public function setCreateDatetime($create_datetime)
     {
-        $this->created_datetime = $created_datetime;
+        $this->create_datetime = $create_datetime;
 
         return $this;
     }

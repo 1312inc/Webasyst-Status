@@ -33,12 +33,28 @@ class statusCheckinModel extends statusModel
      *
      * @return array
      */
-    public function getByPeriod(DateTime $dateStart, DateTime $dateEnd)
+    public function getByPeriod($dateStart, $dateEnd)
     {
         return $this->query(
             'select sc.* from status_checkin sc 
             where sc.date between s:date1 and s:date2',
             ['date1' => $dateStart->format('Y-m-d'), 'date2' => $dateEnd->format('Y-m-d')]
+        )->fetchAll();
+    }
+
+    /**
+     * @param int    $contactId
+     * @param string $dateStart
+     * @param string $dateEnd
+     *
+     * @return array
+     */
+    public function getByContactIdAndPeriod($contactId, $dateStart, $dateEnd)
+    {
+        return $this->query(
+            'select sc.* from status_checkin sc 
+            where sc.date between s:date1 and s:date2 and sc.contact_id = i:contact_id',
+            ['date1' => $dateStart, 'date2' => $dateEnd, 'contact_id' => $contactId]
         )->fetchAll();
     }
 }
