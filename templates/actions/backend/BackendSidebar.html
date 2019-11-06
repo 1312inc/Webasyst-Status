@@ -3,15 +3,14 @@
         <ul class="menu-v with-icons">
              <li class="selected bottom-padded">
                  <a href="#" class="bold">
-                     {$stts->getUser()->getId()|print_r}
-                     <span class="count hint">32h 4m</span>
+                     <span class="count hint">{$timeByUserStat[$stts->getUser()->getId()]['timeStr']}</span>
                      <i class="icon16 userpic20"></i>[`My status`]
                  </a>
              </li>
              {foreach $users as $u}
              <li>
                  <a href="#/contact/{$u->getContactId()}">
-                     <span class="count hint"></span>time
+                     <span class="count hint"></span>{$timeByUserStat[$u->getId()]['timeStr']}
                      <i class="icon16 userpic20" style="background-image: {$u->getContact()->getPhoto()}"></i>{$u->getName()|escape}
                      <span class="s-status" title="[`Status`]">group?</span>
                  </a>

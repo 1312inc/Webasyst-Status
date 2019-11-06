@@ -28,7 +28,7 @@
                 <div class="s-author">
                     <h5 class="s-username">
                         <i class="icon16 userpic20"></i>
-                        {$checkin->user->getName()|escape}
+                        {$stts->getContextUser()->getName()|escape}
                         {if rand(0,1)}<span class="s-status" title="[`Status for today`]">Remote</span>{/if}
                     </h5>
                     {if rand(0,1)}

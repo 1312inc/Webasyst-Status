@@ -34,6 +34,8 @@ class statusChronologyAction extends statusViewAction
         if ($this->user->getContactId() != wa()->getUser()->getId()) {
 
         }
+
+        stts()->setContextUser($this->user);
     }
 
     /**

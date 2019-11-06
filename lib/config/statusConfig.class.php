@@ -43,6 +43,16 @@ class statusConfig extends waAppConfig
     protected $persister;
 
     /**
+     * @var statusUser
+     */
+    protected $contextUser;
+
+    /**
+     * @var statusRightConfig
+     */
+    protected $rightConfig;
+
+    /**
      * @param string $type
      *
      * @return waCache
@@ -275,6 +285,43 @@ class statusConfig extends waAppConfig
         }
 
         return $this->persister;
+    }
+
+    /**
+     * @return statusUser
+     * @throws waException
+     */
+    public function getContextUser()
+    {
+        if ($this->contextUser === null) {
+            $this->contextUser = $this->getUser();
+        }
+
+        return $this->contextUser;
+    }
+
+    /**
+     * @param statusUser $contextUser
+     *
+     * @return statusConfig
+     */
+    public function setContextUser($contextUser)
+    {
+        $this->contextUser = $contextUser;
+
+        return $this;
+    }
+
+    /**
+     * @return statusRightConfig
+     */
+    public function getRightConfig()
+    {
+        if ($this->rightConfig === null) {
+            $this->rightConfig = new statusRightConfig();
+        }
+
+        return $this->rightConfig;
     }
 
     private function registerGlobal()

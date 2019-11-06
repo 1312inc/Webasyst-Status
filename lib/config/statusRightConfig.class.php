@@ -20,6 +20,11 @@ class statusRightConfig extends waRightConfig
     private $userId;
 
     /**
+     * @var waContactRightsModel
+     */
+    private $model;
+
+    /**
      * pocketlistsRightConfig constructor.
      */
     public function __construct()
@@ -29,6 +34,8 @@ class statusRightConfig extends waRightConfig
         if (!$this->userId) {
             $this->userId = waRequest::request('id', 0, waRequest::TYPE_INT);
         }
+
+        $this->model = new waContactRightsModel();
 
         parent::__construct();
     }
@@ -116,5 +123,13 @@ class statusRightConfig extends waRightConfig
             $right,
             $value
         );
+    }
+
+    /**
+     * @return array
+     */
+    public function getUserIdsWithAccess()
+    {
+        return $this->model->getUsers(statusConfig::APP_ID);
     }
 }

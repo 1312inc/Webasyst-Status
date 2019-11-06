@@ -34,7 +34,7 @@ class statusWeek
      */
     public function __construct(DateTime $sourceDay)
     {
-        $this->number = $sourceDay->format('W');
+        $this->number = statusTimeHelper::getWeekNumberByDate($sourceDay);
 
         $sourceDay->setISODate($sourceDay->format('Y'), $this->number);
 
@@ -75,5 +75,21 @@ class statusWeek
     public function isCurrent()
     {
         return $this->current;
+    }
+
+    /**
+     * @return statusDay
+     */
+    public function getLastDay()
+    {
+        return $this->days[0];
+    }
+
+    /**
+     * @return statusDay
+     */
+    public function getFirstDay()
+    {
+        return $this->days[count($this->days) - 1];
     }
 }

@@ -276,6 +276,24 @@
                 }
             }
         },
+        timeValueToStr: function(hrs) {
+            var secs = hrs * 60 * 60,
+                divisor_for_minutes = secs % (60 * 60),
+                hours = Math.floor(hrs % 24),
+                minutes = Math.floor(divisor_for_minutes / 60),
+                divisor_for_seconds = divisor_for_minutes % 60,
+                seconds = Math.ceil(divisor_for_seconds),
+                str = [];
+
+            if (hours) {
+                str.push(hours + $_('h'));
+            }
+            if (minutes) {
+                str.push(minutes + $_('m'))
+            }
+
+            return str.join(' ');
+        },
         day: function () {
             var $editorHtml,
                 $dayEl,
@@ -328,7 +346,7 @@
                     var data = getDataFromCheckin($checkin),
                         time = value();
 
-                    $durationLabel.show().text(timeValueToStr(time));
+                    $durationLabel.show().text($.status.timeValueToStr(time));
                     $durationInput.hide();
                     $durationCheckbox.prop('checked', !!time);
                     if (data.break_duration != time) {
@@ -366,7 +384,7 @@
                     },
                     minMax = getSliderMinMax();
 
-                $checkinDuration.text(timeValueToStr($el.data('checkin-duration')/60));
+                $checkinDuration.text($.status.timeValueToStr($el.data('checkin-duration')/60));
 
                 checkinBreak.input.on('breakChanged.stts', function () {
                     var minMax = getSliderMinMax();
@@ -378,7 +396,7 @@
 
                     values2.push(values[0] < minMax.min ? minMax.min : values[0]);
                     values2.push(values[1] > minMax.max ? minMax.max : values[1]);
-                    $checkinDuration.text(timeValueToStr((values2[1] - values2[0])/60));
+                    $checkinDuration.text($.status.timeValueToStr((values2[1] - values2[0])/60));
 
                     $slider.slider('option', 'values', values2);
                 });
@@ -399,7 +417,7 @@
                             return false;
                         }
 
-                        $checkinDuration.text(timeValueToStr(duration/60));
+                        $checkinDuration.text($.status.timeValueToStr(duration/60));
                     },
                     change: function( event, ui ) {
                         //показываем опциаональную детализацию по проектам
@@ -456,25 +474,6 @@
                         savedOk($checkin, r.data);
                     }
                 });
-            }
-
-            function timeValueToStr(hrs) {
-                var secs = hrs * 60 * 60,
-                    divisor_for_minutes = secs % (60 * 60),
-                    hours = Math.floor(hrs % 24),
-                    minutes = Math.floor(divisor_for_minutes / 60),
-                    divisor_for_seconds = divisor_for_minutes % 60,
-                    seconds = Math.ceil(divisor_for_seconds),
-                    str = [];
-
-                if (hours) {
-                    str.push(hours + $_('h'));
-                }
-                if (minutes) {
-                    str.push(minutes + $_('m'))
-                }
-
-                return str.join(' ');
             }
 
             function init(editorHtml) {

@@ -40,7 +40,16 @@ class statusWeekFactory
      */
     public static function createCurrentWeek()
     {
-        return new statusWeek(new DateTime());
+        return self::createWeekByDate(new DateTime());
+    }
+
+    /**
+     * @return statusWeek
+     * @throws Exception
+     */
+    public static function createWeekByDate(DateTime $date)
+    {
+        return new statusWeek($date);
     }
 
     /**

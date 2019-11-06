@@ -7,6 +7,7 @@ final class statusTimeHelper
 {
     const MINUTES_IN_DAY = 1440;
     const MINUTES_IN_HOUR = 60;
+    const SECONDS_IN_MINUTE = 60;
 
     /**
      * @param int $minutes
@@ -40,5 +41,15 @@ final class statusTimeHelper
         }
 
         return !empty($humanFormat) ? implode(' ', $humanFormat) : $default;
+    }
+
+    /**
+     * @param DateTime $date
+     *
+     * @return int
+     */
+    public static function getWeekNumberByDate(DateTime $date)
+    {
+        return (int)$date->format('W');
     }
 }
