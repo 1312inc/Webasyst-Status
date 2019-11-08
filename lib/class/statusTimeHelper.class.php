@@ -8,6 +8,8 @@ final class statusTimeHelper
     const MINUTES_IN_DAY = 1440;
     const MINUTES_IN_HOUR = 60;
     const SECONDS_IN_MINUTE = 60;
+    const MINUTES_10AM = 600;
+    const MINUTES_18PM = 1080;
 
     /**
      * @param int $minutes

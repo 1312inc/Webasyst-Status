@@ -49,7 +49,7 @@
         });
 
         $.status.$status_content
-            .on('click', '[data-status-walog-app]', function (e) {
+            .on('click.stts', '[data-status-walog-app]', function (e) {
                 e.preventDefault();
                 e.stopPropagation();
 
@@ -74,6 +74,8 @@ debugger;
 
                     $.status.dayEditor($(this));
                 });
+
+            $.status.$status_content.find('.s-day:first').trigger('click.stts');
         }
 
     }());

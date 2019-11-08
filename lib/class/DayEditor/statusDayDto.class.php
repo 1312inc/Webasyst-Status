@@ -60,7 +60,10 @@ class statusDayDto
      */
     public function __construct(statusDay $day, array $checkins)
     {
-        $this->startTime = PHP_INT_MAX;
+        if ($this->checkins) {
+            $this->startTime = PHP_INT_MAX;
+        }
+
         foreach ($checkins as $checkin) {
             $this->startTime = min($this->startTime, $checkin->getStartTime());
             $this->endTime = max($this->endTime, $checkin->getEndTime());

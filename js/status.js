@@ -277,7 +277,7 @@
                 }
             }
         },
-        timeValueToStr: function(hrs) {
+        timeValueToStr: function(hrs, format) {
             var secs = hrs * 60 * 60,
                 divisor_for_minutes = secs % (60 * 60),
                 hours = Math.floor(hrs % 24),
@@ -285,6 +285,19 @@
                 divisor_for_seconds = divisor_for_minutes % 60,
                 seconds = Math.ceil(divisor_for_seconds),
                 str = [];
+
+            if (format === 'time') {
+                if (minutes < 10) {
+                    minutes = '0' + minutes;
+                }
+                if (hours < 10) {
+                    hours = '0' + hours;
+                }
+                str.push(hours);
+                str.push(minutes);
+
+                return str.join(':');
+            }
 
             if (hours) {
                 str.push(hours + $_('h'));
@@ -372,6 +385,7 @@
                     checkinBreak = brk($el.find('.s-editor-slider-break')),
                     data = getDataFromCheckin($el),
                     getSliderMinMax = function() {
+                        // not used
                         var breakDuration = checkinBreak.value() * 60,
                             min = 0,
                             max = 1440;
@@ -383,12 +397,27 @@
 
                         return {'min':min,'max':max};
                     },
-                    minMax = getSliderMinMax();
+                    minMax = {'min': 0, 'max': 1440};
 
                 $checkinDuration.text($.status.timeValueToStr($el.data('checkin-duration')/60));
 
+                function saveOnChange() {
+                    var data = getDataFromCheckin($el),
+                        values = $slider.slider('option', 'values');
+
+                    data.start_time = values[0];
+                    data.end_time = values[1];
+                    if (!checkinBreak.isOn()) {
+                        data.break_duration = 0;
+                    } else {
+                        data.break_duration = checkinBreak.value();
+                    }
+
+                    save(data, $el);
+                }
+
                 checkinBreak.input.on('breakChanged.stts', function () {
-                    var minMax = getSliderMinMax();
+                    /*var minMax = getSliderMinMax();
 
                     $slider.slider('option', 'max', minMax.max);
                     $slider.slider('option', 'min', minMax.min);
@@ -397,9 +426,8 @@
 
                     values2.push(values[0] < minMax.min ? minMax.min : values[0]);
                     values2.push(values[1] > minMax.max ? minMax.max : values[1]);
-                    $checkinDuration.text($.status.timeValueToStr((values2[1] - values2[0])/60));
-
-                    $slider.slider('option', 'values', values2);
+                    $checkinDuration.text($.status.timeValueToStr((values2[1] - values2[0])/60));*/
+                    saveOnChange();
                 });
 
                 $slider.slider('destroy');
@@ -408,16 +436,22 @@
                     min: minMax.min,
                     max: minMax.max,
                     values: [ data.start_time, data.end_time ],
+                    create: function( event, ui ) {
+                        $el.find('.ui-slider .ui-slider-handle:first').attr('data-slider-time', $.status.timeValueToStr(data.start_time, 'time'));
+                        $el.find('.ui-slider .ui-slider-handle:last').attr('data-slider-time', $.status.timeValueToStr(data.end_time, 'time'));
+                    },
                     slide: function( event, ui ) {
                         var duration = ui.values[1] - ui.values[0];
 
                         //меняем цвет слайдера на s-active, чтобы показать, что данные сохранились
                         $el.find('.ui-slider').addClass('s-active');
 
-                        if (checkinBreak.isOn() && duration > (24 - checkinBreak.value()) * 60) {
-                            return false;
-                        }
+                        // if (checkinBreak.isOn() && duration > (24 - checkinBreak.value()) * 60) {
+                        //     return false;
+                        // }
 
+                        $el.find('.ui-slider .ui-slider-handle:first').attr('data-slider-time', $.status.timeValueToStr(ui.values[0]/60, 'time'));
+                        $el.find('.ui-slider .ui-slider-handle:last').attr('data-slider-time', $.status.timeValueToStr(ui.values[1]/60, 'time'));
                         $checkinDuration.text($.status.timeValueToStr(duration/60));
                     },
                     change: function( event, ui ) {
@@ -425,15 +459,7 @@
                         var data = getDataFromCheckin($el);
 
                         $el.find('.s-editor-slider-projects').slideDown(200);
-                        data.start_time = ui.values[0];
-                        data.end_time = ui.values[1];
-                        if (!checkinBreak.isOn()) {
-                            data.break_duration = 0;
-                        } else {
-                            data.break_duration = checkinBreak.value();
-                        }
-
-                        save(data, $el);
+                        saveOnChange();
                     }
                 });
 
