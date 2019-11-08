@@ -35,10 +35,16 @@ class statusStat
             $week->getLastDay()->getDate()->format('Y-m-d')
         );
 
-        $result = [];
+        $result = [
+            0 => [
+                'time'    => 0,
+                'timeStr' => 0,
+            ],
+        ];
         /** @var statusUser $user */
         foreach (stts()->getEntityRepository(statusUser::class)->findAll() as $user) {
             $time = ifset($statistics, $user->getId(), 0);
+            $result[0]['time'] += $time;
             $result[$user->getId()] = [
                 'time' => $time,
                 'timeStr' => statusTimeHelper::getTimeDurationInHuman(
@@ -48,6 +54,11 @@ class statusStat
                 ),
             ];
         }
+        $result[0]['timeStr'] = statusTimeHelper::getTimeDurationInHuman(
+            0,
+            $result[0]['time'] * statusTimeHelper::SECONDS_IN_MINUTE,
+            ''
+        );
 
         return $result;
     }

@@ -4,6 +4,7 @@
     $.status = {
         $loading: $('<i class="icon16 loading">'),
         $wa: null,
+        $status_content: null,
         $core_sidebar: null,
         defaults: {
             isAdmin: false,
@@ -472,6 +473,7 @@
                 $.post('?module=checkin&action=save', {checkin: data}, function (r) {
                     if (r.status === 'ok') {
                         savedOk($checkin, r.data);
+                        $.status.reloadSidebar();
                     }
                 });
             }
@@ -556,11 +558,19 @@
             }
         },
         dayEditor: null,
+        reloadSidebar: function() {
+            var self = this;
+
+            $.get('?module=backend&action=sidebar', function (html) {
+                self.$core_sidebar.html(html);
+            })
+        },
         init: function (o) {
             var self = this;
             self.dayEditor = self.day();
             self.options = $.extend({}, self.defaults, o);
             self.$wa = $('#wa-app');
+            self.$status_content = $('#status-content');
             self.$core_sidebar = $('#status-left-sidebar');
 
             self.options.routingOptions.user_id = self.options.userId;

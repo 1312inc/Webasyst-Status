@@ -28,26 +28,15 @@ class statusWeekDto
     /**
      * statusWeekDto constructor.
      *
-     * @param statusWeek      $week
-     * @param statusCheckin[] $dayCheckins
+     * @param statusWeek $week
      *
      * @throws waException
      * @throws Exception
      */
-    public function __construct(statusWeek $week, $dayCheckins)
+    public function __construct(statusWeek $week)
     {
         $this->isCurrent = $week->isCurrent();
         $this->number = $week->getNumber();
-
-        foreach ($week->getDays() as $day) {
-            $date = $day->getDate()->format('Y-m-d');
-            $dayDto = new statusDayDto(
-                $day,
-                isset($dayCheckins[$date]) ? $dayCheckins[$date] : []
-            );
-            $dayDto->isFromCurrentWeek = $this->isCurrent;
-            $this->days[] = $dayDto;
-        }
 
         $this->donut = new statusWeekDonutDto();
         $this->donut->week = $this;

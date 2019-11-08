@@ -1,4 +1,3 @@
-<section id="chronology">
 <div class="content left200px">
 
     <div class="s-week-summary">
@@ -37,7 +36,6 @@
 
     {include inline file='./../chronology/ChronologyLoadWeeks.html' weeks=$weeks}
 </div>
-</section>
 
 <script>
     'use strict';
@@ -50,12 +48,33 @@
             url: '?module=chronology&action=loadWeeks&contact_id={$current_contact_id}'
         });
 
+        $.status.$status_content
+            .on('click', '[data-status-walog-app]', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                var $this = $(this),
+                    appId = $this.data('status-walog-app');
+debugger;
+                $this.closest('.s-day-summary-user-report')
+                    .find('[data-status-walog-app-logs="'+appId+'"]').slideDown(100)
+                    .siblings().hide();
+
+                debugger;
+                return false;
+            });
+
         if (currentContactId == $.status.options.userId) {
-            $('#chronology')
+            $.status.$status_content
                 .off('click.stts', '.s-day')
                 .on('click.stts', '.s-day', function (e) {
+                    if ($(e.target).closest('[data-status-walog-app-logs]').length) {
+                        return;
+                    }
+
                     $.status.dayEditor($(this));
                 });
         }
+
     }());
 </script>

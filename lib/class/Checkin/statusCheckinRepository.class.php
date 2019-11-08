@@ -104,12 +104,10 @@ class statusCheckinRepository extends statusBaseRepository
         }
 
         $firstWeek = $weeks[0];
-        $firstWeekDays = $firstWeek->getDays();
-        $maxDay = $firstWeekDays[0];
+        $maxDay = $firstWeek->getLastDay();
 
         $lastWeek = $weeks[count($weeks) - 1];
-        $lastWeekDays = $lastWeek->getDays();
-        $minDay = $lastWeekDays[6];
+        $minDay = $lastWeek->getFirstDay();
 
         return $this->findByUserAndPeriod($user, $minDay, $maxDay);
     }

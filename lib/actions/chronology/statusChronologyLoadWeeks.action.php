@@ -16,6 +16,13 @@ class statusChronologyLoadWeeksAction extends statusChronologyAction
         $offset = waRequest::get('offset', 0, waRequest::TYPE_INT);
         $projectId = waRequest::get('project_id', 0, waRequest::TYPE_INT);
 
-        $this->view->assign(['weeks' => statusWeekFactory::getWeeksDto($offset)]);
+        $weeks = statusWeekFactory::getWeeksDto(
+            $this->user,
+            statusWeekFactory::DEFAULT_WEEKS_LOAD,
+            false,
+            $offset
+        );
+
+        $this->view->assign(['weeks' => $weeks]);
     }
 }

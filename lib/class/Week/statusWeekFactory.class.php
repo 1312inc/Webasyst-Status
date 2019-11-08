@@ -71,9 +71,28 @@ class statusWeekFactory
         $checkinRepository = stts()->getEntityRepository(statusCheckin::class);
 
         $checkins = $checkinRepository->findByWeeks($weeks, $user);
+        $walogs = (new statusWaLogParser())->parseByWeeks($weeks, $user);
+
         /** @var statusWeek $week */
         foreach ($weeks as $week) {
-            $weeksDto[] = new statusWeekDto($week, $checkins);
+            $weekDto = new statusWeekDto($week);
+            foreach ($week->getDays() as $day) {
+                $date = $day->getDate()->format('Y-m-d');
+                $dayDto = new statusDayDto(
+                    $day,
+                    isset($checkins[$date]) ? $checkins[$date] : []
+                );
+                $dayDto->isFromCurrentWeek = $weekDto->isCurrent;
+                $weekDto->days[] = $dayDto;
+
+                if (isset($walogs[$date])) {
+                    foreach ($walogs[$date] as $appId => $walog) {
+                        $dayDto->walogs[$appId] = new statusWaLogDto($appId, $walog);
+                    }
+                }
+            }
+
+            $weeksDto[] = $weekDto;
         }
 
         return $weeksDto;

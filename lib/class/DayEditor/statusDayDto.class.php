@@ -46,6 +46,11 @@ class statusDayDto
     public $isFromCurrentWeek = false;
 
     /**
+     * @var statusWaLogDto[]
+     */
+    public $walogs = [];
+
+    /**
      * statusDayEditorDto constructor.
      *
      * @param statusDay       $day

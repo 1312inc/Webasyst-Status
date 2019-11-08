@@ -33,7 +33,7 @@ final class statusTimeHelper
 
         $humanFormat = [];
         if ($durationDiff->h) {
-            $humanFormat[] = sprintf_wp('%dh', $durationDiff->h);
+            $humanFormat[] = sprintf_wp('%dh', ($durationDiff->d * 24) + $durationDiff->h);
         }
 
         if ($durationDiff->i) {
