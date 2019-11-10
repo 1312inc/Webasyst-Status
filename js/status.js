@@ -603,6 +603,60 @@
             self.options.routingOptions.self = self;
 
             self.routing.init(self.options.routingOptions);
+
+            self.$core_sidebar.on('click', '[data-status-project-action="add"]', function (e) {
+                e.preventDefault();
+
+                // var pocketId = $(this).data('pl2-pocket-id') || 0;
+
+                $('#pl-pocket-dialog').waDialog({
+                    'height': '250px',
+                    'width': '600px',
+                    'url': '?module=project&action=dialog&id=' + 0,
+                    onLoad: function () {
+                        var d = this,
+                            $dialogWrapper = $(d);
+
+                        $dialogWrapper
+                            .on('click', '#status-project-color a', function (e) {
+                                e.preventDefault();
+
+                                $dialogWrapper.find('#status-project-color input').val($(this).data('status-project-color'));
+                                $(this).addClass('selected')
+                                    .siblings().removeClass('selected')
+                            })
+                            .on('click', '[data-status-action="delete-project"]', function (e) {
+                                e.preventDefault();
+
+                                // _deletePocket.call(d, pocketId);
+                            })
+                        ;
+
+                        setTimeout(function () {
+                            if (!$dialogWrapper.find('[name="project[id]"]').val() == 0) {
+                                $dialogWrapper.find('[name="project[name]"]').trigger('focus');
+                            }
+                        }, 13.12);
+                    },
+                    onSubmit: function (d) {
+                        d.find('.dialog-buttons input[type="button"]').after($.status.$loading);
+                        $.post('?module=project&action=save', d.find('form').serialize(), function (r) {
+                            $.status.$loading.remove();
+                            if (r.status === 'ok') {
+                                d.trigger('close');
+                                // if (!pocketId) {
+                                    window.location.hash = '#/project/' + r.data.id;
+                                // }
+                                $.status.routing.redispatch();
+                                $.status.reloadSidebar();
+                            } else {
+
+                            }
+                        }, 'json');
+                        return false;
+                    }
+                });
+            })
         }
     }
 }(jQuery));

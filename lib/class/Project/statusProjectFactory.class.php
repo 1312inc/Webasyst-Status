@@ -11,8 +11,8 @@ class statusProjectFactory extends statusBaseFactory
      */
     public function createNew()
     {
-        return (new statusProject())
+        return parent::createNew()
             ->setCreatedBy(stts()->getUser()->getId())
-            ->setCreateDatetime(new DateTime());
+            ->setCreateDatetime(date('Y-m-d H:i:s'));
     }
 }

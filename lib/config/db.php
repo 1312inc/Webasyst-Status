@@ -29,7 +29,7 @@ return array(
         'id' => array('int', 11, 'null' => 0, 'autoincrement' => 1),
         'name' => array('varchar', 255, 'null' => 0),
         'color' => array('varchar', 20),
-        'created_datetime' => array('datetime', 'null' => 0),
+        'create_datetime' => array('datetime', 'null' => 0),
         'last_checkin_datetime' => array('datetime'),
         'this_week_total_duration' => array('int', 11, 'default' => '0'),
         'is_archived' => array('tinyint', 4, 'default' => '0'),

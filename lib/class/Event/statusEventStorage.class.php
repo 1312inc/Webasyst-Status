@@ -13,4 +13,5 @@ final class statusEventStorage
     const ENTITY_UPDATE_AFTER  = 'entity_update.after';
 
     const WA_BACKEND_SIDEBAR = 'backend_sidebar';
+    const WA_BACKEND_PROJECT_DIALOG = 'backend_project_dialog';
 }

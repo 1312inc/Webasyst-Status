@@ -108,7 +108,7 @@ class statusProject extends statusAbstractEntity
     /**
      * @return DateTime|string
      */
-    public function getCreatedDatetime()
+    public function getCreateDatetime()
     {
         return $this->create_datetime;
     }

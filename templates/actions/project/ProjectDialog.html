@@ -1,0 +1,68 @@
+<section>
+    <div class="dialog-content">
+        <div data-pl2-wrapper="pocket-settings-dialog">
+
+            <input type="hidden" name="project[id]" value="{$project->getId()|default:0}"/>
+
+            {if $project->getId()}
+                <h1>{$project->getName()|default:'[`(unnamed project)`]'|escape|truncate:32}</h1>
+            {else}
+                <h1>[`New project`]</h1>
+            {/if}
+
+            <div class="fields form">
+                <div class="field-group">
+                    <div class="field">
+                        <div class="name nowrap">
+                            [`Project name`]
+                        </div>
+                        <div class="value">
+                            <input type="text" class="large bold" name="project[name]"
+                                   value="{$project->getName()|escape}"/>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="name nowrap">
+                            [`Color`]
+                        </div>
+                        <div class="value no-shift" id="status-project-color">
+                            <input type="hidden" name="project[color]" value="{$project->getColor()}"/>
+                            {foreach statusStoreColor::getColors() as $color => $name}
+                                <a href="#" {if $project->getColor() == $color}class="selected"{/if}
+                                   data-status-project-color="{$color}"><i
+                                            class="icon16 color pl-dark-{$color}"></i></a>
+                            {/foreach}
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="name">
+                            [`Access rights`]
+                        </div>
+                        <div class="value no-shift">
+                            <p class="hint">{sprintf('[`Use <a href="%s">Team app</a> to configure access: select a user or a group of users &gt; Access tab &gt; Pocket Lists app &gt; apply the proper access level.`]', $wa_backend_url|cat:'team/')}</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- plugin hook: 'backend_project_dialog' -->
+                {* @event backend_project_dialog.%plugin_id% *}
+                {if !empty($backend_project_dialog)}{foreach $backend_project_dialog as $_}{ifset($_)}{/foreach}{/if}
+
+            </div>
+        </div>
+    </div>
+
+    <div class="dialog-buttons">
+        {if $project->getId()}
+            <div class="block half-padded float-right">
+                <ul class="menu-h">
+                    <li>
+                        <a href="#" data-status-action="delete-project"><i class="icon16 delete"></i> [`Delete project`]</a>
+                    </li>
+                </ul>
+            </div>
+        {/if}
+        <input type="submit" value="[`Save`]" class="button green"/> [`or`] <a class="cancel" href="#">[`cancel`]</a>
+    </div>
+</section>
