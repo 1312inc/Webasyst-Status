@@ -437,8 +437,8 @@
                     max: minMax.max,
                     values: [ data.start_time, data.end_time ],
                     create: function( event, ui ) {
-                        $el.find('.ui-slider .ui-slider-handle:first').attr('data-slider-time', $.status.timeValueToStr(data.start_time, 'time'));
-                        $el.find('.ui-slider .ui-slider-handle:last').attr('data-slider-time', $.status.timeValueToStr(data.end_time, 'time'));
+                        $el.find('.ui-slider .ui-slider-handle:first').attr('data-slider-time', $.status.timeValueToStr(data.start_time / 60, 'time'));
+                        $el.find('.ui-slider .ui-slider-handle:last').attr('data-slider-time', $.status.timeValueToStr(data.end_time / 60, 'time'));
                     },
                     slide: function( event, ui ) {
                         var duration = ui.values[1] - ui.values[0];
