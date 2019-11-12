@@ -6,7 +6,7 @@
 class statusWeekDto
 {
     /**
-     * @var statusDayDto[]
+     * @var statusDay[]
      */
     public $days = [];
 

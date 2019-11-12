@@ -313,21 +313,23 @@
                 $dayEl,
                 lastSavedData = '';
 
-            function getDataFromCheckin($checkin) {
+            function getDataFromCheckin($form) {
                 return {
-                    'start_time': $checkin.data('checkin-min'),
-                    'end_time': $checkin.data('checkin-max'),
-                    'id': $checkin.data('checkin-id'),
-                    'date': $checkin.data('checkin-date'),
-                    'break_duration': $checkin.data('checkin-break')
+                    'start_time': $form.find('[name="checkin[start_time]"]').val(),
+                    'end_time': $form.find('[name="checkin[end_time]"]').val(),
+                    'id': $form.find('[name="checkin[id]"]').val(),
+                    'date': $form.find('[name="checkin[date]"]').val(),
+                    'break_duration': $form.find('[name="checkin[break_duration]"]').val()
                 }
             }
 
-            var brk = function ($wrapper) {
+            var checkboxDuration = function ($wrapper, type) {
                 var $durationInput = $wrapper.find('input.s-duration-input'),
                     $durationLabel = $wrapper.find('.s-duration-label'),
                     $durationCheckbox = $wrapper.find('input:checkbox'),
                     $checkin = $durationInput.closest('[data-checkin]');
+
+                type = type || 'break';
 
                 function value() {
                     return parseInt($durationInput.val());
@@ -353,7 +355,7 @@
                         $durationInput.val(1);
                     }
 
-                    $durationInput.trigger('breakChanged.stts');
+                    $durationInput.trigger(type + 'Changed.stts');
                 });
 
                 $durationInput.on('focusout.stts', function(e){
@@ -364,7 +366,7 @@
                     $durationInput.hide();
                     $durationCheckbox.prop('checked', !!time);
                     if (data.break_duration != time) {
-                        $durationInput.trigger('breakChanged.stts');
+                        $durationInput.trigger(type + 'Changed.stts');
                     }
                 });
 
@@ -381,40 +383,21 @@
 
             function initCheckin($el) {
                 var $slider = $el.find('.s-editor-slider-slider'),
+                    $form = $el.find('form'),
                     $checkinDuration = $el.find('.s-editor-slider-total h2'),
-                    checkinBreak = brk($el.find('.s-editor-slider-break')),
-                    data = getDataFromCheckin($el),
-                    getSliderMinMax = function() {
-                        // not used
-                        var breakDuration = checkinBreak.value() * 60,
-                            min = 0,
-                            max = 1440;
-
-                        if (checkinBreak.isOn()) {
-                            min = breakDuration / 2;
-                            max = 1440 - breakDuration / 2;
-                        }
-
-                        return {'min':min,'max':max};
-                    },
+                    checkinBreak = checkboxDuration($el.find('.s-editor-slider-break')),
+                    data = getDataFromCheckin($form),
                     minMax = {'min': 0, 'max': 1440};
 
-                $checkinDuration.text($.status.timeValueToStr($el.data('checkin-duration')/60));
+                $checkinDuration.text($.status.timeValueToStr($form.find('[name="checkin[total_duration]"]').val()/60));
 
-                function saveOnChange() {
-                    var data = getDataFromCheckin($el),
-                        values = $slider.slider('option', 'values');
+                $el.find('.s-editor-project').each(function () {
+                  new checkboxDuration($(this), 'project');
+                });
 
-                    data.start_time = values[0];
-                    data.end_time = values[1];
-                    if (!checkinBreak.isOn()) {
-                        data.break_duration = 0;
-                    } else {
-                        data.break_duration = checkinBreak.value();
-                    }
-
-                    save(data, $el);
-                }
+                $el.find('.s-editor-project').on('projectChanged.stts', function () {
+                    save($form);
+                });
 
                 checkinBreak.input.on('breakChanged.stts', function () {
                     /*var minMax = getSliderMinMax();
@@ -425,9 +408,17 @@
                         values2 = [];
 
                     values2.push(values[0] < minMax.min ? minMax.min : values[0]);
-                    values2.push(values[1] > minMax.max ? minMax.max : values[1]);
-                    $checkinDuration.text($.status.timeValueToStr((values2[1] - values2[0])/60));*/
-                    saveOnChange();
+                    values2.push(values[1] > minMax.max ? minMax.max : values[1]);*/
+                    var values = $slider.slider('option', 'values'),
+                        dayDuration = values[1] - values[0];
+
+                    if (checkinBreak.isOn()) {
+                        dayDuration -= (checkinBreak.value() * 60)
+                    }
+
+                    $checkinDuration.text($.status.timeValueToStr(dayDuration/60));
+
+                    save($form);
                 });
 
                 $slider.slider('destroy');
@@ -441,7 +432,12 @@
                         $el.find('.ui-slider .ui-slider-handle:last').attr('data-slider-time', $.status.timeValueToStr(data.end_time / 60, 'time'));
                     },
                     slide: function( event, ui ) {
-                        var duration = ui.values[1] - ui.values[0];
+                        var dayDuration = ui.values[1] - ui.values[0];
+
+                        if (checkinBreak.isOn()) {
+                            dayDuration -= (checkinBreak.value() * 60)
+                        }
+                        $checkinDuration.text($.status.timeValueToStr(dayDuration/60));
 
                         //меняем цвет слайдера на s-active, чтобы показать, что данные сохранились
                         $el.find('.ui-slider').addClass('s-active');
@@ -452,14 +448,15 @@
 
                         $el.find('.ui-slider .ui-slider-handle:first').attr('data-slider-time', $.status.timeValueToStr(ui.values[0]/60, 'time'));
                         $el.find('.ui-slider .ui-slider-handle:last').attr('data-slider-time', $.status.timeValueToStr(ui.values[1]/60, 'time'));
-                        $checkinDuration.text($.status.timeValueToStr(duration/60));
                     },
                     change: function( event, ui ) {
                         //показываем опциаональную детализацию по проектам
-                        var data = getDataFromCheckin($el);
-
                         $el.find('.s-editor-slider-projects').slideDown(200);
-                        saveOnChange();
+
+                        $form.find('[name="checkin[start_time]"]').val(ui.values[0]);
+                        $form.find('[name="checkin[end_time]"]').val(ui.values[1]);
+
+                        save($form);
                     }
                 });
 
@@ -472,33 +469,25 @@
                     //перерыв просто уменьшает общее время
             }
 
-            function savedOk($checkin, data) {
+            function savedOk(data, $form) {
                 $editorHtml.find('.s-editor-commit-indicator i.icon16').removeClass('loading').addClass('yes-bw');
-
-                if ($checkin) {
-                    $checkin
-                        .data('checkin', data['id'])
-                        .data('checkin-id', data['id'])
-                        .data('checkin-min', data['start_time'])
-                        .data('checkin-max', data['end_time'])
-                        .data('checkin-break', data['break_duration']);
-                }
+                $form.find('[name="checkin[id]"]').val(data.id);
             }
 
-            function save(data, $checkin) {
-                if (lastSavedData === JSON.stringify(data)) {
+            function save($form) {
+                if (lastSavedData === $form.serialize()) {
                     return;
                 }
 
-                lastSavedData = JSON.stringify(data);
+                lastSavedData = $form.serialize();
 
                 //индикатор сохранения — показываем крутилку
                 $editorHtml.find('.s-editor-commit-indicator').show();
                 $editorHtml.find('.s-editor-commit-indicator i.icon16').removeClass('yes-bw').addClass('loading');
 
-                $.post('?module=checkin&action=save', {checkin: data}, function (r) {
+                $.post('?module=checkin&action=save', lastSavedData, function (r) {
                     if (r.status === 'ok') {
-                        savedOk($checkin, r.data);
+                        savedOk(r.data, $form);
                         $.status.reloadSidebar();
                     }
                 });
@@ -560,7 +549,14 @@
                             },
                             'esc' : true,
                         });
-                    });
+                    })
+                    .on('click.stts', '.s-editor-project input[type="checkbox"]', function () {
+                        var $this = $(this);
+
+                        $this.closest('.s-editor-slider').find('.ui-slider-horizontal .ui-widget-header').addClass('s-colorized-1312-demo-purpose-class-only');
+                        $this.closest('.s-editor-project').toggleClass('selected');
+                    })
+                ;
             }
 
             function close() {

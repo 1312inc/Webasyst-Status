@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Class statusDayDto
+ * Class statusDay
  */
 class statusDayDto
 {
@@ -58,10 +58,14 @@ class statusDayDto
      *
      * @throws Exception
      */
-    public function __construct(statusDay $day, array $checkins)
+    public function __construct(statusDay $day, array $checkins = [])
     {
         if ($this->checkins) {
             $this->startTime = PHP_INT_MAX;
+        }
+
+        if ($this->startTime === PHP_INT_MAX) {
+            $this->startTime = 0;
         }
 
         foreach ($checkins as $checkin) {
@@ -75,12 +79,8 @@ class statusDayDto
                 stts()->getEntityFactory(statusCheckin::class)->createNew()
             );
         }
-
         $this->firstCheckin = $this->checkins[0];
 
-        if ($this->startTime === PHP_INT_MAX) {
-            $this->startTime = 0;
-        }
 
         $this->date = $day->getDate()->format('Y-m-d');
         $this->today = $day->isToday();

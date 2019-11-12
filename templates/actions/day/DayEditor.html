@@ -25,27 +25,37 @@
         <div class="s-editor-slider"
              data-checkin="{$checkin->id}"
              {if $checkin->id == $day->firstCheckin->id}data-checkin-first{/if}
-             data-checkin-min="{$checkin->min}"
-             data-checkin-max="{$checkin->max}"
-             data-checkin-id="{$checkin->id}"
-             data-checkin-date="{$day->date}"
-             data-checkin-duration="{$checkin->duration}"
-             data-checkin-break="{$checkin->break}"
         >
+        <form style="padding: 20px 0 10px;display: flex;width: 100%;">
+            <input type="hidden" name="checkin[id]" value="{$checkin->id}"/>
+            <input type="hidden" name="checkin[start_time]" value="{$checkin->min}"/>
+            <input type="hidden" name="checkin[end_time]" value="{$checkin->max}"/>
+            <input type="hidden" name="checkin[date]" value="{$day->date}"/>
+            <input type="hidden" name="checkin[total_duration]" value="{$checkin->duration}"/>
+            <input type="hidden" name="checkin[break_duration]" value="{$checkin->break}"/>
+
             <div class="s-editor-slider-control">
                 <div class="s-editor-slider-slider"></div>
-                <div class="s-editor-slider-projects" style="display: none;">
-                    {*                    {foreach $projects as $p}*}
-                    {*                        <label class="s-editor-project">*}
-                    {*                            <input type="checkbox">*}
-                    {*                            <!-- <i class="icon16 color" style="background: {$p[0]};"></i> -->*}
-                    {*                            {$p[1]}*}
-                    {*                            <span class="s-duration s-editor-project-share">*}
-                    {*                                                <a href="#" class="inline-link s-duration-label" style="background: {$p[0]};"><b><i>3h</i></b></a>*}
-                    {*                                                <input type="input" class="s-duration-input" value="1">*}
-                    {*                                            </span>*}
-                    {*                        </label>*}
-                    {*                    {/foreach}*}
+                <div class="s-editor-slider-projects" {if !$checkin->hasProjects}style="display: none;"{/if}>
+                {foreach $checkin->projectsDuration as $projectDuration}
+                    <label class="s-editor-project {if $projectDuration->id}selected{/if}">
+                        <input type="hidden" name="projects[{$projectDuration->project->id}][project_check_id]" value="{$projectDuration->id}">
+                        <input type="hidden" name="projects[{$projectDuration->project->id}][on]" value="0">
+                        <input type="checkbox" name="projects[{$projectDuration->project->id}][on]" value="1" {if $projectDuration->id}checked{/if}>
+{*                        <!-- <i class="icon16 color" style="background: {$p[0]};"></i> -->*}
+                        {$projectDuration->project->name|escape}
+                        <span class="s-duration s-editor-project-share">
+                            <a href="#" class="inline-link s-duration-label" style="background: {$projectDuration->project->color};">
+                                <b><i>{$projectDuration->durationStr}</i></b>
+                            </a>
+                            <input type="text"
+                                   class="s-duration-input"
+                                   value="{$projectDuration->duration}"
+                                   name="projects[{$projectDuration->project->id}][duration]"
+                            >
+                        </span>
+                    </label>
+                {/foreach}
 
                     <style>
                         #s-editor-slider-slider.ui-slider-horizontal .ui-widget-header.s-colorized-1312-demo-purpose-class-only {
@@ -62,11 +72,12 @@
                 </div>
             </div>
             <div class="s-editor-slider-total">
-                <h2></h2>
+                <h2>{$checkin->durationString}</h2>
             </div>
             <div class="s-editor-slider-break">
                 <label>
-                    <input type="checkbox" {if $checkin->break}checked{/if} name="checkin[break]">
+                    <input type="hidden" name="checkin[break]" value="0">
+                    <input type="checkbox" {if $checkin->break}checked{/if} name="checkin[break]" value="1">
                     [`Break`]
                     <span class="s-duration">
                         <a href="#" class="inline-link s-duration-label"><b><i>{$checkin->breakString}</i></b></a>
@@ -77,6 +88,7 @@
             <div class="s-editor-slider-more">
                 <a href="#" data-checkin-action="new" title="[`Add another interval for today`]"><i class="icon16 add"></i></a>
             </div>
+        </form>
         </div>
         {/foreach}
     </div>

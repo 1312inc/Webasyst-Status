@@ -29,16 +29,11 @@ class statusDayEditorAction extends statusViewAction
             }
         }
 
-        /** @var statusCheckinRepository $checkinRep */
-        $checkinRep = stts()->getEntityRepository(statusCheckin::class);
-        $checkins = $checkinRep->findByDayAndUser($day, $user);
-
-        $dayDto = new statusDayDto($day, $checkins);
+        $dayDto = statusDayEditor::createDayDto($day, $user);
 
         $this->view->assign(
             [
-                'checkins' => $checkins,
-                'day' => $dayDto,
+                'day'      => $dayDto,
             ]
         );
     }

@@ -71,6 +71,16 @@ class statusDayCheckinDto implements JsonSerializable
     public $maxPercent;
 
     /**
+     * @var statusDayProjectDuration[]
+     */
+    public $projectsDuration = [];
+
+    /**
+     * @var bool
+     */
+    public $hasProjects = false;
+
+    /**
      * statusDayCheckinDto constructor.
      *
      * @param statusCheckin $checkin
@@ -94,11 +104,7 @@ class statusDayCheckinDto implements JsonSerializable
         $this->duration = $checkin->getTotalDuration();
         $this->break = round($checkin->getBreakDuration() / 60, 1);
 
-        $this->durationString = statusTimeHelper::getTimeDurationInHuman(
-            $this->startTimestamp,
-            $this->endTimestamp,
-            ''
-        );
+        $this->durationString = statusTimeHelper::getTimeDurationInHuman(0, $this->duration * 60, '');
 
         $this->breakString = statusTimeHelper::getTimeDurationInHuman(
             0,

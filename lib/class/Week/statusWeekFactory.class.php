@@ -78,18 +78,17 @@ class statusWeekFactory
             $weekDto = new statusWeekDto($week);
             foreach ($week->getDays() as $day) {
                 $date = $day->getDate()->format('Y-m-d');
-                $dayDto = new statusDayDto(
-                    $day,
-                    isset($checkins[$date]) ? $checkins[$date] : []
-                );
+                $checkins =  isset($checkins[$date]) ? $checkins[$date] : [];
+                $dayDto = new statusDayDto($day, $checkins);
                 $dayDto->isFromCurrentWeek = $weekDto->isCurrent;
-                $weekDto->days[] = $dayDto;
 
                 if (isset($walogs[$date])) {
                     foreach ($walogs[$date] as $appId => $walog) {
                         $dayDto->walogs[$appId] = new statusWaLogDto($appId, $walog);
                     }
                 }
+
+                $weekDto->days[] = $dayDto;
             }
 
             $weeksDto[] = $weekDto;

@@ -24,7 +24,7 @@ class statusCheckinRepository extends statusBaseRepository
      * @param statusDay  $day
      * @param statusUser $user
      *
-     * @return statusCheckin[]
+     * @return statusAbstractEntity|statusAbstractEntity[]
      * @throws waException
      */
     public function findByDayAndUser(statusDay $day, statusUser $user)

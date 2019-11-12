@@ -2,6 +2,8 @@
 
 /**
  * Class statusProjectRepository
+ *
+ * @method statusProjectModel getModel()
  */
 class statusProjectRepository extends statusBaseRepository
 {
@@ -15,5 +17,10 @@ class statusProjectRepository extends statusBaseRepository
     public function findByWeek(statusWeek $week)
     {
         return [];
+    }
+
+    public function findByDay(statusDay $day)
+    {
+
     }
 }
