@@ -389,6 +389,20 @@
                     data = getDataFromCheckin($form),
                     minMax = {'min': 0, 'max': 1440};
 
+                var updateDayDuration = function() {
+                    var values = $slider.slider('option', 'values'),
+                        dayDuration = values[1] - values[0];
+
+                    if (checkinBreak.isOn()) {
+                        dayDuration -= (checkinBreak.value() * 60)
+                    }
+                    if (dayDuration < 0) {
+                        dayDuration = 0;
+                    }
+
+                    $checkinDuration.text($.status.timeValueToStr(dayDuration/60));
+                };
+
                 $checkinDuration.text($.status.timeValueToStr($form.find('[name="checkin[total_duration]"]').val()/60));
 
                 $el.find('.s-editor-project').each(function () {
@@ -409,15 +423,8 @@
 
                     values2.push(values[0] < minMax.min ? minMax.min : values[0]);
                     values2.push(values[1] > minMax.max ? minMax.max : values[1]);*/
-                    var values = $slider.slider('option', 'values'),
-                        dayDuration = values[1] - values[0];
 
-                    if (checkinBreak.isOn()) {
-                        dayDuration -= (checkinBreak.value() * 60)
-                    }
-
-                    $checkinDuration.text($.status.timeValueToStr(dayDuration/60));
-
+                    updateDayDuration();
                     save($form);
                 });
 
@@ -432,12 +439,7 @@
                         $el.find('.ui-slider .ui-slider-handle:last').attr('data-slider-time', $.status.timeValueToStr(data.end_time / 60, 'time'));
                     },
                     slide: function( event, ui ) {
-                        var dayDuration = ui.values[1] - ui.values[0];
-
-                        if (checkinBreak.isOn()) {
-                            dayDuration -= (checkinBreak.value() * 60)
-                        }
-                        $checkinDuration.text($.status.timeValueToStr(dayDuration/60));
+                        updateDayDuration();
 
                         //меняем цвет слайдера на s-active, чтобы показать, что данные сохранились
                         $el.find('.ui-slider').addClass('s-active');
