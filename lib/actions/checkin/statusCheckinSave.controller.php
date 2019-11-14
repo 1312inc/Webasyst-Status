@@ -43,21 +43,16 @@ class statusCheckinSaveController extends statusJsonController
         $chprModel = stts()->getModel('statusCheckinProjects');
         foreach ($projects as $projectId => $project) {
             if ($project['project_check_id'] && $project['on'] == 0) {
-                $chprModel->deleteById($project['project_check_id']);
-            } elseif ($project['project_check_id'] && $project['on'] == 1) {
-                $chprModel->updateById(
-                    $project['project_check_id'],
-                    [
-                        'duration' => $project['duration'] * 60,
-                    ]
-                );
-            } elseif ($project['project_check_id'] == 0 && $project['on'] == 1) {
+                $chprModel->deleteByField(['checkin_id' => $checkin->getId(), 'project_id' => $projectId]);
+            } elseif ($project['on'] == 1) {
+                $duration = ceil($project['duration'] * ($checkin->getTotalDuration() / 100));
                 $chprModel->insert(
                     [
                         'checkin_id' => $checkin->getId(),
                         'project_id' => $projectId,
-                        'duration'   => $project['duration'] * 60,
-                    ]
+                        'duration'   => $duration,
+                    ],
+                    waModel::INSERT_ON_DUPLICATE_KEY_UPDATE
                 );
             }
         }

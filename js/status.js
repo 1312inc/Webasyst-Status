@@ -192,7 +192,7 @@
                     is_bottom = false,
                     request_in_action = false,
                     prev_scroll_pos = 0,
-                    offset = config.offset || 1 ,
+                    offset = config.offset || 1,
                     this_is_the_end = false,
                     html_selector = config.html_selector;//'#pl-complete-log > .menu-v';
 
@@ -213,7 +213,7 @@
                             $loading.show();
                             request_in_action = true;
 
-                            $.get(config.url, { offset: offset }, function (html) {
+                            $.get(config.url, {offset: offset}, function (html) {
                                 $loading.hide();
                                 html = $(html).find(html_selector).html();
                                 if ($.trim(html).length) {
@@ -260,7 +260,7 @@
                 } else { // more complex hash
                     hash = hash.split("/");
                     if (hash[1]) {
-                        while(hash.length) {
+                        while (hash.length) {
                             hash.pop();
                             var href = hash.join('/');
 
@@ -277,7 +277,7 @@
                 }
             }
         },
-        timeValueToStr: function(hrs, format) {
+        timeValueToStr: function (hrs, format) {
             var secs = hrs * 60 * 60,
                 divisor_for_minutes = secs % (60 * 60),
                 hours = Math.floor(hrs % 24),
@@ -327,57 +327,81 @@
                 var $durationInput = $wrapper.find('input.s-duration-input'),
                     $durationLabel = $wrapper.find('.s-duration-label'),
                     $durationCheckbox = $wrapper.find('input:checkbox'),
-                    $checkin = $durationInput.closest('[data-checkin]');
+                    $checkin = $durationInput.closest('[data-checkin]'),
+                    manual = false;
 
                 type = type || 'break';
 
                 function value() {
-                    return parseInt($durationInput.val());
+                    return parseFloat($durationInput.val());
                 }
 
                 // var currentTimeStr = timeValueToStr(value());
                 // $durationLabel.text(currentTimeStr ? currentTimeStr : 0);
 
                 //любоу duration (перерыва и по проекту в чекине) — по клику открываем мини-инпут для ввода количества часов (можно ввести дробное количество 2.5, и тогда по focusout будет пересчитано в часа-минутых 2h 30m)
-                $durationLabel.on('click.stts', function(e){
+                $durationLabel.on('click.stts', function (e) {
                     e.preventDefault();
 
                     $durationLabel.hide();
                     $durationInput.show().select();
                     if (!value()) {
-                        $durationInput.val(1);
+                        if (type === 'break') {
+                            $durationInput.val(1);
+                        }
                     }
                     //$('.s-break-duration-input').select();
                 });
 
                 $durationCheckbox.on('change.stts', function () {
                     if ($durationCheckbox.is(':checked') && value() == 0) {
-                        $durationInput.val(1);
+                        if (type === 'break') {
+                            $durationInput.val(1);
+                        }
                     }
-
-                    $durationInput.trigger(type + 'Changed.stts');
+                    $editorHtml.trigger(type + 'Changed.stts');
                 });
 
-                $durationInput.on('focusout.stts', function(e){
+                $durationInput.on('focusout.stts', function (e) {
                     var data = getDataFromCheckin($checkin),
                         time = value();
 
-                    $durationLabel.show().text($.status.timeValueToStr(time));
+                    manual = true;
+                    $durationLabel.show();
+                    if (type === 'break') {
+                        $durationLabel.text($.status.timeValueToStr(time));
+                    } else {
+                        $durationLabel.text(time + '%');
+                    }
                     $durationInput.hide();
                     $durationCheckbox.prop('checked', !!time);
                     if (data.break_duration != time) {
-                        $durationInput.trigger(type + 'Changed.stts');
+                        $editorHtml.trigger(type + 'Changed.stts');
                     }
                 });
 
+                $wrapper.data('checkboxDuration', this);
+
                 return {
                     value: value,
-                    isOn: function(){
-                        return $durationCheckbox.is(':checked') && value();
+                    isOn: function () {
+                        return $durationCheckbox.is(':checked');
+                    },
+                    isManual: function () {
+                        return manual;
+                    },
+                    setValue: function (value) {
+                        $durationInput.val(value);
+                        if (type == 'break') {
+                            $durationLabel.text($.status.timeValueToStr(value));
+                        } else {
+                            $durationLabel.text(value + '%');
+                        }
                     },
                     wrapper: $wrapper,
                     input: $durationInput,
                     checkbox: $durationCheckbox,
+                    label: $durationLabel
                 }
             };
 
@@ -386,34 +410,122 @@
                     $form = $el.find('form'),
                     $checkinDuration = $el.find('.s-editor-slider-total h2'),
                     checkinBreak = checkboxDuration($el.find('.s-editor-slider-break')),
+                    projects = [],
                     data = getDataFromCheckin($form),
                     minMax = {'min': 0, 'max': 1440};
 
-                var updateDayDuration = function() {
-                    var values = $slider.slider('option', 'values'),
-                        dayDuration = values[1] - values[0];
+                var getCheckinDuration = function () {
+                        var values = $slider.slider('option', 'values'),
+                            checkinDuration = values[1] - values[0];
 
-                    if (checkinBreak.isOn()) {
-                        dayDuration -= (checkinBreak.value() * 60)
-                    }
-                    if (dayDuration < 0) {
-                        dayDuration = 0;
-                    }
+                        if (checkinBreak.isOn()) {
+                            checkinDuration -= (checkinBreak.value() * 60)
+                        }
+                        if (checkinDuration < 0) {
+                            checkinDuration = 0;
+                        }
 
-                    $checkinDuration.text($.status.timeValueToStr(dayDuration/60));
-                };
+                        return checkinDuration;
+                    },
+                    updateDayDuration = function () {
+                        $checkinDuration.text($.status.timeValueToStr(getCheckinDuration() / 60));
+                    },
+                    fillSliderWithColor = function () {
+                        var $line = $slider.find('.ui-widget-header'),
+                            width = $line.get(0).style.width,
+                            left = $line.get(0).style.left,
+                            colors = [];
 
-                $checkinDuration.text($.status.timeValueToStr($form.find('[name="checkin[total_duration]"]').val()/60));
+                        var prevPercent = 0;
+                        $.each(projects, function (i, project) {
+                            if (!project.isOn()) {
+                                return;
+                            }
+                            var percent = parseInt(project.input.val());
+                            if (prevPercent) {
+                                colors.push(project.wrapper.data('status-project-color') + ' ' + prevPercent + '%');
+                            }
+                            prevPercent += percent;
+                            colors.push(project.wrapper.data('status-project-color') + ' ' + prevPercent + '%');
+                        });
+
+
+                        var gradient = colors.join(', '),
+                            style = [
+                                "background: #ffd60a",
+                                "background: -moz-linear-gradient(left, " + gradient + ")",
+                                "background: -webkit-linear-gradient(left, " + gradient + ")",
+                                "background: linear-gradient(to right, " + gradient + ")",
+                                "width: " + width,
+                                "left: " + left,
+                            ];
+
+                        $line.attr('style', style.join(';'));
+
+                        // $line.css{{
+                        //     background': '#ffd60a',
+                        //     background': '-moz-linear-gradient(left,  #ffd60a 40%, #1e5799 40%, #1e5799 78%, #c62bdb 78%)',
+                        //     background: -webkit-linear-gradient(left,  #ffd60a 40%,#1e5799 40%,#1e5799 78%,#c62bdb 78%)',
+                        //     background: linear-gradient(to right,  #ffd60a 40%,#1e5799 40%,#1e5799 78%,#c62bdb 78%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+                        //     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffd60a', endColorstr='#c62bdb',GradientType=1 ); /* IE6-9 */
+                        // }}
+                    },
+                    recalculateProjects = function () {
+                        var percent = 100,
+                            autoProjects = [],
+                            manualProjects = [],
+                            autoDurationPercent = 0,
+                            manualDuration = 0;
+
+                        $.each(projects, function (i, project) {
+                            if (!project.isOn()) {
+                                return;
+                            }
+
+                            if (!project.isManual()) {
+                                autoProjects.push(project);
+                            } else {
+                                manualProjects.push(project);
+                            }
+                        });
+
+                        $.each(manualProjects, function (i, project) {
+                            var projectDuration = project.value();
+                            if (percent <= 0) {
+                                project.setValue(0);
+                            } else {
+                                percent -= projectDuration;
+                            }
+                        });
+
+                        if (autoProjects.length) {
+                            autoDurationPercent = Math.round(percent / autoProjects.length);
+                        }
+
+                        $.each(autoProjects, function (i, project) {
+                            project.setValue(autoDurationPercent)
+                        });
+
+                        updateDayDuration();
+                        fillSliderWithColor();
+                        save($form);
+                    };
+
+                $checkinDuration.text($.status.timeValueToStr($form.find('[name="checkin[total_duration]"]').val() / 60));
 
                 $el.find('.s-editor-project').each(function () {
-                  new checkboxDuration($(this), 'project');
+                    projects.push(new checkboxDuration($(this), 'project'));
                 });
 
                 $el.find('.s-editor-project').on('projectChanged.stts', function () {
                     save($form);
                 });
 
-                checkinBreak.input.on('breakChanged.stts', function () {
+                $editorHtml.on('projectChanged.stts', function () {
+                    recalculateProjects();
+                    save($form);
+                });
+                $editorHtml.on('breakChanged.stts', function () {
                     /*var minMax = getSliderMinMax();
 
                     $slider.slider('option', 'max', minMax.max);
@@ -433,12 +545,13 @@
                     range: true,
                     min: minMax.min,
                     max: minMax.max,
-                    values: [ data.start_time, data.end_time ],
-                    create: function( event, ui ) {
+                    values: [data.start_time, data.end_time],
+                    create: function (event, ui) {
                         $el.find('.ui-slider .ui-slider-handle:first').attr('data-slider-time', $.status.timeValueToStr(data.start_time / 60, 'time'));
                         $el.find('.ui-slider .ui-slider-handle:last').attr('data-slider-time', $.status.timeValueToStr(data.end_time / 60, 'time'));
+                        fillSliderWithColor();
                     },
-                    slide: function( event, ui ) {
+                    slide: function (event, ui) {
                         updateDayDuration();
 
                         //меняем цвет слайдера на s-active, чтобы показать, что данные сохранились
@@ -448,10 +561,10 @@
                         //     return false;
                         // }
 
-                        $el.find('.ui-slider .ui-slider-handle:first').attr('data-slider-time', $.status.timeValueToStr(ui.values[0]/60, 'time'));
-                        $el.find('.ui-slider .ui-slider-handle:last').attr('data-slider-time', $.status.timeValueToStr(ui.values[1]/60, 'time'));
+                        $el.find('.ui-slider .ui-slider-handle:first').attr('data-slider-time', $.status.timeValueToStr(ui.values[0] / 60, 'time'));
+                        $el.find('.ui-slider .ui-slider-handle:last').attr('data-slider-time', $.status.timeValueToStr(ui.values[1] / 60, 'time'));
                     },
-                    change: function( event, ui ) {
+                    change: function (event, ui) {
                         //показываем опциаональную детализацию по проектам
                         $el.find('.s-editor-slider-projects').slideDown(200);
 
@@ -464,11 +577,11 @@
 
                 //при выборе проектов закрашиваем слайдер цветами проектов в заданных пропорциях. делаем это средствами градиентов css.
                 // $el
-                    // .on('click', '.s-editor-project input[type="checkbox"]', function(){
-                    //     $('#s-editor-slider-slider.ui-slider-horizontal .ui-widget-header').addClass('s-colorized-1312-demo-purpose-class-only');
-                    //     $(this).closest('.s-editor-project').addClass('selected');
-                    // })
-                    //перерыв просто уменьшает общее время
+                // .on('click', '.s-editor-project input[type="checkbox"]', function(){
+                //     $('#s-editor-slider-slider.ui-slider-horizontal .ui-widget-header').addClass('s-colorized-1312-demo-purpose-class-only');
+                //     $(this).closest('.s-editor-project').addClass('selected');
+                // })
+                //перерыв просто уменьшает общее время
             }
 
             function savedOk(data, $form) {
@@ -505,12 +618,12 @@
                 });
 
                 $editorHtml
-                    //если вводят текстовый отчет за день, то индикатор заменяется на кнопку сохранения
-                    .on('input.stts propertychange.stts', '.s-editor-comment', function(){
+                //если вводят текстовый отчет за день, то индикатор заменяется на кнопку сохранения
+                    .on('input.stts propertychange.stts', '.s-editor-comment', function () {
                         $editorHtml.find('.s-editor-commit-button').show();
                         $editorHtml.find('.s-editor-commit-indicator').hide();
                     })
-                    .on('click.stts', '.s-editor-commit-button', function(){
+                    .on('click.stts', '.s-editor-commit-button', function () {
                         $editorHtml.find('.s-editor-commit-button').hide();
                         $editorHtml.find('.s-editor-commit-indicator').show();
                         var data = getDataFromCheckin($('[data-checkin]:first'));
@@ -518,7 +631,7 @@
                         save(data);
                     })
                     //+ напротив слайдера добавляет еще один слайдер за этот день
-                    .on('click.stts', '[data-checkin-action="new"]', function(e){
+                    .on('click.stts', '[data-checkin-action="new"]', function (e) {
                         e.preventDefault();
 
                         var $sourceCheckin = $(this).closest('[data-checkin]'),
@@ -531,31 +644,30 @@
                             .attr('data-checkin-id', 0)
                             .data('checkin-break', 0)
                             .attr('data-checkin-break', 0)
-                                .find('input.s-duration-input').val(1)
+                            .find('input.s-duration-input').val(1)
                             .end()
-                                .find('input:checkbox').prop('checked', false)
+                            .find('input:checkbox').prop('checked', false)
                             .end()
-                                .find('.s-editor-slider-slider').empty()
+                            .find('.s-editor-slider-slider').empty()
                         ;
 
                         $sourceCheckin.after($newCheckin);
 
                         initCheckin($newCheckin);
                     })
-                    .on('click.stts', '.s-status-custom-status', function(){
+                    .on('click.stts', '.s-status-custom-status', function () {
                         $('<div>input: <b>[ enter custom status label ]</b><br><br> radio:<br> <b>(*) calendar name</b><br><b>( ) calendar name</b><br><b>( ) calendar name</b></div>').waDialog({
-                            'height' : '400px',
-                            'width' : '660px',
-                            'onClose' : function(f) {
+                            'height': '400px',
+                            'width': '660px',
+                            'onClose': function (f) {
                                 $(this).remove;
                             },
-                            'esc' : true,
+                            'esc': true,
                         });
                     })
                     .on('click.stts', '.s-editor-project input[type="checkbox"]', function () {
                         var $this = $(this);
 
-                        $this.closest('.s-editor-slider').find('.ui-slider-horizontal .ui-widget-header').addClass('s-colorized-1312-demo-purpose-class-only');
                         $this.closest('.s-editor-project').toggleClass('selected');
                     })
                 ;
@@ -582,7 +694,7 @@
             }
         },
         dayEditor: null,
-        reloadSidebar: function() {
+        reloadSidebar: function () {
             var self = this;
 
             $.get('?module=backend&action=sidebar', function (html) {
@@ -643,7 +755,7 @@
                             if (r.status === 'ok') {
                                 d.trigger('close');
                                 // if (!pocketId) {
-                                    window.location.hash = '#/project/' + r.data.id;
+                                window.location.hash = '#/project/' + r.data.id;
                                 // }
                                 $.status.routing.redispatch();
                                 $.status.reloadSidebar();

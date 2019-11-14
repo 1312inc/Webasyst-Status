@@ -41,6 +41,7 @@ class statusDayEditor
                     $checkin->hasProjects = true;
                     $checkin->projectsDuration[$projectDto->id] = new statusDayProjectDuration(
                         $projectDto,
+                        $checkin->duration,
                         $projectData[$key]['project_checkin_id'],
                         $projectData[$key]['duration']
                     );

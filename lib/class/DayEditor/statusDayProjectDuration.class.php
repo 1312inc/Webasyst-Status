@@ -26,22 +26,32 @@ class statusDayProjectDuration
     public $durationStr = 0;
 
     /**
+     * @var int
+     */
+    public $durationPercent = 0;
+
+    /**
      * statusDayCheckinProjectDto constructor.
      *
      * @param statusDayProjectDto $project
+     * @param int                 $checkinDuration
      * @param int                 $id
      * @param int                 $timeAtDay
      *
      * @throws Exception
      */
-    public function __construct(statusDayProjectDto $project, $id = 0, $timeAtDay = 60)
+    public function __construct(statusDayProjectDto $project, $checkinDuration = 0, $id = 0, $timeAtDay = 0)
     {
         $this->id = $id;
         $this->project = $project;
-        $this->duration = $timeAtDay / statusTimeHelper::MINUTES_IN_HOUR;
+        $this->duration = $timeAtDay;
+        $timeAtDay = $timeAtDay ?: 60;
         $this->durationStr = statusTimeHelper::getTimeDurationInHuman(
             0,
-            $timeAtDay * statusTimeHelper::SECONDS_IN_MINUTE
+            round($timeAtDay / statusTimeHelper::MINUTES_IN_HOUR, 1) * statusTimeHelper::SECONDS_IN_MINUTE
         );
+        if ($checkinDuration) {
+            $this->durationPercent = ceil($this->duration / ($checkinDuration / 100));
+        }
     }
 }

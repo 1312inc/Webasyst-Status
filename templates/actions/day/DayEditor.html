@@ -38,7 +38,7 @@
                 <div class="s-editor-slider-slider"></div>
                 <div class="s-editor-slider-projects" {if !$checkin->hasProjects}style="display: none;"{/if}>
                 {foreach $checkin->projectsDuration as $projectDuration}
-                    <label class="s-editor-project {if $projectDuration->id}selected{/if}">
+                    <label class="s-editor-project {if $projectDuration->id}selected{/if}" data-status-project-color="{$projectDuration->project->color}">
                         <input type="hidden" name="projects[{$projectDuration->project->id}][project_check_id]" value="{$projectDuration->id}">
                         <input type="hidden" name="projects[{$projectDuration->project->id}][on]" value="0">
                         <input type="checkbox" name="projects[{$projectDuration->project->id}][on]" value="1" {if $projectDuration->id}checked{/if}>
@@ -46,29 +46,16 @@
                         {$projectDuration->project->name|escape}
                         <span class="s-duration s-editor-project-share">
                             <a href="#" class="inline-link s-duration-label" style="background: {$projectDuration->project->color};">
-                                <b><i>{$projectDuration->durationStr}</i></b>
+                                <b><i>{$projectDuration->durationPercent}%</i></b>
                             </a>
                             <input type="text"
                                    class="s-duration-input"
-                                   value="{$projectDuration->duration}"
+                                   value="{$projectDuration->durationPercent}"
                                    name="projects[{$projectDuration->project->id}][duration]"
                             >
                         </span>
                     </label>
                 {/foreach}
-
-                    <style>
-                        #s-editor-slider-slider.ui-slider-horizontal .ui-widget-header.s-colorized-1312-demo-purpose-class-only {
-
-                            background: #ffd60a; /* Old browsers */
-                            background: -moz-linear-gradient(left,  #ffd60a 40%, #1e5799 40%, #1e5799 78%, #c62bdb 78%); /* FF3.6-15 */
-                            background: -webkit-linear-gradient(left,  #ffd60a 40%,#1e5799 40%,#1e5799 78%,#c62bdb 78%); /* Chrome10-25,Safari5.1-6 */
-                            background: linear-gradient(to right,  #ffd60a 40%,#1e5799 40%,#1e5799 78%,#c62bdb 78%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-                            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffd60a', endColorstr='#c62bdb',GradientType=1 ); /* IE6-9 */
-
-                        }
-                    </style>
-
                 </div>
             </div>
             <div class="s-editor-slider-total">

@@ -23,6 +23,7 @@ return array(
         'duration' => array('int', 11, 'null' => 0, 'default' => '0'),
         ':keys' => array(
             'PRIMARY' => 'id',
+            'status_checkin_projects_checkin_id_project_id_uindex' => array('checkin_id', 'project_id', 'unique' => 1),
         ),
     ),
     'status_project' => array(
