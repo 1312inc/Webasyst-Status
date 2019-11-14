@@ -30,7 +30,7 @@
                             {foreach statusStoreColor::getColors() as $color => $name}
                                 <a href="#" {if $project->getColor() == $color}class="selected"{/if}
                                    data-status-project-color="{$color}"><i
-                                            class="icon16 color pl-dark-{$color}"></i></a>
+                                            class="icon16 color c-color-{$color}"></i></a>
                             {/foreach}
                         </div>
                     </div>

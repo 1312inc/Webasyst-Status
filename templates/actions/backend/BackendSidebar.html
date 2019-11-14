@@ -7,46 +7,60 @@
                      <i class="icon16 userpic20"></i>[`My status`]
                  </a>
              </li>
-             {foreach $users as $u}
-             <li>
-                 <a href="#/contact/{$u->getContactId()}">
-                     <span class="count hint"></span>{$timeByUserStat[$u->getId()]['timeStr']}
-                     <i class="icon16 userpic20" style="background-image: {$u->getContact()->getPhoto()}"></i>{$u->getName()|escape}
-                     <span class="s-status" title="[`Status`]">group?</span>
-                 </a>
-             </li>
-             {/foreach}
-             <li>
-                 <a href="#">
-                     <span class="count hint">{$timeByUserStat[0]['timeStr']}</span>
-                     <span class="gray">[`All users`]</span>
-                 </a>
-             </li>
+             {if count($users)}
+                 {foreach $users as $u}
+                 <li>
+                     <a href="#/contact/{$u->getContactId()}">
+                         <span class="count hint"></span>{$timeByUserStat[$u->getId()]['timeStr']}
+                         <i class="icon16 userpic20" style="background-image: {$u->getContact()->getPhoto()}"></i>{$u->getName()|escape}
+                         <span class="s-status" title="[`Status`]">group?</span>
+                     </a>
+                 </li>
+                 {/foreach}
+                 <li>
+                     <a href="#">
+                         <span class="count hint">{$timeByUserStat[0]['timeStr']}</span>
+                         <span class="gray">[`All users`]</span>
+                     </a>
+                 </li>
+            {/if}
         </ul>
+        {if !count($users) && $wa->team}
+            <div class="block">
+                <p class="hint align-center">{sprintf('[`Invite users via the <a href="%s">Team app</a> and start tracking time and status together.`]', $wa_backend_url|cat:'team/')}</p>
+            </div>
+        {/if}
     </div>
     <div class="block">
         <h5 class="heading top-padded">
             <a href="#" class="count" data-status-project-action="add"><i class="icon16 add"></i></a>
             [`Projects`]
         </h5>
-        <ul class="menu-v with-icons">
-             {foreach $projects as $p}
-             <li>
-                 <a href="#/project/">
-                     <span class="count hint">time</span>
-                     <i class="icon16 color" style="background: {$p->getColor()};"></i>
-                     {$p->getName()|escape}
-                 </a>
-             </li>
-             {/foreach}
-             <li>
-                 <a href="#">
-                     <span class="count hint">42h</span>
-                     <i class="icon16 color" style="background: white;"></i>
-                     <span class="gray">[`All projects`]</span>
-                 </a>
-             </li>
-        </ul>
+        {if count($projects)}
+            <ul class="menu-v with-icons">
+
+                 {foreach $projects as $p}
+                 <li>
+                     <a href="#/project/{$p->getId()}">
+                         <span class="count hint">time</span>
+                         <i class="icon16 color" style="background: {$p->getColor()};"></i>
+                         {$p->getName()|escape}
+                     </a>
+                 </li>
+                 {/foreach}
+                 <li>
+                     <a href="#">
+                         <span class="count hint">42h</span>
+                         <i class="icon16 color" style="background: white;"></i>
+                         <span class="gray">[`All projects`]</span>
+                     </a>
+                 </li>
+            </ul>
+        {else if 0 && IS_APP_ADMIN}
+            <div class="block">
+                <p class="hint align-center">[`Add projects so everyone can add detalization on what they were working on.`]</p>
+            </div>
+        {/if}
         <hr>
         <ul class="menu-v with-icons">
              <li>

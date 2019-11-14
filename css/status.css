@@ -10,6 +10,16 @@
 .s-navigation { margin-top: 17px; }
 .s-summary { }
 
+.c-color-gray { background: #aaa !important; }
+.c-color-green { background: #4dd963 !important; }
+.c-color-blue { background: #59c7fa !important; }
+.c-color-purple { background: #5757d6 !important; }
+.c-color-red { background: #ff2e54 !important; }
+.c-color-yellow { background: #ffcc00 !important; }
+.c-color-brown { background: #996e4d !important; }
+.c-color-orange { background: #ff9400 !important; }
+.c-color-none { background: #ddd !important; }
+
 /* Check-in Details
 ------------------- */
 
