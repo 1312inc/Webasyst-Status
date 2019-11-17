@@ -55,12 +55,11 @@
 
                 var $this = $(this),
                     appId = $this.data('status-walog-app');
-debugger;
+
                 $this.closest('.s-day-summary-user-report')
                     .find('[data-status-walog-app-logs="'+appId+'"]').slideDown(100)
                     .siblings().hide();
 
-                debugger;
                 return false;
             });
 

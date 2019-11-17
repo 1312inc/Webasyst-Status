@@ -36,11 +36,12 @@ class statusProjectModel extends statusModel
      */
     public function getByDatesAndContactId($dateStart, $dateEnd, $contactId)
     {
-        $q = 'select sp.*, scp.duration from status_project sp
+        $q = 'select sp.*, scp.duration, sc.id checkin_id, scp.id project_checkin_id, concat(sc.id,\'_\',sp.id) checkproj
+            from status_project sp
             join status_checkin_projects scp on sp.id = scp.project_id
             join status_checkin sc on sc.id = scp.checkin_id
             where sc.contact_id = i:contact_id and sc.date between s:date1 and s:date2';
 
-        return $this->query($q, ['contact_id' => $contactId, 'date1' => $dateStart, 'date2' => $dateEnd])->fetchAll('checkin_id', 2);
+        return $this->query($q, ['contact_id' => $contactId, 'date1' => $dateStart, 'date2' => $dateEnd])->fetchAll('checkproj');
     }
 }

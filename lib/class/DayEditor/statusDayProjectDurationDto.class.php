@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Class statusDayProjectDuration
+ * Class statusDayProjectDurationDto
  */
-class statusDayProjectDuration
+class statusDayProjectDurationDto
 {
     /**
      * @var int
@@ -31,7 +31,7 @@ class statusDayProjectDuration
     public $durationPercent = 0;
 
     /**
-     * statusDayCheckinProjectDto constructor.
+     * statusDayProjectDuration constructor.
      *
      * @param statusDayProjectDto $project
      * @param int                 $checkinDuration
@@ -51,7 +51,7 @@ class statusDayProjectDuration
             round($timeAtDay / statusTimeHelper::MINUTES_IN_HOUR, 1) * statusTimeHelper::SECONDS_IN_MINUTE
         );
         if ($checkinDuration) {
-            $this->durationPercent = ceil($this->duration / ($checkinDuration / 100));
+            $this->durationPercent = round($this->duration / ($checkinDuration / 100));
         }
     }
 }

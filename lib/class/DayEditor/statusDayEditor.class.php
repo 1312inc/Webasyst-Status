@@ -19,43 +19,22 @@ class statusDayEditor
         $checkinRep = stts()->getEntityRepository(statusCheckin::class);
         $checkins = $checkinRep->findByDayAndUser($day, $user);
 
-        $dayDto = new statusDayDto($day, $checkins);
+        $walogs = (new statusWaLogParser())->parseByDays($day, $day, $user);
 
-        /** @var statusProjectRepository $projectRep */
-        $projectRep = stts()->getEntityRepository(statusProject::class);
-        $projects = $projectRep->findAll();
+        $dayDto = new statusDayDto($day);
+
+        $dayDtoAssembler = new statusDayDotAssembler();
+        $dayDtoAssembler
+            ->fillWithCheckins($dayDto, $checkins)
+            ->fillWithWalogs($dayDto, isset($walogs[$dayDto->date]) ? $walogs[$dayDto->date] : [])
+        ;
+
         /** @var statusProjectModel $projectModel */
         $projectModel = stts()->getModel(statusProject::class);
         $projectData = $projectModel->getByDateAndContactId($day->getDate()->format('Y-m-d'), $user->getContactId());
 
-        $projectDtos = [];
-        /** @var statusProject $project */
-        foreach ($projects as $project) {
-            $projectDtos[$project->getId()] = new statusDayProjectDto($project);
-        }
-
-        foreach ($dayDto->checkins as $checkin) {
-            foreach ($projectDtos as $projectDto) {
-                $key = $checkin->id.'_'.$projectDto->id;
-                if (isset($projectData[$key])) {
-                    $checkin->hasProjects = true;
-                    $checkin->projectsDuration[$projectDto->id] = new statusDayProjectDuration(
-                        $projectDto,
-                        $checkin->duration,
-                        $projectData[$key]['project_checkin_id'],
-                        $projectData[$key]['duration']
-                    );
-                } else {
-                    $checkin->projectsDuration[$projectDto->id] = new statusDayProjectDuration($projectDto);
-                }
-            }
-        }
+        $dayDtoAssembler->fillCheckinsWithProjects($dayDto->checkins, $projectData);
 
         return $dayDto;
-    }
-
-    public function createDayDtoWithCheckins(statusDay $day, statusUser $user, array $checkins)
-    {
-
     }
 }

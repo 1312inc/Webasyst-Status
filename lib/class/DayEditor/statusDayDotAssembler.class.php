@@ -1,0 +1,122 @@
+<?php
+
+/**
+ * Class statusDayDotAssembler
+ */
+final class statusDayDotAssembler
+{
+    /**
+     * @var statusDayProjectDto[]
+     */
+    private $projectsDtos;
+
+    /**
+     * @param statusDayDto    $dayDto
+     * @param statusCheckin[] $checkins
+     *
+     * @return statusDayDotAssembler
+     * @throws Exception
+     */
+    public function fillWithCheckins(statusDayDto $dayDto, array $checkins)
+    {
+        foreach ($checkins as $check) {
+            $dayDto->startTime = min($dayDto->startTime, $check->getStartTime());
+            $dayDto->endTime = max($dayDto->endTime, $check->getEndTime());
+            $dayDto->checkins[] = new statusDayCheckinDto($check);
+        }
+
+        if (empty($dayDto->checkins)) {
+            $dayDto->checkins[] = new statusDayCheckinDto(stts()->getEntityFactory(statusCheckin::class)->createNew());
+        }
+
+        $dayDto->firstCheckin = $dayDto->checkins[0];
+
+        return $this;
+    }
+
+    /**
+     * @param statusDayDto $dayDto
+     * @param array        $walogs
+     *
+     * @return mixed
+     */
+    public function fillWithWalogs(statusDayDto $dayDto, array $walogs)
+    {
+        foreach ($walogs as $appId => $log) {
+            $dayDto->walogs[$appId] = new statusWaLogDto($appId, $log);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param statusDayCheckinDto[] $checkins
+     * @param array                 $projectData
+     *
+     * @return mixed
+     * @throws Exception
+     */
+    public function fillCheckinsWithProjects(array $checkins, array $projectData)
+    {
+        /** @var statusDayCheckinDto $checkin */
+        foreach ($checkins as $checkin) {
+            $css = [];
+            $title = [];
+            $percents = 0;
+
+            /** @var statusDayProjectDto $projectDto */
+            foreach ($this->getProjectsDto() as $projectDto) {
+                $key = $checkin->id.'_'.$projectDto->id;
+                if (isset($projectData[$key])) {
+                    $checkin->hasProjects = true;
+                    $checkin->projectsDuration[$projectDto->id] = new statusDayProjectDurationDto(
+                        $projectDto,
+                        $checkin->duration,
+                        $projectData[$key]['project_checkin_id'],
+                        $projectData[$key]['duration']
+                    );
+                } else {
+                    $checkin->projectsDuration[$projectDto->id] = new statusDayProjectDurationDto($projectDto);
+                }
+
+                $projectDurationDto = $checkin->projectsDuration[$projectDto->id];
+                $value = $checkin->duration ? round($projectDurationDto->duration / ($checkin->duration / 100)) : 0;
+                $checkin->projectPercents[$projectDto->id] = $value;
+                $css[] = $projectDurationDto->project->color.' '.$percents.'%';
+                $percents += $value;
+                $css[] = $projectDurationDto->project->color.' '.$percents.'%';
+                $title[] = $projectDurationDto->project->name
+                    .': '
+                    .statusTimeHelper::getTimeDurationInHuman(
+                        0,
+                        $projectDurationDto->duration * statusTimeHelper::SECONDS_IN_MINUTE
+                    );
+            }
+            $checkin->projectDurationCss = implode(', ', $css);
+            $checkin->projectDurationTitle = implode(', ', $title);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return statusDayProjectDto[]
+     * @throws waException
+     */
+    private function getProjectsDto()
+    {
+        if ($this->projectsDtos === null) {
+            $this->projectsDtos = [];
+
+            /** @var statusProjectRepository $projectRep */
+            $projectRep = stts()->getEntityRepository(statusProject::class);
+            $projects = $projectRep->findAll();
+            /** @var statusProject $project */
+            foreach ($projects as $project) {
+                $this->projectsDtos[$project->getId()] = new statusDayProjectDto($project);
+            }
+        }
+
+        return $this->projectsDtos;
+    }
+}

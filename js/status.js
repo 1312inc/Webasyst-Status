@@ -359,7 +359,7 @@
                             $durationInput.val(1);
                         }
                     }
-                    $editorHtml.trigger(type + 'Changed.stts');
+                    $checkin.trigger(type + 'Changed.stts');
                 });
 
                 $durationInput.on('focusout.stts', function (e) {
@@ -376,7 +376,7 @@
                     $durationInput.hide();
                     $durationCheckbox.prop('checked', !!time);
                     if (data.break_duration != time) {
-                        $editorHtml.trigger(type + 'Changed.stts');
+                        $checkin.trigger(type + 'Changed.stts');
                     }
                 });
 
@@ -412,6 +412,8 @@
                     checkinBreak = checkboxDuration($el.find('.s-editor-slider-break')),
                     projects = [],
                     data = getDataFromCheckin($form),
+                    hasProjects = $el.data('checkin-has-projects'),
+                    checkinId = $form.find('[name="checkin[id]"]').val(),
                     minMax = {'min': 0, 'max': 1440};
 
                 var getCheckinDuration = function () {
@@ -442,9 +444,7 @@
                                 return;
                             }
                             var percent = parseInt(project.input.val());
-                            if (prevPercent) {
-                                colors.push(project.wrapper.data('status-project-color') + ' ' + prevPercent + '%');
-                            }
+                            colors.push(project.wrapper.data('status-project-color') + ' ' + prevPercent + '%');
                             prevPercent += percent;
                             colors.push(project.wrapper.data('status-project-color') + ' ' + prevPercent + '%');
                         });
@@ -517,28 +517,25 @@
                     projects.push(new checkboxDuration($(this), 'project'));
                 });
 
-                $el.find('.s-editor-project').on('projectChanged.stts', function () {
-                    save($form);
-                });
+                $el
+                    .on('projectChanged.stts', function () {
+                        recalculateProjects();
+                        save($form);
+                    })
+                    .on('breakChanged.stts', function () {
+                        /*var minMax = getSliderMinMax();
 
-                $editorHtml.on('projectChanged.stts', function () {
-                    recalculateProjects();
-                    save($form);
-                });
-                $editorHtml.on('breakChanged.stts', function () {
-                    /*var minMax = getSliderMinMax();
+                        $slider.slider('option', 'max', minMax.max);
+                        $slider.slider('option', 'min', minMax.min);
+                        var values = $slider.slider('option', 'values'),
+                            values2 = [];
 
-                    $slider.slider('option', 'max', minMax.max);
-                    $slider.slider('option', 'min', minMax.min);
-                    var values = $slider.slider('option', 'values'),
-                        values2 = [];
+                        values2.push(values[0] < minMax.min ? minMax.min : values[0]);
+                        values2.push(values[1] > minMax.max ? minMax.max : values[1]);*/
 
-                    values2.push(values[0] < minMax.min ? minMax.min : values[0]);
-                    values2.push(values[1] > minMax.max ? minMax.max : values[1]);*/
-
-                    updateDayDuration();
-                    save($form);
-                });
+                        updateDayDuration();
+                        save($form);
+                    });
 
                 $slider.slider('destroy');
                 $slider.slider({
@@ -549,7 +546,14 @@
                     create: function (event, ui) {
                         $el.find('.ui-slider .ui-slider-handle:first').attr('data-slider-time', $.status.timeValueToStr(data.start_time / 60, 'time'));
                         $el.find('.ui-slider .ui-slider-handle:last').attr('data-slider-time', $.status.timeValueToStr(data.end_time / 60, 'time'));
-                        fillSliderWithColor();
+
+                        if (hasProjects) {
+                            fillSliderWithColor();
+                        }
+                        updateDayDuration();
+                        // if (checkinId) {
+                        //     $el.find('.ui-slider').addClass('s-active');
+                        // }
                     },
                     slide: function (event, ui) {
                         updateDayDuration();
@@ -626,9 +630,11 @@
                     .on('click.stts', '.s-editor-commit-button', function () {
                         $editorHtml.find('.s-editor-commit-button').hide();
                         $editorHtml.find('.s-editor-commit-indicator').show();
-                        var data = getDataFromCheckin($('[data-checkin]:first'));
-                        data['comment'] = $editorHtml.find('.s-editor-comment').val();
-                        save(data);
+                        var $form = $('[data-checkin]:first form'),
+                            $comment = $editorHtml.find('.s-editor-comment').clone();
+                        $form.append($comment.hide());
+                        save($form);
+                        $comment.remove();
                     })
                     //+ напротив слайдера добавляет еще один слайдер за этот день
                     .on('click.stts', '[data-checkin-action="new"]', function (e) {
@@ -637,6 +643,8 @@
                         var $sourceCheckin = $(this).closest('[data-checkin]'),
                             $newCheckin = $sourceCheckin.clone();
 
+                        $sourceCheckin.after($newCheckin);
+
                         $newCheckin
                             .data('checkin', 0)
                             .attr('data-checkin', 0)
@@ -644,14 +652,26 @@
                             .attr('data-checkin-id', 0)
                             .data('checkin-break', 0)
                             .attr('data-checkin-break', 0)
+                            .data('checkin-has-projects', 0)
+                            .attr('data-checkin-has-projects', 0)
                             .find('input.s-duration-input').val(1)
-                            .end()
-                            .find('input:checkbox').prop('checked', false)
-                            .end()
-                            .find('.s-editor-slider-slider').empty()
+                            .end().find('input:checkbox').prop('checked', false)
+                            .end().find('.s-editor-slider-slider').empty()
                         ;
 
-                        $sourceCheckin.after($newCheckin);
+                        // projects
+                        $newCheckin.find('form [name="checkin[id]"]').val('');
+                        $newCheckin.find('.s-editor-project').removeClass('selected')
+                            .closest('.s-editor-slider-projects').hide();
+
+                        // slider
+                        // var $line = $newCheckin.find('.ui-widget-header'),
+                        //     style = [
+                        //         "width: " + $line.get(0).style.width,
+                        //         "left: " + $line.get(0).style.left,
+                        //     ];
+                        // $line.attr('style', style.join(';'));
+
 
                         initCheckin($newCheckin);
                     })
@@ -670,7 +690,19 @@
 
                         $this.closest('.s-editor-project').toggleClass('selected');
                     })
-                ;
+                    .on('click.stts', '[data-status-walog-app]', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        var $this = $(this),
+                            appId = $this.data('status-walog-app');
+
+                        $this.closest('.s-editor-summary')
+                            .find('[data-status-walog-app-logs="'+appId+'"]').slideDown(100)
+                            .siblings().hide();
+
+                        return false;
+                    });
             }
 
             function close() {

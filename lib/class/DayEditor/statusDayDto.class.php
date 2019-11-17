@@ -23,12 +23,12 @@ class statusDayDto
     /**
      * @var statusDayCheckinDto[]
      */
-    public $checkins;
+    public $checkins = [];
 
     /**
-     * @var statusDayCheckinDto[]
+     * @var statusDayCheckinDto[]|null
      */
-    public $firstCheckin;
+    public $firstCheckin = null;
 
     /**
      * @var int
@@ -53,12 +53,9 @@ class statusDayDto
     /**
      * statusDayEditorDto constructor.
      *
-     * @param statusDay       $day
-     * @param statusCheckin[] $checkins
-     *
-     * @throws Exception
+     * @param statusDay $day
      */
-    public function __construct(statusDay $day, array $checkins = [])
+    public function __construct(statusDay $day)
     {
         if ($this->checkins) {
             $this->startTime = PHP_INT_MAX;
@@ -68,22 +65,10 @@ class statusDayDto
             $this->startTime = 0;
         }
 
-        foreach ($checkins as $checkin) {
-            $this->startTime = min($this->startTime, $checkin->getStartTime());
-            $this->endTime = max($this->endTime, $checkin->getEndTime());
-            $this->checkins[] = new statusDayCheckinDto($checkin);
-        }
-
-        if (empty($this->checkins)) {
-            $this->checkins[] = new statusDayCheckinDto(
-                stts()->getEntityFactory(statusCheckin::class)->createNew()
-            );
-        }
-        $this->firstCheckin = $this->checkins[0];
-
-
         $this->date = $day->getDate()->format('Y-m-d');
         $this->today = $day->isToday();
         $this->dayname = $day->getDate()->format('D');
+
+
     }
 }

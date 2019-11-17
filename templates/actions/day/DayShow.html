@@ -12,15 +12,13 @@
         <div class="s-day-summary">
             <div class="s-day-summary-timeline">
                 <div class="s-timeline">
-                    <div class="s-timeline-content" style="left: {$checkin->minPercent}%; right: {100 - $checkin->maxPercent}%;" id="s-timeline-content-{$checkin->id}" title="Project 1: Nh, Project 2: Mh, Project 3: Lh"></div>
-                    {if rand(0,1)}
-                        <style>
-                            #s-timeline-content-{$checkin->id} {
-
-                                background: -webkit-linear-gradient(left,  #ffd60a 40%,#1e5799 40%,#1e5799 78%,#c62bdb 78%); /* Chrome10-25,Safari5.1-6 */
-
-                            }
-                        </style>
+                    <div class="s-timeline-content" style="left: {$checkin->minPercent}%; right: {100 - $checkin->maxPercent}%;" id="s-timeline-content-{$checkin->id}" {if $checkin->hasProjects}title="{$checkin->projectDurationTitle|escape}"{/if}></div>
+                    {if $checkin->hasProjects}
+                    <style>
+                        #s-timeline-content-{$checkin->id} {
+                            background: -webkit-linear-gradient(left, {$checkin->projectDurationCss});
+                        }
+                    </style>
                     {/if}
                 </div>
             </div>

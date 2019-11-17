@@ -38,6 +38,18 @@ class statusWaLogParser
         $lastWeek = $weeks[count($weeks) - 1];
         $minDay = $lastWeek->getFirstDay();
 
+        return $this->parseByDays($minDay, $maxDay, $user);
+    }
+
+    /**
+     * @param statusDay  $dayStart
+     * @param statusDay  $dayEnd
+     * @param statusUser $user
+     *
+     * @return array
+     */
+    public function parseByDays(statusDay $dayStart, statusDay $dayEnd, statusUser $user)
+    {
         $logs = $this->model->query(
             'select date(datetime) date, wa_log.* from wa_log 
              where (contact_id = i:contact_id 
@@ -45,8 +57,8 @@ class statusWaLogParser
                 and datetime between s:date1 and s:date2',
             [
                 'contact_id' => $user->getContactId(),
-                'date1'      => sprintf('%s 00:00:00', $minDay->getDate()->format('Y-m-d')),
-                'date2'      => sprintf('%s 23:59:59', $maxDay->getDate()->format('Y-m-d')),
+                'date1'      => sprintf('%s 00:00:00', $dayStart->getDate()->format('Y-m-d')),
+                'date2'      => sprintf('%s 23:59:59', $dayEnd->getDate()->format('Y-m-d')),
             ]
         )->fetchAll('date', 2);
 

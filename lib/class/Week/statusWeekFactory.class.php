@@ -44,6 +44,8 @@ class statusWeekFactory
     }
 
     /**
+     * @param DateTime $date
+     *
      * @return statusWeek
      * @throws Exception
      */
@@ -62,31 +64,51 @@ class statusWeekFactory
      * @throws waException
      * @throws Exception
      */
-    public static function getWeeksDto(statusUser $user, $n = self::DEFAULT_WEEKS_LOAD, $withCurrent = false, $offset = 0)
-    {
+    public static function getWeeksDto(
+        statusUser $user,
+        $n = self::DEFAULT_WEEKS_LOAD,
+        $withCurrent = false,
+        $offset = 0
+    ) {
         $weeks = self::createLastNWeeks($n, $withCurrent, self::DEFAULT_WEEKS_LOAD * $offset);
         $weeksDto = [];
+
+        if (empty($weeks)) {
+            return $weeksDto;
+        }
 
         /** @var statusCheckinRepository $checkinRepository */
         $checkinRepository = stts()->getEntityRepository(statusCheckin::class);
 
         $checkins = $checkinRepository->findByWeeks($weeks, $user);
-        $walogs = (new statusWaLogParser())->parseByWeeks($weeks, $user);
+
+        $maxDay = $weeks[0]->getLastDay();
+        $minDay = $weeks[count($weeks) - 1]->getFirstDay();
+
+        $walogs = (new statusWaLogParser())->parseByDays($minDay, $maxDay, $user);
+
+        /** @var statusProjectModel $projectModel */
+        $projectModel = stts()->getModel(statusProject::class);
+        $projectData = $projectModel->getByDatesAndContactId(
+            $minDay->getDate()->format('Y-m-d'),
+            $maxDay->getDate()->format('Y-m-d'),
+            $user->getContactId()
+        );
+
+        $dayDtoAssembler = new statusDayDotAssembler();
 
         /** @var statusWeek $week */
         foreach ($weeks as $week) {
             $weekDto = new statusWeekDto($week);
             foreach ($week->getDays() as $day) {
-                $date = $day->getDate()->format('Y-m-d');
-                $checkins =  isset($checkins[$date]) ? $checkins[$date] : [];
-                $dayDto = new statusDayDto($day, $checkins);
+                $dayDto = new statusDayDto($day);
                 $dayDto->isFromCurrentWeek = $weekDto->isCurrent;
 
-                if (isset($walogs[$date])) {
-                    foreach ($walogs[$date] as $appId => $walog) {
-                        $dayDto->walogs[$appId] = new statusWaLogDto($appId, $walog);
-                    }
-                }
+                $dayDtoAssembler
+                    ->fillWithCheckins($dayDto, isset($checkins[$dayDto->date]) ? $checkins[$dayDto->date] : [])
+                    ->fillWithWalogs($dayDto, isset($walogs[$dayDto->date]) ? $walogs[$dayDto->date] : [])
+                    ->fillCheckinsWithProjects($dayDto->checkins, $projectData)
+                ;
 
                 $weekDto->days[] = $dayDto;
             }

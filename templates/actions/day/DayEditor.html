@@ -1,4 +1,3 @@
-<!-- DAY EDIT UI -->
 <div class="s-editor shadowed" data-status-day-date="{$day->date}">
     <!-- TIME & STATUS -->
     <div class="block double-padded">
@@ -25,6 +24,7 @@
         <div class="s-editor-slider"
              data-checkin="{$checkin->id}"
              {if $checkin->id == $day->firstCheckin->id}data-checkin-first{/if}
+             data-checkin-has-projects="{$checkin->hasProjects|intval}"
         >
         <form style="padding: 20px 0 10px;display: flex;width: 100%;">
             <input type="hidden" name="checkin[id]" value="{$checkin->id}"/>
@@ -82,16 +82,25 @@
 
     <!-- COMMENT & LOGGED ENTITIES -->
     <div class="s-editor-summary block double-padded blank">
-        <textarea class="s-editor-comment" placeholder="[`Enter your daily report here...`]" name="">{$day->firstCheckin->comment|escape}</textarea>
+        <textarea class="s-editor-comment" placeholder="[`Enter your daily report here...`]" name="checkin[comment]">{$day->firstCheckin->comment|escape}</textarea>
         <div class="s-editor-commit">
             <input type="button" value="[`Save`]" class="button yellow s-editor-commit-button" />
             <span class="s-editor-commit-indicator italic gray">[`Saved`] <i class="icon16 yes-bw"></i></span>
         </div>
+
         <div class="s-logged-apps">
-            <a href="#" class="s-logged-app-counter inline-link"><i class="icon16 s-app-icon" style="background-image: url('/wa-apps/shop/img/shop.png');"></i><b><i>3</i></b></a>
-            <a href="#" class="s-logged-app-counter inline-link"><i class="icon16 s-app-icon" style="background-image: url('/wa-apps/pocketlists/img/pocketlists48.png');"></i><b><i>15</i></b></a>
-            <a href="#" class="s-logged-app-counter inline-link"><i class="icon16 s-app-icon" style="background-image: url('/wa-apps/blog/img/blog.png');"></i><b><i>1</i></b></a>
-            <a href="#" class="s-logged-app-counter inline-link"><i class="icon16 s-app-icon" style="background-image: url('/wa-apps/tasks/img/tasks.png');"></i><b><i>7</i></b></a>
+        {foreach $day->walogs as $walog}
+        {if $walog->count}
+            <a href="#" class="s-logged-app-counter inline-link" data-status-walog-app="{$walog->appId}"><i class="icon16 s-app-icon" style="background-image: url('{$walog->appIcon}');"></i><b><i>{$walog->count}</i></b></a>
+        {/if}
+        {/foreach}
+            <div data-status-walog-app-logs-explain>
+            {foreach $day->walogs as $walog}
+                <div data-status-walog-app-logs="{$walog->appId}" style="display: none">
+                    <pre class="small">{$walog->logs|print_r}</pre>
+                </div>
+            {/foreach}
+            </div>
         </div>
     </div>
 </div>

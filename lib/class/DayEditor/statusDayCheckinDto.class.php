@@ -71,14 +71,29 @@ class statusDayCheckinDto implements JsonSerializable
     public $maxPercent;
 
     /**
-     * @var statusDayProjectDuration[]
+     * @var statusDayProjectDurationDto[]
      */
     public $projectsDuration = [];
+
+    /**
+     * @var string
+     */
+    public $projectDurationCss = '';
+
+    /**
+     * @var string
+     */
+    public $projectDurationTitle = '';
 
     /**
      * @var bool
      */
     public $hasProjects = false;
+
+    /**
+     * @var array
+     */
+    public $projectPercents = [];
 
     /**
      * statusDayCheckinDto constructor.
