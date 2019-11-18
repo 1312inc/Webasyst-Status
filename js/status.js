@@ -362,21 +362,31 @@
                     $checkin.trigger(type + 'Changed.stts');
                 });
 
-                $durationInput.on('focusout.stts', function (e) {
+                $durationInput.on('focusout.stts keydown.stts', function (e) {
                     var data = getDataFromCheckin($checkin),
-                        time = value();
+                        time = value(),
+                        keycode = e.keyCode || e.which,
+                        change = function () {
+                            manual = true;
+                            $durationLabel.show();
+                            if (type === 'break') {
+                                $durationLabel.text($.status.timeValueToStr(time));
+                            } else {
+                                $durationLabel.text(time + '%');
+                            }
+                            $durationInput.hide();
+                            $durationCheckbox.prop('checked', !!time);
+                            if (data.break_duration != time) {
+                                $checkin.trigger(type + 'Changed.stts');
+                            }
+                        };
 
-                    manual = true;
-                    $durationLabel.show();
-                    if (type === 'break') {
-                        $durationLabel.text($.status.timeValueToStr(time));
+                    if (keycode) {
+                       if (keycode === 13) {
+                           change();
+                       }
                     } else {
-                        $durationLabel.text(time + '%');
-                    }
-                    $durationInput.hide();
-                    $durationCheckbox.prop('checked', !!time);
-                    if (data.break_duration != time) {
-                        $checkin.trigger(type + 'Changed.stts');
+                        change();
                     }
                 });
 
