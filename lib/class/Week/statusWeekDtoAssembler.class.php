@@ -61,7 +61,7 @@ final class statusWeekDtoAssembler
 
         $prevDegree = 0;
         foreach ($donut->projects as $id => $project) {
-            $projectDegree = round($project->totalDuration / $degrees);
+            $projectDegree = round($project->totalDuration / $degrees, 2);
             $project->rotations[] = [
                 'from' => $prevDegree,
                 'to'   => min(180, $projectDegree),
@@ -77,11 +77,11 @@ final class statusWeekDtoAssembler
                 $prevDegree += $project->rotations[1]['to'];
             }
 
-            $project->percentsInWeek = round($project->totalDuration / $percent);
+            $project->percentsInWeek = round($project->totalDuration / $percent, 2);
         }
 
         $noProjectDuration = $donut->totalDuration - $projectDuration;
-        $noProjectDegree = $noProjectDuration > 0? round($noProjectDuration / $degrees) : 0;
+        $noProjectDegree = $noProjectDuration > 0? round($noProjectDuration / $degrees, 2) : 0;
         $noProjectDto = new statusWeekDonutProjectDto(0, _w('No project'), '#00c', $noProjectDuration);
         $donut->projects[0] = $noProjectDto;
         $noProjectDto->rotations[] = [
@@ -99,7 +99,7 @@ final class statusWeekDtoAssembler
         }
 
         $noActivityDuration = $maxDuration - $donut->totalDuration;
-        $noActivityDegree = $noActivityDuration > 0 ? round($noActivityDuration / $degrees) : 0;
+        $noActivityDegree = $noActivityDuration > 0 ? round($noActivityDuration / $degrees, 2) : 0;
         $noActivityDto = new statusWeekDonutProjectDto(-1, _w('No activity'), '#ccc', $noActivityDuration);
         $donut->projects[-1] = $noActivityDto;
         $noActivityDto->rotations[] = [

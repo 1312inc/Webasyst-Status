@@ -633,20 +633,29 @@
                     initCheckin($(this));
                 });
 
+                var saveComment = function() {
+                    $editorHtml.find('.s-editor-commit-button').hide();
+                    $editorHtml.find('.s-editor-commit-indicator').show();
+                    var $form = $editorHtml.find('[data-checkin]:first form'),
+                        $comment = $editorHtml.find('.s-editor-comment').clone();
+                    $form.append($comment.hide());
+                    save($form);
+                    $comment.remove();
+                };
+
                 $editorHtml
                 //если вводят текстовый отчет за день, то индикатор заменяется на кнопку сохранения
                     .on('input.stts propertychange.stts', '.s-editor-comment', function () {
                         $editorHtml.find('.s-editor-commit-button').show();
                         $editorHtml.find('.s-editor-commit-indicator').hide();
                     })
+                    .on('keydown.stts', '.s-editor-comment', function (e) {
+                        if ((e.ctrlKey || e.metaKey) && (e.keyCode || e.which) === 13) {
+                            saveComment();
+                        }
+                    })
                     .on('click.stts', '.s-editor-commit-button', function () {
-                        $editorHtml.find('.s-editor-commit-button').hide();
-                        $editorHtml.find('.s-editor-commit-indicator').show();
-                        var $form = $('[data-checkin]:first form'),
-                            $comment = $editorHtml.find('.s-editor-comment').clone();
-                        $form.append($comment.hide());
-                        save($form);
-                        $comment.remove();
+                        saveComment()
                     })
                     //+ напротив слайдера добавляет еще один слайдер за этот день
                     .on('click.stts', '[data-checkin-action="new"]', function (e) {

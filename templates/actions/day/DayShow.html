@@ -12,8 +12,12 @@
         <div class="s-day-summary">
             <div class="s-day-summary-timeline">
                 <div class="s-timeline">
-                    <div class="s-timeline-content" style="left: {$checkin->minPercent}%; right: {100 - $checkin->maxPercent}%;" id="s-timeline-content-{$checkin->id}" {if $checkin->hasProjects}title="{$checkin->projectDurationTitle|escape}"{/if}></div>
-                    {if $checkin->hasProjects}
+                    <div class="s-timeline-content {if !$checkin->id}s-timeline-content-gray{/if}"
+                         style="left: {$checkin->minPercent}%; right: {100 - $checkin->maxPercent}%;"
+                         {if $checkin->id}id="s-timeline-content-{$checkin->id}"{/if}
+                         {if $checkin->hasProjects}title="{$checkin->projectDurationTitle|escape}"{/if}
+                    ></div>
+                    {if $checkin->id && $checkin->hasProjects}
                     <style>
                         #s-timeline-content-{$checkin->id} {
                             background: -webkit-linear-gradient(left, {$checkin->projectDurationCss});
