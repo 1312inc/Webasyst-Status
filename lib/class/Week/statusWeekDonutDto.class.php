@@ -6,17 +6,22 @@
 class statusWeekDonutDto
 {
     /**
-     * @var statusWeek
+     * @var statusWeekDonutProjectDto[]
      */
-    public $week;
+    public $projects = [];
 
     /**
-     * @var statusProject[]
+     * @var int
      */
-    public $projects;
+    public $totalDuration;
 
     /**
      * @var string
      */
-    public $time;
+    public $totalDurationStr;
+
+    /**
+     * @var int
+     */
+    public $weekNum = 0;
 }

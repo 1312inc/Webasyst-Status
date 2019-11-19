@@ -11,9 +11,14 @@ class statusWeekDonutProjectDto
     public $name;
 
     /**
+     * @var int
+     */
+    public $totalDuration;
+
+    /**
      * @var string
      */
-    public $time;
+    public $totalDurationStr;
 
     /**
      * @var string
@@ -23,10 +28,37 @@ class statusWeekDonutProjectDto
     /**
      * @var int
      */
-    public $rotate;
+    public $percentsInWeek;
 
     /**
      * @var int
      */
-    public $num;
+    public $id;
+
+    /**
+     * @var array
+     */
+    public $rotations = [];
+
+    /**
+     * statusWeekDonutProjectDto constructor.
+     *
+     * @param int    $id
+     * @param string $name
+     * @param string $color
+     * @param int    $totalDuration
+     *
+     * @throws Exception
+     */
+    public function __construct($id, $name, $color, $totalDuration)
+    {
+        $this->id = $id;
+        $this->name = $name;
+        $this->color = $color;
+        $this->totalDuration = $totalDuration;
+        $this->totalDurationStr = statusTimeHelper::getTimeDurationInHuman(
+            0,
+            $totalDuration * statusTimeHelper::SECONDS_IN_MINUTE
+        );
+    }
 }

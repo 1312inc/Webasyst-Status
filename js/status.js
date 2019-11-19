@@ -601,6 +601,8 @@
             function savedOk(data, $form) {
                 $editorHtml.find('.s-editor-commit-indicator i.icon16').removeClass('loading').addClass('yes-bw');
                 $form.find('[name="checkin[id]"]').val(data.id);
+                var weekNum = parseInt($editorHtml.data('status-week-of-day'));
+                $('[data-status-week-donut="' + weekNum + '"]').trigger('reloadDonut.stts');
             }
 
             function save($form) {

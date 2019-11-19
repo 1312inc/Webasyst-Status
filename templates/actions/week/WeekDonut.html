@@ -1,20 +1,23 @@
+<section data-status-week-donut="{$donut->weekNum}">
+
 <div class="s-donut-chart-container">
     <div class="s-donut-chart">
-        <div id="section1" class="clip" title="[`No project`]">
-            <div class="item"></div>
-        </div>
         {foreach $donut->projects as $p}
-        <div id="section2" class="clip" title="Project {$p->name|escape}: {$p->time}">
+        {foreach $p->rotations as $rid => $rotation}
+            <div data-status-donut-project="{$donut->weekNum}-{$p->id}-{$rid}" class="clip" title="Project {$p->name|escape}: {$p->totalDurationStr}">
             <div class="item"></div>
         </div>
         {/foreach}
-        <div class="center">{$donut->time}</div>
+        {/foreach}
+        <div class="center">{$donut->totalDurationStr}</div>
     </div>
 </div>
 <style>
     {foreach $donut->projects as $p}
-    .s-donut-chart #section{$p->number} { transform: rotate({$p->rotateFrom}deg); }
-    .s-donut-chart #section{$p->number} .item { background-color: {$p->color}; transform: rotate({$p->rotateTo}deg); }
+    {foreach $p->rotations as $rid => $rotation}
+    .s-donut-chart [data-status-donut-project="{$donut->weekNum}-{$p->id}-{$rid}"] { transform: rotate({$rotation['from']}deg); }
+    .s-donut-chart [data-status-donut-project="{$donut->weekNum}-{$p->id}-{$rid}"] .item { background-color: {$p->color}; transform: rotate({$rotation['to']}deg); }
+    {/foreach}
     {/foreach}
 </style>
 
@@ -22,6 +25,8 @@
     {foreach $donut->projects as $p}
         <i class="icon16 color" style="background: {$p->color};"></i>
         {$p->name|escape}
-        <span class="hint bold">{$p->time}</span><br>
+        <span class="hint bold">{$p->totalDurationStr}</span><br>
     {/foreach}
 </div>
+
+</section>

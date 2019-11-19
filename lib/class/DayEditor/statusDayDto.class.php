@@ -11,6 +11,11 @@ class statusDayDto
     public $date;
 
     /**
+     * @var int
+     */
+    public $weekNum;
+
+    /**
      * @var string
      */
     public $dayname;
@@ -68,7 +73,6 @@ class statusDayDto
         $this->date = $day->getDate()->format('Y-m-d');
         $this->today = $day->isToday();
         $this->dayname = $day->getDate()->format('D');
-
-
+        $this->weekNum = statusTimeHelper::getWeekNumberByDate($day->getDate());
     }
 }

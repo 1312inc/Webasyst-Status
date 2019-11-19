@@ -63,6 +63,15 @@
                 return false;
             });
 
+        $.status.$status_content.on('reloadDonut.stts', '[data-status-week-donut]', function () {
+            var $donut = $(this),
+                weekNum = $donut.data('status-week-donut');
+
+            $.get('?module=week&action=donut&contact_id={$current_contact_id}&week_num='+weekNum, function (html) {
+                $donut.replaceWith(html);
+            })
+        });
+
         if (currentContactId == $.status.options.userId) {
             $.status.$status_content
                 .off('click.stts', '.s-day')

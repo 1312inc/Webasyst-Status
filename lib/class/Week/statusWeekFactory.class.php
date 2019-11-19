@@ -55,6 +55,21 @@ class statusWeekFactory
     }
 
     /**
+     * @param int $num
+     *
+     * @return statusWeek
+     * @throws Exception
+     */
+    public static function createWeekByNum($num)
+    {
+        $date = new DateTime();
+        $date->setISODate($date->format('Y'), $num, 1);
+        $week = self::createWeekByDate($date);
+
+        return $week;
+    }
+
+    /**
      * @param statusUser $user
      * @param int        $n
      * @param bool       $withCurrent
@@ -96,6 +111,7 @@ class statusWeekFactory
         );
 
         $dayDtoAssembler = new statusDayDotAssembler();
+        $weekDtoAssembler = new statusWeekDtoAssembler();
 
         /** @var statusWeek $week */
         foreach ($weeks as $week) {
@@ -112,6 +128,8 @@ class statusWeekFactory
 
                 $weekDto->days[] = $dayDto;
             }
+
+            $weekDto->donut = $weekDtoAssembler->getDonutUserStatDto($weekDto, $week, $user);
 
             $weeksDto[] = $weekDto;
         }

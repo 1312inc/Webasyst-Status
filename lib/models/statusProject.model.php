@@ -22,7 +22,9 @@ class statusProjectModel extends statusModel
             from status_project sp
             join status_checkin_projects scp on sp.id = scp.project_id
             join status_checkin sc on sc.id = scp.checkin_id
-            where sc.contact_id = i:contact_id and sc.date = s:date';
+            where sc.contact_id = i:contact_id 
+                and sc.date = s:date
+                and sp.is_archived = 0';
 
         return $this->query($q, ['contact_id' => $contactId, 'date' => $date])->fetchAll('checkproj');
     }
@@ -40,8 +42,54 @@ class statusProjectModel extends statusModel
             from status_project sp
             join status_checkin_projects scp on sp.id = scp.project_id
             join status_checkin sc on sc.id = scp.checkin_id
-            where sc.contact_id = i:contact_id and sc.date between s:date1 and s:date2';
+            where sc.contact_id = i:contact_id 
+                and sc.date between s:date1 and s:date2
+                and sp.is_archived = 0';
 
-        return $this->query($q, ['contact_id' => $contactId, 'date1' => $dateStart, 'date2' => $dateEnd])->fetchAll('checkproj');
+        return $this
+            ->query(
+                $q,
+                [
+                    'contact_id' => $contactId,
+                    'date1'      => $dateStart,
+                    'date2'      => $dateEnd,
+                ]
+            )
+            ->fetchAll('checkproj');
+    }
+
+    /**
+     * @param string $dateStart
+     * @param string $dateEnd
+     * @param int    $contactId
+     *
+     * @return array
+     */
+    public function getStatByDatesAndContactId($dateStart, $dateEnd, $contactId)
+    {
+        $q = 'select sp.id project_id,
+                   sp.name,
+                   sp.color,
+                   sp.is_archived,
+                   sp.created_by,
+                   sum(scp.duration) total_duration
+            from status_project sp
+                     join status_checkin_projects scp on sp.id = scp.project_id
+                     join status_checkin sc on sc.id = scp.checkin_id
+            where sc.contact_id = i:contact_id
+              and sc.date between s:date1 and s:date2
+              and sp.is_archived = 0
+            group by sp.id';
+
+        return $this
+            ->query(
+                $q,
+                [
+                    'contact_id' => $contactId,
+                    'date1'      => $dateStart,
+                    'date2'      => $dateEnd,
+                ]
+            )
+            ->fetchAll('project_id');
     }
 }
