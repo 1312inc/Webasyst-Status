@@ -92,6 +92,12 @@ final class statusDayDotAssembler
                         $projectDurationDto->duration * statusTimeHelper::SECONDS_IN_MINUTE
                     );
             }
+
+            if ($percents < 100) {
+                $css[] = '#f1f2f3 '.$percents.'%';
+                $css[] = '#f1f2f3 100%';
+            }
+
             $checkin->projectDurationCss = implode(', ', $css);
             $checkin->projectDurationTitle = implode(', ', $title);
         }

@@ -333,7 +333,7 @@
                 type = type || 'break';
 
                 function value() {
-                    return parseFloat($durationInput.val());
+                    return parseFloat($durationInput.val()) || 0;
                 }
 
                 // var currentTimeStr = timeValueToStr(value());
@@ -353,14 +353,23 @@
                     //$('.s-break-duration-input').select();
                 });
 
-                $durationCheckbox.on('change.stts', function () {
-                    if ($durationCheckbox.is(':checked') && value() == 0) {
-                        if (type === 'break') {
-                            $durationInput.val(1);
+                $durationCheckbox
+                    .on('change.stts', function () {
+                        if ($durationCheckbox.is(':checked')) {
+                            if (value() == 0 && type === 'break') {
+                                $durationInput.val(1);
+                            }
+                            $durationInput.show().focus();
+                            $durationLabel.hide();
+                        } else {
+                            $durationInput.hide();
+                            $durationLabel.show();
                         }
-                    }
-                    $checkin.trigger(type + 'Changed.stts');
-                });
+                        $checkin.trigger(type + 'Changed.stts');
+                    })
+                    .on('click.stts', function (e) {
+                        $durationCheckbox.closest('.s-editor-project').toggleClass('selected');
+                    });
 
                 $durationInput.on('focusout.stts keydown.stts', function (e) {
                     var data = getDataFromCheckin($checkin),
@@ -368,7 +377,13 @@
                         keycode = e.keyCode || e.which,
                         change = function () {
                             manual = true;
-                            $durationLabel.show();
+
+                            if (time) {
+                                $durationLabel.show();
+                            } else {
+                                $durationLabel.hide();
+                                $durationCheckbox.closest('.s-editor-project').removeClass('selected');
+                            }
                             if (type === 'break') {
                                 $durationLabel.text($.status.timeValueToStr(time));
                             } else {
@@ -376,9 +391,7 @@
                             }
                             $durationInput.hide();
                             $durationCheckbox.prop('checked', !!time);
-                            if (data.break_duration != time) {
-                                $checkin.trigger(type + 'Changed.stts');
-                            }
+                            $checkin.trigger(type + 'Changed.stts');
                         };
 
                     if (keycode) {
@@ -450,35 +463,31 @@
 
                         var prevPercent = 0;
                         $.each(projects, function (i, project) {
-                            if (!project.isOn()) {
+                            if (!project.isOn() && project.value()) {
                                 return;
                             }
-                            var percent = parseInt(project.input.val());
+                            var percent = parseInt(project.value());
                             colors.push(project.wrapper.data('status-project-color') + ' ' + prevPercent + '%');
                             prevPercent += percent;
                             colors.push(project.wrapper.data('status-project-color') + ' ' + prevPercent + '%');
                         });
 
+                        if (prevPercent < 100) {
+                            colors.push('#f1f2f3 ' + prevPercent + '%');
+                            colors.push('#f1f2f3 100%');
+                        }
 
                         var gradient = colors.join(', '),
                             style = [
-                                "background: #ffd60a",
-                                "background: -moz-linear-gradient(left, " + gradient + ")",
-                                "background: -webkit-linear-gradient(left, " + gradient + ")",
-                                "background: linear-gradient(to right, " + gradient + ")",
-                                "width: " + width,
-                                "left: " + left,
+                                'background: #ffd60a',
+                                'background: -moz-linear-gradient(left, ' + gradient + ')',
+                                'background: -webkit-linear-gradient(left, ' + gradient + ')',
+                                'background: linear-gradient(to right, ' + gradient + ')',
+                                'width: ' + width,
+                                'left: ' + left,
                             ];
 
                         $line.attr('style', style.join(';'));
-
-                        // $line.css{{
-                        //     background': '#ffd60a',
-                        //     background': '-moz-linear-gradient(left,  #ffd60a 40%, #1e5799 40%, #1e5799 78%, #c62bdb 78%)',
-                        //     background: -webkit-linear-gradient(left,  #ffd60a 40%,#1e5799 40%,#1e5799 78%,#c62bdb 78%)',
-                        //     background: linear-gradient(to right,  #ffd60a 40%,#1e5799 40%,#1e5799 78%,#c62bdb 78%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-                        //     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffd60a', endColorstr='#c62bdb',GradientType=1 ); /* IE6-9 */
-                        // }}
                     },
                     recalculateProjects = function () {
                         var percent = 100,
@@ -705,11 +714,6 @@
                             },
                             'esc': true,
                         });
-                    })
-                    .on('click.stts', '.s-editor-project input[type="checkbox"]', function () {
-                        var $this = $(this);
-
-                        $this.closest('.s-editor-project').toggleClass('selected');
                     })
                     .on('click.stts', '[data-status-walog-app]', function (e) {
                         e.preventDefault();
