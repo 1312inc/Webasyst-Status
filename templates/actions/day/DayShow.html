@@ -11,8 +11,8 @@
         <div class="checkin">
         <div class="s-day-summary">
             <div class="s-day-summary-timeline">
-                <div class="s-timeline">
-                    <div class="s-timeline-content {if !$checkin->id}s-timeline-content-gray{/if}"
+                <div class="s-timeline">{strip}
+                    <div class="s-timeline-content{if !$checkin->id} s-timeline-content-empty{/if}"
                          style="left: {$checkin->minPercent}%; right: {100 - $checkin->maxPercent}%;"
                          {if $checkin->id}id="s-timeline-content-{$checkin->id}"{/if}
                          {if $checkin->hasProjects}title="{$checkin->projectDurationTitle|escape}"{/if}
@@ -24,7 +24,7 @@
                         }
                     </style>
                     {/if}
-                </div>
+                {/strip}</div>
             </div>
             <div class="s-day-summary-user-report">
                 <div class="s-author">
@@ -40,9 +40,11 @@
                         <a href="#" class="s-logged-app-counter inline-link" data-status-walog-app="{$walog->appId}"><i class="icon16 s-app-icon" style="background-image: url('{$walog->appIcon}');"></i><b><i>{$walog->count}</i></b></a>
                         {/if}
                     {foreachelse}
-                    <div class="s-logged-apps gray">
-                        [`No app activity logged`]
-                    </div>
+                        {if !$checkin->id}
+                            <div class="s-logged-apps gray">
+                                [`No activity recorded`]
+                            </div>
+                        {/if}
                     {/foreach}
                     <div data-status-walog-app-logs-explain>
                     {foreach $day->walogs as $walog}
