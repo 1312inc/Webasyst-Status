@@ -49,13 +49,17 @@ class statusChronologyAction extends statusViewAction
         $weeksDto = statusWeekFactory::getWeeksDto($this->user, 5, true);
         $currentWeek = array_shift($weeksDto);
 
-        $this->view->assign(
-            [
-                'currentWeek'        => $currentWeek,
-                'weeks'              => $weeksDto,
-                'sidebar_html'       => (new statusBackendSidebarAction())->display(),
-                'current_contact_id' => $this->user->getContactId(),
-            ]
-        );
+        $viewData = [
+            'currentWeek' => $currentWeek,
+            'weeks' => $weeksDto,
+            'sidebar_html' => (new statusBackendSidebarAction())->display(),
+            'current_contact_id' => $this->user->getContactId(),
+            'statuses' => statusTodayStatusFactory::getAllForUser($this->user),
+            'nextStatus' => statusTodayStatusFactory::getForUser(
+                $this->user,
+                (new DateTime())->modify('+1 day')
+            ),
+        ];
+        $this->view->assign($viewData);
     }
 }

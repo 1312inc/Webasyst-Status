@@ -33,7 +33,9 @@ class statusDayEditorAction extends statusViewAction
 
         $this->view->assign(
             [
-                'day'      => $dayDto,
+                'day'    => $dayDto,
+                'statuses' => statusTodayStatusFactory::getAllForUser($user),
+                'currentStatus' => statusTodayStatusFactory::getForUser($user, new DateTime()),
             ]
         );
     }

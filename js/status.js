@@ -705,16 +705,6 @@
 
                         initCheckin($newCheckin);
                     })
-                    .on('click.stts', '.s-status-custom-status', function () {
-                        $('<div>input: <b>[ enter custom status label ]</b><br><br> radio:<br> <b>(*) calendar name</b><br><b>( ) calendar name</b><br><b>( ) calendar name</b></div>').waDialog({
-                            'height': '400px',
-                            'width': '660px',
-                            'onClose': function (f) {
-                                $(this).remove;
-                            },
-                            'esc': true,
-                        });
-                    })
                     .on('click.stts', '[data-status-walog-app]', function (e) {
                         e.preventDefault();
                         e.stopPropagation();
@@ -776,7 +766,7 @@
 
                 // var pocketId = $(this).data('pl2-pocket-id') || 0;
 
-                $('#pl-pocket-dialog').waDialog({
+                $('#stts-project-dialog').waDialog({
                     'height': '250px',
                     'width': '600px',
                     'url': '?module=project&action=dialog&id=' + 0,
@@ -824,6 +814,75 @@
                     }
                 });
             })
+
+            self.$status_content
+                .on('click.stts', '[data-status-wrapper="statuses"] [data-status-action="custom-status"]', function (e) {
+                    e.preventDefault();
+
+                    var $this = $(this),
+                        offset = $this
+                            .closest('[data-status-wrapper="statuses"]')
+                            .data('status-today-status-offset') || '',
+                        $wrapper = $this.closest('[data-status-wrapper="statuses"]');
+
+                    $('#stts-status-dialog').waDialog({
+                        'height': '250px',
+                        'width': '600px',
+                        'url': '?module=todaystatus&action=dialog&offset=' + encodeURIComponent(offset),
+                        onLoad: function () {
+                            var d = this,
+                                $dialogWrapper = $(d);
+
+                            setTimeout(function () {
+                                $dialogWrapper.find('status[summary]').trigger('focus');
+                            }, 13.12);
+                        },
+                        onSubmit: function (d) {
+                            d.find('.dialog-buttons input[type="button"]').after($.status.$loading);
+                            $.post('?module=todaystatus&action=save', d.find('form').serialize(), function (r) {
+                                $.status.$loading.remove();
+                                if (r.status === 'ok') {
+                                    $wrapper.replaceWith(r.data);
+
+                                    $.status.reloadSidebar();
+                                    d.trigger('close');
+                                } else {
+
+                                }
+                            }, 'json');
+                            return false;
+                        }
+                    });
+                })
+                .on('click.stts', '[data-status-wrapper="statuses"] [data-status-calendar-id] a', function (e) {
+                    e.preventDefault();
+                    var $this = $(this),
+                        $li = $this.closest('[data-status-calendar-id]'),
+                        calendarId = $li.data('status-calendar-id'),
+                        offset = $this
+                            .closest('[data-status-wrapper="statuses"]')
+                            .data('status-today-status-offset') || '',
+                        $wrapper = $this.closest('[data-status-wrapper="statuses"]');
+
+
+                    $.post('?module=todaystatus&action=save', {
+                        status: {
+                            calendar_id: calendarId,
+                            // brand_new: 1,
+                            offset: offset
+                        }
+                    }, function (r) {
+                        $.status.$loading.remove();
+                        if (r.status === 'ok') {
+                            $wrapper.replaceWith(r.data);
+
+                            $.status.reloadSidebar();
+                        } else {
+
+                        }
+                    }, 'json');
+                })
+            ;
         }
     }
 }(jQuery));

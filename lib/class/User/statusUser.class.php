@@ -53,12 +53,12 @@ class statusUser extends statusAbstractEntity
     /**
      * @var string
      */
-    protected $status = '';
+    protected $status;
 
     /**
-     * @var string
+     * @var statusTodayStatus
      */
-    protected $teamrole = '';
+    protected $todayStatus;
 
     /**
      * @var string
@@ -94,6 +94,11 @@ class statusUser extends statusAbstractEntity
      * @var string
      */
     protected $locale;
+
+    public function __construct()
+    {
+        $this->status = new statusTodayStatus();
+    }
 
     /**
      * @return int
@@ -237,19 +242,23 @@ class statusUser extends statusAbstractEntity
     }
 
     /**
-     * @return string
+     * @return statusTodayStatus|null
      */
-    public function getStatus()
+    public function getTodayStatus()
     {
-        return $this->status;
+        return $this->todayStatus;
     }
 
     /**
-     * @return string
+     * @param statusTodayStatus|null $todayStatus
+     *
+     * @return $this
      */
-    public function getTeamrole()
+    public function setTodayStatus(statusTodayStatus $todayStatus = null)
     {
-        return $this->teamrole;
+        $this->todayStatus = $todayStatus;
+
+        return $this;
     }
 
     /**
@@ -322,7 +331,6 @@ class statusUser extends statusAbstractEntity
             $this->login = $this->contact->get('login');
             $this->userPic = $this->contact->getPhoto(20);
             $this->status = $this->contact->getStatus();
-            $this->teamrole = $this->contact->get('jobtitle');
             $this->exists = $this->contact->get('is_user') != -1;
             $this->email = $this->getContact()->get('email', 'default');
         }

@@ -15,10 +15,12 @@ class statusUserRepository extends statusBaseRepository
      */
     public function findByContactId($contactId)
     {
+        $today = new DateTimeImmutable();
         $user = $this->getFromCache($contactId);
         if (!$user instanceof statusUser) {
             $user = $this->findByFields(['contact_id' => $contactId]);
             if ($user instanceof statusUser) {
+                $user->setTodayStatus(statusTodayStatusFactory::getForUser($user, $today));
                 $this->cache($contactId, $user);
             }
         }
@@ -43,13 +45,17 @@ class statusUserRepository extends statusBaseRepository
      */
     public function findAllExceptMe()
     {
+        $today = new DateTimeImmutable();
+
         $users = $this->findAll();
         /** @var statusUser $user */
         foreach ($users as $i => $user) {
             if ($user->isMe()) {
                 unset($users[$i]);
-                break;
+                continue;
             }
+
+            $user->setTodayStatus(statusTodayStatusFactory::getForUser($user, $today));
         }
 
         return $users;

@@ -1,0 +1,19 @@
+<ul class="menu-h dropdown" data-status-wrapper="statuses" data-status-today-status-offset="{$todayOffset|default:''}">
+    <li>
+        <a href="#" class="s-editor-status inline-link gray" data-status-current><b><i><strong>{if isset($currentStatus) && $currentStatus->getCalendarId()}{$currentStatus->getName()|escape}{else}[`Status`]{/if}</strong></i></b> <i class="icon10 darr"></i></a>
+        <ul class="menu-v with-icons s-status-selector">
+            {foreach $statuses as $status}
+                <li
+                        {if isset($currentStatus) && $currentStatus->getCalendarId() == $status->getCalendarId()}class="selected"{/if}
+                        data-status-calendar-id="{$status->getCalendarId()}"
+                        data-status-status-id="{$status->getStatusId()}"
+                >
+                    <a href="#"><i class="icon16 color" style="background-color: {$status->getBgColor()};"></i>{$status->getName()|escape}</a>
+                </li>
+            {/foreach}
+            <li data-status-calendar-id>
+                <a href="#" class="s-status-custom-status" data-status-action="custom-status">[`Custom status...`]</a>
+            </li>
+        </ul>
+    </li>
+</ul>

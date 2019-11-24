@@ -63,7 +63,7 @@ class statusConfig extends waAppConfig
             $this->cache = parent::getCache($type)
                 ?: new waCache(
                     new waFileCacheAdapter(['type' => 'file']),
-                    'pocketlists'
+                    'status'
                 );
         }
 

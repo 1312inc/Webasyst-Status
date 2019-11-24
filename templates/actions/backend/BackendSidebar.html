@@ -4,7 +4,7 @@
              <li class="selected bottom-padded">
                  <a href="#" class="bold">
                      <span class="count hint">{$timeByUserStat[$stts->getUser()->getId()]['timeStr']}</span>
-                     <i class="icon16 userpic20"></i>[`My status`]
+                     <i class="icon16 userpic20"></i>{if $stts->getUser()->getTodayStatus()->getStatusId()}{$stts->getUser()->getTodayStatus()->getName()|escape}{else}[`No status`]{/if}
                  </a>
              </li>
              {if count($users)}
@@ -13,7 +13,7 @@
                      <a href="#/contact/{$u->getContactId()}">
                          <span class="count hint"></span>{$timeByUserStat[$u->getId()]['timeStr']}
                          <i class="icon16 userpic20" style="background-image: {$u->getContact()->getPhoto()}"></i>{$u->getName()|escape}
-                         <span class="s-status" title="[`Status`]">group?</span>
+                         {if $u->getTodayStatus()->getStatusId()}<span class="s-status" title="{$u->getTodayStatus()->getName()|escape}">{$u->getTodayStatus()->getName()|escape}</span>{/if}
                      </a>
                  </li>
                  {/foreach}

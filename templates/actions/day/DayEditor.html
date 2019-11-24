@@ -3,12 +3,7 @@
     <div class="block double-padded">
 
         <div class="float-right block half-padded">
-            <ul class="menu-h dropdown">
-                <li>
-                    <a href="#" class="s-editor-status inline-link gray"><b><i><strong>[`Status`]</strong></i></b> <i class="icon10 darr"></i></a>
-{*                    {_draw_status_selector}*}
-                </li>
-            </ul>
+            {include inline file='./../todaystatus/TodaystatusList.html' statuses=$statuses currentStatus=$currentStatus}
         </div>
 
         <h1>

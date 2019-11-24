@@ -1,0 +1,38 @@
+<section>
+    <div class="dialog-content">
+        <div data-status-wrapper="status-settings-dialog">
+            <input type="hidden" name="status[offset]" value="{$offset}"/>
+            <h1>[`New status`]</h1>
+
+            <div class="fields form">
+                <div class="field-group">
+                    <div class="field">
+                        <div class="name nowrap">
+                            [`Status name`]
+                        </div>
+                        <div class="value">
+                            <input type="text" class="large bold" name="status[summary]"/>
+                        </div>
+                    </div>w
+                    <div class="field">
+                        <div class="name nowrap">
+                            [`Statuses`]
+                        </div>
+                        <ul class="value no-shift">
+                        {foreach $statuses as $status}
+                            <li>
+                            <label><input type="radio" name="status[calendar_id]" value="{$status->getCalendarId()}"/> {$status->getName()|escape}</label>
+                            </li>
+                        {/foreach}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="dialog-buttons">
+        <input type="submit" value="[`Save`]" class="button green"/> [`or`] <a class="cancel" href="#">[`cancel`]</a>
+    </div>
+</section>
+

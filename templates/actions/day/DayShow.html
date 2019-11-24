@@ -31,7 +31,7 @@
                     <h5 class="s-username">
                         <i class="icon16 userpic20"></i>
                         {$stts->getContextUser()->getName()|escape}
-                        {if rand(0,1)}<span class="s-status" title="[`Status for today`]">Remote</span>{/if}
+                        {if $stts->getContextUser()->getTodayStatus()->getCalendarId()}<span class="s-status" title="[`Status for today`]">{$stts->getContextUser()->getTodayStatus()->getName()|escape}</span>{/if}
                     </h5>
 
                     <div class="s-logged-apps">

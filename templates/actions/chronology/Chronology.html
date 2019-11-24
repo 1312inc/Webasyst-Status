@@ -4,19 +4,14 @@
 
         <h5 class="heading align-center">[`This week`]</h5>
 
-        {include inline file='./../week/WeekDonut.html' donut=$currentWeek->donut}
+        {include file='./../week/WeekDonut.html' donut=$currentWeek->donut}
 
     </div>
 
     <!-- Tomorrow: SET TAG ONLY: Office / Remote / Ill / Day off / Custom tag -->
     <div class="s-tomorrow-planner">
         <div class="float-right">
-            <ul class="menu-h dropdown">
-                <li>
-                    <a href="#" class="inline-link gray"><b><i>[`Status`]</i></b> <i class="icon10 darr"></i></a>
-{*                    {_draw_status_selector}*}
-                </li>
-            </ul>
+            {include file='./../todaystatus/TodaystatusList.html' statuses=$statuses todayOffset='+1' currentStatus=$nextStatus}
         </div>
         <h3>
             [`Tomorrow`]
@@ -29,7 +24,7 @@
     </div>
 
     {foreach $currentWeek->days as $day}
-        {include inline file='./../day/DayShow.html' day=$day}
+        {include file='./../day/DayShow.html' day=$day}
     {/foreach}
 
     <!-- CHRONOLOGY -->
