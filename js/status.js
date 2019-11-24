@@ -370,7 +370,11 @@
                     var time = getValue(),
                         keycode = e.keyCode || e.which;
 
-                    var change = function () {
+                    if (keycode) {
+                       if (keycode === 13) {
+                           $durationInput.trigger('focusout.stts');
+                       }
+                    } else {
                         if (time > 100) {
                             time = 100;
                             setValue(time);
@@ -389,14 +393,6 @@
                             $durationLabel.text(time + '%');
                         }
                         $checkin.trigger(type + 'Changed.stts');
-                    };
-
-                    if (keycode) {
-                       if (keycode === 13) {
-                           change();
-                       }
-                    } else {
-                        change();
                         $durationInput.hide();
                     }
                 });
