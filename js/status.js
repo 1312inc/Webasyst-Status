@@ -332,7 +332,7 @@
 
                 type = type || 'break';
 
-                function value() {
+                function getValue() {
                     return parseFloat($durationInput.val()) || 0;
                 }
 
@@ -345,7 +345,7 @@
 
                     $durationLabel.hide();
                     $durationInput.show().select();
-                    if (!value()) {
+                    if (!getValue()) {
                         if (type === 'break') {
                             $durationInput.val(1);
                         }
@@ -356,14 +356,9 @@
                 $durationCheckbox
                     .on('change.stts', function () {
                         if ($durationCheckbox.is(':checked')) {
-                            if (value() == 0 && type === 'break') {
+                            if (getValue() == 0 && type === 'break') {
                                 $durationInput.val(1);
                             }
-                            $durationInput.show().focus();
-                            $durationLabel.hide();
-                        } else {
-                            $durationInput.hide();
-                            $durationLabel.show();
                         }
                         $checkin.trigger(type + 'Changed.stts');
                     })
@@ -372,27 +367,29 @@
                     });
 
                 $durationInput.on('focusout.stts keydown.stts', function (e) {
-                    var data = getDataFromCheckin($checkin),
-                        time = value(),
-                        keycode = e.keyCode || e.which,
-                        change = function () {
-                            manual = true;
+                    var time = getValue(),
+                        keycode = e.keyCode || e.which;
 
-                            if (time) {
-                                $durationLabel.show();
-                            } else {
-                                $durationLabel.hide();
-                                $durationCheckbox.closest('.s-editor-project').removeClass('selected');
-                            }
-                            if (type === 'break') {
-                                $durationLabel.text($.status.timeValueToStr(time));
-                            } else {
-                                $durationLabel.text(time + '%');
-                            }
-                            $durationInput.hide();
-                            $durationCheckbox.prop('checked', !!time);
-                            $checkin.trigger(type + 'Changed.stts');
-                        };
+                    var change = function () {
+                        if (time > 100) {
+                            time = 100;
+                            setValue(time);
+                        }
+                        if (time < 0) {
+                            time = 0;
+                            setValue(time);
+                        }
+
+                        manual = !!time;
+
+                        $durationLabel.show();
+                        if (type === 'break') {
+                            $durationLabel.text($.status.timeValueToStr(time));
+                        } else {
+                            $durationLabel.text(time + '%');
+                        }
+                        $checkin.trigger(type + 'Changed.stts');
+                    };
 
                     if (keycode) {
                        if (keycode === 13) {
@@ -400,27 +397,30 @@
                        }
                     } else {
                         change();
+                        $durationInput.hide();
                     }
                 });
+
+                function setValue(value) {
+                    $durationInput.val(value);
+                    if (type == 'break') {
+                        $durationLabel.text($.status.timeValueToStr(value));
+                    } else {
+                        $durationLabel.text(value + '%');
+                    }
+                }
 
                 $wrapper.data('checkboxDuration', this);
 
                 return {
-                    value: value,
+                    value: getValue,
                     isOn: function () {
                         return $durationCheckbox.is(':checked');
                     },
                     isManual: function () {
                         return manual;
                     },
-                    setValue: function (value) {
-                        $durationInput.val(value);
-                        if (type == 'break') {
-                            $durationLabel.text($.status.timeValueToStr(value));
-                        } else {
-                            $durationLabel.text(value + '%');
-                        }
-                    },
+                    setValue: setValue,
                     wrapper: $wrapper,
                     input: $durationInput,
                     checkbox: $durationCheckbox,
@@ -693,15 +693,6 @@
                         $newCheckin.find('form [name="checkin[id]"]').val('');
                         $newCheckin.find('.s-editor-project').removeClass('selected')
                             .closest('.s-editor-slider-projects').hide();
-
-                        // slider
-                        // var $line = $newCheckin.find('.ui-widget-header'),
-                        //     style = [
-                        //         "width: " + $line.get(0).style.width,
-                        //         "left: " + $line.get(0).style.left,
-                        //     ];
-                        // $line.attr('style', style.join(';'));
-
 
                         initCheckin($newCheckin);
                     })
