@@ -4,7 +4,7 @@
              <li class="selected bottom-padded">
                  <a href="#" class="bold">
                      <span class="count hint">{$timeByUserStat[$stts->getUser()->getId()]['timeStr']}</span>
-                     <i class="icon16 userpic20"></i>{if $stts->getUser()->getTodayStatus()->getStatusId()}{$stts->getUser()->getTodayStatus()->getName()|escape}{else}[`No status`]{/if}
+                     <i class="icon16 userpic20"></i>[`My status`]
                  </a>
              </li>
              {if count($users)}

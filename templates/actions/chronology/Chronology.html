@@ -11,7 +11,7 @@
     <!-- Tomorrow: SET TAG ONLY: Office / Remote / Ill / Day off / Custom tag -->
     <div class="s-tomorrow-planner">
         <div class="float-right">
-            {include file='./../todaystatus/TodaystatusList.html' statuses=$statuses todayOffset='+1' currentStatus=$nextStatus}
+            {include file='./../todaystatus/TodaystatusList.html' statuses=$statuses todayOffset=$tomorrow currentStatus=$nextStatus}
         </div>
         <h3>
             [`Tomorrow`]

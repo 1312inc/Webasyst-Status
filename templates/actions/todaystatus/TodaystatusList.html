@@ -1,4 +1,4 @@
-<ul class="menu-h dropdown" data-status-wrapper="statuses" data-status-today-status-offset="{$todayOffset|default:''}">
+<ul class="menu-h dropdown" data-status-wrapper="statuses" data-status-today-status-date="{$statusDate|default:''}">
     <li>
         <a href="#" class="s-editor-status inline-link gray" data-status-current><b><i><strong>{if isset($currentStatus) && $currentStatus->getCalendarId()}{$currentStatus->getName()|escape}{else}[`Status`]{/if}</strong></i></b> <i class="icon10 darr"></i></a>
         <ul class="menu-v with-icons s-status-selector">

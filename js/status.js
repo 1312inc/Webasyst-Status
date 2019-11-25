@@ -807,15 +807,15 @@
                     e.preventDefault();
 
                     var $this = $(this),
-                        offset = $this
+                        date = $this
                             .closest('[data-status-wrapper="statuses"]')
-                            .data('status-today-status-offset') || '',
+                            .data('status-today-status-date') || '',
                         $wrapper = $this.closest('[data-status-wrapper="statuses"]');
 
                     $('#stts-status-dialog').waDialog({
                         'height': '250px',
                         'width': '600px',
-                        'url': '?module=todaystatus&action=dialog&offset=' + encodeURIComponent(offset),
+                        'url': '?module=todaystatus&action=dialog&offset=' + encodeURIComponent(date),
                         onLoad: function () {
                             var d = this,
                                 $dialogWrapper = $(d);
@@ -846,9 +846,9 @@
                     var $this = $(this),
                         $li = $this.closest('[data-status-calendar-id]'),
                         calendarId = $li.data('status-calendar-id'),
-                        offset = $this
+                        date = $this
                             .closest('[data-status-wrapper="statuses"]')
-                            .data('status-today-status-offset') || '',
+                            .data('status-today-status-date') || '',
                         $wrapper = $this.closest('[data-status-wrapper="statuses"]');
 
 
@@ -856,7 +856,7 @@
                         status: {
                             calendar_id: calendarId,
                             // brand_new: 1,
-                            offset: offset
+                            date: date
                         }
                     }, function (r) {
                         $.status.$loading.remove();

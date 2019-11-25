@@ -3,7 +3,7 @@
     <div class="block double-padded">
 
         <div class="float-right block half-padded">
-            {include inline file='./../todaystatus/TodaystatusList.html' statuses=$statuses currentStatus=$currentStatus}
+            {include inline file='./../todaystatus/TodaystatusList.html' statuses=$statuses currentStatus=$currentStatus statusDate=$day->date}
         </div>
 
         <h1>
