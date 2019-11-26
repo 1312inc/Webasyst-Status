@@ -82,7 +82,7 @@ final class statusWeekDtoAssembler
 
         $noProjectDuration = $donut->totalDuration - $projectDuration;
         $noProjectDegree = $noProjectDuration > 0? round($noProjectDuration / $degrees, 2) : 0;
-        $noProjectDto = new statusWeekDonutProjectDto(0, _w('No project'), '#00c', $noProjectDuration);
+        $noProjectDto = new statusWeekDonutProjectDto(0, _w('No project'), 'linear-gradient(135deg, #50a8ff 25%, #74c2ff 25%, #74c2ff 50%, #50a8ff 50%, #50a8ff 75%, #74c2ff 75%, #74c2ff 100%) top center/5px 5px', $noProjectDuration);
         $donut->projects[0] = $noProjectDto;
         $noProjectDto->rotations[] = [
             'from' => $prevDegree,
@@ -100,7 +100,7 @@ final class statusWeekDtoAssembler
 
         $noActivityDuration = $maxDuration - $donut->totalDuration;
         $noActivityDegree = $noActivityDuration > 0 ? round($noActivityDuration / $degrees, 2) : 0;
-        $noActivityDto = new statusWeekDonutProjectDto(-1, _w('No activity'), '#ccc', $noActivityDuration);
+        $noActivityDto = new statusWeekDonutProjectDto(-1, _w('No activity'), '#eee', $noActivityDuration);
         $donut->projects[-1] = $noActivityDto;
         $noActivityDto->rotations[] = [
             'from' => $prevDegree,
