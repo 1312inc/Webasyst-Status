@@ -25,7 +25,7 @@ class statusDayEditor
 
         $dayDtoAssembler = new statusDayDotAssembler();
         $dayDtoAssembler
-            ->fillWithCheckins($dayDto, $checkins)
+            ->fillWithCheckins($dayDto, $checkins, $user)
             ->fillWithWalogs($dayDto, isset($walogs[$dayDto->date]) ? $walogs[$dayDto->date] : [])
         ;
 

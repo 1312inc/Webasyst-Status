@@ -95,6 +95,9 @@ class statusUser extends statusAbstractEntity
      */
     protected $locale;
 
+    /**
+     * statusUser constructor.
+     */
     public function __construct()
     {
         $this->status = new statusTodayStatus();

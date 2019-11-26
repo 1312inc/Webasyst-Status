@@ -1,4 +1,4 @@
-<div class="s-day{if $day->isFromCurrentWeek} s-this-week{/if}" data-status-day-date="{$day->date}">
+<div class="s-day{if $day->isFromCurrentWeek && $isMe} s-this-week{/if}" data-status-day-date="{$day->date}">
     <div class="s-day-date">
         <h3>
             {$day->date|wa_date:humandate}
@@ -30,8 +30,8 @@
                 <div class="s-author">
                     <h5 class="s-username">
                         <i class="icon16 userpic20"></i>
-                        {$stts->getContextUser()->getName()|escape}
-                        {if $stts->getContextUser()->getTodayStatus()->getCalendarId()}<span class="s-status" title="[`Status for today`]">{$stts->getContextUser()->getTodayStatus()->getName()|escape}</span>{/if}
+                        {$checkin->user->name|escape}
+                        {if $checkin->user->todayStatus->getCalendarId()}<span class="s-status" title="[`Status for today`]">{$checkin->user->todayStatus->getName()|escape}</span>{/if}
                     </h5>
 
                     <div class="s-logged-apps">

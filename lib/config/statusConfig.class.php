@@ -60,11 +60,7 @@ class statusConfig extends waAppConfig
     public function getCache($type = 'default')
     {
         if ($this->cache === null) {
-            $this->cache = parent::getCache($type)
-                ?: new waCache(
-                    new waFileCacheAdapter(['type' => 'file']),
-                    'status'
-                );
+            $this->cache = parent::getCache($type) ?: new waCache(new statusCacheAdapter(['type' => 'file']), 'status');
         }
 
         return $this->cache;
@@ -266,12 +262,12 @@ class statusConfig extends waAppConfig
     public function getDefaultViewVars()
     {
         return [
-            'backend_url'          => $this->getBackendUrl(true),
-            'plurl'                => wa()->getAppUrl(pocketlistsHelper::APP_ID),
-            'current_user'         => $this->getUser(),
+            'backend_url' => $this->getBackendUrl(true),
+            'plurl' => wa()->getAppUrl(pocketlistsHelper::APP_ID),
+            'current_user' => $this->getUser(),
             'pl2_attachments_path' => wa()->getDataUrl('attachments/', true, pocketlistsHelper::APP_ID),
-            'wa_app_static_url'    => wa()->getAppStaticUrl(pocketlistsHelper::APP_ID),
-            'pl2'                  => pl2(),
+            'wa_app_static_url' => wa()->getAppStaticUrl(pocketlistsHelper::APP_ID),
+            'pl2' => pl2(),
         ];
     }
 
@@ -340,11 +336,11 @@ class statusConfig extends waAppConfig
     private function loadVendors()
     {
         $customClasses = [
-            'lib/vendor/kmwa/Assert'    => [
+            'lib/vendor/kmwa/Assert' => [
                 'kmwaAssert',
                 'kmwaAssertException',
             ],
-            'lib/vendor/kmwa/Event'     => [
+            'lib/vendor/kmwa/Event' => [
                 'kmwaEvent',
                 'kmwaEventDispatcher',
                 'kmwaEventDispatcherInterface',
@@ -360,12 +356,12 @@ class statusConfig extends waAppConfig
                 'kmwaNotFoundException',
                 'kmwaNotImplementedException',
             ],
-            'lib/vendor/kmwa/Hydrator'  => [
+            'lib/vendor/kmwa/Hydrator' => [
                 'kmwaHydratableInterface',
                 'kmwaHydrator',
                 'kmwaHydratorInterface',
             ],
-            'lib/vendor/kmwa/Wa/View'   => [
+            'lib/vendor/kmwa/Wa/View' => [
                 'kmwaWaJsonActions',
                 'kmwaWaJsonController',
                 'kmwaWaViewAction',

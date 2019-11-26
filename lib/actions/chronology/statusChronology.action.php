@@ -54,12 +54,15 @@ class statusChronologyAction extends statusViewAction
             'weeks' => $weeksDto,
             'sidebar_html' => (new statusBackendSidebarAction())->display(),
             'current_contact_id' => $this->user->getContactId(),
+            'isMe' => $this->user->getContactId() == stts()->getUser()->getContactId(),
             'tomorrow' => (new DateTime())->modify('+1 day')->format('Y-m-d'),
             'statuses' => statusTodayStatusFactory::getAllForUser($this->user),
             'nextStatus' => statusTodayStatusFactory::getForUser(
                 $this->user,
                 (new DateTime())->modify('+1 day')
             ),
+            'isProject' => 0,
+            'contextUser' => $this->user
         ];
         $this->view->assign($viewData);
     }

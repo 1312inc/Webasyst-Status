@@ -108,7 +108,6 @@ class statusDayCheckinDto implements JsonSerializable
         $this->comment = $checkin->getComment();
         $this->max = $checkin->getEndTime();
         $this->min = $checkin->getStartTime();
-        $this->user = $checkin->getUser();
 
         $this->minPercent = statusTimeHelper::getDayMinutesInPercent($this->min);
         $this->maxPercent = statusTimeHelper::getDayMinutesInPercent($this->max);
@@ -126,6 +125,8 @@ class statusDayCheckinDto implements JsonSerializable
             (int)$checkin->getBreakDuration() * 60,
             sprintf_wp('%dh', 1)
         );
+
+        $this->user = new statusDayCheckinUserDto($checkin->getUser());
     }
 
     /**

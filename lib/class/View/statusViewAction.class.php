@@ -12,7 +12,7 @@ abstract class statusViewAction extends kmwaWaViewAction
     {
         return [
             'stts'    => stts(),
-            'isAdmin' => wa()->getUser()->isAdmin(statusConfig::APP_ID),
+            'isAdmin' => (int) wa()->getUser()->isAdmin(statusConfig::APP_ID),
         ];
     }
 }

@@ -13,20 +13,27 @@ final class statusDayDotAssembler
     /**
      * @param statusDayDto    $dayDto
      * @param statusCheckin[] $checkins
+     * @param statusUser      $user
      *
      * @return statusDayDotAssembler
-     * @throws Exception
+     * @throws waException
      */
-    public function fillWithCheckins(statusDayDto $dayDto, array $checkins)
+    public function fillWithCheckins(statusDayDto $dayDto, array $checkins, statusUser $user)
     {
         foreach ($checkins as $check) {
             $dayDto->startTime = min($dayDto->startTime, $check->getStartTime());
             $dayDto->endTime = max($dayDto->endTime, $check->getEndTime());
-            $dayDto->checkins[] = new statusDayCheckinDto($check);
+            $checkin = new statusDayCheckinDto($check);
+            $checkin->user->todayStatus = statusTodayStatusFactory::getForUser($user, new DateTime($check->getDate()));
+
+            $dayDto->checkins[] = $checkin;
         }
 
         if (empty($dayDto->checkins)) {
-            $dayDto->checkins[] = new statusDayCheckinDto(stts()->getEntityFactory(statusCheckin::class)->createNew());
+            $checkin = new statusDayCheckinDto(stts()->getEntityFactory(statusCheckin::class)->createNew());
+            $checkin->user->todayStatus = statusTodayStatusFactory::getForUser($user, new DateTime($dayDto->date));
+
+            $dayDto->checkins[] = $checkin;
         }
 
         $dayDto->firstCheckin = $dayDto->checkins[0];

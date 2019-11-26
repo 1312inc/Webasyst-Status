@@ -121,7 +121,7 @@ class statusWeekFactory
                 $dayDto->isFromCurrentWeek = $weekDto->isCurrent;
 
                 $dayDtoAssembler
-                    ->fillWithCheckins($dayDto, isset($checkins[$dayDto->date]) ? $checkins[$dayDto->date] : [])
+                    ->fillWithCheckins($dayDto, isset($checkins[$dayDto->date]) ? $checkins[$dayDto->date] : [], $user)
                     ->fillWithWalogs($dayDto, isset($walogs[$dayDto->date]) ? $walogs[$dayDto->date] : [])
                     ->fillCheckinsWithProjects($dayDto->checkins, $projectData)
                 ;

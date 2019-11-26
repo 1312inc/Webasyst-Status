@@ -14,7 +14,7 @@ class statusCheckinFactory extends statusBaseFactory
         return parent::createNew()
             ->setStartTime(statusTimeHelper::MINUTES_10AM)
             ->setEndTime(statusTimeHelper::MINUTES_18PM)
-            ->setContactId(stts()->getUser()->getContactId())
+            ->setContactId(stts()->getContextUser()->getContactId())
             ->setCreateDatetime(new DateTime());
     }
 }

@@ -1,5 +1,6 @@
 <div class="content left200px">
 
+    {if $isMe}
     <div class="s-week-summary">
 
         <h5 class="heading align-center">[`This week`]</h5>
@@ -7,11 +8,18 @@
         {include file='./../week/WeekDonut.html' donut=$currentWeek->donut}
 
     </div>
+    {else}
+        <h1>{$contextUser->getName()|escape}</h1>
+    {/if}
+
+    {if $isProject}
+        <h1>{$project->getName()|escape}</h1>
+    {/if}
 
     <!-- Tomorrow: SET TAG ONLY: Office / Remote / Ill / Day off / Custom tag -->
     <div class="s-tomorrow-planner">
         <div class="float-right">
-            {include file='./../todaystatus/TodaystatusList.html' statuses=$statuses todayOffset=$tomorrow currentStatus=$nextStatus}
+            {include inline file='./../todaystatus/TodaystatusList.html' statuses=$statuses todayOffset='+1' currentStatus=$nextStatus}
         </div>
         <h3>
             [`Tomorrow`]
@@ -24,7 +32,7 @@
     </div>
 
     {foreach $currentWeek->days as $day}
-        {include file='./../day/DayShow.html' day=$day}
+        {include inline file='./../day/DayShow.html' day=$day}
     {/foreach}
 
     <!-- CHRONOLOGY -->
@@ -67,18 +75,17 @@
             })
         });
 
+        $.status.$status_content.off('click.stts', '.s-day');
         if (currentContactId == $.status.options.userId) {
             $.status.$status_content
-                .off('click.stts', '.s-day')
                 .on('click.stts', '.s-day', function (e) {
                     if ($(e.target).closest('[data-status-walog-app-logs]').length) {
                         return;
                     }
 
                     $.status.dayEditor($(this));
-                });
-
-            $.status.$status_content.find('.s-day:first').trigger('click.stts');
+                })
+                .find('.s-day:first').trigger('click.stts');
         }
 
     }());

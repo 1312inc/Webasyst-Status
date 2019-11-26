@@ -36,7 +36,7 @@ class statusBackendSidebarAction extends statusViewAction
             [
                 'backend_sidebar' => $eventResult,
                 'timeByUserStat'  => (new statusStat())->timeByWeek(new DateTime()),
-                'isAdmin'         => $this->getUser()->isAdmin('status'),
+                'isAdmin'         => (int) $this->getUser()->isAdmin('status'),
             ]
         );
     }
