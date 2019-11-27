@@ -14,14 +14,14 @@ class statusChronologyLoadWeeksAction extends statusChronologyAction
     public function runAction($params = null)
     {
         $offset = waRequest::get('offset', 0, waRequest::TYPE_INT);
-        $projectId = waRequest::get('project_id', 0, waRequest::TYPE_INT);
 
-        $weeks = statusWeekFactory::getWeeksDto(
-            $this->user,
+        $weeks = statusWeekFactory::createLastNWeeks(
             statusWeekFactory::DEFAULT_WEEKS_LOAD,
             false,
-            $offset
+            self::DEFAULT_WEEKS_LOAD * $offset
         );
+
+        $weeks = statusWeekFactory::getWeeksDto($weeks, $this->user);
 
         $this->view->assign(['weeks' => $weeks]);
     }

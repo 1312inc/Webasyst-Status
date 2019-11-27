@@ -11,12 +11,18 @@ class statusChronologyAction extends statusViewAction
     protected $user;
 
     /**
+     * @var statusProject
+     */
+    protected $project;
+
+    /**
      * @throws kmwaNotFoundException
      * @throws waException
      */
     protected function preExecute()
     {
         $contactId = waRequest::get('contact_id', 0, waRequest::TYPE_INT);
+        $projectId = waRequest::get('project_id', 0, waRequest::TYPE_INT);
 
         $this->user = !$contactId
             ? stts()->getUser()
@@ -36,6 +42,14 @@ class statusChronologyAction extends statusViewAction
         }
 
         stts()->setContextUser($this->user);
+
+        if ($projectId) {
+            $this->project = stts()->getEntityRepository(statusProject::class)->findById($projectId);
+
+            if (!$this->project instanceof statusProject) {
+                throw new kmwaNotFoundException('Project not found');
+            }
+        }
     }
 
     /**
@@ -46,7 +60,8 @@ class statusChronologyAction extends statusViewAction
      */
     public function runAction($params = null)
     {
-        $weeksDto = statusWeekFactory::getWeeksDto($this->user, 5, true);
+        $weeks = statusWeekFactory::createLastNWeeks(5, true, 0);
+        $weeksDto = statusWeekFactory::getWeeksDto($weeks, $this->user, $this->project);
         $currentWeek = array_shift($weeksDto);
 
         $viewData = [
@@ -54,15 +69,17 @@ class statusChronologyAction extends statusViewAction
             'weeks' => $weeksDto,
             'sidebar_html' => (new statusBackendSidebarAction())->display(),
             'current_contact_id' => $this->user->getContactId(),
-            'isMe' => $this->user->getContactId() == stts()->getUser()->getContactId(),
+            'isMe' => (int)($this->user->getContactId() == stts()->getUser()->getContactId()),
             'tomorrow' => (new DateTime())->modify('+1 day')->format('Y-m-d'),
             'statuses' => statusTodayStatusFactory::getAllForUser($this->user),
-            'nextStatus' => statusTodayStatusFactory::getForUser(
-                $this->user,
+            'nextStatus' => statusTodayStatusFactory::getForContactId(
+                $this->user->getContactId(),
                 (new DateTime())->modify('+1 day')
             ),
-            'isProject' => 0,
-            'contextUser' => $this->user
+            'isProject' => $this->project instanceof statusProject,
+            'project' => $this->project,
+            'dayEditable' => (int)($this->user->getContactId() == stts()->getUser()->getContactId() && !$this->project instanceof statusProject),
+            'contextUser' => $this->user,
         ];
         $this->view->assign($viewData);
     }

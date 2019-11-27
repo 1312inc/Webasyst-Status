@@ -26,34 +26,19 @@ class statusDayDto
     public $today;
 
     /**
-     * @var statusDayCheckinDto[]
+     * @var statusUserDto[]
      */
-    public $checkins = [];
+    public $users = [];
 
     /**
-     * @var statusDayCheckinDto[]|null
+     * @var statusDayUserInfoDto[]
      */
-    public $firstCheckin = null;
-
-    /**
-     * @var int
-     */
-    public $startTime = 0;
-
-    /**
-     * @var int
-     */
-    public $endTime = 0;
+    public $userDayInfos = [];
 
     /**
      * @var bool
      */
     public $isFromCurrentWeek = false;
-
-    /**
-     * @var statusWaLogDto[]
-     */
-    public $walogs = [];
 
     /**
      * statusDayEditorDto constructor.
@@ -62,13 +47,13 @@ class statusDayDto
      */
     public function __construct(statusDay $day)
     {
-        if ($this->checkins) {
-            $this->startTime = PHP_INT_MAX;
-        }
-
-        if ($this->startTime === PHP_INT_MAX) {
-            $this->startTime = 0;
-        }
+//        if ($this->checkins) {
+//            $this->startTime = PHP_INT_MAX;
+//        }
+//
+//        if ($this->startTime === PHP_INT_MAX) {
+//            $this->startTime = 0;
+//        }
 
         $this->date = $day->getDate()->format('Y-m-d');
         $this->today = $day->isToday();

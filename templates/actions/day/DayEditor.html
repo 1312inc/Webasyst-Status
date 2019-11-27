@@ -3,7 +3,7 @@
     <div class="block double-padded">
 
         <div class="float-right block half-padded">
-            {include inline file='./../todaystatus/TodaystatusList.html' statuses=$statuses currentStatus=$currentStatus statusDate=$day->date}
+            {include inline file='./../todaystatus/TodaystatusList.html' statuses=$statuses currentStatus=$userDayInfo->todayStatus statusDate=$day->date}
         </div>
 
         <h1>
@@ -15,10 +15,10 @@
             </span>
         </h1>
 
-        {foreach $day->checkins as $checkin}
+        {foreach $userDayInfo->checkins as $checkin}
         <div class="s-editor-slider"
              data-checkin="{$checkin->id}"
-             {if $checkin->id == $day->firstCheckin->id}data-checkin-first{/if}
+             {if $checkin->id == $userDayInfo->firstCheckin->id}data-checkin-first{/if}
              data-checkin-has-projects="{$checkin->hasProjects|intval}"
         >
         <form style="padding: 20px 0 10px;display: flex;width: 100%;">
@@ -77,22 +77,22 @@
 
     <!-- COMMENT & LOGGED ENTITIES -->
     <div class="s-editor-summary block double-padded blank">
-        <textarea class="s-editor-comment" placeholder="[`Enter your daily report here...`]" name="checkin[comment]">{$day->firstCheckin->comment|escape}</textarea>
+        <textarea class="s-editor-comment" placeholder="[`Enter your daily report here...`]" name="checkin[comment]">{$userDayInfo->firstCheckin->comment|escape}</textarea>
         <div class="s-editor-commit">
             <input type="button" value="[`Save`]" class="button yellow s-editor-commit-button" />
             <span class="s-editor-commit-indicator italic gray">[`Saved`] <i class="icon16 yes-bw"></i></span>
         </div>
 
         <div class="s-logged-apps">
-        {foreach $day->walogs as $walog}
+        {foreach $userDayInfo->walogs as $walog}
         {if $walog->count}
             <a href="#" class="s-logged-app-counter inline-link" data-status-walog-app="{$walog->appId}"><i class="icon16 s-app-icon" style="background-image: url('{$walog->appIcon}');"></i><b><i>{$walog->count}</i></b></a>
         {/if}
         {/foreach}
             <div data-status-walog-app-logs-explain>
-            {foreach $day->walogs as $walog}
+            {foreach $userDayInfo->walogs as $walog}
                 <div data-status-walog-app-logs="{$walog->appId}" style="display: none">
-                    <pre class="small">{$walog->logs|print_r}</pre>
+                    <textarea class="small">{$walog->logs|print_r}</textarea>
                 </div>
             {/foreach}
             </div>

@@ -42,13 +42,13 @@ class statusWaLogParser
     }
 
     /**
-     * @param statusDay  $dayStart
-     * @param statusDay  $dayEnd
-     * @param statusUser $user
+     * @param statusDay $dayStart
+     * @param statusDay $dayEnd
+     * @param int       $contactId
      *
      * @return array
      */
-    public function parseByDays(statusDay $dayStart, statusDay $dayEnd, statusUser $user)
+    public function parseByDays(statusDay $dayStart, statusDay $dayEnd, $contactId)
     {
         $logs = $this->model->query(
             'select date(datetime) date, wa_log.* from wa_log 
@@ -56,9 +56,9 @@ class statusWaLogParser
                 or subject_contact_id = i:contact_id)
                 and datetime between s:date1 and s:date2',
             [
-                'contact_id' => $user->getContactId(),
-                'date1'      => sprintf('%s 00:00:00', $dayStart->getDate()->format('Y-m-d')),
-                'date2'      => sprintf('%s 23:59:59', $dayEnd->getDate()->format('Y-m-d')),
+                'contact_id' => $contactId,
+                'date1' => sprintf('%s 00:00:00', $dayStart->getDate()->format('Y-m-d')),
+                'date2' => sprintf('%s 23:59:59', $dayEnd->getDate()->format('Y-m-d')),
             ]
         )->fetchAll('date', 2);
 

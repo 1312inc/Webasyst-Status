@@ -43,7 +43,8 @@
 <script>
     'use strict';
     (function(){
-        var currentContactId = '{$current_contact_id}';
+        var currentContactId = '{$current_contact_id}',
+            dayEditable = parseInt('{$dayEditable}');
 
         $.status.lazyLoad({
             $loading: $('#chronology .lazyloading'),
@@ -76,7 +77,7 @@
         });
 
         $.status.$status_content.off('click.stts', '.s-day');
-        if (currentContactId == $.status.options.userId) {
+        if (dayEditable) {
             $.status.$status_content
                 .on('click.stts', '.s-day', function (e) {
                     if ($(e.target).closest('[data-status-walog-app-logs]').length) {

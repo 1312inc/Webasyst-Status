@@ -11,46 +11,43 @@ final class statusDayDotAssembler
     private $projectsDtos;
 
     /**
-     * @param statusDayDto    $dayDto
-     * @param statusCheckin[] $checkins
-     * @param statusUser      $user
+     * @param statusDayUserInfoDto $userDayInfoDto
+     * @param statusCheckin[]      $checkins
+     * @param statusUserDto        $userDto
      *
      * @return statusDayDotAssembler
      * @throws waException
+     * @throws Exception
      */
-    public function fillWithCheckins(statusDayDto $dayDto, array $checkins, statusUser $user)
+    public function fillWithCheckins(statusDayUserInfoDto $userDayInfoDto, array $checkins, statusUserDto $userDto)
     {
         foreach ($checkins as $check) {
-            $dayDto->startTime = min($dayDto->startTime, $check->getStartTime());
-            $dayDto->endTime = max($dayDto->endTime, $check->getEndTime());
+            $userDayInfoDto->startTime = min($userDayInfoDto->startTime, $check->getStartTime());
+            $userDayInfoDto->endTime = max($userDayInfoDto->endTime, $check->getEndTime());
             $checkin = new statusDayCheckinDto($check);
-            $checkin->user->todayStatus = statusTodayStatusFactory::getForUser($user, new DateTime($check->getDate()));
-
-            $dayDto->checkins[] = $checkin;
+            $userDayInfoDto->checkins[] = $checkin;
         }
 
-        if (empty($dayDto->checkins)) {
+        if (empty($userDayInfoDto->checkins)) {
             $checkin = new statusDayCheckinDto(stts()->getEntityFactory(statusCheckin::class)->createNew());
-            $checkin->user->todayStatus = statusTodayStatusFactory::getForUser($user, new DateTime($dayDto->date));
-
-            $dayDto->checkins[] = $checkin;
+            $userDayInfoDto->checkins[] = $checkin;
         }
 
-        $dayDto->firstCheckin = $dayDto->checkins[0];
+        $userDayInfoDto->firstCheckin = $userDayInfoDto->checkins[0];
 
         return $this;
     }
 
     /**
-     * @param statusDayDto $dayDto
-     * @param array        $walogs
+     * @param statusDayUserInfoDto $userDayInfoDto
+     * @param array                $walogs
      *
      * @return mixed
      */
-    public function fillWithWalogs(statusDayDto $dayDto, array $walogs)
+    public function fillWithWalogs(statusDayUserInfoDto $userDayInfoDto, array $walogs)
     {
         foreach ($walogs as $appId => $log) {
-            $dayDto->walogs[$appId] = new statusWaLogDto($appId, $log);
+            $userDayInfoDto->walogs[$appId] = new statusWaLogDto($appId, $log);
         }
 
         return $this;

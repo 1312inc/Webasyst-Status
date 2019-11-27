@@ -43,18 +43,35 @@ class statusCheckinModel extends statusModel
     }
 
     /**
-     * @param int    $contactId
-     * @param string $dateStart
-     * @param string $dateEnd
+     * @param int|array $contactIds
+     * @param string    $dateStart
+     * @param string    $dateEnd
+     * @param int|null  $projectId
      *
      * @return array
      */
-    public function getByContactIdAndPeriod($contactId, $dateStart, $dateEnd)
+    public function getByContactIdsAndPeriod($contactIds, $dateStart, $dateEnd, $projectId = null)
     {
+        if (!is_array($contactIds)) {
+            $contactIds = [$contactIds];
+        }
+
+        $filterByProjectSql = '';
+        if ($projectId) {
+            $filterByProjectSql = ' join status_checkin_projects scp on scp.checkin_id = sc.id and scp.project_id = i:project_id';
+        }
+
         return $this->query(
-            'select sc.* from status_checkin sc 
-            where sc.date between s:date1 and s:date2 and sc.contact_id = i:contact_id',
-            ['date1' => $dateStart, 'date2' => $dateEnd, 'contact_id' => $contactId]
+            "select sc.* from status_checkin sc
+            {$filterByProjectSql} 
+            where sc.date between s:date1 and s:date2 
+                and sc.contact_id in (i:contact_ids)",
+            [
+                'date1' => $dateStart,
+                'date2' => $dateEnd,
+                'contact_ids' => $contactIds,
+                'project_id' => $projectId,
+            ]
         )->fetchAll();
     }
 
@@ -93,5 +110,29 @@ class statusCheckinModel extends statusModel
                   and sc.date between s:date1 and s:date2',
             ['contact_id' => $contactId, 'date1' => $dateStart, 'date2' => $dateEnd]
         )->fetchField('duration_by_user');
+    }
+
+    /**
+     * @param string   $dateStart
+     * @param string   $dateEnd
+     * @param int|null $projectId
+     *
+     * @return bool|mixed
+     */
+    public function getContactIdsGroupedByDays($dateStart, $dateEnd, $projectId = null)
+    {
+        $filterByProjectSql = '';
+        if ($projectId) {
+            $filterByProjectSql = ' join status_checkin_projects scp on scp.checkin_id = sc.id and scp.project_id = i:project_id';
+        }
+
+        return $this->query(
+            "select sc.date date, sc.contact_id contact_id 
+            from status_checkin sc
+            join status_user su on su.contact_id = sc.contact_id
+            {$filterByProjectSql} 
+            where sc.date between s:date1 and s:date2",
+            ['date1' => $dateStart, 'date2' => $dateEnd, 'project_id' => $projectId]
+        )->fetchAll('date', 2);
     }
 }

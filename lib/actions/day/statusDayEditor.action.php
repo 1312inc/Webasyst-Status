@@ -30,12 +30,15 @@ class statusDayEditorAction extends statusViewAction
         }
 
         $dayDto = statusDayEditor::createDayDto($day, $user);
+        $userDto = reset($dayDto->users);
+        $userDayInfoDto = reset($dayDto->userDayInfos);
 
         $this->view->assign(
             [
-                'day'    => $dayDto,
+                'day' => $dayDto,
                 'statuses' => statusTodayStatusFactory::getAllForUser($user),
-                'currentStatus' => statusTodayStatusFactory::getForUser($user, $day->getDate()),
+                'user' => $userDto,
+                'userDayInfo' => $userDayInfoDto,
             ]
         );
     }

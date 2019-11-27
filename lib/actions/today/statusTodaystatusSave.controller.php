@@ -17,7 +17,7 @@ class statusTodaystatusSaveController extends statusJsonController
         if (!empty($data['date'])) {
             $date = new DateTime($data['date']);
         }
-        $status = statusTodayStatusFactory::getForUser(stts()->getUser(), $date);
+        $status = statusTodayStatusFactory::getForContactId(stts()->getUser()->getContactId(), $date);
 
         $calendar = stts()->getModel('waContactCalendars')->getById($data['calendar_id']);
         if (empty($calendar)) {
@@ -65,7 +65,7 @@ class statusTodaystatusSaveController extends statusJsonController
         $view->assign(
             [
                 'statuses' => statusTodayStatusFactory::getAllForUser(stts()->getUser(), true),
-                'currentStatus' => statusTodayStatusFactory::getForUser(stts()->getUser(), $date, true),
+                'currentStatus' => statusTodayStatusFactory::getForContactId(stts()->getUser()->getContactId(), $date, true),
                 'statusDate' => $date->format('Y-m-d'),
             ]
         );

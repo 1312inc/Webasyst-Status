@@ -47,7 +47,7 @@ SQL;
             if (empty($item['name'])) {
                 continue;
             }
-            $statuses[] = stts()->getHydrator()->hydrate(new statusTodayStatus(),$item);
+            $statuses[] = stts()->getHydrator()->hydrate(new statusTodayStatus(), $item);
         }
 
         stts()->getCache()->set($key, $statuses, 10);
@@ -70,23 +70,23 @@ SQL;
 
         $statuses = [];
         foreach ($result as $item) {
-            $statuses[] = stts()->getHydrator()->hydrate(new statusTodayStatus(),$item);
+            $statuses[] = stts()->getHydrator()->hydrate(new statusTodayStatus(), $item);
         }
 
         return $statuses;
     }
 
     /**
-     * @param statusUser        $user
+     * @param int               $contactId
      * @param DateTimeInterface $date
      * @param bool              $force
      *
      * @return statusTodayStatus
      * @throws waException
      */
-    public static function getForUser(statusUser $user, DateTimeInterface $date, $force = false)
+    public static function getForContactId($contactId, DateTimeInterface $date, $force = false)
     {
-        $key = 'getForUser'.$user->getId().$date->format('Y-m-d');
+        $key = 'getForUser'.$contactId.$date->format('Y-m-d');
         $result = stts()->getCache()->get($key);
         if (!$force && $result) {
             return $result;
@@ -104,7 +104,7 @@ from wa_contact_calendars wcc
     select max(wce.id) last_wce_id ,wce.calendar_id
     from wa_contact_events wce
     where wce.is_status = 1
-      and wce.contact_id = 1
+      and wce.contact_id = i:contact_id
       and wce.start between s:date1 and s:date2
       /*and wce.summary_type = 'custom'*/
     group by wce.calendar_id) last_wce on wcc.id = last_wce.calendar_id
@@ -119,7 +119,7 @@ SQL;
         $result = stts()->getModel()->query(
             $sql,
             [
-                'contact_id' => $user->getContactId(),
+                'contact_id' => $contactId,
                 'date1' => $date->format('Y-m-d 00:00:00'),
                 'date2' => $date->format('Y-m-d 23:59:59'),
             ]
@@ -127,7 +127,7 @@ SQL;
 
         $result = reset($result);
         $result = $result
-            ? stts()->getHydrator()->hydrate(new statusTodayStatus(),$result)
+            ? stts()->getHydrator()->hydrate(new statusTodayStatus(), $result)
             : new statusTodayStatus();
 
         stts()->getCache()->set($key, $result, 10);

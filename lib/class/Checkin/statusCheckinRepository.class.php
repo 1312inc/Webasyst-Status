@@ -39,39 +39,32 @@ class statusCheckinRepository extends statusBaseRepository
     /**
      * @param statusDay          $dayStart
      * @param statusDay          $dayEnd
-     * @param statusUser|null    $user
-     * @param statusProject|null $project
+     * @param array              $contactIds
+     * @param int|null $projectId
      *
      * @return statusCheckin[]
      * @throws waException
      */
-    public function findByPeriod(
+    public function findByPeriodAndContactIds(
         statusDay $dayStart,
         statusDay $dayEnd,
-        statusUser $user = null,
-        statusProject $project = null
+        array $contactIds = [],
+        $projectId = null
     ) {
-        if ($user instanceof statusUser) {
-            $data = $this->getModel()->getByContactIdAndPeriod(
-                $user->getContactId(),
-                $dayStart->getDate()->format('Y-m-d'),
-                $dayEnd->getDate()->format('Y-m-d')
-            );
-        } elseif ($project instanceof statusProject) {
-            $data = [];
-        } else {
-            $data = $this->getModel()->getByPeriod(
-                $dayStart->getDate()->format('Y-m-d'),
-                $dayEnd->getDate()->format('Y-m-d')
-            );
-        }
+        $data = $this->getModel()->getByContactIdsAndPeriod(
+            $contactIds,
+            $dayStart->getDate()->format('Y-m-d'),
+            $dayEnd->getDate()->format('Y-m-d'),
+            $projectId
+        );
+
 
         $checkins = [];
         foreach ($data as $datum) {
             if (!isset($checkins[$datum['date']])) {
-                $checkins[$datum['date']] = [];
+                $checkins[$datum['date']] = [$datum['contact_id'] => []];
             }
-            $checkins[$datum['date']][] = $this->generateWithData($datum);
+            $checkins[$datum['date']][$datum['contact_id']][] = $this->generateWithData($datum);
         }
 
         return $checkins;
@@ -91,13 +84,13 @@ class statusCheckinRepository extends statusBaseRepository
     }
 
     /**
-     * @param statusWeek[] $weeks
-     * @param statusUser   $user
+     * @param statusWeek[]    $weeks
+     * @param statusUser|null $user
      *
      * @return statusCheckin[]
      * @throws waException
      */
-    public function findByWeeks(array $weeks, statusUser $user)
+    public function findByWeeks(array $weeks, statusUser $user = null)
     {
         if (empty($weeks)) {
             return [];
@@ -109,7 +102,7 @@ class statusCheckinRepository extends statusBaseRepository
         $lastWeek = $weeks[count($weeks) - 1];
         $minDay = $lastWeek->getFirstDay();
 
-        return $this->findByUserAndPeriod($user, $minDay, $maxDay);
+        return $this->findByPeriod($minDay, $maxDay, $user);
     }
 
     /**
@@ -123,7 +116,7 @@ class statusCheckinRepository extends statusBaseRepository
     {
         return $this->findByFields(
             [
-                'date'       => $day->getDate()->format('Y-m-d'),
+                'date' => $day->getDate()->format('Y-m-d'),
                 'contact_id' => $user->getContactId(),
             ],
             true

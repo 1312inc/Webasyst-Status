@@ -20,7 +20,7 @@ class statusUserRepository extends statusBaseRepository
         if (!$user instanceof statusUser) {
             $user = $this->findByFields(['contact_id' => $contactId]);
             if ($user instanceof statusUser) {
-                $user->setTodayStatus(statusTodayStatusFactory::getForUser($user, $today));
+                $user->setTodayStatus(statusTodayStatusFactory::getForContactId($user->getContactId(), $today));
                 $this->cache($contactId, $user);
             }
         }
@@ -55,7 +55,7 @@ class statusUserRepository extends statusBaseRepository
                 continue;
             }
 
-            $user->setTodayStatus(statusTodayStatusFactory::getForUser($user, $today));
+            $user->setTodayStatus(statusTodayStatusFactory::getForContactId($user->getContactId(), $today));
         }
 
         return $users;

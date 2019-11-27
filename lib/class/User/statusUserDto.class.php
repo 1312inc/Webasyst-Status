@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Class statusDayCheckinUserDto
+ * Class statusUserDto
  */
-class statusDayCheckinUserDto
+class statusUserDto
 {
     /**
      * @var int
