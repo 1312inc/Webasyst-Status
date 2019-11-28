@@ -1,4 +1,6 @@
-<div class="s-day{if $day->isFromCurrentWeek && $isMe} s-this-week{/if}{if !$isMe} s-non-clickable{/if}" data-status-day-date="{$day->date}">
+<div class="s-day{if $day->isFromCurrentWeek && $isMe} s-this-week{/if}{if !$isMe} s-non-clickable{else} s-editable{/if}"
+     data-status-day-date="{$day->date}"
+>
     <div class="s-day-date">
         <h3>
             {$day->date|wa_date:humandate}
