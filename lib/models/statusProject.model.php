@@ -18,13 +18,20 @@ class statusProjectModel extends statusModel
      */
     public function getByDateAndContactId($date, $contactId)
     {
-        $q = 'select sp.*, scp.duration, sc.id checkin_id, scp.id project_checkin_id, concat(sc.id,\'_\',sp.id) checkproj
-            from status_project sp
-            join status_checkin_projects scp on sp.id = scp.project_id
-            join status_checkin sc on sc.id = scp.checkin_id
-            where sc.contact_id = i:contact_id 
-                and sc.date = s:date
-                and sp.is_archived = 0';
+        $q = <<<SQL
+select sp.*, 
+       scp.duration, 
+       sc.id checkin_id, 
+       scp.id project_checkin_id, 
+       concat(sc.id,'_',sp.id) checkproj
+from status_project sp
+join status_checkin_projects scp on sp.id = scp.project_id
+join status_checkin sc on sc.id = scp.checkin_id
+where sc.contact_id = i:contact_id 
+    and sc.date = s:date
+    and sp.is_archived = 0
+SQL;
+
 
         return $this->query($q, ['contact_id' => $contactId, 'date' => $date])->fetchAll('checkproj');
     }
@@ -38,13 +45,19 @@ class statusProjectModel extends statusModel
      */
     public function getByDatesAndContactId($dateStart, $dateEnd, $contactId)
     {
-        $q = 'select sp.*, scp.duration, sc.id checkin_id, scp.id project_checkin_id, concat(sc.id,\'_\',sp.id) checkproj
-            from status_project sp
-            join status_checkin_projects scp on sp.id = scp.project_id
-            join status_checkin sc on sc.id = scp.checkin_id
-            where sc.contact_id = i:contact_id 
-                and sc.date between s:date1 and s:date2
-                and sp.is_archived = 0';
+        $q = <<<SQL
+select sp.*, 
+       scp.duration, 
+       sc.id checkin_id, 
+       scp.id project_checkin_id, concat(sc.id,'_',sp.id) checkproj
+from status_project sp
+join status_checkin_projects scp on sp.id = scp.project_id
+join status_checkin sc on sc.id = scp.checkin_id
+where sc.contact_id = i:contact_id 
+    and sc.date between s:date1 and s:date2
+    and sp.is_archived = 0
+SQL;
+
 
         return $this
             ->query(
@@ -67,19 +80,22 @@ class statusProjectModel extends statusModel
      */
     public function getStatByDatesAndContactId($dateStart, $dateEnd, $contactId)
     {
-        $q = 'select sp.id project_id,
-                   sp.name,
-                   sp.color,
-                   sp.is_archived,
-                   sp.created_by,
-                   sum(scp.duration) total_duration
-            from status_project sp
-                     join status_checkin_projects scp on sp.id = scp.project_id
-                     join status_checkin sc on sc.id = scp.checkin_id
-            where sc.contact_id = i:contact_id
-              and sc.date between s:date1 and s:date2
-              and sp.is_archived = 0
-            group by sp.id';
+        $q = <<<SQL
+select sp.id project_id,
+       sp.name,
+       sp.color,
+       sp.is_archived,
+       sp.created_by,
+       sum(scp.duration) total_duration
+from status_project sp
+         join status_checkin_projects scp on sp.id = scp.project_id
+         join status_checkin sc on sc.id = scp.checkin_id
+where sc.contact_id = i:contact_id
+  and sc.date between s:date1 and s:date2
+  and sp.is_archived = 0
+group by sp.id
+SQL;
+
 
         return $this
             ->query(
@@ -91,5 +107,38 @@ class statusProjectModel extends statusModel
                 ]
             )
             ->fetchAll('project_id');
+    }
+
+    /**
+     * @param string $dateStart
+     * @param string $dateEnd
+     * @param int    $projectId
+     *
+     * @return array
+     */
+    public function getStatByDatesAndProjectId($dateStart, $dateEnd, $projectId)
+    {
+        $q = <<<SQL
+select max(sc.contact_id) contact_id,
+       sum(scp.duration) total_duration
+from status_project sp
+         join status_checkin_projects scp on sp.id = scp.project_id
+         join status_checkin sc on sc.id = scp.checkin_id
+where sc.date between s:date1 and s:date2
+  and sp.is_archived = 0
+  and sp.id = i:project_id
+group by sc.contact_id
+SQL;
+
+        return $this
+            ->query(
+                $q,
+                [
+                    'project_id' => $projectId,
+                    'date1'      => $dateStart,
+                    'date2'      => $dateEnd,
+                ]
+            )
+            ->fetchAll();
     }
 }

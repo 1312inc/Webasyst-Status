@@ -6,9 +6,9 @@
 class statusWeekDonutDto
 {
     /**
-     * @var statusWeekDonutProjectDto[]
+     * @var statusWeekDonutDataDto[]
      */
-    public $projects = [];
+    public $datum = [];
 
     /**
      * @var int
@@ -24,4 +24,9 @@ class statusWeekDonutDto
      * @var int
      */
     public $weekNum = 0;
+
+    /**
+     * @var bool
+     */
+    public $chart = true;
 }

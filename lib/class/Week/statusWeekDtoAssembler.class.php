@@ -8,7 +8,7 @@ final class statusWeekDtoAssembler
     /**
      * @param statusWeekDto $weekDto
      * @param statusWeek    $week
-     * @param statusUser    $userDto
+     * @param statusUserDto $userDto
      *
      * @return statusWeekDonutDto
      * @throws waException
@@ -37,14 +37,14 @@ final class statusWeekDtoAssembler
         $projectDuration = 0;
 
         foreach ($projectsThisWeek as $project) {
-            $projectDto = new statusWeekDonutProjectDto(
+            $projectDto = new statusWeekDonutDataDto(
                 $project['project_id'],
                 $project['name'],
                 $project['color'],
                 $project['total_duration']
             );
 
-            $donut->projects[$projectDto->id] = $projectDto;
+            $donut->datum[$projectDto->id] = $projectDto;
             $projectDuration += $projectDto->totalDuration;
         }
         $donut->totalDurationStr = statusTimeHelper::getTimeDurationInHuman(
@@ -61,7 +61,7 @@ final class statusWeekDtoAssembler
         $degrees = $maxDuration / 360;
 
         $prevDegree = 0;
-        foreach ($donut->projects as $id => $project) {
+        foreach ($donut->datum as $id => $project) {
             $projectDegree = round($project->totalDuration / $degrees, 2);
             $project->rotations[] = [
                 'from' => $prevDegree,
@@ -83,8 +83,8 @@ final class statusWeekDtoAssembler
 
         $noProjectDuration = $donut->totalDuration - $projectDuration;
         $noProjectDegree = $noProjectDuration > 0? round($noProjectDuration / $degrees, 2) : 0;
-        $noProjectDto = new statusWeekDonutProjectDto(0, _w('No project'), 'linear-gradient(135deg, #50a8ff 25%, #74c2ff 25%, #74c2ff 50%, #50a8ff 50%, #50a8ff 75%, #74c2ff 75%, #74c2ff 100%) top center/5px 5px', $noProjectDuration);
-        $donut->projects[0] = $noProjectDto;
+        $noProjectDto = new statusWeekDonutDataDto(0, _w('No project'), 'linear-gradient(135deg, #50a8ff 25%, #74c2ff 25%, #74c2ff 50%, #50a8ff 50%, #50a8ff 75%, #74c2ff 75%, #74c2ff 100%) top center/5px 5px', $noProjectDuration);
+        $donut->datum[0] = $noProjectDto;
         $noProjectDto->rotations[] = [
             'from' => $prevDegree,
             'to'   => min(180, $noProjectDegree),
@@ -101,8 +101,8 @@ final class statusWeekDtoAssembler
 
         $noActivityDuration = $maxDuration - $donut->totalDuration;
         $noActivityDegree = $noActivityDuration > 0 ? round($noActivityDuration / $degrees, 2) : 0;
-        $noActivityDto = new statusWeekDonutProjectDto(-1, _w('No activity'), '#eee', $noActivityDuration);
-        $donut->projects[-1] = $noActivityDto;
+        $noActivityDto = new statusWeekDonutDataDto(-1, _w('No activity'), '#eee', $noActivityDuration);
+        $donut->datum[-1] = $noActivityDto;
         $noActivityDto->rotations[] = [
             'from' => $prevDegree,
             'to'   => min(180, $noActivityDegree),
@@ -114,6 +114,77 @@ final class statusWeekDtoAssembler
                 'from' => $prevDegree,
                 'to'   => $noActivityDegree,
             ];
+        }
+
+        return $donut;
+    }
+
+    /**
+     * @param statusWeekDto $weekDto
+     * @param statusWeek    $week
+     * @param int           $projectId
+     *
+     * @return statusWeekDonutDto
+     * @throws waException
+     */
+    public function getDonutProjectStatDto(statusWeekDto $weekDto, statusWeek $week, $projectId)
+    {
+        $donut = new statusWeekDonutDto();
+        $donut->weekNum = $weekDto->number;
+
+        /** @var statusProjectModel $projectsModel */
+        $projectsModel = stts()->getModel(statusProject::class);
+        $contactTimesThisWeek = $projectsModel->getStatByDatesAndProjectId(
+            $week->getFirstDay()->getDate()->format('Y-m-d'),
+            $week->getLastDay()->getDate()->format('Y-m-d'),
+            $projectId
+        );
+
+        $projectDuration = 0;
+
+        /** @var statusUserRepository $userRep */
+        $userRep = stts()->getEntityRepository(statusUser::class);
+        foreach ($contactTimesThisWeek as $contactTime) {
+            $user = $userRep->findByContactId($contactTime['contact_id']);
+            $donutDataDto = new statusWeekDonutDataDto(
+                $contactTime['contact_id'],
+                $user->getName(),
+                '',
+                $contactTime['total_duration']
+            );
+
+            $donut->datum[$donutDataDto->id] = $donutDataDto;
+            $projectDuration += $donutDataDto->totalDuration;
+        }
+
+        $donut->totalDuration = $projectDuration;
+        $donut->totalDurationStr = statusTimeHelper::getTimeDurationInHuman(
+            0,
+            $donut->totalDuration * statusTimeHelper::SECONDS_IN_MINUTE
+        );
+
+        $percent = $donut->totalDuration / 100;
+        $degrees = $donut->totalDuration / 360;
+
+        $prevDegree = 0;
+        foreach ($donut->datum as $id => $project) {
+            $projectDegree = round($project->totalDuration / $degrees, 2);
+            $project->rotations[] = [
+                'from' => $prevDegree,
+                'to'   => min(180, $projectDegree),
+            ];
+            $prevDegree += $project->rotations[0]['to'];
+
+            if ($project->rotations[0]['to'] === 180) {
+                $projectDegree -= 180;
+                $project->rotations[] = [
+                    'from' => $prevDegree,
+                    'to'   => $projectDegree,
+                ];
+                $prevDegree += $project->rotations[1]['to'];
+            }
+
+            $project->percentsInWeek = round($project->totalDuration / $percent, 2);
         }
 
         return $donut;

@@ -1,8 +1,9 @@
 <section data-status-week-donut="{$donut->weekNum}">
 
+{if $donut->chart}
 <div class="s-donut-chart-container">
     <div class="s-donut-chart">
-        {foreach $donut->projects as $p}
+        {foreach $donut->datum as $p}
         {foreach $p->rotations as $rid => $rotation}
             <div data-status-donut-project="{$donut->weekNum}-{$p->id}-{$rid}" class="clip" title="Project {$p->name|escape}: {$p->totalDurationStr}">
             <div class="item"></div>
@@ -13,16 +14,17 @@
     </div>
 </div>
 <style>
-    {foreach $donut->projects as $p}
+    {foreach $donut->datum as $p}
     {foreach $p->rotations as $rid => $rotation}
     .s-donut-chart [data-status-donut-project="{$donut->weekNum}-{$p->id}-{$rid}"] { transform: rotate({$rotation['from']}deg); }
     .s-donut-chart [data-status-donut-project="{$donut->weekNum}-{$p->id}-{$rid}"] .item { background-color: {$p->color}; transform: rotate({$rotation['to']}deg); }
     {/foreach}
     {/foreach}
 </style>
+{/if}
 
 <div class="s-week-projects">
-    {foreach $donut->projects as $p}
+    {foreach $donut->datum as $p}
         <i class="icon16 color" style="background: {$p->color};"></i>
         {$p->name|escape}
         <span class="hint bold">{$p->totalDurationStr}</span><br>

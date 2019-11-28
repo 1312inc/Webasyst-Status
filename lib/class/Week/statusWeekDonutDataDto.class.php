@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Class statusWeekDonutProjectDto
+ * Class statusWeekDonutDataDto
  */
-class statusWeekDonutProjectDto
+class statusWeekDonutDataDto
 {
     /**
      * @var string
@@ -41,7 +41,7 @@ class statusWeekDonutProjectDto
     public $rotations = [];
 
     /**
-     * statusWeekDonutProjectDto constructor.
+     * statusWeekDonutDataDto constructor.
      *
      * @param int    $id
      * @param string $name

@@ -191,7 +191,12 @@ class statusWeekFactory
                 }
             }
 
-            $weekDto->donut = $weekDtoAssembler->getDonutUserStatDto($weekDto, $week, $userDto);
+            if (!$projectId) {
+                $weekDto->donut = $weekDtoAssembler->getDonutUserStatDto($weekDto, $week, $userDto);
+            } else {
+                $weekDto->donut = $weekDtoAssembler->getDonutProjectStatDto($weekDto, $week, $projectId);
+                $weekDto->donut->chart = false;
+            }
 
             $weeksDto[] = $weekDto;
         }
