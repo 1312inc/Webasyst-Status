@@ -449,7 +449,13 @@
                         return checkinDuration;
                     },
                     updateDayDuration = function () {
-                        $checkinDuration.text($.status.timeValueToStr(getCheckinDuration() / 60));
+                        var duration = getCheckinDuration(),
+                            value = $checkinDuration.data('status-checkin-duration-zero');
+
+                        if (duration > 0) {
+                            value = $.status.timeValueToStr(getCheckinDuration() / 60);
+                        }
+                        $checkinDuration.text(value);
                     },
                     fillSliderWithColor = function () {
                         var $line = $slider.find('.ui-widget-header'),
