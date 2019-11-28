@@ -815,7 +815,7 @@
                     $('#stts-status-dialog').waDialog({
                         'height': '300px',
                         'width': '600px',
-                        'url': '?module=todaystatus&action=dialog&offset=' + encodeURIComponent(date),
+                        'url': '?module=todaystatus&action=dialog&date=' + encodeURIComponent(date),
                         onLoad: function () {
                             var d = this,
                                 $dialogWrapper = $(d);
@@ -856,7 +856,8 @@
                         status: {
                             calendar_id: calendarId,
                             // brand_new: 1,
-                            date: date
+                            date: date,
+                            summary: $this.text()
                         }
                     }, function (r) {
                         $.status.$loading.remove();

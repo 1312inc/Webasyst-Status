@@ -30,8 +30,10 @@ class statusTodaystatusSaveController extends statusJsonController
 
         /** @var waContactEventsModel $waContactEventsModel */
         $waContactEventsModel = stts()->getModel('waContactEvents');
-        if (!$status->getCalendarId() || ($status->getCalendarId() && $status->getDays(
-                ) > 1) || !empty($data['brand_new'])) {
+        if (!$status->getCalendarId()
+            || ($status->getCalendarId() && $status->getDays() > 1)
+            || !empty($data['brand_new'])
+        ) {
             $data['status_id'] = $waContactEventsModel->insertEvent(
                 [
                     'calendar_id' => $data['calendar_id'],
@@ -65,12 +67,18 @@ class statusTodaystatusSaveController extends statusJsonController
         $view->assign(
             [
                 'statuses' => statusTodayStatusFactory::getAllForUser(stts()->getUser(), true),
-                'currentStatus' => statusTodayStatusFactory::getForContactId(stts()->getUser()->getContactId(), $date, true),
+                'currentStatus' => statusTodayStatusFactory::getForContactId(
+                    stts()->getUser()->getContactId(),
+                    $date,
+                    true
+                ),
                 'statusDate' => $date->format('Y-m-d'),
             ]
         );
 
-        $this->response = $view->fetch(wa()->getAppPath('templates/actions/todaystatus/TodaystatusList.html', 'status'));
+        $this->response = $view->fetch(
+            wa()->getAppPath('templates/actions/todaystatus/TodaystatusList.html', 'status')
+        );
 //        } else {
 //            $this->response = $data;
 //        }

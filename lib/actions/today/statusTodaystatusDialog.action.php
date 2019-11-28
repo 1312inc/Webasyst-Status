@@ -15,7 +15,7 @@ class statusTodaystatusDialogAction extends statusViewAction
     {
         $this->view->assign([
             'statuses' => statusTodayStatusFactory::getAll(),
-            'offset' => waRequest::request('offset', '', waRequest::TYPE_STRING_TRIM),
+            'date' => waRequest::request('date', '', waRequest::TYPE_STRING_TRIM),
         ]);
     }
 }
