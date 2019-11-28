@@ -813,7 +813,7 @@
                         $wrapper = $this.closest('[data-status-wrapper="statuses"]');
 
                     $('#stts-status-dialog').waDialog({
-                        'height': '250px',
+                        'height': '300px',
                         'width': '600px',
                         'url': '?module=todaystatus&action=dialog&offset=' + encodeURIComponent(date),
                         onLoad: function () {

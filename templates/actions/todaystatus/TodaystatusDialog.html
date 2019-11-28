@@ -2,29 +2,34 @@
     <div class="dialog-content">
         <div data-status-wrapper="status-settings-dialog">
             <input type="hidden" name="status[offset]" value="{$offset}"/>
-            <h1>[`New status`]</h1>
+            <h1>[`Custom status`]</h1>
 
             <div class="fields form">
                 <div class="field-group">
                     <div class="field">
                         <div class="name nowrap">
-                            [`Status name`]
+                            [`Status label`]
                         </div>
                         <div class="value">
-                            <input type="text" class="large bold" name="status[summary]"/>
+                            <input type="text" class="bold" name="status[summary]" placeholder="[`Working remotely`]" />
                         </div>
-                    </div>w
+                    </div>
                     <div class="field">
                         <div class="name nowrap">
-                            [`Statuses`]
+                            [`Calendar`]
                         </div>
-                        <ul class="value no-shift">
                         {foreach $statuses as $status}
-                            <li>
-                            <label><input type="radio" name="status[calendar_id]" value="{$status->getCalendarId()}"/> {$status->getName()|escape}</label>
-                            </li>
+                            <div class="value no-shift">
+                                <label>
+                                    <input type="radio" name="status[calendar_id]" value="{$status->getCalendarId()}"/>
+                                    <i class="icon16 color" style="background-color: {$status->getBgColor()}"></i>
+                                    {$status->getName()|escape}
+                                </label>
+                            </div>
                         {/foreach}
-                        </ul>
+                        <div class="value no-shift">
+                            <p class="hint">[`The status will be automatically linked with the selected calendar in the Team app.`]</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -35,4 +40,3 @@
         <input type="submit" value="[`Save`]" class="button green"/> [`or`] <a class="cancel" href="#">[`cancel`]</a>
     </div>
 </section>
-
