@@ -60,26 +60,52 @@ class statusChronologyAction extends statusViewAction
      */
     public function runAction($params = null)
     {
+        $isMe = $this->user->getContactId() == stts()->getUser()->getContactId();
+        $isProject = $this->project instanceof statusProject;
+
         $weeks = statusWeekFactory::createLastNWeeks(5, true, 0);
         $weeksDto = statusWeekFactory::getWeeksDto($weeks, $this->user, $this->project);
         $currentWeek = array_shift($weeksDto);
+
+        $tomorrowDto = null;
+        if (!$isMe) {
+            $tomorrow = new statusDay(new DateTime('tomorrow'));
+            $tomorrowDto = new statusDayDto($tomorrow);
+            $userDto = new statusUserDto($this->user);
+
+            $tomorrowDto->users[$userDto->contactId] = $userDto;
+
+            // + инфа о дне пользователя
+            $userDayInfo = new statusDayUserInfoDto($tomorrowDto->date, $userDto->contactId);
+            $tomorrowDto->userDayInfos[$userDto->contactId] = $userDayInfo;
+
+            $userDayInfo->todayStatus = statusTodayStatusFactory::getForContactId(
+                $userDto->contactId,
+                new DateTime($tomorrowDto->date)
+            );
+
+            $dayDtoAssembler = new statusDayDotAssembler();
+            $dayDtoAssembler->fillWithCheckins($userDayInfo, [], $userDto);
+        }
 
         $viewData = [
             'currentWeek' => $currentWeek,
             'weeks' => $weeksDto,
             'sidebar_html' => (new statusBackendSidebarAction())->display(),
             'current_contact_id' => $this->user->getContactId(),
-            'isMe' => (int)($this->user->getContactId() == stts()->getUser()->getContactId()),
+            'isMe' => (int)$isMe,
             'tomorrow' => (new DateTime())->modify('+1 day')->format('Y-m-d'),
             'statuses' => statusTodayStatusFactory::getAllForUser($this->user),
             'nextStatus' => statusTodayStatusFactory::getForContactId(
                 $this->user->getContactId(),
                 (new DateTime())->modify('+1 day')
             ),
-            'isProject' => $this->project instanceof statusProject,
+            'isProject' => (int)$isProject,
             'project' => $this->project,
-            'dayEditable' => (int)($this->user->getContactId() == stts()->getUser()->getContactId() && !$this->project instanceof statusProject),
+            'dayEditable' => (int)($this->user->getContactId() == stts()->getUser()->getContactId()
+                && !$this->project instanceof statusProject),
             'contextUser' => $this->user,
+            'tomorrowDto' => $tomorrowDto,
         ];
         $this->view->assign($viewData);
     }

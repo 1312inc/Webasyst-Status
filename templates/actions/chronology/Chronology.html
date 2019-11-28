@@ -1,6 +1,8 @@
 <div class="content left200px">
 
-    {if $isMe}
+    {if $isProject}
+        <h1>{$project->getName()|escape}</h1>
+    {elseif $isMe}
     <div class="s-week-summary">
 
         <h5 class="heading align-center">[`This week`]</h5>
@@ -8,13 +10,6 @@
         {include file='./../week/WeekDonut.html' donut=$currentWeek->donut}
 
     </div>
-    {else}
-        <h1>{$contextUser->getName()|escape}</h1>
-    {/if}
-
-    {if $isProject}
-        <h1>{$project->getName()|escape}</h1>
-    {/if}
 
     <!-- Tomorrow: SET TAG ONLY: Office / Remote / Ill / Day off / Custom tag -->
     <div class="s-tomorrow-planner">
@@ -24,12 +19,19 @@
         <h3>
             [`Tomorrow`]
             <span class="hint">
-                            {date('D', $smarty.now + 86400)}, {date('Y-m-d', $smarty.now + 86400)|wa_date:humandate}
-                            <!-- <span title="[`Weekend`]">🏖️Sunday / Saturday</span> -->
+                        {date('D', $smarty.now + 86400)}, {date('Y-m-d', $smarty.now + 86400)|wa_date:humandate}
+                        <!-- <span title="[`Weekend`]">🏖️Sunday / Saturday</span> -->
                 <!-- <span title="[`Birthday`]">🎂Birtday</span> -->
-                        </span>
+                    </span>
         </h3>
     </div>
+    {else}
+        <h1>{$contextUser->getName()|escape}</h1>
+
+        <div style="border: 1px solid red">
+        {include inline file='./../day/DayShow.html' day=$tomorrowDto}
+        </div>
+    {/if}
 
     {foreach $currentWeek->days as $day}
         {include inline file='./../day/DayShow.html' day=$day}
