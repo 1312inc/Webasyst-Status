@@ -13,7 +13,14 @@
                      <a href="#/contact/{$u->getContactId()}">
                          <span class="count hint">{$timeByUserStat[$u->getId()]['timeStr']}</span>
                          <i class="icon16 userpic20" style="background-image: {$u->getContact()->getPhoto()}"></i>{$u->getName()|escape}
-                         {if $u->getTodayStatus()->getStatusId()}<span class="s-status nowrap" title="{$u->getTodayStatus()->getName()|escape}">{$u->getTodayStatus()->getName()|escape}</span>{/if}
+                         {if $u->getTodayStatus()->getStatusId()}
+                         <span class="s-status nowrap"
+                               style="background-color: {$u->getTodayStatus()->getBgColor()}; color: {$u->getTodayStatus()->getFontColor()}"
+                               title="{$u->getTodayStatus()->getName()|escape}"
+                         >
+                             {$u->getTodayStatus()->getName()|escape}
+                         </span>
+                         {/if}
                      </a>
                  </li>
                  {/foreach}
