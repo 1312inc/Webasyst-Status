@@ -18,13 +18,15 @@ class statusCheckinModel extends statusModel
      */
     public function getByProjectIdAndDate($projectId, DateTime $date)
     {
-        return $this->query(
-            'select sc.* from status_checkin sc 
-            join status_checkin_projects scp on sc.id = scp.checkin_id 
-            where scp.project_id = i:project_id and
-                sc.date = s:date',
-            ['project_id' => $projectId, 'date' => $date->format('Y-m-d')]
-        )->fetchAll();
+        $sql = <<<SQL
+select sc.* from status_checkin sc 
+join status_checkin_projects scp on sc.id = scp.checkin_id 
+where scp.project_id = i:project_id 
+  and sc.date = s:date
+SQL;
+
+        return $this->query($sql, ['project_id' => $projectId, 'date' => $date->format('Y-m-d')])
+            ->fetchAll();
     }
 
     /**
@@ -35,11 +37,13 @@ class statusCheckinModel extends statusModel
      */
     public function getByPeriod($dateStart, $dateEnd)
     {
-        return $this->query(
-            'select sc.* from status_checkin sc 
-            where sc.date between s:date1 and s:date2',
-            ['date1' => $dateStart->format('Y-m-d'), 'date2' => $dateEnd->format('Y-m-d')]
-        )->fetchAll();
+        $sql = <<<SQL
+select sc.* from status_checkin sc 
+where sc.date between s:date1 and s:date2
+SQL;
+
+        return $this->query($sql, ['date1' => $dateStart->format('Y-m-d'), 'date2' => $dateEnd->format('Y-m-d')])
+            ->fetchAll();
     }
 
     /**
@@ -61,11 +65,16 @@ class statusCheckinModel extends statusModel
             $filterByProjectSql = ' join status_checkin_projects scp on scp.checkin_id = sc.id and scp.project_id = i:project_id';
         }
 
+        $sql = <<<SQL
+select sc.* from status_checkin sc
+{$filterByProjectSql} 
+where sc.date between s:date1 and s:date2 
+  and sc.contact_id in (i:contact_ids)
+SQL;
+
+
         return $this->query(
-            "select sc.* from status_checkin sc
-            {$filterByProjectSql} 
-            where sc.date between s:date1 and s:date2 
-                and sc.contact_id in (i:contact_ids)",
+            $sql,
             [
                 'date1' => $dateStart,
                 'date2' => $dateEnd,
@@ -76,22 +85,34 @@ class statusCheckinModel extends statusModel
     }
 
     /**
-     * @param string $dateStart
-     * @param string $dateEnd
+     * @param string   $dateStart
+     * @param string   $dateEnd
+     * @param null|int $contactId
      *
      * @return array
      */
-    public function countTimeByDates($dateStart, $dateEnd)
+    public function countTimeByDates($dateStart, $dateEnd, $contactId = null)
     {
-        return $this->query(
-            'select 
-            su.id, sum(sc.total_duration) duration_by_user 
-            from status_checkin sc
-            join status_user su on su.contact_id = sc.contact_id
-            where sc.date between s:date1 and s:date2
-            group by sc.contact_id',
-            ['date1' => $dateStart, 'date2' => $dateEnd]
-        )->fetchAll('id', 1);
+        $byUserSql = '';
+        if ($contactId) {
+            if (!is_array($contactId)) {
+                $contactId = [$contactId];
+            }
+            $byUserSql = ' and where sc.contact_id in (i:contact_id)';
+        }
+
+        $sql = <<<SQL
+select su.id, 
+       (sum(sc.total_duration) - sum(sc.break_duration)) duration_by_user
+from status_checkin sc
+join status_user su on su.contact_id = sc.contact_id
+where sc.date between s:date1 and s:date2
+{$byUserSql}
+group by sc.contact_id
+SQL;
+
+        return $this->query($sql, ['date1' => $dateStart, 'date2' => $dateEnd, 'contact_id' => $contactId])
+            ->fetchAll('id', 1);
     }
 
     /**
@@ -103,13 +124,15 @@ class statusCheckinModel extends statusModel
      */
     public function countTimeByDatesAndContactId($dateStart, $dateEnd, $contactId)
     {
-        return $this->query(
-            'select sum(sc.total_duration) duration_by_user 
-            from status_checkin sc
-            where sc.contact_id = i:contact_id 
-                  and sc.date between s:date1 and s:date2',
-            ['contact_id' => $contactId, 'date1' => $dateStart, 'date2' => $dateEnd]
-        )->fetchField('duration_by_user');
+        $sql = <<<SQL
+select sum(sc.total_duration) duration_by_user 
+from status_checkin sc
+where sc.contact_id = i:contact_id 
+  and sc.date between s:date1 and s:date2
+SQL;
+
+        return $this->query($sql, ['contact_id' => $contactId, 'date1' => $dateStart, 'date2' => $dateEnd])
+            ->fetchField('duration_by_user');
     }
 
     /**
@@ -126,13 +149,15 @@ class statusCheckinModel extends statusModel
             $filterByProjectSql = ' join status_checkin_projects scp on scp.checkin_id = sc.id and scp.project_id = i:project_id';
         }
 
-        return $this->query(
-            "select sc.date date, sc.contact_id contact_id 
-            from status_checkin sc
-            join status_user su on su.contact_id = sc.contact_id
-            {$filterByProjectSql} 
-            where sc.date between s:date1 and s:date2",
-            ['date1' => $dateStart, 'date2' => $dateEnd, 'project_id' => $projectId]
-        )->fetchAll('date', 2);
+        $sql = <<<SQL
+select sc.date date, sc.contact_id contact_id 
+from status_checkin sc
+join status_user su on su.contact_id = sc.contact_id
+{$filterByProjectSql} 
+where sc.date between s:date1 and s:date2
+SQL;
+
+        return $this->query($sql, ['date1' => $dateStart, 'date2' => $dateEnd, 'project_id' => $projectId])
+            ->fetchAll('date', 2);
     }
 }

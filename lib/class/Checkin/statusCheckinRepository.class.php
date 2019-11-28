@@ -58,7 +58,6 @@ class statusCheckinRepository extends statusBaseRepository
             $projectId
         );
 
-
         $checkins = [];
         foreach ($data as $datum) {
             if (!isset($checkins[$datum['date']])) {

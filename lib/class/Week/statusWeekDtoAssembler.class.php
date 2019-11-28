@@ -8,12 +8,12 @@ final class statusWeekDtoAssembler
     /**
      * @param statusWeekDto $weekDto
      * @param statusWeek    $week
-     * @param statusUserDto $userDto
+     * @param statusUser    $user
      *
      * @return statusWeekDonutDto
      * @throws waException
      */
-    public function getDonutUserStatDto(statusWeekDto $weekDto, statusWeek $week, statusUserDto $userDto)
+    public function getDonutUserStatDto(statusWeekDto $weekDto, statusWeek $week, statusUser $user)
     {
         $donut = new statusWeekDonutDto();
         $donut->weekNum = $weekDto->number;
@@ -23,7 +23,7 @@ final class statusWeekDtoAssembler
         $projectsThisWeek = $projectsModel->getStatByDatesAndContactId(
             $week->getFirstDay()->getDate()->format('Y-m-d'),
             $week->getLastDay()->getDate()->format('Y-m-d'),
-            $userDto->contactId
+            $user->getContactId()
         );
 
         /** @var statusCheckinModel $checkinModel */
@@ -31,7 +31,7 @@ final class statusWeekDtoAssembler
         $donut->totalDuration = $checkinModel->countTimeByDatesAndContactId(
             $week->getFirstDay()->getDate()->format('Y-m-d'),
             $week->getLastDay()->getDate()->format('Y-m-d'),
-            $userDto->contactId
+            $user->getContactId()
         );
 
         $projectDuration = 0;

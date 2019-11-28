@@ -80,7 +80,7 @@ SQL;
      */
     public function getStatByDatesAndContactId($dateStart, $dateEnd, $contactId)
     {
-        $q = <<<SQL
+        $sql = <<<SQL
 select sp.id project_id,
        sp.name,
        sp.color,
@@ -96,10 +96,9 @@ where sc.contact_id = i:contact_id
 group by sp.id
 SQL;
 
-
         return $this
             ->query(
-                $q,
+                $sql,
                 [
                     'contact_id' => $contactId,
                     'date1'      => $dateStart,
@@ -118,7 +117,7 @@ SQL;
      */
     public function getStatByDatesAndProjectId($dateStart, $dateEnd, $projectId)
     {
-        $q = <<<SQL
+        $sql = <<<SQL
 select max(sc.contact_id) contact_id,
        sum(scp.duration) total_duration
 from status_project sp
@@ -132,7 +131,7 @@ SQL;
 
         return $this
             ->query(
-                $q,
+                $sql,
                 [
                     'project_id' => $projectId,
                     'date1'      => $dateStart,
