@@ -23,6 +23,12 @@ class statusChronologyLoadWeeksAction extends statusChronologyAction
 
         $weeks = statusWeekFactory::getWeeksDto($weeks, $this->user);
 
-        $this->view->assign(['weeks' => $weeks]);
+        $this->view->assign(
+            [
+                'weeks' => $weeks,
+                'isMe' => (int)$this->isMe,
+                'isProject' => (int)$this->isProject,
+            ]
+        );
     }
 }

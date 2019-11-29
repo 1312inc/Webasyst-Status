@@ -16,6 +16,16 @@ class statusChronologyAction extends statusViewAction
     protected $project;
 
     /**
+     * @var bool
+     */
+    protected $isMe = false;
+
+    /**
+     * @var bool
+     */
+    protected $isProject = false;
+
+    /**
      * @throws kmwaNotFoundException
      * @throws waException
      */
@@ -50,6 +60,8 @@ class statusChronologyAction extends statusViewAction
                 throw new kmwaNotFoundException('Project not found');
             }
         }
+        $this->isMe = $this->user->getContactId() == stts()->getUser()->getContactId();
+        $this->isProject = $this->project instanceof statusProject;
     }
 
     /**
@@ -60,9 +72,6 @@ class statusChronologyAction extends statusViewAction
      */
     public function runAction($params = null)
     {
-        $isMe = $this->user->getContactId() == stts()->getUser()->getContactId();
-        $isProject = $this->project instanceof statusProject;
-
         $weeks = statusWeekFactory::createLastNWeeks(5, true, 0);
         $weeksDto = statusWeekFactory::getWeeksDto($weeks, $this->user, $this->project);
         $currentWeek = array_shift($weeksDto);
@@ -89,14 +98,14 @@ class statusChronologyAction extends statusViewAction
             'weeks' => $weeksDto,
             'sidebar_html' => (new statusBackendSidebarAction())->display(),
             'current_contact_id' => $this->user->getContactId(),
-            'isMe' => (int)$isMe,
+            'isMe' => (int)$this->isMe,
+            'isProject' => (int)$this->isProject,
             'tomorrow' => (new DateTime())->modify('+1 day')->format('Y-m-d'),
             'statuses' => statusTodayStatusFactory::getAllForUser($this->user),
             'nextStatus' => statusTodayStatusFactory::getForContactId(
                 $this->user->getContactId(),
                 (new DateTime())->modify('+1 day')
             ),
-            'isProject' => (int)$isProject,
             'project' => $this->project,
             'dayEditable' => (int)($this->user->getContactId() == stts()->getUser()->getContactId()
                 && !$this->project instanceof statusProject),
