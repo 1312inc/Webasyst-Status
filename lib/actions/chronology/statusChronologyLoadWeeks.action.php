@@ -18,7 +18,7 @@ class statusChronologyLoadWeeksAction extends statusChronologyAction
         $weeks = statusWeekFactory::createLastNWeeks(
             statusWeekFactory::DEFAULT_WEEKS_LOAD,
             false,
-            self::DEFAULT_WEEKS_LOAD * $offset
+            statusWeekFactory::DEFAULT_WEEKS_LOAD * $offset
         );
 
         $weeks = statusWeekFactory::getWeeksDto($weeks, $this->user);
