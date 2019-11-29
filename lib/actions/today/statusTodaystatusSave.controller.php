@@ -53,6 +53,16 @@ class statusTodaystatusSaveController extends statusJsonController
             );
             $this->logAction('event_add', $data['status_id'], wa()->getUser()->getId());
 
+            (new waLogModel())->insert(
+                [
+                    'app_id' => 'team',
+                    'contact_id' => wa()->getUser()->getId(),
+                    'params' => $data['status_id'],
+                    'datetime' => date('Y-m-d H:i:s'),
+                    'action' => 'event_add',
+                    'subject_contact_id' => null,
+                ]
+            );
         } else {
             $waContactEventsModel->updateById(
                 $status->getStatusId(),
@@ -63,7 +73,16 @@ class statusTodaystatusSaveController extends statusJsonController
                 ]
             );
 
-            $this->logAction('event_edit', $status->getStatusId(), wa()->getUser()->getId());
+            (new waLogModel())->insert(
+                [
+                    'app_id' => 'team',
+                    'contact_id' => wa()->getUser()->getId(),
+                    'params' => $status->getStatusId(),
+                    'datetime' => date('Y-m-d H:i:s'),
+                    'action' => 'event_edit',
+                    'subject_contact_id' => null,
+                ]
+            );
         }
 
 //        if (!empty($data['brand_new'])) {
