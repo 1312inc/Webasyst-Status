@@ -5,8 +5,8 @@
         <h3>
             {if $day->yesterday}[`Yesterday`]
             {elseif $day->today}[`Today`]
-            {else}{$day->date|wa_date:humandate}{/if}
-            <span class="hint">{$day->dayname}{if $day->yesterday || $day->today}, {$day->date|wa_date:humandate}{/if}</span>
+            {else}{$day->dayHuman}{/if}
+            <span class="hint">{$day->dayname}{if $day->yesterday || $day->today}, {$day->dayHuman}{/if}</span>
             {if $day->yesterday && !$day->checkinCount}(1){/if}
         </h3>
     </div>

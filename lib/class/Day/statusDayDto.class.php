@@ -23,7 +23,7 @@ class statusDayDto
     /**
      * @var string
      */
-    public $dayhuman;
+    public $dayHuman;
 
     /**
      * @var bool
@@ -71,6 +71,7 @@ class statusDayDto
 //        }
 
         $this->date = $day->getDate()->format('Y-m-d');
+        $this->dayHuman = waDateTime::format('humandate', $this->date, date_default_timezone_get());
         $this->today = $day->isToday();
         $this->dayname = $day->getDate()->format('D');
         if ($day->getDate() == new DateTime('yesterday')) {
