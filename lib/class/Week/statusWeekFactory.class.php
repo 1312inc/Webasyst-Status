@@ -188,6 +188,8 @@ class statusWeekFactory
                             isset($walogs[$userDto->contactId][$dayDto->date]) ? $walogs[$userDto->contactId][$dayDto->date] : []
                         )
                         ->fillCheckinsWithProjects($userDayInfo->checkins, $projectData);
+
+                    $dayDto->checkinCount += $userDayInfo->realCheckinCount;
                 }
             }
 

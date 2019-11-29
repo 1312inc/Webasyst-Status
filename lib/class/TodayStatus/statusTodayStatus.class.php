@@ -18,7 +18,7 @@ class statusTodayStatus implements kmwaHydratableInterface
     /**
      * @var string
      */
-    private $bgColor;
+    private $bgColor = 'transparent';
 
     /**
      * @var string

@@ -21,9 +21,19 @@ class statusDayDto
     public $dayname;
 
     /**
+     * @var string
+     */
+    public $dayhuman;
+
+    /**
      * @var bool
      */
     public $today;
+
+    /**
+     * @var bool
+     */
+    public $yesterday;
 
     /**
      * @var statusUserDto[]
@@ -39,6 +49,11 @@ class statusDayDto
      * @var bool
      */
     public $isFromCurrentWeek = false;
+
+    /**
+     * @var int
+     */
+    public $checkinCount = 0;
 
     /**
      * statusDayEditorDto constructor.
@@ -58,6 +73,9 @@ class statusDayDto
         $this->date = $day->getDate()->format('Y-m-d');
         $this->today = $day->isToday();
         $this->dayname = $day->getDate()->format('D');
+        if ($day->getDate() == new DateTime('yesterday')) {
+            $this->yesterday = true;
+        }
         $this->weekNum = statusTimeHelper::getWeekNumberByDate($day->getDate());
     }
 }

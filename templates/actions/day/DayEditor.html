@@ -1,4 +1,8 @@
-<div class="s-editor shadowed" data-status-day-date="{$day->date}" data-status-week-of-day="{$day->weekNum}">
+<div class="s-editor shadowed"
+     data-status-day-date="{$day->date}"
+     data-status-week-of-day="{$day->weekNum}"
+     style="background-color: {$userDayInfo->todayStatus->getBgColor()}"
+>
     <!-- TIME & STATUS -->
     <div class="block double-padded">
 
@@ -8,6 +12,7 @@
 
         <h1>
             {if $day->today}[`Today`]{/if}
+            {if $day->yesterday}[`Yesterday`]{/if}
             <span class="hint">
                 {$day->dayname}, {$day->date|wa_date:humandate}
                 <!-- <span title="[`Weekend`]">🏖️Sunday / Saturday</span> -->

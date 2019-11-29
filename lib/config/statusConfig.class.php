@@ -319,6 +319,31 @@ class statusConfig extends waAppConfig
 
         return $this->rightConfig;
     }
+    /**
+     * @return int|null
+     * @throws waException
+     */
+    public function onCount($onlycount = false)
+    {
+        $yesterday = new DateTime('yesterday');
+
+        /** @var statusCheckinModel $model */
+        $model = stts()->getModel(statusCheckin::class);
+        $contactId = wa()->getUser()->getId();
+        $count = $model->countTimeByDates(
+            date('Y-m-d', strtotime('-2 days')),
+            $yesterday->format('Y-m-d'),
+            $contactId
+        );
+
+        $yesterdayStatus = statusTodayStatusFactory::getForContactId($contactId, $yesterday);
+
+        if (!isset($count[$contactId]) && !$yesterdayStatus->getStatusId()) {
+            return 1;
+        }
+
+        return null;
+    }
 
     private function registerGlobal()
     {

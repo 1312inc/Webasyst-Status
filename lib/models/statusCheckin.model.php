@@ -60,6 +60,10 @@ SQL;
             $contactIds = [$contactIds];
         }
 
+        if (empty($contactIds)) {
+            return [];
+        }
+
         $filterByProjectSql = '';
         if ($projectId) {
             $filterByProjectSql = ' join status_checkin_projects scp on scp.checkin_id = sc.id and scp.project_id = i:project_id';
@@ -98,7 +102,7 @@ SQL;
             if (!is_array($contactId)) {
                 $contactId = [$contactId];
             }
-            $byUserSql = ' and where sc.contact_id in (i:contact_id)';
+            $byUserSql = ' and sc.contact_id in (i:contact_id)';
         }
 
         $sql = <<<SQL

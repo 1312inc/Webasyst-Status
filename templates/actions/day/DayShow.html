@@ -1,10 +1,13 @@
-<div class="s-day{if $day->isFromCurrentWeek && $isMe} s-this-week{/if}{if !$isMe} s-non-clickable{else} s-editable{/if}"
+<div class="s-day{if $day->isFromCurrentWeek && $isMe} s-this-week{/if}{if !$isMe} s-non-clickable{elseif !$isProject} s-editable{/if}{if $isMe && $day->yesterday && !$day->checkinCount} s-editable-now{/if}"
      data-status-day-date="{$day->date}"
 >
     <div class="s-day-date">
         <h3>
-            {$day->date|wa_date:humandate}
-            <span class="hint">{$day->dayname}</span>
+            {if $day->yesterday}[`Yesterday`]
+            {elseif $day->today}[`Today`]
+            {else}{$day->date|wa_date:humandate}{/if}
+            <span class="hint">{$day->dayname}{if $day->yesterday || $day->today}, {$day->date|wa_date:humandate}{/if}</span>
+            {if $day->yesterday && !$day->checkinCount}(1){/if}
         </h3>
     </div>
 
@@ -35,7 +38,9 @@
                     <h5 class="s-username">
                         <i class="icon16 userpic20"></i>
                         {$day->users[$userDayInfo->contactId]->name|escape}
-                        {if $userDayInfo->todayStatus->getCalendarId()}<span class="s-status" title="[`Status for today`]">{$userDayInfo->todayStatus->getName()|escape}</span>{/if}
+                        {if $userDayInfo->todayStatus->getCalendarId()}
+                        <span class="s-status" title="[`Status for today`]" style="background-color: {$userDayInfo->todayStatus->getBgColor()}; color: {$userDayInfo->todayStatus->getFontColor()}">{$userDayInfo->todayStatus->getName()|escape}</span>
+                        {/if}
                     </h5>
 
                     <div class="s-logged-apps">
@@ -53,7 +58,7 @@
                     <div data-status-walog-app-logs-explain>
                     {foreach $userDayInfo->walogs as $walog}
                         <div data-status-walog-app-logs="{$walog->appId}" style="display: none">
-                            <pre class="small">{$walog->logs|print_r}</pre>
+                            <textarea class="small">{$walog->logs|print_r}</textarea>
                         </div>
                     {/foreach}
                     </div>

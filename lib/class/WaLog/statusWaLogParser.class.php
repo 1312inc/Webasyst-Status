@@ -38,7 +38,7 @@ class statusWaLogParser
         $lastWeek = $weeks[count($weeks) - 1];
         $minDay = $lastWeek->getFirstDay();
 
-        return $this->parseByDays($minDay, $maxDay, $user);
+        return $this->parseByDays($minDay, $maxDay, $user->getContactId());
     }
 
     /**

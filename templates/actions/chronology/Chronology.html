@@ -12,17 +12,17 @@
     </div>
 
     <!-- Tomorrow: SET TAG ONLY: Office / Remote / Ill / Day off / Custom tag -->
-    <div class="s-tomorrow-planner">
+    <div class="s-tomorrow-planner" style="background-color: {$nextStatus->getBgColor()}">
         <div class="float-right">
-            {include inline file='./../todaystatus/TodaystatusList.html' statuses=$statuses todayOffset='+1' currentStatus=$nextStatus}
+            {include inline file='./../todaystatus/TodaystatusList.html' statuses=$statuses statusDate='tomorrow' currentStatus=$nextStatus}
         </div>
         <h3>
             [`Tomorrow`]
             <span class="hint">
-                        {date('D', $smarty.now + 86400)}, {date('Y-m-d', $smarty.now + 86400)|wa_date:humandate}
+                {$tomorrowDto->dayname}, {$tomorrowDto->date|wa_date:humandate}
                         <!-- <span title="[`Weekend`]">🏖️Sunday / Saturday</span> -->
                 <!-- <span title="[`Birthday`]">🎂Birtday</span> -->
-                    </span>
+            </span>
         </h3>
     </div>
     {else}
@@ -80,15 +80,19 @@
 
         $.status.$status_content.off('click.stts', '.s-day');
         if (dayEditable) {
-            $.status.$status_content
-                .on('click.stts', '.s-day', function (e) {
-                    if ($(e.target).closest('[data-status-walog-app-logs]').length) {
-                        return;
-                    }
+            $.status.$status_content.on('click.stts', '.s-day', function (e) {
+                if ($(e.target).closest('[data-status-walog-app-logs]').length) {
+                    return;
+                }
 
-                    $.status.dayEditor($(this));
-                })
-                .find('.s-day:first').trigger('click.stts');
+                $.status.dayEditor($(this));
+            });
+
+            var $editableDay = $.status.$status_content.find('.s-editable-now');
+            if (!$editableDay.length) {
+                $editableDay = $.status.$status_content.find('.s-day:first');
+            }
+            $editableDay.trigger('click.stts');
         }
 
     }());

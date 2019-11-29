@@ -51,6 +51,8 @@ class statusTodaystatusSaveController extends statusJsonController
                     'location' => '',
                 ]
             );
+            $this->logAction('event_add', $data['status_id'], wa()->getUser()->getId());
+
         } else {
             $waContactEventsModel->updateById(
                 $status->getStatusId(),
@@ -60,6 +62,8 @@ class statusTodaystatusSaveController extends statusJsonController
                     'summary_type' => 'custom',
                 ]
             );
+
+            $this->logAction('event_edit', $data['status_id'], wa()->getUser()->getId());
         }
 
 //        if (!empty($data['brand_new'])) {

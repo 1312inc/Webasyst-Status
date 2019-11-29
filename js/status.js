@@ -448,7 +448,7 @@
 
                         return checkinDuration;
                     },
-                    updateDayDuration = function () {
+                    updateDayDuration = function (val) {
                         var duration = getCheckinDuration(),
                             value = $checkinDuration.data('status-checkin-duration-zero');
 
@@ -532,7 +532,9 @@
                         save($form);
                     };
 
-                $checkinDuration.text($.status.timeValueToStr($form.find('[name="checkin[total_duration]"]').val() / 60));
+                updateDayDuration();
+                // $checkinDuration.text($.status.timeValueToStr($form.find('[name="checkin[total_duration]"]').val() / 60));
+
 
                 $el.find('.s-editor-project').each(function () {
                     projects.push(new checkboxDuration($(this), 'project'));
@@ -572,16 +574,13 @@
                             fillSliderWithColor();
                         }
                         updateDayDuration();
-                        // if (checkinId) {
-                        //     $el.find('.ui-slider').addClass('s-active');
-                        // }
+                        if (data.id) {
+                            //меняем цвет слайдера на s-active, чтобы показать, что данные сохранились
+                            $el.find('.ui-slider').addClass('s-active');
+                        }
                     },
                     slide: function (event, ui) {
                         updateDayDuration();
-
-                        //меняем цвет слайдера на s-active, чтобы показать, что данные сохранились
-                        $el.find('.ui-slider').addClass('s-active');
-
                         // if (checkinBreak.isOn() && duration > (24 - checkinBreak.value()) * 60) {
                         //     return false;
                         // }
@@ -614,6 +613,8 @@
                 $form.find('[name="checkin[id]"]').val(data.id);
                 var weekNum = parseInt($editorHtml.data('status-week-of-day'));
                 $('[data-status-week-donut="' + weekNum + '"]').trigger('reloadDonut.stts');
+                //меняем цвет слайдера на s-active, чтобы показать, что данные сохранились
+                $form.find('.ui-slider').addClass('s-active');
             }
 
             function save($form) {

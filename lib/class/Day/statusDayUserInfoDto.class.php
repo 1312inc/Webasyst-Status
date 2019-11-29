@@ -46,6 +46,11 @@ class statusDayUserInfoDto
     public $contactId;
 
     /**
+     * @var int
+     */
+    public $realCheckinCount = 0;
+
+    /**
      * statusDayCheckinUserDto constructor.
      *
      * @param $date

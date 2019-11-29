@@ -26,6 +26,7 @@ final class statusDayDotAssembler
             $userDayInfoDto->endTime = max($userDayInfoDto->endTime, $check->getEndTime());
             $checkin = new statusDayCheckinDto($check);
             $userDayInfoDto->checkins[] = $checkin;
+            $userDayInfoDto->realCheckinCount++;
         }
 
         if (empty($userDayInfoDto->checkins)) {

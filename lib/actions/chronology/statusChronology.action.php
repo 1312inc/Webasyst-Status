@@ -67,26 +67,22 @@ class statusChronologyAction extends statusViewAction
         $weeksDto = statusWeekFactory::getWeeksDto($weeks, $this->user, $this->project);
         $currentWeek = array_shift($weeksDto);
 
-        $tomorrowDto = null;
-        if (!$isMe) {
-            $tomorrow = new statusDay(new DateTime('tomorrow'));
-            $tomorrowDto = new statusDayDto($tomorrow);
-            $userDto = new statusUserDto($this->user);
+        $tomorrow = new statusDay(new DateTime('tomorrow'));
+        $tomorrowDto = new statusDayDto($tomorrow);
+        $userDto = new statusUserDto($this->user);
+        $tomorrowDto->users[$userDto->contactId] = $userDto;
 
-            $tomorrowDto->users[$userDto->contactId] = $userDto;
+        // + инфа о дне пользователя
+        $userDayInfo = new statusDayUserInfoDto($tomorrowDto->date, $userDto->contactId);
+        $tomorrowDto->userDayInfos[$userDto->contactId] = $userDayInfo;
 
-            // + инфа о дне пользователя
-            $userDayInfo = new statusDayUserInfoDto($tomorrowDto->date, $userDto->contactId);
-            $tomorrowDto->userDayInfos[$userDto->contactId] = $userDayInfo;
+        $userDayInfo->todayStatus = statusTodayStatusFactory::getForContactId(
+            $userDto->contactId,
+            new DateTime($tomorrowDto->date)
+        );
 
-            $userDayInfo->todayStatus = statusTodayStatusFactory::getForContactId(
-                $userDto->contactId,
-                new DateTime($tomorrowDto->date)
-            );
-
-            $dayDtoAssembler = new statusDayDotAssembler();
-            $dayDtoAssembler->fillWithCheckins($userDayInfo, [], $userDto);
-        }
+        $dayDtoAssembler = new statusDayDotAssembler();
+        $dayDtoAssembler->fillWithCheckins($userDayInfo, [], $userDto);
 
         $viewData = [
             'currentWeek' => $currentWeek,
