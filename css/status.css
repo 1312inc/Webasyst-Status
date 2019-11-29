@@ -77,9 +77,12 @@
 
 .s-tomorrow-planner { background: #eee; margin: 10px 225px 0px 25px; padding: 6px 10px 1px; border-top-left-radius: 2px; border-radius-top-right: 2px; cursor: default; }
 .s-tomorrow-planner h3 { padding: 1px; color: #888; font-size: 1.4rem; }
+.s-tomorrow-planner ul.menu-h.dropdown li:hover { background: transparent; }
+.s-tomorrow-planner .s-editor-status { margin-top: -2px; }
 
 .s-editor { margin: 0 215px 0 15px; z-index: 1; position: relative; }
-/* .s-editor-status { border-radius: 1rem; background: rgba(0,0,0,0.1); padding: 1rem; } */
+.s-editor ul.menu-h.dropdown li:hover { background: transparent; }
+.s-editor-status { border-radius: 1rem; background: rgba(0,0,0,0.05); color: #aaa; padding: 5px 6px 5px 10px !important; }
 .s-editor .s-duration-label { font-size: 0.9em; color: #888; border-radius: 2px; padding: 1px 2px 2px; }
 .s-editor .s-duration-input { display: none; width: 2rem; font-size: 0.9em; margin-top: -4px; }
 .s-editor-slider { padding: 20px 0 10px; display: flex; width: 100%; }

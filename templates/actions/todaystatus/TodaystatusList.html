@@ -1,6 +1,6 @@
 <ul class="menu-h dropdown" data-status-wrapper="statuses" data-status-today-status-date="{$statusDate}">
     <li>
-        <a href="#" class="s-editor-status inline-link gray" data-status-current><b><i><strong>{if isset($currentStatus) && $currentStatus->getCalendarId()}{$currentStatus->getName()|escape}{else}[`Status`]{/if}</strong></i></b> <i class="icon10 darr"></i></a>
+        <a href="#" class="s-editor-status inline-link gray"{if isset($currentStatus) && $currentStatus->getCalendarId()} style="background-color: {$currentStatus->getBgColor()}; color: {$currentStatus->getFontColor()}"{/if} data-status-current><b><i><strong>{if isset($currentStatus) && $currentStatus->getCalendarId()}{$currentStatus->getName()|escape}{else}[`Status`]{/if}</strong></i></b> <i class="icon10 darr"></i></a>
         <ul class="menu-v with-icons s-status-selector">
             {foreach $statuses as $status}
                 <li
@@ -20,9 +20,10 @@
 <script>
     'use strict';
     (function () {
-        var color = '{if isset($currentStatus)}{$currentStatus->getBgColor()}{/if}',
+        var bgColor = '{if isset($currentStatus)}{$currentStatus->getBgColor()}{/if}',
+            fontColor = '{if isset($currentStatus)}{$currentStatus->getFontColor()}{/if}',
             $wrapper = $('[data-status-today-status-date="{$statusDate}"]');
 
-        $wrapper.closest('.s-editor, .s-tomorrow-planner').css('background-color', color);
+        $wrapper.closest('.s-editor-status').css( { 'background-color' : bgColor, 'color' : fontColor } );
     }());
 </script>
