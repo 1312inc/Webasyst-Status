@@ -3,7 +3,7 @@
         <ul class="menu-v with-icons">
              <li class="selected bottom-padded">
                  <a href="#" class="bold">
-                     <span class="count hint">{$timeByUserStat[$stts->getUser()->getId()]['timeStr']}</span>
+                     <span class="count hint">{$timeByUserStat[$stts->getUser()->getContactId()]['timeStr']}</span>
                      <i class="icon16 userpic20"></i>[`My status`]
                  </a>
              </li>
@@ -11,7 +11,7 @@
                  {foreach $users as $u}
                  <li>
                      <a href="#/contact/{$u->getContactId()}">
-                         <span class="count hint">{$timeByUserStat[$u->getId()]['timeStr']}</span>
+                         <span class="count hint">{$timeByUserStat[$u->getContactId()]['timeStr']}</span>
                          <i class="icon16 userpic20" style="background-image: {$u->getContact()->getPhoto()}"></i>{$u->getName()|escape}
                          {if $u->getTodayStatus()->getStatusId()}
                          <span class="s-status nowrap"

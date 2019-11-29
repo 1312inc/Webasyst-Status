@@ -102,17 +102,16 @@ SQL;
         }
 
         $sql = <<<SQL
-select su.id, 
-       (sum(sc.total_duration) - sum(sc.break_duration)) duration_by_user
+select sc.contact_id, 
+       sum(sc.total_duration) duration_by_user
 from status_checkin sc
-join status_user su on su.contact_id = sc.contact_id
 where sc.date between s:date1 and s:date2
 {$byUserSql}
 group by sc.contact_id
 SQL;
 
         return $this->query($sql, ['date1' => $dateStart, 'date2' => $dateEnd, 'contact_id' => $contactId])
-            ->fetchAll('id', 1);
+            ->fetchAll('contact_id', 1);
     }
 
     /**

@@ -121,6 +121,10 @@ final class statusDayDotAssembler
             /** @var statusProjectRepository $projectRep */
             $projectRep = stts()->getEntityRepository(statusProject::class);
             $projects = $projectRep->findAll();
+            if (!$projects) {
+                return $this->projectsDtos;
+            }
+
             /** @var statusProject $project */
             foreach ($projects as $project) {
                 $this->projectsDtos[$project->getId()] = new statusDayProjectDto($project);

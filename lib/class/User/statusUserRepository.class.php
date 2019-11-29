@@ -2,6 +2,8 @@
 
 /**
  * Class statusUserRepository
+ *
+ * @method  statusUserModel getModel()
  */
 class statusUserRepository extends statusBaseRepository
 {
@@ -47,7 +49,8 @@ class statusUserRepository extends statusBaseRepository
     {
         $today = new DateTimeImmutable();
 
-        $users = $this->findAll();
+        $userData = $this->getModel()->findAllOrderByLastCheckin();
+        $users = $this->generateWithData($userData, true);
         /** @var statusUser $user */
         foreach ($users as $i => $user) {
             if ($user->isMe()) {

@@ -11,6 +11,7 @@ class statusCheckinSaveController extends statusJsonController
      */
     public function execute()
     {
+        $user = stts()->getUser();
         $data = waRequest::post('checkin', [], waRequest::TYPE_ARRAY);
         $projects = waRequest::post('projects', [], waRequest::TYPE_ARRAY);
 
@@ -36,6 +37,11 @@ class statusCheckinSaveController extends statusJsonController
         if (!stts()->getEntityPersister()->save($checkin)) {
             $this->setError('Save checkin error');
         } else {
+            $user->setLastCheckinDatetime(date('Y-m-d H:i:s'));
+            $totalDuration = (new statusStat())->timeByWeek(new DateTime());
+            $user->setThisWeekTotalDuration($totalDuration[$this->getUser()->getId()]['time'] + $checkin->getTotalDuration());
+            stts()->getEntityPersister()->save($user);
+
             $this->response = new statusDayCheckinDto($checkin);
         }
 

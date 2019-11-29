@@ -43,9 +43,9 @@ class statusStat
         ];
         /** @var statusUser $user */
         foreach (stts()->getEntityRepository(statusUser::class)->findAll() as $user) {
-            $time = ifset($statistics, $user->getId(), 0);
+            $time = ifset($statistics, $user->getContactId(), 0);
             $result[0]['time'] += $time;
-            $result[$user->getId()] = [
+            $result[$user->getContactId()] = [
                 'time' => $time,
                 'timeStr' => statusTimeHelper::getTimeDurationInHuman(
                     0,
