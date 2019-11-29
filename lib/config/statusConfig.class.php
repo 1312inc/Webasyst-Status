@@ -319,8 +319,9 @@ class statusConfig extends waAppConfig
 
         return $this->rightConfig;
     }
+
     /**
-     * @return int|null
+     * @return int|null|array
      * @throws waException
      */
     public function onCount($onlycount = false)
@@ -338,11 +339,15 @@ class statusConfig extends waAppConfig
 
         $yesterdayStatus = statusTodayStatusFactory::getForContactId($contactId, $yesterday);
 
+        $url = $this->getBackendUrl(true).$this->application.'/';
         if (!isset($count[$contactId]) && !$yesterdayStatus->getStatusId()) {
-            return 1;
+            $url .= '#/y';
+
+            return ['count' => 1, 'url' => $url];
         }
 
         return null;
+
     }
 
     private function registerGlobal()

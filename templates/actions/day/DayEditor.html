@@ -12,7 +12,7 @@
 
         <h1>
             {if $day->today}[`Today`]{/if}
-            {if $day->yesterday}[`Yesterday`] {if !$day->checkinCount}(1){/if}{/if}
+            {if $day->yesterday}[`Yesterday`]{/if}
             <span class="hint">
                 {$day->dayname}, {$day->dayHuman}
                 <!-- <span title="[`Weekend`]">🏖️Sunday / Saturday</span> -->

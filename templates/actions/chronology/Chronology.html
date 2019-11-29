@@ -88,11 +88,19 @@
                 $.status.dayEditor($(this));
             });
 
-            var $editableDay = $.status.$status_content.find('.s-editable-now');
-            if (!$editableDay.length) {
-                $editableDay = $.status.$status_content.find('.s-day:first');
-            }
-            $editableDay.trigger('click.stts');
+            // var $editableDay = $.status.$status_content.find('.s-editable-now');
+            // if (!$editableDay.length) {
+            // var $editableDay = $.status.$status_content.find('.s-day:first');
+            // }
+            // $editableDay.trigger('click.stts');
+
+            $.status.$status_content.on('loadEditor.stts', function () {
+                var loadSelector = '.s-day:first';
+                if ($.status.routing.hash === 'y') {
+                    loadSelector = '.s-day:eq(1)';
+                }
+                $.status.$status_content.find(loadSelector).trigger('click.stts');
+            });
         }
 
     }());

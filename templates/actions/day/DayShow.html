@@ -1,4 +1,4 @@
-<div class="s-day{if $day->isFromCurrentWeek && $isMe} s-this-week{/if}{if !$isMe} s-non-clickable{elseif !$isProject} s-editable{/if}{if $isMe && $day->yesterday && !$day->checkinCount} s-editable-now{/if}"
+<div class="s-day{if $day->isFromCurrentWeek && $isMe} s-this-week{/if}{if !$isMe} s-non-clickable{elseif !$isProject} s-editable{/if}"
      data-status-day-date="{$day->date}"
 >
     <div class="s-day-date">
@@ -7,7 +7,6 @@
             {elseif $day->today}[`Today`]
             {else}{$day->dayHuman}{/if}
             <span class="hint">{$day->dayname}{if $day->yesterday || $day->today}, {$day->dayHuman}{/if}</span>
-            {if $day->yesterday && !$day->checkinCount}(1){/if}
         </h3>
     </div>
 

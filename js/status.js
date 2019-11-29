@@ -162,14 +162,22 @@
                 this.prevHash = null;
                 this.dispatch();
             },
+            yAction: function () {
+                this.defaultAction();
+            },
             defaultAction: function () {
-                this.contactAction(0);
+                this.contactAction(0, function () {
+                    $.status.$status_content.trigger('loadEditor.stts');
+                });
                 $.storage.set('/status/hash/' + this.options.user_id, '');
             },
-            contactAction: function (id) {
+            contactAction: function (id, callback) {
                 var that = this;
                 $.get('?module=chronology&contact_id=' + id, function (html) {
                     $('#status-content').html(html);
+                    if ($.isFunction(callback)) {
+                        callback.call();
+                    }
                 });
             },
             projectAction: function (id) {
@@ -560,6 +568,7 @@
                         save($form);
                     });
 
+
                 $slider.slider('destroy');
                 $slider.slider({
                     range: true,
@@ -639,6 +648,10 @@
             function init(editorHtml) {
                 $editorHtml = $(editorHtml);
                 $dayEl.hide().after($editorHtml);
+
+                if ($.status.routing.hash === 'y') {
+                    $editorHtml.find('h1').append($_('(((1)))'));
+                }
 
                 //init sliders
                 $editorHtml.find('[data-checkin]').each(function () {
