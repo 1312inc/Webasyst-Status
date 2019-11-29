@@ -63,7 +63,7 @@ class statusTodaystatusSaveController extends statusJsonController
                 ]
             );
 
-            $this->logAction('event_edit', $data['status_id'], wa()->getUser()->getId());
+            $this->logAction('event_edit', $status->getStatusId(), wa()->getUser()->getId());
         }
 
 //        if (!empty($data['brand_new'])) {
