@@ -3,7 +3,7 @@
         <ul class="menu-v with-icons">
              <li class="selected bottom-padded">
                  <a href="#" class="bold">
-                     <span class="count hint">{$timeByUserStat[$stts->getUser()->getContactId()]['timeStr']}</span>
+                     <span class="count hint" title="[`This week total`]">{$timeByUserStat[$stts->getUser()->getContactId()]['timeStr']}</span>
                      <i class="icon16 userpic20"></i>[`My status`]
                  </a>
              </li>
@@ -11,7 +11,7 @@
                  {foreach $users as $u}
                  <li>
                      <a href="#/contact/{$u->getContactId()}">
-                         <span class="count hint">{$timeByUserStat[$u->getContactId()]['timeStr']}</span>
+                         <span class="count hint" title="[`This week total`]">{$timeByUserStat[$u->getContactId()]['timeStr']}</span>
                          <i class="icon16 userpic20" style="background-image: {$u->getContact()->getPhoto()}"></i>{$u->getName()|escape}
                          {if $u->getTodayStatus()->getStatusId()}
                          <span class="s-status nowrap"
@@ -37,7 +37,7 @@
             {foreach $teammates as $teammate}
                 <li>
                     <a href="#/contact/{$teammate.id}">
-                        <i class="icon16 userpic20" style="background-image: {$teammate.photo_url_32}"></i>{$teammate.name|escape}
+                        <i class="icon16 userpic20" style="background-image: {$teammate.photo_url_32}"></i><span class="gray">{$teammate.name|escape}</span>
                     </a>
                 </li>
             {/foreach}
@@ -81,19 +81,21 @@
                 <p class="hint align-center">[`Add projects so everyone can add detalization on what they were working on.`]</p>
             </div>
         {/if}
+        {*
         <hr>
         <ul class="menu-v with-icons">
-            {*
+
              <li>
                  <a href="#"><i class="icon16 plugins"></i>[`Plugins`]</a>
              </li>
              <li>
                  <a href="#"><i class="icon16 widgets"></i>[`Widgets`]</a>
              </li>
-             *}
+
              <li>
                  <a href="#"><i class="icon16 settings"></i>[`Settings`]</a>
              </li>
         </ul>
+        *}
     </div>
 </div>

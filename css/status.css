@@ -9,6 +9,7 @@
 
 .s-navigation { margin-top: 17px; }
 .s-summary { }
+.s-title { margin: 10px 35px; }
 
 .s-color-gray { background: #aaa !important; }
 .s-color-gray1 { background: #aaa !important; }
@@ -64,10 +65,10 @@
 .s-week-divider h5 { border-bottom: 2px solid #ddd; padding-bottom: 10px; }
 
 .s-week-summary { float: right; width: 200px; text-align: center; }
-.s-week-summary .s-week-projects { line-height: 1.3rem; text-align: left; display: inline-block; }
+.s-week-summary .s-week-projects { line-height: 1.3rem; text-align: left; display: inline-block; margin-top: 1rem; }
 
 .s-donut-chart-container { overflow: hidden; }
-.s-donut-chart { position: relative; width: 150px; height: 150px; margin: 2rem auto; border-radius: 100%; }
+.s-donut-chart { position: relative; width: 150px; height: 150px; margin: 2rem auto 1rem; border-radius: 100%; }
 .s-donut-chart .center { background: #fff; position: absolute; top: 20px; left: 20px; height: 65px; width: 110px; border-radius: 70px; font-size: 1.3rem; font-weight: bold; padding-top: 45px; }
 .s-donut-chart .clip { border-radius: 50%; clip: rect(0px, 150px, 150px, 75px); height: 100%; position: absolute; width: 100%; }
 .s-donut-chart .item { border-radius: 50%; clip: rect(0px, 75px, 150px, 0px); height: 100%; position: absolute; width: 100%; font-family: monospace; font-size: 1.5rem; background: #eee; /* background-image: linear-gradient(45deg, #e3e3e3 25%, #f3f3f3 25%, #f3f3f3 50%, #e3e3e3 50%, #e3e3e3 75%, #f3f3f3 75%, #f3f3f3 100%); background-size: 13px 13px; */ }

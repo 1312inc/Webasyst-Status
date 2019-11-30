@@ -4,7 +4,7 @@
             {if $day->yesterday}[`Yesterday`]
             {elseif $day->today}[`Today`]
             {else}{$day->dayHuman}{/if}
-            <span class="hint">{$day->dayname}{if $day->yesterday || $day->today}, {$day->dayHuman}{/if}</span>
+            <span class="hint">{$day->dayname}{if $day->yesterday || $day->today}<br> {$day->dayHuman}{/if}</span>
         </h3>
     </div>
 
