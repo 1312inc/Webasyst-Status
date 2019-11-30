@@ -4,7 +4,7 @@
              <li class="selected bottom-padded">
                  <a href="#" class="bold">
                      <span class="count hint" title="[`This week total`]">{$timeByUserStat[$stts->getUser()->getContactId()]['timeStr']}</span>
-                     <i class="icon16 userpic20"></i>[`My status`]
+                     <i class="icon16 userpic20" style="background-image: url({$stts->getUser()->getPhotoUrl()})"></i>[`My status`]
                  </a>
              </li>
              {if count($users)}
@@ -12,7 +12,7 @@
                  <li>
                      <a href="#/contact/{$u->getContactId()}">
                          <span class="count hint" title="[`This week total`]">{$timeByUserStat[$u->getContactId()]['timeStr']}</span>
-                         <i class="icon16 userpic20" style="background-image: {$u->getContact()->getPhoto()}"></i>{$u->getName()|escape}
+                         <i class="icon16 userpic20" style="background-image: url({$u->getPhotoUrl()})"></i>{$u->getName()|escape}
                          {if $u->getTodayStatus()->getStatusId()}
                          <span class="s-status nowrap"
                                style="background-color: {$u->getTodayStatus()->getBgColor()}; color: {$u->getTodayStatus()->getFontColor()}"
@@ -37,7 +37,7 @@
             {foreach $teammates as $teammate}
                 <li>
                     <a href="#/contact/{$teammate.id}">
-                        <i class="icon16 userpic20" style="background-image: {$teammate.photo_url_32}"></i><span class="gray">{$teammate.name|escape}</span>
+                        <i class="icon16 userpic20" style="background-image: url({$teammate.photo_url_32})"></i><span class="gray">{$teammate.name|escape}</span>
                     </a>
                 </li>
             {/foreach}

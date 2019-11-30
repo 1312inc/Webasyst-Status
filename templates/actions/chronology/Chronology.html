@@ -51,7 +51,7 @@
             </div>
         {/if}
 
-        {if 1 || STATUS_FOR_TOMORROW!=NULL}
+        {if $nextStatus->getStatusId()}
             <div class="s-day s-this-week" data-status-day-date="{$tomorrowDto->date}">
                 <div class="s-day-date">
                     <h3>
@@ -63,9 +63,9 @@
                     <div class="s-day-summary-user-report">
                         <div class="s-author">
                             <h5 class="s-username">
-                                <i class="icon16 userpic20"></i>
-                                USERNAME
-                                <span class="s-status" title="[`Status for tomorrow`]" style="background-color: #fad54a; color: #000000">STATUSNAME</span>
+                                <i class="icon16 userpic20" style="background-image: url({$tomorrowDto->users[$contextUser->getContactId()]->photoUrl})"></i>
+                                {$tomorrowDto->users[$contextUser->getContactId()]->name|escape}
+                                <span class="s-status" title="[`Status for tomorrow`]" style="background-color: {$nextStatus->getBgColor()}; color: {$nextStatus->getFontColor()}">{$nextStatus->getName()|escape}</span>
                             </h5>
                         </div>
 
@@ -123,7 +123,7 @@
             var $donut = $(this),
                 weekNum = $donut.data('status-week-donut');
 
-            $.get('?module=week&action=donut&contact_id={$current_contact_id}&week_num='+weekNum, function (html) {
+            $.get('?module=week&action=donut&week_num='+weekNum, function (html) {
                 $donut.replaceWith(html);
             })
         });
