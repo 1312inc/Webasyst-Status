@@ -322,7 +322,7 @@
         day: function () {
             var $editorHtml,
                 $dayEl,
-                saved = false,
+                reloadDayShow = false,
                 lastSavedData = '';
 
             function getDataFromCheckin($form) {
@@ -629,7 +629,7 @@
                 $('[data-status-week-donut="' + weekNum + '"]').trigger('reloadDonut.stts');
                 //меняем цвет слайдера на s-active, чтобы показать, что данные сохранились
                 $form.find('.ui-slider').addClass('s-active');
-                saved = true;
+                reloadDayShow = true;
             }
 
             function save($form) {
@@ -730,12 +730,15 @@
                             .siblings().hide();
 
                         return false;
+                    })
+                    .on('reloadDayShow.stts', function () {
+                        reloadDayShow = true;
                     });
             }
 
             function close() {
                 if ($editorHtml) {
-                    if (saved) {
+                    if (reloadDayShow) {
                         var date = $dayEl.data('status-day-date');
                         $.get('?module=day&action=show', {date: date, contact_id: $.status.options.userId}, function (html) {
                             $.status.$status_content.find('.s-day[data-status-day-date="' + date + '"]').html(html);
@@ -743,7 +746,7 @@
                     }
                     $editorHtml.remove();
                     $dayEl.show();
-                    saved = false;
+                    reloadDayShow = false;
                 }
             }
 
@@ -862,6 +865,7 @@
                                 $.status.$loading.remove();
                                 if (r.status === 'ok') {
                                     $wrapper.replaceWith(r.data);
+                                    $.status.$status_content.find('.s-editor').trigger('reloadDayShow.stts');
 
                                     $.status.reloadSidebar();
                                     d.trigger('close');
@@ -895,6 +899,7 @@
                         $.status.$loading.remove();
                         if (r.status === 'ok') {
                             $wrapper.replaceWith(r.data);
+                            $.status.$status_content.find('.s-editor').trigger('reloadDayShow.stts');
 
                             $.status.reloadSidebar();
                         } else {
