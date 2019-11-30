@@ -33,6 +33,15 @@
                  </li>
                  *}
             {/if}
+            {if $teammates}
+            {foreach $teammates as $teammate}
+                <li>
+                    <a href="#/contact/{$teammate.id}">
+                        <i class="icon16 userpic20" style="background-image: {$teammate.photo_url_32}"></i>{$teammate.name|escape}
+                    </a>
+                </li>
+            {/foreach}
+            {/if}
         </ul>
         {if !count($users) && $wa->team}
             <div class="block">

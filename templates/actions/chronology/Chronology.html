@@ -28,6 +28,8 @@
     {else}
     <h1>{$contextUser->getName()|escape}</h1>
 
+    {if !$contextUser->getId()}вне статуса{/if}
+
     <div style="border: 1px solid red">
         <div class="s-day" data-status-day-date="{$tomorrowDto->date}">
             {include inline file='./../day/DayShow.html' day=$tomorrowDto}

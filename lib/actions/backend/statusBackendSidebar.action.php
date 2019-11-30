@@ -13,9 +13,32 @@ class statusBackendSidebarAction extends statusViewAction
      */
     public function runAction($params = null)
     {
+        $userIds = [];
+        $teammates = [];
+        $users = stts()->getEntityRepository(statusUser::class)->findAllExceptMe();
+
+        if (wa('team')) {
+            $teammates = teamUser::getList(
+                'users',
+                [
+                    'order' => 'last_seen',
+                    'convert_to_utc' => 'update_datetime',
+                    'additional_fields' => [
+                        'update_datetime' => 'c.create_datetime',
+                    ],
+                ]
+            );
+
+            foreach ($users as $user) {
+                unset($teammates[$user->getContactId()]);
+            }
+            unset($teammates[stts()->getUser()->getContactId()]);
+        }
+
         $this->view->assign(
             [
-                'users'    => stts()->getEntityRepository(statusUser::class)->findAllExceptMe(),
+                'teammates' => $teammates,
+                'users' => $users,
                 'projects' => stts()->getEntityRepository(statusProject::class)->findAll(),
             ]
         );
@@ -35,8 +58,8 @@ class statusBackendSidebarAction extends statusViewAction
         $this->view->assign(
             [
                 'backend_sidebar' => $eventResult,
-                'timeByUserStat'  => (new statusStat())->timeByWeek(new DateTime()),
-                'isAdmin'         => (int) $this->getUser()->isAdmin('status'),
+                'timeByUserStat' => (new statusStat())->timeByWeek(new DateTime()),
+                'isAdmin' => (int)$this->getUser()->isAdmin('status'),
             ]
         );
     }
