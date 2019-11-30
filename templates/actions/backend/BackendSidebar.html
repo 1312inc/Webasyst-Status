@@ -24,12 +24,14 @@
                      </a>
                  </li>
                  {/foreach}
+                 {*
                  <li>
                      <a href="#">
                          <span class="count hint">{$timeByUserStat[0]['timeStr']}</span>
                          <span class="gray">[`All users`]</span>
                      </a>
                  </li>
+                 *}
             {/if}
         </ul>
         {if !count($users) && $wa->team}
@@ -55,6 +57,7 @@
                      </a>
                  </li>
                  {/foreach}
+                 {*
                  <li>
                      <a href="#">
                          <span class="count hint">42h</span>
@@ -62,6 +65,7 @@
                          <span class="gray">[`All projects`]</span>
                      </a>
                  </li>
+                 *}
             </ul>
         {else if 0 && IS_APP_ADMIN}
             <div class="block">

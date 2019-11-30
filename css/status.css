@@ -31,6 +31,8 @@
 .s-color-orange { background: #ff9400 !important; }
 .s-color-none { background: #ddd !important; }
 
+.field .value a.selected .icon16.color { border: 3px solid rgba(0,0,0,0.8); }
+
 /* Check-in Details
 ------------------- */
 
