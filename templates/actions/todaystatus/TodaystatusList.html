@@ -2,6 +2,12 @@
     <li>
         <a href="#" class="s-editor-status inline-link gray"{if isset($currentStatus) && $currentStatus->getCalendarId()} style="background-color: {$currentStatus->getBgColor()}; color: {$currentStatus->getFontColor()}"{/if} data-status-current><b><i><strong>{if isset($currentStatus) && $currentStatus->getCalendarId()}{$currentStatus->getName()|escape}{else}[`Status`]{/if}</strong></i></b> <i class="icon10 darr"></i></a>
         <ul class="menu-v with-icons s-status-selector">
+            <li
+                    data-status-calendar-id="0"
+                    data-status-status-id="{if isset($currentStatus)}{$currentStatus->getStatusId()}{/if}"
+            >
+                <a href="#"><i class="icon16 color"></i>[`No status`]</a>
+            </li>
             {foreach $statuses as $status}
                 <li
                         {if isset($currentStatus) && $currentStatus->getCalendarId() == $status->getCalendarId()}class="selected"{/if}
