@@ -46,11 +46,11 @@ final class statusTimeHelper
     }
 
     /**
-     * @param DateTime $date
+     * @param DateTimeInterface $date
      *
      * @return int
      */
-    public static function getWeekNumberByDate(DateTime $date)
+    public static function getWeekNumberByDate(DateTimeInterface $date)
     {
         return (int)$date->format('W');
     }

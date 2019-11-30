@@ -168,7 +168,7 @@ class statusConfig extends waAppConfig
     /**
      * @param string $entity
      *
-     * @return statusBaseRepository
+     * @return statusBaseRepository|statusUserRepository
      * @throws waException
      */
     public function getEntityRepository($entity)

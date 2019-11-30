@@ -27,10 +27,10 @@
                         </div>
                         <div class="value no-shift" id="status-project-color">
                             <input type="hidden" name="project[color]" value="{$project->getColor()}"/>
-                            {foreach statusStoreColor::getColors() as $color => $name}
-                                <a href="#" {if $project->getColor() == $color}class="selected"{/if}
-                                   data-status-project-color="{$color}"><i
-                                            class="icon16 color s-color-{$color}"></i></a>
+                            {foreach statusStoreColor::getColors() as $colorName => $color}
+                                <a href="#" {if $project->getColor() == $color[1]}class="selected"{/if}
+                                   data-status-project-color="{$color[1]}"><i
+                                            class="icon16 color s-color-{$colorName}"></i></a>
                             {/foreach}
                         </div>
                     </div>

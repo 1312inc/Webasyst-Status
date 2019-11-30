@@ -163,13 +163,16 @@
                 this.dispatch();
             },
             yAction: function () {
-                this.defaultAction();
+                this.defaultAction(true);
             },
-            defaultAction: function () {
+            defaultAction: function (skipSaveHash) {
                 this.contactAction(0, function () {
                     $.status.$status_content.trigger('loadEditor.stts');
                 });
-                $.storage.set('/status/hash/' + this.options.user_id, '');
+
+                if (!skipSaveHash) {
+                    $.storage.set('/status/hash/' + this.options.user_id, '');
+                }
             },
             contactAction: function (id, callback) {
                 var that = this;
@@ -319,6 +322,7 @@
         day: function () {
             var $editorHtml,
                 $dayEl,
+                saved = false,
                 lastSavedData = '';
 
             function getDataFromCheckin($form) {
@@ -586,6 +590,7 @@
                         if (data.id) {
                             //меняем цвет слайдера на s-active, чтобы показать, что данные сохранились
                             $el.find('.ui-slider').addClass('s-active');
+                            $el.find('.s-editor-slider-projects').slideDown(200);
                         }
                     },
                     slide: function (event, ui) {
@@ -624,6 +629,7 @@
                 $('[data-status-week-donut="' + weekNum + '"]').trigger('reloadDonut.stts');
                 //меняем цвет слайдера на s-active, чтобы показать, что данные сохранились
                 $form.find('.ui-slider').addClass('s-active');
+                saved = true;
             }
 
             function save($form) {
@@ -729,14 +735,20 @@
 
             function close() {
                 if ($editorHtml) {
+                    if (saved) {
+                        var date = $dayEl.data('status-day-date');
+                        $.get('?module=day&action=show', {date: date, contact_id: $.status.options.userId}, function (html) {
+                            $.status.$status_content.find('.s-day[data-status-day-date="' + date + '"]').html(html);
+                        });
+                    }
                     $editorHtml.remove();
                     $dayEl.show();
+                    saved = false;
                 }
             }
 
             function editor($day) {
-                var date = $day.data('status-day-date');
-                $.get('?module=day&action=editor', {date: date}, function (html) {
+                $.get('?module=day&action=editor', {date: $day.data('status-day-date')}, function (html) {
                     close();
                     $dayEl = $day;
                     init(html);

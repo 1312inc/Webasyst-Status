@@ -34,7 +34,10 @@ class statusDayEditor
         $projectModel = stts()->getModel(statusProject::class);
         $projectData = $projectModel->getByDateAndContactId($day->getDate()->format('Y-m-d'), $user->getContactId());
 
-        $dayDtoAssembler->fillCheckinsWithProjects($userDayInfo->checkins, $projectData);
+        $dayDtoAssembler->fillCheckinsWithProjects(
+            $userDayInfo->checkins,
+            !empty($projectData) ? $projectData : []
+        );
         $userDayInfo->todayStatus = statusTodayStatusFactory::getForContactId(
             $userDto->contactId,
             new DateTime($dayDto->date)

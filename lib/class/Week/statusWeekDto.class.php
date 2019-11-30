@@ -6,7 +6,7 @@
 class statusWeekDto
 {
     /**
-     * @var statusDay[]
+     * @var statusDayDto[]
      */
     public $days = [];
 
@@ -29,8 +29,6 @@ class statusWeekDto
      * statusWeekDto constructor.
      *
      * @param statusWeek $week
-     *
-     * @throws waException
      */
     public function __construct(statusWeek $week)
     {

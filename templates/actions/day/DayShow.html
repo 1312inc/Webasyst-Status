@@ -1,6 +1,4 @@
-<div class="s-day{if $day->isFromCurrentWeek && $isMe} s-this-week{/if}{if !$isMe} s-non-clickable{elseif !$isProject} s-editable{/if}"
-     data-status-day-date="{$day->date}"
->
+{*<section id="day-show-{$day->date}">*}
     <div class="s-day-date">
         <h3>
             {if $day->yesterday}[`Yesterday`]
@@ -78,5 +76,4 @@
     {/foreach}
     {/foreach}
     </div>
-
-</div>
+{*</section>*}

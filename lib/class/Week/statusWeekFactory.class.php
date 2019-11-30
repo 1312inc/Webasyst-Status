@@ -44,12 +44,12 @@ class statusWeekFactory
     }
 
     /**
-     * @param DateTime $date
+     * @param DateTimeInterface $date
      *
      * @return statusWeek
      * @throws Exception
      */
-    public static function createWeekByDate(DateTime $date)
+    public static function createWeekByDate(DateTimeInterface $date)
     {
         return new statusWeek($date);
     }
@@ -187,7 +187,10 @@ class statusWeekFactory
                             $userDayInfo,
                             isset($walogs[$userDto->contactId][$dayDto->date]) ? $walogs[$userDto->contactId][$dayDto->date] : []
                         )
-                        ->fillCheckinsWithProjects($userDayInfo->checkins, $projectData);
+                        ->fillCheckinsWithProjects(
+                            $userDayInfo->checkins,
+                            isset($projectData[$userDto->contactId]) ? $projectData[$userDto->contactId] : []
+                        );
 
                     $dayDto->checkinCount += $userDayInfo->realCheckinCount;
                 }

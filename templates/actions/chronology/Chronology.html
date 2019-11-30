@@ -1,7 +1,7 @@
 <div class="content left200px">
 
     {if $isProject}
-        <h1>{$project->getName()|escape}</h1>
+    <h1>{$project->getName()|escape}</h1>
     {elseif $isMe}
     <div class="s-week-summary">
 
@@ -26,15 +26,21 @@
         </h3>
     </div>
     {else}
-        <h1>{$contextUser->getName()|escape}</h1>
+    <h1>{$contextUser->getName()|escape}</h1>
 
-        <div style="border: 1px solid red">
-        {include inline file='./../day/DayShow.html' day=$tomorrowDto}
+    <div style="border: 1px solid red">
+        <div class="s-day" data-status-day-date="{$tomorrowDto->date}">
+            {include inline file='./../day/DayShow.html' day=$tomorrowDto}
         </div>
+    </div>
     {/if}
 
     {foreach $currentWeek->days as $day}
+    <div class="s-day{if $day->isFromCurrentWeek && $isMe} s-this-week{/if}{if !$isMe} s-non-clickable{elseif !$isProject} s-editable{/if}"
+         data-status-day-date="{$day->date}"
+    >
         {include inline file='./../day/DayShow.html' day=$day}
+    </div>
     {/foreach}
 
     <!-- CHRONOLOGY -->

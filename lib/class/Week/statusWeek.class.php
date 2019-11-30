@@ -28,11 +28,11 @@ class statusWeek
     /**
      * statusWeek constructor.
      *
-     * @param DateTime $sourceDay
+     * @param DateTimeInterface $sourceDay
      *
      * @throws Exception
      */
-    public function __construct(DateTime $sourceDay)
+    public function __construct(DateTimeInterface $sourceDay)
     {
         $this->number = statusTimeHelper::getWeekNumberByDate($sourceDay);
 
@@ -59,6 +59,18 @@ class statusWeek
     public function getDays()
     {
         return $this->days;
+    }
+
+    /**
+     * @param statusDay[] $days
+     *
+     * @return statusWeek
+     */
+    public function setDays(array $days)
+    {
+        $this->days = $days;
+
+        return $this;
     }
 
     /**
