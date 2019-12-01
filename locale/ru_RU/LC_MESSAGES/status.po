@@ -208,7 +208,7 @@ msgstr "Вчера"
 
 #: /wa-apps/status/templates/actions/day/DayShow.html:51
 msgid "No activity recorded"
-msgstr ""
+msgstr "Не было действий"
 
 #: /wa-apps/status/templates/actions/day/DayShow.html:83
 #: /wa-apps/status/js/status.js:314
@@ -308,3 +308,24 @@ msgstr ""
 #: /wa-apps/status/lib/vendor/kmwa/Exception/kmwaForbiddenException.php:17
 msgid "Access denied"
 msgstr "Доступ запрещен"
+
+msgid "Mon"
+msgstr "Пн"
+
+msgid "Tue"
+msgstr "Вт"
+
+msgid "Wed"
+msgstr "Ср"
+
+msgid "Thu"
+msgstr "Чт"
+
+msgid "Fri"
+msgstr "Пт"
+
+msgid "Sat"
+msgstr "Сб"
+
+msgid "Sun"
+msgstr "Вс"
