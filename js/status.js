@@ -784,15 +784,15 @@
 
             self.routing.init(self.options.routingOptions);
 
-            self.$core_sidebar.on('click', '[data-status-project-action="add"]', function (e) {
+            var projectDialog = function(e) {
                 e.preventDefault();
 
-                // var pocketId = $(this).data('pl2-pocket-id') || 0;
+                var projectId = $(this).data('status-project-id') || 0;
 
                 $('#stts-project-dialog').waDialog({
                     'height': '250px',
                     'width': '600px',
-                    'url': '?module=project&action=dialog&id=' + 0,
+                    'url': '?module=project&action=dialog&id=' + projectId,
                     onLoad: function () {
                         var d = this,
                             $dialogWrapper = $(d);
@@ -808,7 +808,14 @@
                             .on('click', '[data-status-action="delete-project"]', function (e) {
                                 e.preventDefault();
 
-                                // _deletePocket.call(d, pocketId);
+                                $.post('?module=project&action=delete', $dialogWrapper.find('form').serialize(), function (r) {
+                                     if (r.status === 'ok') {
+                                         $dialogWrapper.trigger('close');
+                                         window.location.hash = '#/';
+                                         $.status.routing.redispatch();
+                                         $.status.reloadSidebar();
+                                     }
+                                });
                             })
                         ;
 
@@ -836,7 +843,10 @@
                         return false;
                     }
                 });
-            })
+            };
+
+            self.$core_sidebar.on('click', '[data-status-project-action="add"]', projectDialog);
+            self.$status_content.on('click', '[data-status-project-action="add"]', projectDialog);
 
             self.$status_content
                 .on('click.stts', '[data-status-wrapper="statuses"] [data-status-action="custom-status"]', function (e) {

@@ -42,6 +42,8 @@ class statusEntityPersist
             }
         }
 
+        stts()->getEventDispatcher()->dispatch($event);
+
         unset($data['id']);
 
         $id = $model->insert($data, $type);
@@ -94,6 +96,8 @@ class statusEntityPersist
                     return false;
                 }
             }
+
+            stts()->getEventDispatcher()->dispatch($event);
 
             $model = stts()->getModel(get_class($entity));
             $deleted = $model->deleteById($entity->getId());
@@ -153,6 +157,8 @@ class statusEntityPersist
                     $data = array_merge($data, $responseData);
                 }
             }
+
+            stts()->getEventDispatcher()->dispatch($event);
 
             unset($data['id']);
 
