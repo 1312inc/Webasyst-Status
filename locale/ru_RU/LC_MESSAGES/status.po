@@ -184,7 +184,7 @@ msgid "Access rights"
 msgstr "Права доступа"
 
 #: /wa-apps/status/templates/actions/project/ProjectDialog.html:42
-msgid "Use <a href=\"%s\">Team app</a> to configure access: select a user or a group of users &gt; Access tab &gt; Pocket Lists app &gt; apply the proper access level."
+msgid "Use <a href=\"%s\">Team app</a> to configure access: select a user or a group of users &gt; Access tab &gt; Status app &gt; apply the proper access level."
 msgstr "Для настройки доступа используйте приложение «<a href=\"%s\">Команда</a>»: выберите пользователя или группу пользователей &gt; вкладка «Доступ» &gt; Статус &gt; настройте подходящий уровень доступа."
 
 #: /wa-apps/status/templates/actions/project/ProjectDialog.html:61
