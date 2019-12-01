@@ -6,6 +6,10 @@
 
         {include file='./../week/WeekDonut.html' donut=$currentWeek->donut}
 
+        <div class="block">
+            <p class="hint">{sprintf('[`Out of total %d weekly working hours`]', 40)}</p>
+        </div>
+
     </div>
 
     {if $isProject}
