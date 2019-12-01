@@ -34,8 +34,15 @@ final class statusTimeHelper
         $durationDiff = (new DateTime(date('Y-m-d H:i:s', $endTimestamp)))->diff(new DateTime(date('Y-m-d H:i:s', $startTimestamp)));
 
         $humanFormat = [];
+        $hours = 0;
+        if ($durationDiff->d) {
+            $hours = 24 * $durationDiff->d;
+        }
         if ($durationDiff->h) {
-            $humanFormat[] = sprintf_wp('%dh', ($durationDiff->d * 24) + $durationDiff->h);
+            $hours += $durationDiff->h;
+        }
+        if ($hours) {
+            $humanFormat[] = sprintf_wp('%dh', $hours);
         }
 
         if ($durationDiff->i) {
