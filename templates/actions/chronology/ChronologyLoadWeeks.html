@@ -2,15 +2,17 @@
     <div id="olderWeeks">
         {foreach $weeks as $week}
             <div class="s-week-divider">
-                <h5 class="heading">WEEK #{$week->number}</h5>
+                <h5 class="heading">{sprintf('[`WEEK #%d`]', $week->number)}</h5>
             </div>
 
             <div class="s-week-summary">
                 <div class="block">
+                    
+                    {*
                     <h5 class="heading align-center">
-                        WEEK #{$week->number}<br> SUMMARY
+                        {sprintf('[`WEEK #%d`]', $week->number)}
                     </h5>
-
+                    *}
                     {include inline file='./../../actions/week/WeekDonut.html' donut=$week->donut}
 
                 </div>
