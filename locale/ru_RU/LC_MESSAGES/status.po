@@ -1,0 +1,310 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: status\n"
+"POT-Creation-Date: 2019-12-01 19:48+0100\n"
+"PO-Revision-Date: \n"
+"Last-Translator: status\n"
+"Language-Team: status\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=((((n%10)==1)&&((n%100)!=11))?(0):(((((n%10)>=2)&&((n%10)<=4))&&(((n%100)<10)||((n%100)>=20)))?(1):2));\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: .\n"
+"Language: ru_RU\n"
+"X-Generator: Poedit 2.2.3\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: .\n"
+
+#: /wa-apps/status/templates/include/sidebar.html:7
+#: /wa-apps/status/templates/actions/backend/BackendOld.html:123
+#: /wa-apps/status/templates/actions/backend/BackendOld.html:187
+#: /wa-apps/status/templates/actions/backend/BackendOld.html:211
+#: /wa-apps/status/templates/actions/day/DayEditor.template.html:12
+#: /wa-apps/status/templates/actions/todaystatus/TodaystatusList.html:3
+msgid "Status"
+msgstr "Статус"
+
+#: /wa-apps/status/templates/include/error.html:4
+msgid "Sorry. You are not allowed to see anything on this page."
+msgstr "Извините, но у вас нет доступа к данным на этой странице."
+
+#: /wa-apps/status/templates/layouts/Default.html:46
+#: /wa-apps/status/templates/actions/backend/BackendOld.html:100
+#: /wa-apps/status/templates/actions/todaystatus/TodaystatusList.html:21
+msgid "Custom status..."
+msgstr "Другой статус…"
+
+#: /wa-apps/status/templates/actions/backend/BackendSidebar.html:6
+#: /wa-apps/status/templates/actions/backend/BackendSidebar.html:14
+msgid "This week total"
+msgstr "Всего на этой неделе"
+
+#: /wa-apps/status/templates/actions/backend/BackendSidebar.html:7
+#: /wa-apps/status/templates/actions/backend/BackendOld.html:116
+msgid "My status"
+msgstr "Мой статус"
+
+#: /wa-apps/status/templates/actions/backend/BackendSidebar.html:31
+#: /wa-apps/status/templates/actions/backend/BackendOld.html:130
+msgid "All users"
+msgstr "Все пользователи"
+
+#: /wa-apps/status/templates/actions/backend/BackendSidebar.html:48
+msgid "Invite users via the <a href=\"%s\">Team app</a> and start tracking time and status together."
+msgstr "Пригласите пользователей в приложении «<a href=\"%s\">Команда</a>» и ведите учет рабочего времени совместно."
+
+#: /wa-apps/status/templates/actions/backend/BackendSidebar.html:55
+#: /wa-apps/status/templates/actions/backend/BackendOld.html:139
+msgid "Projects"
+msgstr "Работы"
+
+#: /wa-apps/status/templates/actions/backend/BackendSidebar.html:74
+#: /wa-apps/status/templates/actions/backend/BackendOld.html:154
+msgid "All projects"
+msgstr "Все работы"
+
+#: /wa-apps/status/templates/actions/backend/BackendSidebar.html:81
+msgid "Add projects so everyone can add detalization on what they were working on."
+msgstr "Создайте работу, чтобы каждый мог указать, какое время было на нее потрачено."
+
+#: /wa-apps/status/templates/actions/backend/BackendSidebar.html:89
+#: /wa-apps/status/templates/actions/backend/BackendOld.html:162
+msgid "Plugins"
+msgstr "Плагины"
+
+#: /wa-apps/status/templates/actions/backend/BackendSidebar.html:92
+#: /wa-apps/status/templates/actions/backend/BackendOld.html:165
+msgid "Widgets"
+msgstr "Виджеты"
+
+#: /wa-apps/status/templates/actions/backend/BackendSidebar.html:96
+#: /wa-apps/status/templates/actions/backend/BackendOld.html:168
+msgid "Settings"
+msgstr "Настройки"
+
+#: /wa-apps/status/templates/actions/backend/BackendOld.html:37
+#: /wa-apps/status/lib/class/Week/statusWeekDtoAssembler.class.php:86
+msgid "No project"
+msgstr "Другое"
+
+#: /wa-apps/status/templates/actions/backend/BackendOld.html:49
+msgid "32 out of 40 clocked hours (84%)"
+msgstr ""
+
+#: /wa-apps/status/templates/actions/backend/BackendOld.html:178
+#: /wa-apps/status/templates/actions/chronology/Chronology.html:5
+msgid "This week"
+msgstr "Текущая неделя"
+
+#: /wa-apps/status/templates/actions/backend/BackendOld.html:194
+#: /wa-apps/status/templates/actions/chronology/Chronology.html:36
+#: /wa-apps/status/templates/actions/chronology/Chronology.html:62
+msgid "Tomorrow"
+msgstr "Завтра"
+
+#: /wa-apps/status/templates/actions/backend/BackendOld.html:196
+#: /wa-apps/status/templates/actions/backend/BackendOld.html:222
+#: /wa-apps/status/templates/actions/day/DayEditor.html:17
+#: /wa-apps/status/templates/actions/chronology/Chronology.html:39
+msgid "Weekend"
+msgstr "Выходной"
+
+#: /wa-apps/status/templates/actions/backend/BackendOld.html:198
+#: /wa-apps/status/templates/actions/backend/BackendOld.html:223
+#: /wa-apps/status/templates/actions/day/DayEditor.html:18
+#: /wa-apps/status/templates/actions/chronology/Chronology.html:40
+msgid "Birthday"
+msgstr "День рождения"
+
+#: /wa-apps/status/templates/actions/backend/BackendOld.html:219
+#: /wa-apps/status/templates/actions/day/DayShow.html:5
+#: /wa-apps/status/templates/actions/day/DayEditor.template.html:18
+#: /wa-apps/status/templates/actions/day/DayEditor.html:13
+msgid "Today"
+msgstr "Сегодня"
+
+#: /wa-apps/status/templates/actions/backend/BackendOld.html:263
+#: /wa-apps/status/templates/actions/day/DayEditor.html:68
+msgid "Break"
+msgstr "Перерыв"
+
+#: /wa-apps/status/templates/actions/backend/BackendOld.html:270
+#: /wa-apps/status/templates/actions/day/DayEditor.html:75
+msgid "Add another interval for today"
+msgstr "Добавить еще один интервал за этот день"
+
+#: /wa-apps/status/templates/actions/backend/BackendOld.html:279
+#: /wa-apps/status/templates/actions/day/DayEditor.template.html:28
+#: /wa-apps/status/templates/actions/day/DayEditor.html:84
+msgid "Enter your daily report here..."
+msgstr "Краткий отчет за день…"
+
+#: /wa-apps/status/templates/actions/backend/BackendOld.html:281
+#: /wa-apps/status/templates/actions/project/ProjectDialog.html:66
+#: /wa-apps/status/templates/actions/day/DayEditor.template.html:30
+#: /wa-apps/status/templates/actions/day/DayEditor.html:86
+#: /wa-apps/status/templates/actions/todaystatus/TodaystatusDialog.html:40
+msgid "Save"
+msgstr "Сохранить"
+
+#: /wa-apps/status/templates/actions/backend/BackendOld.html:282
+#: /wa-apps/status/templates/actions/day/DayEditor.template.html:31
+#: /wa-apps/status/templates/actions/day/DayEditor.html:87
+msgid "Saved"
+msgstr "Сохранено"
+
+#: /wa-apps/status/templates/actions/backend/BackendOld.html:344
+#: /wa-apps/status/templates/actions/day/DayShow.html:39
+msgid "Status for today"
+msgstr "Статус на сегодня"
+
+#: /wa-apps/status/templates/actions/backend/BackendOld.html:355
+msgid "No app activity logged"
+msgstr ""
+
+#: /wa-apps/status/templates/actions/project/ProjectDialog.html:8
+msgid "(unnamed project)"
+msgstr ""
+
+#: /wa-apps/status/templates/actions/project/ProjectDialog.html:10
+msgid "New project"
+msgstr "Новая работа"
+
+#: /wa-apps/status/templates/actions/project/ProjectDialog.html:17
+msgid "Project name"
+msgstr "Название"
+
+#: /wa-apps/status/templates/actions/project/ProjectDialog.html:26
+msgid "Color"
+msgstr "Цвет"
+
+#: /wa-apps/status/templates/actions/project/ProjectDialog.html:39
+msgid "Access rights"
+msgstr "Права доступа"
+
+#: /wa-apps/status/templates/actions/project/ProjectDialog.html:42
+msgid "Use <a href=\"%s\">Team app</a> to configure access: select a user or a group of users &gt; Access tab &gt; Pocket Lists app &gt; apply the proper access level."
+msgstr "Для настройки доступа используйте приложение «<a href=\"%s\">Команда</a>»: выберите пользователя или группу пользователей &gt; вкладка «Доступ» &gt; Статус &gt; настройте подходящий уровень доступа."
+
+#: /wa-apps/status/templates/actions/project/ProjectDialog.html:61
+msgid "Delete project"
+msgstr "Удалить работу"
+
+#: /wa-apps/status/templates/actions/project/ProjectDialog.html:66
+#: /wa-apps/status/templates/actions/todaystatus/TodaystatusDialog.html:40
+msgid "or"
+msgstr "или"
+
+#: /wa-apps/status/templates/actions/project/ProjectDialog.html:66
+#: /wa-apps/status/templates/actions/todaystatus/TodaystatusDialog.html:40
+msgid "cancel"
+msgstr "отменить"
+
+#: /wa-apps/status/templates/actions/day/DayShow.html:4
+#: /wa-apps/status/templates/actions/day/DayEditor.html:14
+msgid "Yesterday"
+msgstr "Вчера"
+
+#: /wa-apps/status/templates/actions/day/DayShow.html:51
+msgid "No activity recorded"
+msgstr ""
+
+#: /wa-apps/status/templates/actions/day/DayShow.html:83
+#: /wa-apps/status/js/status.js:314
+#: /wa-apps/status/lib/class/Day/statusDayCheckinDto.class.php:122
+msgid "h"
+msgstr "ч"
+
+#: /wa-apps/status/templates/actions/day/DayEditor.html:61
+msgid "0h"
+msgstr "0 ч"
+
+#: /wa-apps/status/templates/actions/todaystatus/TodaystatusDialog.html:5
+msgid "Custom status"
+msgstr "Другой статус"
+
+#: /wa-apps/status/templates/actions/todaystatus/TodaystatusDialog.html:11
+msgid "Status label"
+msgstr "Статус"
+
+#: /wa-apps/status/templates/actions/todaystatus/TodaystatusDialog.html:14
+msgid "Working remotely"
+msgstr "Работаю удаленно"
+
+#: /wa-apps/status/templates/actions/todaystatus/TodaystatusDialog.html:19
+msgid "Calendar"
+msgstr "Календарь"
+
+#: /wa-apps/status/templates/actions/todaystatus/TodaystatusDialog.html:31
+msgid "The status will be automatically linked with the selected calendar in the Team app."
+msgstr "Статус будет автоматически связан с выбранным календарем в приложении «Команда»."
+
+#: /wa-apps/status/templates/actions/todaystatus/TodaystatusList.html:9
+msgid "No status"
+msgstr "Без статуса"
+
+#: /wa-apps/status/templates/actions/chronology/ChronologyLoadWeeks.html:30
+msgid "Loading..."
+msgstr "Загрузка…"
+
+#: /wa-apps/status/templates/actions/chronology/Chronology.html:10
+msgid "Out of total %d weekly working hours"
+msgstr "Из %d рабочих часов в неделю"
+
+#: /wa-apps/status/templates/actions/chronology/Chronology.html:21
+msgid "Project settings"
+msgstr "Настройки работы"
+
+#: /wa-apps/status/templates/actions/chronology/Chronology.html:50
+msgid "The user does not have access to the Status app. Grant access rights in the <a href=\"%s\"><i class=\"icon16\" style=\"%s\"></i>Team app</a> so the user can check in too."
+msgstr "У пользователя нет доступа к приложению «Статус». Предоставьте доступ в приложении «<a href=\"%s\"><i class=\"icon16\" style=\"%s\"></i>Команда</a>» и ведите учет рабочего времени совместно."
+
+#: /wa-apps/status/templates/actions/chronology/Chronology.html:72
+msgid "Status for tomorrow"
+msgstr "Статус на завтра"
+
+#: /wa-apps/status/js/status.js:317
+msgid "m"
+msgstr "мин"
+
+#: /wa-apps/status/js/status.js:670
+msgid "(((1)))"
+msgstr ""
+
+#: /wa-apps/status/lib/config/statusRightConfig.class.php:48
+msgid "Can manage self status & timeline"
+msgstr "Может вести учет своего рабочего времени"
+
+#: /wa-apps/status/lib/config/statusRightConfig.class.php:62
+msgid "Can see teammates"
+msgstr "Может видеть данные других пользователей"
+
+#: /wa-apps/status/lib/config/statusRightConfig.class.php:75
+msgid "Can see & contribute to projects"
+msgstr "Может видеть статистику и участвует в работах"
+
+#: /wa-apps/status/lib/class/Week/statusWeekDtoAssembler.class.php:104
+msgid "No activity"
+msgstr ""
+
+#: /wa-apps/status/lib/class/statusTimeHelper.class.php:38
+#: /wa-apps/status/lib/class/Day/statusDayCheckinDto.class.php:127
+msgid "%dh"
+msgstr "%d ч"
+
+#: /wa-apps/status/lib/class/statusTimeHelper.class.php:42
+msgid "%dm"
+msgstr "%d мин"
+
+#: /wa-apps/status/lib/vendor/kmwa/Exception/kmwaNotFoundException.php:17
+msgid "Not found"
+msgstr "Не найдено"
+
+#: /wa-apps/status/lib/vendor/kmwa/Exception/kmwaNotImplementedException.php:17
+msgid "Not implemented for now"
+msgstr ""
+
+#: /wa-apps/status/lib/vendor/kmwa/Exception/kmwaForbiddenException.php:17
+msgid "Access denied"
+msgstr "Доступ запрещен"
