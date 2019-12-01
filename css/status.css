@@ -91,6 +91,7 @@
 .s-editor .s-duration-input { display: none; width: 2rem; font-size: 0.9em; margin-top: -4px; }
 .s-editor .s-checkin-reminder { color: #f50; font-weight: bold; }
 .s-editor-slider { padding: 20px 0 10px; display: flex; width: 100%; }
+.s-editor-slider form { overflow: visible; }
 .s-editor-slider .s-editor-slider-total { flex: 0 0 100px; text-align: center; }
 .s-editor-slider .s-editor-slider-total h2 { color: #555; }
 .s-editor-slider .s-editor-slider-control { flex: 1; padding-top: 10px; }
