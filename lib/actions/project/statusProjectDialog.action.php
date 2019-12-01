@@ -15,6 +15,7 @@ class statusProjectDialogAction extends statusViewAction
     public function runAction($params = null)
     {
         $id = waRequest::get('id', 0, waRequest::TYPE_INT);
+        /** @var statusProject $project */
         $project = null;
         if ($id) {
             $project = stts()->getEntityRepository(statusProject::class)->findById($this->getId());

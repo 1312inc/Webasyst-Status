@@ -8,7 +8,7 @@ class statusWeekDonutDto
     /**
      * @var statusWeekDonutDataDto[]
      */
-    public $datum = [];
+    public $data = [];
 
     /**
      * @var int
@@ -29,4 +29,9 @@ class statusWeekDonutDto
      * @var bool
      */
     public $chart = true;
+
+    /**
+     * @var bool
+     */
+    public $hasData = false;
 }

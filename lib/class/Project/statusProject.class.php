@@ -18,7 +18,7 @@ class statusProject extends statusAbstractEntity
     /**
      * @var string
      */
-    private $color;
+    private $color = '#dddddd';
 
     /**
      * @var DateTime|string
