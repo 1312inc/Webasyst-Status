@@ -33,14 +33,14 @@
                  </li>
                  *}
             {/if}
-            {if $teammates && $wa->team}
-            {foreach $teammates as $teammate}
-                <li>
-                    <a href="#/contact/{$teammate.id}">
-                        <i class="icon16 userpic20" style="background-image: url({$teammate.photo_url_32})"></i><span class="gray">{$teammate.name|escape}</span>
-                    </a>
-                </li>
-            {/foreach}
+            {if $teammates && $wa->team && $stts->getRightConfig()->isAdmin()}
+                {foreach $teammates as $teammate}
+                    <li>
+                        <a href="#/contact/{$teammate.id}">
+                            <i class="icon16 userpic20" style="background-image: url({$teammate.photo_url_32})"></i><span class="gray">{$teammate.name|escape}</span>
+                        </a>
+                    </li>
+                {/foreach}
             {/if}
         </ul>
         {if !count($users) && !count($teammates) && $wa->team}
@@ -50,38 +50,40 @@
         {/if}
     </div>
     <div class="block">
-        <h5 class="heading top-padded">
-            {if $stts->getRightConfig()->hasAccessToProject()}
-            <a href="#" class="count" data-status-project-action="add"><i class="icon16 add"></i></a>
-            {/if}
-            [`Projects`]
-        </h5>
-        {if count($projects)}
-            <ul class="menu-v with-icons">
+        {if count($projects) || $stts->getRightConfig()->hasAccessToProject()}
+            <h5 class="heading top-padded">
+                {if $stts->getRightConfig()->hasAccessToProject()}
+                <a href="#" class="count" data-status-project-action="add"><i class="icon16 add"></i></a>
+                {/if}
+                [`Projects`]
+            </h5>
+            {if count($projects)}
+                <ul class="menu-v with-icons">
 
-                 {foreach $projects as $p}
-                 <li>
-                     <a href="#/project/{$p->getId()}">
-                         <span class="count hint">{$timeByProjectStat[$p->getId()]['timeStr']}</span>
-                         <i class="icon16 color" style="background: {$p->getColor()};"></i>
-                         {$p->getName()|escape}
-                     </a>
-                 </li>
-                 {/foreach}
-                 {*
-                 <li>
-                     <a href="#">
-                         <span class="count hint">42h</span>
-                         <i class="icon16 color" style="background: white;"></i>
-                         <span class="gray">[`All projects`]</span>
-                     </a>
-                 </li>
-                 *}
-            </ul>
-        {elseif $stts->getRightConfig()->isAdmin()}
-            <div class="block">
-                <p class="hint align-center">[`Add projects so everyone can add detalization on what they were working on.`]</p>
-            </div>
+                     {foreach $projects as $p}
+                     <li>
+                         <a href="#/project/{$p->getId()}">
+                             <span class="count hint">{$timeByProjectStat[$p->getId()]['timeStr']}</span>
+                             <i class="icon16 color" style="background: {$p->getColor()};"></i>
+                             {$p->getName()|escape}
+                         </a>
+                     </li>
+                     {/foreach}
+                     {*
+                     <li>
+                         <a href="#">
+                             <span class="count hint">42h</span>
+                             <i class="icon16 color" style="background: white;"></i>
+                             <span class="gray">[`All projects`]</span>
+                         </a>
+                     </li>
+                     *}
+                </ul>
+            {elseif $stts->getRightConfig()->isAdmin()}
+                <div class="block">
+                    <p class="hint align-center">[`Add projects so everyone can add detalization on what they were working on.`]</p>
+                </div>
+            {/if}
         {/if}
         {*
         <hr>
