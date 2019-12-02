@@ -33,7 +33,7 @@
                  </li>
                  *}
             {/if}
-            {if $teammates}
+            {if $teammates && $wa->team}
             {foreach $teammates as $teammate}
                 <li>
                     <a href="#/contact/{$teammate.id}">
@@ -43,7 +43,7 @@
             {/foreach}
             {/if}
         </ul>
-        {if !count($users) && $wa->team}
+        {if !count($users) && !count($teammates) && $wa->team}
             <div class="block">
                 <p class="hint align-center">{sprintf('[`Invite users via the <a href="%s">Team app</a> and start tracking time and status together.`]', $wa_backend_url|cat:'team/')}</p>
             </div>
