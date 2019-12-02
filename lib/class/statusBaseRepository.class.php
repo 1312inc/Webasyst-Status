@@ -176,13 +176,12 @@ class statusBaseRepository
      * @param array $data
      * @param bool  $all
      *
-     * @return array|mixed
-     * @throws waException
+     * @return array
      */
     public function generateWithData($data, $all = false)
     {
         if (empty($data)) {
-            return null;
+            return [];
         }
 
         if ($all === false) {
