@@ -32,6 +32,7 @@ class statusTodaystatusSaveController extends statusJsonController
                 || ($status->getCalendarId() && $status->getDays() > 1)
                 || !empty($data['brand_new'])
             ) {
+                $endDate = clone $date;
                 $data['status_id'] = $waContactEventsModel->insertEvent(
                     [
                         'calendar_id' => $data['calendar_id'],
@@ -39,7 +40,7 @@ class statusTodaystatusSaveController extends statusJsonController
                         'start' => $date->format('Y-m-d H:00:00'),
                         'end' => min(
                             $date->format('Y-m-d 23:59:59'),
-                            (clone $date)->modify('+1 hour')->format('Y-m-d H:00:00')
+                            $endDate->modify('+1 hour')->format('Y-m-d H:00:00')
                         ),
                         'is_allday' => 1,
                         'is_status' => 1,
