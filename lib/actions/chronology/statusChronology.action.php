@@ -26,11 +26,15 @@ class statusChronologyAction extends statusViewAction
     protected $isProject = false;
 
     /**
+     * @throws kmwaForbiddenException
+     * @throws kmwaLogicException
      * @throws kmwaNotFoundException
      * @throws waException
      */
     protected function preExecute()
     {
+        parent::preExecute();
+
         $contactId = waRequest::get('contact_id', 0, waRequest::TYPE_INT);
         $projectId = waRequest::get('project_id', 0, waRequest::TYPE_INT);
 
@@ -46,9 +50,9 @@ class statusChronologyAction extends statusViewAction
             throw new kmwaNotFoundException('User not found');
         }
 
-        //todo: can view user
-        if ($this->user->getContactId() != wa()->getUser()->getId()) {
-
+        if ($this->user->getContactId() != wa()->getUser()->getId()
+            && !stts()->getRightConfig()->hasAccessToTeammate($this->user)) {
+            throw new kmwaForbiddenException(_w('You don`t have access to this user'));
         }
 
         stts()->setContextUser($this->user);
@@ -59,7 +63,12 @@ class statusChronologyAction extends statusViewAction
             if (!$this->project instanceof statusProject) {
                 throw new kmwaNotFoundException('Project not found');
             }
+
+            if (!stts()->getRightConfig()->hasAccessToProject($projectId)) {
+                throw new kmwaForbiddenException(_w('You don`t have access to this project'));
+            }
         }
+
         $this->isMe = $this->user->getContactId() == stts()->getUser()->getContactId();
         $this->isProject = $this->project instanceof statusProject;
     }

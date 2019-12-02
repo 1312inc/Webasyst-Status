@@ -13,7 +13,6 @@ class statusBackendSidebarAction extends statusViewAction
      */
     public function runAction($params = null)
     {
-        $userIds = [];
         $teammates = [];
         $users = stts()->getEntityRepository(statusUser::class)->findAllExceptMe();
 
@@ -29,19 +28,26 @@ class statusBackendSidebarAction extends statusViewAction
                 ]
             );
 
-            foreach ($users as $user) {
+            foreach ($users as $id => $user) {
                 unset($teammates[$user->getContactId()]);
             }
             unset($teammates[stts()->getUser()->getContactId()]);
         }
 
-        $this->view->assign(
-            [
-                'teammates' => $teammates,
-                'users' => $users,
-                'projects' => stts()->getEntityRepository(statusProject::class)->findAll(),
-            ]
-        );
+        foreach ($users as $id => $user) {
+            if (!stts()->getRightConfig()->hasAccessToTeammate($user->getContactId())) {
+                unset($users[$id]);
+            }
+        }
+
+        $projects = stts()->getEntityRepository(statusProject::class)->findAll();
+        foreach ($projects as $id => $project) {
+            if (!stts()->getRightConfig()->hasAccessToProject($project)) {
+                unset($projects[$id]);
+            }
+        }
+
+        $stat = new statusStat();
 
         /**
          * UI in main sidebar
@@ -57,8 +63,12 @@ class statusBackendSidebarAction extends statusViewAction
 
         $this->view->assign(
             [
+                'teammates' => $teammates,
+                'users' => $users,
+                'projects' => $projects,
                 'backend_sidebar' => $eventResult,
-                'timeByUserStat' => (new statusStat())->timeByWeek(new DateTime()),
+                'timeByUserStat' => $stat->usersTimeByWeek(new DateTime()),
+                'timeByProjectStat' => $stat->projectsTimeByWeek(new DateTime()),
                 'isAdmin' => (int)$this->getUser()->isAdmin('status'),
             ]
         );

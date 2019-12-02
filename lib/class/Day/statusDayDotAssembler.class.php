@@ -128,6 +128,10 @@ final class statusDayDotAssembler
 
             /** @var statusProject $project */
             foreach ($projects as $project) {
+                if (!stts()->getRightConfig()->hasAccessToProject($project)) {
+                    continue;
+                }
+
                 $this->projectsDtos[$project->getId()] = new statusDayProjectDto($project);
             }
         }

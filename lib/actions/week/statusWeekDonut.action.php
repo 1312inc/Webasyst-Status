@@ -17,7 +17,7 @@ class statusWeekDonutAction extends statusChronologyAction
 
         /** @var statusProject $project */
         if (!$weekNum) {
-            throw new kmwaNotFoundException('No week with num ' . $weekNum);
+            throw new kmwaNotFoundException(_w('No week found'));
         }
 
         $assembler = new statusWeekDtoAssembler();

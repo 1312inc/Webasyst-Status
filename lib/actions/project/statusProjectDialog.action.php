@@ -15,13 +15,22 @@ class statusProjectDialogAction extends statusViewAction
     public function runAction($params = null)
     {
         $id = waRequest::get('id', 0, waRequest::TYPE_INT);
-        /** @var statusProject $project */
         $project = null;
+
+        /** @var statusProject $project */
         if ($id) {
             $project = stts()->getEntityRepository(statusProject::class)->findById($this->getId());
+
+            if (!stts()->getRightConfig()->hasAccessToProject($project)) {
+                throw new kmwaNotFoundException(_w('No project access'));
+            }
         }
 
         if (!$project instanceof statusProject) {
+            if (!stts()->getRightConfig()->hasAccessToProject()) {
+                throw new kmwaNotFoundException(_w('No projects access'));
+            }
+
             /** @var statusProject $project */
             $project = stts()->getEntityFactory(statusProject::class)->createNew();
         }

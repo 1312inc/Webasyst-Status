@@ -51,7 +51,9 @@
     </div>
     <div class="block">
         <h5 class="heading top-padded">
+            {if $stts->getRightConfig()->hasAccessToProject()}
             <a href="#" class="count" data-status-project-action="add"><i class="icon16 add"></i></a>
+            {/if}
             [`Projects`]
         </h5>
         {if count($projects)}
@@ -60,7 +62,7 @@
                  {foreach $projects as $p}
                  <li>
                      <a href="#/project/{$p->getId()}">
-                         <span class="count hint">time</span>
+                         <span class="count hint">{$timeByProjectStat[$p->getId()]['timeStr']}</span>
                          <i class="icon16 color" style="background: {$p->getColor()};"></i>
                          {$p->getName()|escape}
                      </a>
@@ -76,7 +78,7 @@
                  </li>
                  *}
             </ul>
-        {else if 0 && IS_APP_ADMIN}
+        {elseif $stts->getRightConfig()->isAdmin()}
             <div class="block">
                 <p class="hint align-center">[`Add projects so everyone can add detalization on what they were working on.`]</p>
             </div>

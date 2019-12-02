@@ -9,6 +9,17 @@ class statusProjectSaveController extends statusJsonController
      * @throws kmwaNotFoundException
      * @throws waException
      */
+    protected function preExecute()
+    {
+        if (!stts()->getRightConfig()->hasAccessToProject()) {
+            throw new kmwaNotFoundException(_w('No projects access'));
+        }
+    }
+
+    /**
+     * @throws kmwaNotFoundException
+     * @throws waException
+     */
     public function execute()
     {
         $data = waRequest::post('project', [], waRequest::TYPE_ARRAY);
@@ -18,8 +29,13 @@ class statusProjectSaveController extends statusJsonController
             /** @var statusProjectRepository $repository */
             $repository = stts()->getEntityRepository(statusProject::class);
             $project = $repository->findById($data['id']);
+
             if (!$project instanceof statusProject) {
-                throw new kmwaNotFoundException('No project with id ' . $data['id']);
+                throw new kmwaNotFoundException(_w('No project found'));
+            }
+
+            if (!stts()->getRightConfig()->hasAccessToProject($project)) {
+                throw new kmwaNotFoundException(_w('No project access'));
             }
         } else {
             /** @var statusProjectFactory $factory */

@@ -119,6 +119,37 @@ SQL;
     }
 
     /**
+     * @param string   $dateStart
+     * @param string   $dateEnd
+     * @param null|int $projectId
+     *
+     * @return array
+     */
+    public function countTimeByDatesWithProjects($dateStart, $dateEnd, $projectId = null)
+    {
+        $byProjectSql = '';
+        if ($projectId) {
+            if (!is_array($projectId)) {
+                $projectId = [$projectId];
+            }
+            $byProjectSql = ' and scp.project_id in (i:project_id)';
+        }
+
+        $sql = <<<SQL
+select scp.project_id, 
+       scp.duration,
+       sc.contact_id
+from status_checkin sc
+join status_checkin_projects scp on sc.id = scp.checkin_id
+where sc.date between s:date1 and s:date2
+{$byProjectSql}
+SQL;
+
+        return $this->query($sql, ['date1' => $dateStart, 'date2' => $dateEnd, 'project_id' => $projectId])
+            ->fetchAll('project_id', 2);
+    }
+
+    /**
      * @param string $dateStart
      * @param string $dateEnd
      * @param int    $contactId

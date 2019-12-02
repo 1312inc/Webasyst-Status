@@ -21,11 +21,7 @@ class statusDayEditorAction extends statusViewAction
         if ($userId) {
             $user = stts()->getEntityRepository(statusUser::class)->findById($userId);
             if (!$user instanceof statusUser) {
-                throw new kmwaNotFoundException("User with id {$userId} not found");
-            }
-
-            if (!$user->getContact()->getRights(statusConfig::APP_ID)) {
-                throw new kmwaForbiddenException();
+                throw new kmwaNotFoundException(_w('User with not found'));
             }
         }
 

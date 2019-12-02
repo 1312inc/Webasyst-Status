@@ -19,14 +19,14 @@ class statusDayShowAction extends statusViewAction
         if ($contactId) {
             $user = stts()->getEntityRepository(statusUser::class)->findByContactId($contactId);
             if (!$user instanceof statusUser) {
-                throw new kmwaNotFoundException("User with id {$contactId} not found");
-            }
-
-            if (!$user->getContact()->getRights(statusConfig::APP_ID)) {
-                throw new kmwaForbiddenException();
+                throw new kmwaNotFoundException(_w('User not found'));
             }
         } else {
             $user = stts()->getUser();
+        }
+
+        if (!stts()->getRightConfig()->hasAccessToTeammate($user)) {
+            throw new kmwaForbiddenException(_w('No access to this user'));
         }
 
         $week = statusWeekFactory::createWeekByDate(new DateTime($date));

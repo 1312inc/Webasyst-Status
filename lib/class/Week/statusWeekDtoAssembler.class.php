@@ -37,6 +37,10 @@ final class statusWeekDtoAssembler
         $projectDuration = 0;
 
         foreach ($projectsThisWeek as $project) {
+            if (!stts()->getRightConfig()->hasAccessToProject($project['project_id'])) {
+                continue;
+            }
+
             $projectDto = new statusWeekDonutDataDto(
                 $project['project_id'],
                 $project['name'],
@@ -132,6 +136,7 @@ final class statusWeekDtoAssembler
     {
         $donut = new statusWeekDonutDto();
         $donut->weekNum = $weekDto->number;
+        $donut->chart = false;
 
         /** @var statusProjectModel $projectsModel */
         $projectsModel = stts()->getModel(statusProject::class);
@@ -146,6 +151,10 @@ final class statusWeekDtoAssembler
         /** @var statusUserRepository $userRep */
         $userRep = stts()->getEntityRepository(statusUser::class);
         foreach ($contactTimesThisWeek as $contactTime) {
+            if (!stts()->getRightConfig()->hasAccessToTeammate($contactTime['contact_id'])) {
+                continue;
+            }
+
             $user = $userRep->findByContactId($contactTime['contact_id']);
             $donutDataDto = new statusWeekDonutDataDto(
                 $contactTime['contact_id'],
@@ -186,6 +195,7 @@ final class statusWeekDtoAssembler
             }
 
             $project->percentsInWeek = round($project->totalDuration / $percent, 2);
+            $donut->hasData = true;
         }
 
         return $donut;

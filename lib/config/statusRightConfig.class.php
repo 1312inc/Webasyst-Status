@@ -25,6 +25,11 @@ class statusRightConfig extends waRightConfig
     private $model;
 
     /**
+     * @var array
+     */
+    private $accesses = [];
+
+    /**
      * pocketlistsRightConfig constructor.
      */
     public function __construct()
@@ -41,11 +46,29 @@ class statusRightConfig extends waRightConfig
     }
 
     /**
+     * @return array
+     */
+    public function getRightsList()
+    {
+        return [
+            self::CAN_MANAGE_SELF_STATUS_TIMELINE,
+            self::CAN_SEE_TEAMMATES.'.all',
+            self::CAN_SEE_TEAMMATES.'.%',
+            self::CAN_SEE_CONTRIBUTE_TO_PROJECTS.'.all',
+            self::CAN_SEE_CONTRIBUTE_TO_PROJECTS.'.%',
+        ];
+    }
+
+    /**
      * @throws waException
      */
     public function init()
     {
-        $this->addItem(self::CAN_MANAGE_SELF_STATUS_TIMELINE, _w('Can manage self status & timeline'));
+        $this->addItem(
+            self::CAN_MANAGE_SELF_STATUS_TIMELINE,
+            _w('Can manage self status & timeline'),
+            'always_enabled'
+        );
 
         $items = [];
         /** @var statusUser $user */
@@ -54,14 +77,14 @@ class statusRightConfig extends waRightConfig
                 continue;
             }
 
-            $items[$user->getId()] = $user->getContact()->getName();
+            $items[$user->getContactId()] = $user->getContact()->getName();
         }
 
         $this->addItem(
             self::CAN_SEE_TEAMMATES,
             _w('Can see teammates'),
             'list',
-            ['items' => $items]
+            ['items' => $items, 'hint1' => 'all_checkbox']
         );
 
         $items = [];
@@ -74,7 +97,7 @@ class statusRightConfig extends waRightConfig
             self::CAN_SEE_CONTRIBUTE_TO_PROJECTS,
             _w('Can see & contribute to projects'),
             'list',
-            ['items' => $items]
+            ['items' => $items, 'hint1' => 'all_checkbox']
         );
 
         /**
@@ -131,5 +154,135 @@ class statusRightConfig extends waRightConfig
     public function getUserIdsWithAccess()
     {
         return $this->model->getUsers(statusConfig::APP_ID);
+    }
+
+    /**
+     * @param int|statusUser|null $user
+     *
+     * @return bool
+     */
+    public function isAdmin($user = null)
+    {
+        if ($user === null) {
+            $user = wa()->getUser()->getId();
+        }
+        if ($user instanceof statusUser) {
+            $user = $user->getContactId();
+        }
+
+        $this->loadRightsForContactId($user);
+
+        return isset($this->accesses[$user]['backend']) && $this->accesses[$user]['backend'] == PHP_INT_MAX;
+    }
+
+    /**
+     * @param int|statusUser      $teammate
+     * @param int|statusUser|null $user
+     *
+     * @return bool
+     * @throws waException
+     */
+    public function hasAccessToTeammate($teammate = null, $user = null)
+    {
+        if ($user === null) {
+            $user = wa()->getUser()->getId();
+        }
+        if ($user instanceof statusUser) {
+            $user = $user->getContactId();
+        }
+        if ($teammate instanceof statusUser) {
+            $teammate = $teammate->getContactId();
+        }
+
+        if ($user == $teammate) {
+            return true;
+        }
+
+        $this->loadRightsForContactId($user);
+
+        if ($this->isAdmin($user)) {
+            return true;
+        }
+
+        if ($teammate === null) {
+            return !empty($this->accesses[$user][self::CAN_SEE_TEAMMATES.'.all']);
+        }
+
+        return !empty($this->accesses[$user][self::CAN_SEE_TEAMMATES.'.'.$teammate])
+            || !empty($this->accesses[$user][self::CAN_SEE_TEAMMATES.'.all']);
+    }
+
+    /**
+     * @param int|statusProject|null $project
+     * @param int|statusUser|null    $user
+     *
+     * @return bool
+     * @throws waException
+     */
+    public function hasAccessToProject($project = null, $user = null)
+    {
+        if ($user === null) {
+            $user = wa()->getUser()->getId();
+        }
+        if ($user instanceof statusUser) {
+            $user = $user->getContactId();
+        }
+        if ($project instanceof statusProject) {
+            $project = $project->getId();
+        }
+
+        $this->loadRightsForContactId($user);
+
+        if ($this->isAdmin($user)) {
+            return true;
+        }
+
+        if ($project === null) {
+            return !empty($this->accesses[$user][self::CAN_SEE_CONTRIBUTE_TO_PROJECTS.'.all']);
+        }
+
+        return !empty($this->accesses[$user][self::CAN_SEE_CONTRIBUTE_TO_PROJECTS.'.'.$project])
+            || !empty($this->accesses[$user][self::CAN_SEE_CONTRIBUTE_TO_PROJECTS.'.all']);
+    }
+
+    /**
+     * @param int|statusUser|null $user
+     *
+     * @return bool
+     * @throws waException
+     */
+    public function hasAccessToApp($user = null)
+    {
+        if ($user === null) {
+            $user = wa()->getUser()->getId();
+        }
+        if ($user instanceof statusUser) {
+            $user = $user->getContactId();
+        }
+
+        $this->loadRightsForContactId($user);
+
+        if ($this->isAdmin($user)) {
+            return true;
+        }
+
+        return !empty($this->accesses[$user]['backend']);
+    }
+
+
+    /**
+     * @param int $contactId
+     *
+     * @throws waException
+     */
+    private function loadRightsForContactId($contactId)
+    {
+        if (isset($this->accesses[$contactId])) {
+            return;
+        }
+
+        $contact = new waContact($contactId);
+
+        $this->accesses[$contactId] = $contact->getRights(statusConfig::APP_ID);
     }
 }

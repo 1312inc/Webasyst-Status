@@ -38,7 +38,7 @@ class statusCheckinSaveController extends statusJsonController
             $this->setError('Save checkin error');
         } else {
             $user->setLastCheckinDatetime(date('Y-m-d H:i:s'));
-            $totalDuration = (new statusStat())->timeByWeek(new DateTime());
+            $totalDuration = (new statusStat())->usersTimeByWeek(new DateTime());
             $user->setThisWeekTotalDuration($totalDuration[$this->getUser()->getId()]['time'] + $checkin->getTotalDuration());
             stts()->getEntityPersister()->save($user);
 
@@ -48,6 +48,10 @@ class statusCheckinSaveController extends statusJsonController
         /** @var statusCheckinProjectsModel $chprModel */
         $chprModel = stts()->getModel('statusCheckinProjects');
         foreach ($projects as $projectId => $project) {
+            if (!stts()->getRightConfig()->hasAccessToProject($projectId, $user)) {
+                continue;
+            }
+
             if ($project['project_check_id'] && $project['on'] == 0) {
                 $chprModel->deleteByField(['checkin_id' => $checkin->getId(), 'project_id' => $projectId]);
             } elseif ($project['on'] == 1) {

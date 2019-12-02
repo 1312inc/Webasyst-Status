@@ -117,6 +117,10 @@ class statusWeekFactory
 
             foreach ($contactIdsByDates as $date => $contactIds) {
                 foreach ($contactIds as $contactId) {
+                    if (!stts()->getRightConfig()->hasAccessToTeammate($contactId)) {
+                        continue;
+                    }
+
                     if (!isset($users[$contactId])) {
                         $users[$contactId] = $userRepository->findByContactId($contactId);
                         $userDtos[$contactId] = new statusUserDto($users[$contactId]);
@@ -164,6 +168,10 @@ class statusWeekFactory
                 }
 
                 foreach ($contactIdsByDates[$dayDto->date] as $contactIdsByDate) {
+                    if (!isset($userDtos[$contactIdsByDate])) {
+                        continue;
+                    }
+
                     $userDto = $userDtos[$contactIdsByDate];
 
                     $dayDto->users[$userDto->contactId] = $userDto;
@@ -200,7 +208,6 @@ class statusWeekFactory
                 $weekDto->donut = $weekDtoAssembler->getDonutUserStatDto($weekDto, $week, $user);
             } else {
                 $weekDto->donut = $weekDtoAssembler->getDonutProjectStatDto($weekDto, $week, $projectId);
-                $weekDto->donut->chart = false;
             }
 
             $weeksDto[] = $weekDto;
