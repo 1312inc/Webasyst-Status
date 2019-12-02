@@ -719,19 +719,6 @@
 
                         initCheckin($newCheckin);
                     })
-                    .on('click.stts', '[data-status-walog-app]', function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-
-                        var $this = $(this),
-                            appId = $this.data('status-walog-app');
-
-                        $this.closest('.s-editor-summary')
-                            .find('[data-status-walog-app-logs="'+appId+'"]').slideDown(100)
-                            .siblings().hide();
-
-                        return false;
-                    })
                     .on('reloadDayShow.stts', function () {
                         reloadDayShow = true;
                     });
@@ -885,6 +872,22 @@
                                 }
                             }, 'json');
                             return false;
+                        }
+                    });
+                })
+                .on('click.stts', '[data-status-walog-app][data-status-walog-date]', function (e) {
+                    e.preventDefault();
+
+                    var $this = $(this),
+                        date = $this.data('status-walog-date');
+
+                    $('#stts-walog-dialog').waDialog({
+                        'height': '300px',
+                        'width': '600px',
+                        'url': '?module=walog&action=dialog&date=' + encodeURIComponent(date),
+                        onLoad: function () {
+                            var d = this,
+                                $dialogWrapper = $(d);
                         }
                     });
                 })

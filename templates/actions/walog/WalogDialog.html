@@ -1,0 +1,33 @@
+<section>
+    <div class="dialog-content">
+        <div data-status-wrapper="status-settings-dialog">
+            <h1>[`Walog`]</h1>
+
+            <ul>
+            {foreach $walogs as $walog}
+                {if $walog->appId != 'webasyst'}
+                    <li>
+                        {$walog->appId} <i class="icon16 s-app-icon" style="background-image: url('{$walog->appIcon}');"></i><b><i>{$walog->count}</i></b>
+                        <ul>
+                        {foreach $walog->logs as $logs}
+                            <li>
+                                Логи
+                                <ul>
+                                {foreach $logs as $name => $log}
+                                <li>{$name}: {$log}</li>
+                                {/foreach}
+                                </ul>
+                            </li>
+                        {/foreach}
+                        </ul>
+                    </li>
+                {/if}
+            {/foreach}
+            </ul>
+        </div>
+    </div>
+
+    <div class="dialog-buttons">
+        <a class="cancel" href="#">[`close`]</a>
+    </div>
+</section>

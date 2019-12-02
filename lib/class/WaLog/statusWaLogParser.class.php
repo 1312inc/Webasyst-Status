@@ -45,10 +45,11 @@ class statusWaLogParser
      * @param statusDay $dayStart
      * @param statusDay $dayEnd
      * @param int       $contactId
+     * @param bool      $explain
      *
      * @return array
      */
-    public function parseByDays(statusDay $dayStart, statusDay $dayEnd, $contactId)
+    public function parseByDays(statusDay $dayStart, statusDay $dayEnd, $contactId, $explain = false)
     {
         $logs = $this->model->query(
             'select date(datetime) date, wa_log.* from wa_log 
@@ -74,8 +75,10 @@ class statusWaLogParser
             }
         }
 
-        foreach ($logsByApp as $appId => $entries) {
-            $logsByApp[$appId] = wa($appId)->getConfig()->explainLogs($entries);
+        if ($explain) {
+            foreach ($logsByApp as $appId => $entries) {
+                $logsByApp[$appId] = wa($appId)->getConfig()->explainLogs($entries);
+            }
         }
 
         $result = [];
