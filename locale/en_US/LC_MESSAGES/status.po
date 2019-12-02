@@ -3,14 +3,15 @@ msgstr ""
 "Project-Id-Version: status\n"
 "POT-Creation-Date: 2019-12-01 19:48+0100\n"
 "PO-Revision-Date: \n"
-"Last-Translator:  status\n"
-"Language-Team:  status\n"
+"Last-Translator: status\n"
+"Language-Team: status\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: en_US\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: .\n"
+"Language: en_US\n"
+"X-Generator: Poedit 2.2.3\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: .\n"
 
@@ -309,4 +310,53 @@ msgstr ""
 
 #: /wa-apps/status/js/status.js:671
 msgid "Hello! This is a friendly reminder to check in your workday yesterday."
+msgstr ""
+
+#: /wa-apps/status/templates/actions/chronology/ChronologyLoadWeeks.html:5
+#: /wa-apps/status/templates/actions/chronology/ChronologyLoadWeeks.html:13
+msgid "WEEK #%d"
+msgstr ""
+
+#: /wa-apps/status/lib/actions/week/statusWeekDonut.action.php:20
+msgid "No week found"
+msgstr ""
+
+#: /wa-apps/status/lib/actions/project/statusProjectSave.controller.php:15
+#: /wa-apps/status/lib/actions/project/statusProjectDialog.action.php:31
+msgid "No projects access"
+msgstr ""
+
+#: /wa-apps/status/lib/actions/project/statusProjectSave.controller.php:34
+#: /wa-apps/status/lib/actions/project/statusProjectDelete.controller.php:25
+msgid "No project found"
+msgstr ""
+
+#: /wa-apps/status/lib/actions/project/statusProjectSave.controller.php:38
+#: /wa-apps/status/lib/actions/project/statusProjectDelete.controller.php:29
+#: /wa-apps/status/lib/actions/project/statusProjectDialog.action.php:25
+msgid "No project access"
+msgstr ""
+
+#: /wa-apps/status/lib/actions/day/statusDayShow.action.php:22
+msgid "User not found"
+msgstr ""
+
+#: /wa-apps/status/lib/actions/day/statusDayShow.action.php:29
+msgid "No access to this user"
+msgstr ""
+
+#: /wa-apps/status/lib/actions/day/statusDayEditor.action.php:24
+msgid "User with not found"
+msgstr ""
+
+#: /wa-apps/status/lib/actions/chronology/statusChronology.action.php:55
+msgid "You don`t have access to this user"
+msgstr ""
+
+#: /wa-apps/status/lib/actions/chronology/statusChronology.action.php:68
+msgid "You don`t have access to this project"
+msgstr ""
+
+#: /wa-apps/status/lib/class/View/statusViewAction.class.php:15
+msgid "No app access"
 msgstr ""

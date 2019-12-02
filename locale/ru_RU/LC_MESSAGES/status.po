@@ -333,3 +333,52 @@ msgstr "Вс"
 #: /wa-apps/status/js/status.js:671
 msgid "Hello! This is a friendly reminder to check in your workday yesterday."
 msgstr "Привет! Это просто напоминание добавить отчет о работе вчера."
+
+#: /wa-apps/status/templates/actions/chronology/ChronologyLoadWeeks.html:5
+#: /wa-apps/status/templates/actions/chronology/ChronologyLoadWeeks.html:13
+msgid "WEEK #%d"
+msgstr "НЕДЕЛЯ №%d"
+
+#: /wa-apps/status/lib/actions/week/statusWeekDonut.action.php:20
+msgid "No week found"
+msgstr "Неделя не найдена"
+
+#: /wa-apps/status/lib/actions/project/statusProjectSave.controller.php:15
+#: /wa-apps/status/lib/actions/project/statusProjectDialog.action.php:31
+msgid "No projects access"
+msgstr "Нет доступа к работам"
+
+#: /wa-apps/status/lib/actions/project/statusProjectSave.controller.php:34
+#: /wa-apps/status/lib/actions/project/statusProjectDelete.controller.php:25
+msgid "No project found"
+msgstr "Работа не найдена"
+
+#: /wa-apps/status/lib/actions/project/statusProjectSave.controller.php:38
+#: /wa-apps/status/lib/actions/project/statusProjectDelete.controller.php:29
+#: /wa-apps/status/lib/actions/project/statusProjectDialog.action.php:25
+msgid "No project access"
+msgstr "Не доступа к работе"
+
+#: /wa-apps/status/lib/actions/day/statusDayShow.action.php:22
+msgid "User not found"
+msgstr "Пользователь не найден"
+
+#: /wa-apps/status/lib/actions/day/statusDayShow.action.php:29
+msgid "No access to this user"
+msgstr "Нет доступа к данным пользователя"
+
+#: /wa-apps/status/lib/actions/day/statusDayEditor.action.php:24
+msgid "User with not found"
+msgstr "Пользователь не найден"
+
+#: /wa-apps/status/lib/actions/chronology/statusChronology.action.php:55
+msgid "You don`t have access to this user"
+msgstr "Нет доступа к данным пользователя"
+
+#: /wa-apps/status/lib/actions/chronology/statusChronology.action.php:68
+msgid "You don`t have access to this project"
+msgstr "Нет доступа к данным этой работы"
+
+#: /wa-apps/status/lib/class/View/statusViewAction.class.php:15
+msgid "No app access"
+msgstr "Нет доступа к приложению"
