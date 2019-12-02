@@ -14,7 +14,9 @@ class statusTodaystatusSaveController extends statusJsonController
         $data = waRequest::post('status', [], waRequest::TYPE_ARRAY);
 
         $date = new DateTime();
+        $statusDate = $date->format('Y-m-d');
         if (!empty($data['date'])) {
+            $statusDate = $data['date'];
             $date = new DateTime($data['date']);
         }
         $status = statusTodayStatusFactory::getForContactId(stts()->getUser()->getContactId(), $date);
@@ -100,7 +102,7 @@ class statusTodaystatusSaveController extends statusJsonController
                     $date,
                     true
                 ),
-                'statusDate' => $date->format('Y-m-d'),
+                'statusDate' => $statusDate,
             ]
         );
 

@@ -836,6 +836,22 @@
             self.$status_content.on('click', '[data-status-project-action="add"]', projectDialog);
 
             self.$status_content
+                .on('click.stts', '[data-status-walog-app][data-status-walog-date]', function (e) {
+                    e.preventDefault();
+
+                    var $this = $(this),
+                        date = $this.data('status-walog-date');
+
+                    $('#stts-walog-dialog').waDialog({
+                        'height': '300px',
+                        'width': '600px',
+                        'url': '?module=walog&action=dialog&date=' + encodeURIComponent(date),
+                        onLoad: function () {
+                            var d = this,
+                                $dialogWrapper = $(d);
+                        }
+                    });
+                })
                 .on('click.stts', '[data-status-wrapper="statuses"] [data-status-action="custom-status"]', function (e) {
                     e.preventDefault();
 
@@ -872,22 +888,6 @@
                                 }
                             }, 'json');
                             return false;
-                        }
-                    });
-                })
-                .on('click.stts', '[data-status-walog-app][data-status-walog-date]', function (e) {
-                    e.preventDefault();
-
-                    var $this = $(this),
-                        date = $this.data('status-walog-date');
-
-                    $('#stts-walog-dialog').waDialog({
-                        'height': '300px',
-                        'width': '600px',
-                        'url': '?module=walog&action=dialog&date=' + encodeURIComponent(date),
-                        onLoad: function () {
-                            var d = this,
-                                $dialogWrapper = $(d);
                         }
                     });
                 })
