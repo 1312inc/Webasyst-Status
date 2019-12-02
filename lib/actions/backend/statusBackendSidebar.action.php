@@ -16,7 +16,9 @@ class statusBackendSidebarAction extends statusViewAction
         $teammates = [];
         $users = stts()->getEntityRepository(statusUser::class)->findAllExceptMe();
 
-        if (wa('team')) {
+        if (wa()->appExists('team')) {
+            wa('team');
+
             $teammates = teamUser::getList(
                 'users',
                 [

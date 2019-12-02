@@ -77,7 +77,9 @@ class statusWaLogParser
 
         if ($explain) {
             foreach ($logsByApp as $appId => $entries) {
-                $logsByApp[$appId] = wa($appId)->getConfig()->explainLogs($entries);
+                if (wa()->appExists($appId)) {
+                    $logsByApp[$appId] = wa($appId)->getConfig()->explainLogs($entries);
+                }
             }
         }
 
