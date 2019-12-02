@@ -15,16 +15,16 @@
     {if $isProject}
 
         <div class="s-title">
-            <h1 class="float-left">{$project->getName()|escape}</h1>
-            <div class="block half-padded" style="margin-left: 1.5rem;">
-                <ul class="menu-h">
-                    <li>
-                        {if $stts->getRightConfig()->hasAccessToProject()}
-                        <a href="#" class="gray" data-status-project-action="add" data-status-project-id="{$project->getId()}"><i class="icon16 settings"></i>[`Project settings`]</a>
-                        {/if}
-                    </li>
-                </ul>
-            </div>
+            <h1{if $stts->getRightConfig()->hasAccessToProject()} class="float-left"{/if}>{$project->getName()|escape}</h1>
+            {if $stts->getRightConfig()->hasAccessToProject()}
+                <div class="block half-padded" style="margin-left: 1.5rem;">
+                    <ul class="menu-h">
+                        <li>
+                            <a href="#" class="gray" data-status-project-action="add" data-status-project-id="{$project->getId()}"><i class="icon16 settings"></i>[`Project settings`]</a>
+                        </li>
+                    </ul>
+                </div>
+            {/if}
         </div>
 
     {elseif $isMe}
