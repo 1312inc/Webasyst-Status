@@ -42,7 +42,9 @@ class statusBackendSidebarAction extends statusViewAction
             }
         }
 
-        $projects = stts()->getEntityRepository(statusProject::class)->findAll();
+        /** @var statusProjectRepository $projectRepository */
+        $projectRepository = stts()->getEntityRepository(statusProject::class);
+        $projects = $projectRepository->findAllOrderByLastCheckin();
         foreach ($projects as $id => $project) {
             if (!stts()->getRightConfig()->hasAccessToProject($project)) {
                 unset($projects[$id]);
