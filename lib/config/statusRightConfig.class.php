@@ -123,29 +123,40 @@ class statusRightConfig extends waRightConfig
     }
 
     /**
-     * @param int    $contact_id
+     * @param int    $contactId
      * @param string $right
      * @param null   $value
      *
      * @return bool
      * @throws waException
      */
-    public function setRights($contact_id, $right, $value = null)
+    public function setRights($contactId, $right, $value = null)
     {
         $right_model = new waContactRightsModel();
 
-        $user = stts()->getEntityRepository(statusUser::class)->findByContactId($contact_id);
-        if (!$user instanceof statusUser) {
-            $user = stts()->getEntityFactory(statusUser::class)->createNewWithContact(new waContact($contact_id));
-            stts()->getEntityPersister()->insert($user);
+        if ($contactId < 1) {
+            $contactIds = (new waUserGroupsModel())->getContactIds(abs($contactId));
+        } else {
+            $contactIds = [$contactId];
         }
 
-        return $right_model->save(
-            $contact_id,
-            statusConfig::APP_ID,
-            $right,
-            $value
-        );
+        foreach ($contactIds as $contactId) {
+            $user = stts()->getEntityRepository(statusUser::class)->findByContactId($contactId);
+            if (!$user instanceof statusUser) {
+                $user = stts()->getEntityFactory(statusUser::class)->createNewWithContact(new waContact($contactId));
+                stts()->getEntityPersister()->insert($user);
+            }
+
+            $right_model->save(
+                $contactId,
+                statusConfig::APP_ID,
+                $right,
+                $value
+            );
+        }
+
+        return  true;
+
     }
 
     /**
