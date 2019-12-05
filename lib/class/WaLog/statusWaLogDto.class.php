@@ -34,7 +34,20 @@ class statusWaLogDto
     public function __construct($appId, array $logs)
     {
         $this->appId = $appId;
-        $this->appIcon = wa()->getAppStaticUrl($appId).'img/'.$appId.'48.png';
+        $appStatic = wa()->getAppStaticUrl($appId);
+        $appStaticAbsolute = wa()->getConfig()->getRootPath().$appStatic;
+        $possibleFiles = [
+            'img/'.$appId.'48.png',
+            'img/'.$appId.'.png',
+        ];
+
+        foreach ($possibleFiles as $possibleFile) {
+            if (file_exists($appStaticAbsolute.$possibleFile)) {
+                $this->appIcon = $appStatic.$possibleFile;
+                break;
+            }
+        }
+
         $this->logs = $logs;
         $this->count = count($logs);
     }
