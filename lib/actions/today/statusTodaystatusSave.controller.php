@@ -26,7 +26,9 @@ class statusTodaystatusSaveController extends statusJsonController
 
         $calendar = stts()->getModel('waContactCalendars')->getById($data['calendar_id']);
         if (!empty($calendar)) {
-            $data['summary'] = !empty($data['summary']) ? $data['summary'] : $calendar['default_status'];
+            $data['summary'] = !empty($data['summary'])
+                ? $data['summary']
+                : ifset($calendar, 'default_status', $calendar['name']) ;
 
             if (!$status->getCalendarId()
                 || ($status->getCalendarId() && $status->getDays() > 1)

@@ -20,8 +20,10 @@ final class statusTodayStatusFactory
             return $result;
         }
 
+        $defaultStatus = self::hasDefaultStatus() ? 'wcc.default_status' : 'wcc.name';
+
         $sql = <<<SQL
-select if(isnull(wce.summary), wcc.default_status, wce.summary) name,
+select if(isnull(wce.summary), {$defaultStatus}, wce.summary) name,
        wcc.id calendar_id,
        wcc.bg_color,
        wcc.font_color,
@@ -92,8 +94,10 @@ SQL;
             return $result;
         }
 
+        $defaultStatus = self::hasDefaultStatus() ? 'wcc.default_status' : 'wcc.name';
+
         $sql = <<<SQL
-select if(isnull(wce.summary), wcc.default_status, wce.summary) name,
+select if(isnull(wce.summary), {$defaultStatus}, wce.summary) name,
        wcc.id calendar_id,
        wcc.bg_color,
        wcc.font_color,
@@ -133,5 +137,18 @@ SQL;
         stts()->getCache()->set($key, $result, 10);
 
         return $result;
+    }
+
+    /**
+     * @return bool
+     */
+    private static function hasDefaultStatus()
+    {
+        try {
+            stts()->getModel()->exec('SELECT default_status FROM wa_contact_calendars LIMIT 0');
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
     }
 }
