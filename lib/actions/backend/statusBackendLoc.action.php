@@ -15,7 +15,12 @@ class statusBackendLocAction extends statusViewAction
         $strings = [];
 
         // Application locale strings
-        foreach (['h', 'm'] as $s) {
+        $translates = [
+            'h',
+            'm',
+            'Hello! This is a friendly reminder to check in your workday yesterday.',
+        ];
+        foreach ($translates as $s) {
             $strings[$s] = _w($s);
         }
 

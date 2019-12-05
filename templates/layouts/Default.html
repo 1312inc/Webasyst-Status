@@ -19,6 +19,7 @@
             type="text/javascript"></script>
 
     <script type="text/javascript" src="{$wa_app_static_url}js/status.js?v{if !waSystemConfig::isDebug()}{$wa->version()}{/if}"></script>
+    <script type="text/javascript" src="?action=loc&amp;v={if !waSystemConfig::isDebug()}{$wa->version()}{/if}"></script>
 
     {function name=_draw_status_selector}
         <ul class="menu-v with-icons s-status-selector">
