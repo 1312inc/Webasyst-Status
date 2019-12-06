@@ -9,6 +9,7 @@
              </li>
              {if count($users)}
                  {foreach $users as $u}
+                 {if $u->isExists()}
                  <li>
                      <a href="#/contact/{$u->getContactId()}">
                          <span class="count hint" title="[`This week total`]">{$timeByUserStat[$u->getContactId()]['timeStr']}</span>
@@ -23,6 +24,7 @@
                          {/if}
                      </a>
                  </li>
+                 {/if}
                  {/foreach}
                  {*
                  <li>
