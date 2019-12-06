@@ -326,6 +326,7 @@ class statusConfig extends waAppConfig
      */
     public function onCount($onlycount = false)
     {
+        $today = new DateTime();
         $yesterday = new DateTime('yesterday');
 
         /** @var statusCheckinModel $model */
@@ -333,14 +334,15 @@ class statusConfig extends waAppConfig
         $contactId = wa()->getUser()->getId();
         $count = $model->countTimeByDates(
             date('Y-m-d', strtotime('-2 days')),
-            $yesterday->format('Y-m-d'),
+            $today->format('Y-m-d'),
             $contactId
         );
 
+        $todayStatus = statusTodayStatusFactory::getForContactId($contactId, $today);
         $yesterdayStatus = statusTodayStatusFactory::getForContactId($contactId, $yesterday);
 
         $url = $this->getBackendUrl(true).$this->application.'/';
-        if (!isset($count[$contactId]) && !$yesterdayStatus->getStatusId()) {
+        if (!isset($count[$contactId]) && !$yesterdayStatus->getStatusId() && !$todayStatus->getStatusId()) {
             $url .= '#/y';
 
             return ['count' => 1, 'url' => $url];
