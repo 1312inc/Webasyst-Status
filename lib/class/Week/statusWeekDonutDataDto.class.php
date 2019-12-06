@@ -5,6 +5,9 @@
  */
 class statusWeekDonutDataDto
 {
+    const PROJECT = 'project';
+    const USER = 'user';
+
     /**
      * @var string
      */
@@ -41,16 +44,22 @@ class statusWeekDonutDataDto
     public $rotations = [];
 
     /**
+     * @var string
+     */
+    public $type = '';
+
+    /**
      * statusWeekDonutDataDto constructor.
      *
      * @param int    $id
      * @param string $name
      * @param string $color
      * @param int    $totalDuration
+     * @param string $type
      *
      * @throws Exception
      */
-    public function __construct($id, $name, $color, $totalDuration)
+    public function __construct($id, $name, $color, $totalDuration, $type = self::PROJECT)
     {
         $this->id = $id;
         $this->name = $name;
@@ -60,5 +69,6 @@ class statusWeekDonutDataDto
             0,
             $totalDuration * statusTimeHelper::SECONDS_IN_MINUTE
         );
+        $this->type = $type;
     }
 }

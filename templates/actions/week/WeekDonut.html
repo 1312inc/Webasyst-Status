@@ -34,7 +34,9 @@
 <div class="s-week-projects">
     {foreach $donut->data as $p}
         {if $donut->hasData && ($p->id > 0 || $p->id == 0 && $p->totalDuration >= 10)}
-        <i class="icon16 color" style="background: {$p->color};"></i>
+        <i class="icon16 {if $p->type == statusWeekDonutDataDto::PROJECT}color{else}userpic20{/if}"
+           style="{if $p->type == statusWeekDonutDataDto::PROJECT}background{else}background-image{/if}: {$p->color};"
+        ></i>
         {$p->name|escape}
         <span class="hint bold">{$p->totalDurationStr}</span><br>
         {/if}

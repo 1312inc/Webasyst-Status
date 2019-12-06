@@ -159,8 +159,9 @@ final class statusWeekDtoAssembler
             $donutDataDto = new statusWeekDonutDataDto(
                 $contactTime['contact_id'],
                 $user->getName(),
-                '',
-                $contactTime['total_duration']
+                "url({$user->getPhotoUrl()})",
+                $contactTime['total_duration'],
+                statusWeekDonutDataDto::USER
             );
 
             $donut->data[$donutDataDto->id] = $donutDataDto;
