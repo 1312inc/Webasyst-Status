@@ -15,7 +15,7 @@
                                 Логи
                                 <ul>
                                 {foreach $logs as $name => $log}
-                                <li>{$name}: {$log}</li>
+                                <li>{$name}: {$log|print_r}</li>
                                 {/foreach}
                                 </ul>
                             </li>

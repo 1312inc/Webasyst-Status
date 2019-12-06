@@ -48,14 +48,30 @@ class statusWaLogParser
      * @param bool      $explain
      *
      * @return array
+     * @throws waException
      */
     public function parseByDays(statusDay $dayStart, statusDay $dayEnd, $contactId, $explain = false)
     {
+        $sql = <<<SQL
+SELECT l.*,
+       date(l.datetime) date,
+       c.name contact_name,
+       c.photo contact_photo,
+       c.firstname,
+       c.lastname,
+       c.middlename,
+       c.company,
+       c.is_company,
+       c.is_user,
+       c.login
+from wa_log l
+left join wa_contact c ON c.id = i:contact_id
+where (contact_id = i:contact_id or subject_contact_id = i:contact_id)
+    and datetime between s:date1 and s:date2
+SQL;
+
         $logs = $this->model->query(
-            'select date(datetime) date, wa_log.* from wa_log 
-             where (contact_id = i:contact_id 
-                or subject_contact_id = i:contact_id)
-                and datetime between s:date1 and s:date2',
+            $sql,
             [
                 'contact_id' => $contactId,
                 'date1' => sprintf('%s 00:00:00', $dayStart->getDate()->format('Y-m-d')),
@@ -78,7 +94,7 @@ class statusWaLogParser
         if ($explain) {
             foreach ($logsByApp as $appId => $entries) {
                 if (wa()->appExists($appId)) {
-                    $logsByApp[$appId] = wa($appId)->getConfig()->explainLogs($entries);
+                    $logsByApp[$appId] = $this->getLogs($entries);
                 }
             }
         }
@@ -109,4 +125,83 @@ class statusWaLogParser
 
         return $this->appConfigs[$appId];
     }
+
+    /**
+     * @param array $rows
+     *
+     * @return array
+     * @throws waException
+     */
+    private function getLogs(array $rows = [])
+    {
+        $apps = wa()->getApps(true);
+        $apps_rows = [];
+        $prev = [];
+        foreach ($rows as $row_id => &$row) {
+            if ($prev) {
+                $flag = true;
+                foreach (['app_id', 'action', 'contact_id', 'subject_contact_id', 'params'] as $k) {
+                    if ($prev[$k] != $row[$k]) {
+                        $flag = false;
+                        break;
+                    }
+                }
+                if ($flag) {
+                    unset($rows[$row_id]);
+                    continue;
+                }
+            }
+            $row['name'] = $row['contact_name'];
+            $contact_name = waContactNameField::formatName($row);
+            unset($row['name']);
+            if ($contact_name) {
+                $row['contact_name'] = $contact_name;
+            }
+            if ($row['is_user']) {
+                $row['contact_photo_url'] = waContact::getPhotoUrl($row['contact_id'], $row['contact_photo'], 32, 32);
+            }
+            if (!empty($apps[$row['app_id']])) {
+                $row['app'] = $apps[$row['app_id']];
+                if (empty($apps_rows[$row['app_id']])) {
+                    waLocale::loadByDomain($row['app_id']);
+                }
+                $logs = wa($row['app_id'])->getConfig()->getLogActions(true);
+                $row['action_name'] = ifset($logs[$row['action']]['name'], $row['action']);
+                if (strpos($row['action'], 'del')) {
+                    $row['type'] = 4;
+                } elseif (strpos($row['action'], 'add')) {
+                    $row['type'] = 3;
+                } else {
+                    $row['type'] = 1;
+                }
+                $apps_rows[$row['app_id']][$row_id] = $row;
+            } else {
+                $row['app'] = [
+                    'name' => $row['app_id'],
+                ];
+                $row['action_name'] = $row['action'];
+                $row['type'] = 1;
+            }
+
+            $prev = $row;
+            unset($row);
+        }
+        unset($row);
+
+        foreach ($apps_rows as $app_id => $app_rows) {
+            $app_rows = wa($app_id)->getConfig()->explainLogs($app_rows);
+            foreach ($app_rows as $row_id => $row) {
+                if ($row) {
+                    $rows[$row_id] = $row;
+                } else {
+                    unset($rows[$row_id]);
+                }
+            }
+        }
+
+        $rows = array_values($rows);
+
+        return $rows;
+    }
+
 }
