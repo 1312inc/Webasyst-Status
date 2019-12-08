@@ -19,6 +19,7 @@ class statusBackendLocAction extends statusViewAction
             'h',
             'm',
             'Hello! This is a friendly reminder to check in your workday yesterday.',
+            'Add another interval for today',
         ];
         foreach ($translates as $s) {
             $strings[$s] = _w($s);

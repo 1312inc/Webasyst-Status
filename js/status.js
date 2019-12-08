@@ -632,6 +632,12 @@
                 reloadDayShow = true;
             }
 
+            function removedOk() {
+                var weekNum = parseInt($editorHtml.data('status-week-of-day'));
+                $('[data-status-week-donut="' + weekNum + '"]').trigger('reloadDonut.stts');
+                $.status.reloadSidebar();
+            }
+
             function save($form) {
                 if (lastSavedData === $form.serialize()) {
                     return;
@@ -651,6 +657,14 @@
                 });
             }
 
+            function remove(id) {
+                $.post('?module=checkin&action=delete', {id: id}, function (r) {
+                    if (r.status === 'ok') {
+                        removedOk();
+                    }
+                });
+            }
+
             function init(editorHtml) {
                 $editorHtml = $(editorHtml);
                 $dayEl.hide().after($editorHtml);
@@ -664,6 +678,13 @@
                 $editorHtml.find('[data-checkin]').each(function () {
                     initCheckin($(this));
                 });
+
+                var $firstCheckin = $editorHtml.find('[data-checkin]:first');
+                $firstCheckin.find('[data-checkin-action="delete"]')
+                    .attr('data-checkin-action', 'add')
+                    .attr('title', $_('Add another interval for today'))
+                    .find('i.delete')
+                    .toggleClass('add delete');
 
                 var saveComment = function() {
                     $editorHtml.find('.s-editor-commit-button').hide();
@@ -690,11 +711,17 @@
                         saveComment()
                     })
                     //+ напротив слайдера добавляет еще один слайдер за этот день
-                    .on('click.stts', '[data-checkin-action="new"]', function (e) {
+                    .on('click.stts', '[data-checkin-action="add"]', function (e) {
                         e.preventDefault();
 
                         var $sourceCheckin = $(this).closest('[data-checkin]'),
                             $newCheckin = $sourceCheckin.clone();
+
+                        $newCheckin.find('[data-checkin-action="add"]')
+                            .attr('data-checkin-action', 'delete')
+                            .attr('title', $_('Remove interval for today'))
+                            .find('i.add')
+                            .toggleClass('add delete');
 
                         $sourceCheckin.after($newCheckin);
 
@@ -718,6 +745,19 @@
                             .closest('.s-editor-slider-projects').hide();
 
                         initCheckin($newCheckin);
+                    })
+                    //+ напротив слайдера добавляет еще один слайдер за этот день
+                    .on('click.stts', '[data-checkin-action="delete"]', function (e) {
+                        e.preventDefault();
+
+                        var $sourceCheckin = $(this).closest('[data-checkin]'),
+                            checkinId = $sourceCheckin.find('form [name="checkin[id]"]').val();
+
+                        if (checkinId) {
+                            remove(checkinId);
+                        }
+
+                        $sourceCheckin.remove();
                     })
                     .on('reloadDayShow.stts', function () {
                         reloadDayShow = true;
