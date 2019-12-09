@@ -1,7 +1,7 @@
 <section>
     <div class="dialog-content">
         <div data-status-wrapper="status-settings-dialog" class="s-walog-explained">
-            <h1>{$user->getName()|escape} on {$date}</h1>
+            <h1>{sprintf('[`%s on %s`]', $user->getName()|escape, $date|wa_date:humandate)}</h1>
 
             <div class="fields width100px">
                 {foreach $walogs as $walog}

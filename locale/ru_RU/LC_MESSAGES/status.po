@@ -382,3 +382,16 @@ msgstr "Нет доступа к данным этой работы"
 #: /wa-apps/status/lib/class/View/statusViewAction.class.php:15
 msgid "No app access"
 msgstr "Нет доступа к приложению"
+
+#: /wa-apps/status/templates/actions/walog/WalogDialog.html:4
+msgid "%s on %s"
+msgstr "%s — %s"
+
+#: /wa-apps/status/templates/actions/walog/WalogDialog.html:47
+msgid "Close"
+msgstr "Закрыть"
+
+#: /wa-apps/status/templates/actions/day/DayEditor.html:75
+#: /wa-apps/status/js/status.js:735
+msgid "Remove interval for today"
+msgstr "Удалить интервал"
