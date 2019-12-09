@@ -39,7 +39,7 @@
 
 .s-logged-apps { min-height: 1rem; }
 .s-logged-app-counter { display: inline-block; margin-right: 1rem; }
-.s-logged-app-counter i.icon16.s-app-icon { background-size: 16px 16px; }
+i.icon16.s-app-icon { background-size: 16px 16px; }
 
 .s-timeline { width: 100%; height: 2px; background: #ccc; position: relative; margin: 10px 0 20px; }
 .s-timeline .s-timeline-content { position: absolute; top: -2px; bottom: -2px; background: #ef81ce; background-image: linear-gradient(135deg, #ef81ce 25%, #f3a3d5 25%, #f3a3d5 50%, #ef81ce 50%, #ef81ce 75%, #f3a3d5 75%, #f3a3d5 100%); background-size: 13px 13px; }
@@ -118,6 +118,8 @@
 .s-editor-slider-slider.ui-slider.s-active .ui-slider-range { background: #ef81ce; background-image: linear-gradient(135deg, #ef81ce 25%, #f3a3d5 25%, #f3a3d5 50%, #ef81ce 50%, #ef81ce 75%, #f3a3d5 75%, #f3a3d5 100%); background-size: 13px 13px; }
 .s-editor-slider-slider.ui-slider .ui-slider-handle::after { content: attr(data-slider-time); }
 
+.s-walog-explained .fields { margin-top: 10px; }
+.s-walog-explained .activity-target { display: inline; }
 
 .checkins {
     flex: 1;
