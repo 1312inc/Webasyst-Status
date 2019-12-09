@@ -106,6 +106,8 @@
         var currentContactId = '{$current_contact_id}',
             dayEditable = parseInt('{$dayEditable}');
 
+        // $.status.options.userId = currentContactId;
+
         $.status.lazyLoad({
             $loading: $('#chronology .lazyloading'),
             html_selector: '#olderWeeks',

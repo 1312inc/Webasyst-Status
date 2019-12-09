@@ -13,6 +13,11 @@ class statusWaLogDto
     /**
      * @var string
      */
+    public $appName;
+
+    /**
+     * @var string
+     */
     public $appIcon;
 
     /**
@@ -34,6 +39,7 @@ class statusWaLogDto
     public function __construct($appId, array $logs)
     {
         $this->appId = $appId;
+        $this->appName = wa($appId)->getConfig()->getName();
         $appStatic = wa()->getAppStaticUrl($appId);
         $appStaticAbsolute = wa()->getConfig()->getRootPath().$appStatic;
         $possibleFiles = [

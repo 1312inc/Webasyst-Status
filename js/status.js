@@ -880,12 +880,13 @@
                     e.preventDefault();
 
                     var $this = $(this),
-                        date = $this.data('status-walog-date');
+                        date = $this.data('status-walog-date'),
+                        contactId = $this.data('status-walog-contact-id');
 
                     $('#stts-walog-dialog').waDialog({
                         'height': '300px',
                         'width': '600px',
-                        'url': '?module=walog&action=dialog&date=' + encodeURIComponent(date),
+                        'url': '?module=walog&action=dialog&date=' + encodeURIComponent(date) + '&contact_id=' + contactId,
                         onLoad: function () {
                             var d = this,
                                 $dialogWrapper = $(d);

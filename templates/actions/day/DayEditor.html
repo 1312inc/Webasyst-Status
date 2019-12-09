@@ -90,7 +90,12 @@
         <div class="s-logged-apps">
             {foreach $userDayInfo->walogs as $walog}
                 {if $walog->count && $walog->appId != 'webasyst'}
-                    <a href="#" class="s-logged-app-counter inline-link" data-status-walog-app="{$walog->appId}" data-status-walog-date="{$day->date}"><i class="icon16 s-app-icon" style="background-image: url('{$walog->appIcon}');"></i><b><i>{$walog->count}</i></b></a>
+                    <a href="#"
+                       class="s-logged-app-counter inline-link"
+                       data-status-walog-contact-id="{$user->contactId}"
+                       data-status-walog-app="{$walog->appId}"
+                       data-status-walog-date="{$day->date}"
+                    ><i class="icon16 s-app-icon" style="background-image: url('{$walog->appIcon}');"></i><b><i>{$walog->count}</i></b></a>
                 {/if}
             {/foreach}
         </div>

@@ -1,7 +1,7 @@
 <section>
     <div class="dialog-content">
         <div data-status-wrapper="status-settings-dialog" class="s-walog-explained">
-            <h1>USERNAME on DATE</h1>
+            <h1>{$user->getName()|escape} on {$date}</h1>
 
             <div class="fields width100px">
                 {foreach $walogs as $walog}
@@ -10,7 +10,7 @@
                         <div class="field">
                             <div class="name">
                                 <i class="icon16 s-app-icon" style="background-image: url('{$walog->appIcon}');"></i>
-                                {$walog->appId}
+                                {$walog->appName|escape}
                             </div>
 
                             {foreach $walog->logs as $logs}
