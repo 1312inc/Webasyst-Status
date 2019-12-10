@@ -9,7 +9,7 @@
             {include inline file='./../todaystatus/TodaystatusList.html' statuses=$statuses currentStatus=$userDayInfo->todayStatus statusDate=$day->date}
         </div>
 
-        <h1>
+        <h1 {if $day->yesterday}class="s-yesterday"{/if}>
             {if $day->today}[`Today`]{/if}
             {if $day->yesterday}[`Yesterday`]{/if}
             <span class="hint">
