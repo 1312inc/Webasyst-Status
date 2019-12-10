@@ -9,9 +9,8 @@ class statusWalogDialogAction extends statusViewAction
      * @param null $params
      *
      * @return mixed|void
-     * @throws kmwaForbiddenException
-     * @throws kmwaNotFoundException
      * @throws waException
+     * @throws kmwaLogicException
      */
     public function runAction($params = null)
     {
@@ -23,11 +22,7 @@ class statusWalogDialogAction extends statusViewAction
 
         $user = stts()->getEntityRepository(statusUser::class)->findByContactId($contactId);
         if (!$user instanceof statusUser) {
-            throw new kmwaNotFoundException('No user found');
-        }
-
-        if (!stts()->getRightConfig()->hasAccessToApp($user)) {
-            throw new kmwaForbiddenException();
+            $user = stts()->getEntityFactory(statusUser::class)->createNewWithContact(new waContact($contactId));
         }
 
         $statusDay = new statusDay(new DateTime($date));

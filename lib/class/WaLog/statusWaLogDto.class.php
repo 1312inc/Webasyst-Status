@@ -38,8 +38,9 @@ class statusWaLogDto
      */
     public function __construct($appId, array $logs)
     {
+        waLocale::loadByDomain($appId);
         $this->appId = $appId;
-        $this->appName = wa($appId)->getConfig()->getName();
+        $this->appName = _wd($appId, wa($appId)->getConfig()->getName());
         $appStatic = wa()->getAppStaticUrl($appId);
         $appStaticAbsolute = wa()->getConfig()->getRootPath().$appStatic;
         $possibleFiles = [
