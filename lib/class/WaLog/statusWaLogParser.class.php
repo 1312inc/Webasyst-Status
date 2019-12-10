@@ -65,7 +65,7 @@ SELECT l.*,
        c.is_user,
        c.login
 from wa_log l
-left join wa_contact c ON c.id = i:contact_id
+left join wa_contact c ON c.id = contact_id
 where (contact_id = i:contact_id or subject_contact_id = i:contact_id)
     and datetime between s:date1 and s:date2
 SQL;
@@ -158,7 +158,7 @@ SQL;
                 $row['contact_name'] = $contact_name;
             }
             if ($row['is_user']) {
-                $row['contact_photo_url'] = waContact::getPhotoUrl($row['contact_id'], $row['contact_photo'], 32, 32);
+                $row['contact_photo_url'] = waContact::getPhotoUrl($row['contact_id'], $row['contact_photo'], 96, 96);
             }
             if (!empty($apps[$row['app_id']])) {
                 $row['app'] = $apps[$row['app_id']];
