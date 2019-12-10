@@ -164,6 +164,7 @@
             },
             yAction: function () {
                 this.defaultAction(true);
+                $.post('?module=backend&action=setSeenNoStatusNotification');
             },
             defaultAction: function (skipSaveHash) {
                 this.contactAction(0, function () {
