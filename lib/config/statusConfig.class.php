@@ -321,18 +321,20 @@ class statusConfig extends waAppConfig
     }
 
     /**
+     * @param bool $onlycount
+     *
      * @return int|null|array
      * @throws waException
      */
     public function onCount($onlycount = false)
     {
+        $url = $url = $this->getBackendUrl(true).$this->application.'/';
         if (!(new statusServiceStatusChecker())->hasActivityYesterday(stts()->getUser())) {
-            $url = $url = $this->getBackendUrl(true).$this->application.'/#/y';
 
-            return ['count' => 1, 'url' => $url];
+            return ['count' => 1, 'url' => $url.'#/y'];
         }
 
-        return null;
+        return ['count' => null, 'url' => $url];
 
     }
 
