@@ -27,7 +27,7 @@ class statusServiceStatusChecker
 
         // monday - relax
         if ($today->format('N') == 1) {
-            return $this->cacheAndReturn($key, false);
+            return $this->cacheAndReturn($key, true);
         }
 
         /** @var statusCheckinModel $model */
