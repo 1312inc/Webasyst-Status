@@ -1,0 +1,46 @@
+ {** @var statusWeekDonutDto $donut **}
+ {** @var statusWeekDonutDataDto $p **}
+
+ <section data-status-week-donut="{$donut->weekNum}">
+
+{if $donut->chart}
+<div class="s-donut-chart-container">
+    <div class="s-donut-chart">
+        {** @var statusWeekDonutDataDto $p **}
+        {foreach $donut->data as $p}
+        {if ($p->id != 0 || $p->id == 0 && $p->totalDuration >= 10)}
+        {foreach $p->rotations as $rid => $rotation}
+            <div data-status-donut-project="{$donut->weekNum}-{$p->id}-{$rid}" class="clip" title="Project {$p->name|escape}: {$p->totalDurationStr}">
+            <div class="item"></div>
+        </div>
+        {/foreach}
+        {/if}
+        {/foreach}
+        <div class="center">{$donut->totalDurationStr}</div>
+    </div>
+</div>
+<style>
+    {foreach $donut->data as $p}
+    {if ($p->id != 0 || $p->id == 0 && $p->totalDuration >= 10)}
+    {foreach $p->rotations as $rid => $rotation}
+    .s-donut-chart [data-status-donut-project="{$donut->weekNum}-{$p->id}-{$rid}"] { transform: rotate({$rotation['from']}deg); }
+    .s-donut-chart [data-status-donut-project="{$donut->weekNum}-{$p->id}-{$rid}"] .item { background-color: {$p->color}; transform: rotate({$rotation['to']}deg); }
+    {/foreach}
+    {/if}
+    {/foreach}
+</style>
+{/if}
+
+<div class="s-week-projects">
+    {foreach $donut->data as $p}
+        {if $donut->hasData && ($p->id > 0 || $p->id == 0 && $p->totalDuration >= 10)}
+        <i class="icon16 {if $p->type == statusWeekDonutDataDto::PROJECT}color{else}userpic20{/if}"
+           style="{if $p->type == statusWeekDonutDataDto::PROJECT}background{else}background-image{/if}: {$p->color};"
+        ></i>
+        {$p->name|escape}
+        <span class="hint bold">{$p->totalDurationStr}</span><br>
+        {/if}
+    {/foreach}
+</div>
+
+</section>

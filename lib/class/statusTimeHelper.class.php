@@ -1,0 +1,64 @@
+<?php
+
+/**
+ * Class statusTimeHelper
+ */
+final class statusTimeHelper
+{
+    const MINUTES_IN_DAY = 1440;
+    const MINUTES_IN_HOUR = 60;
+    const SECONDS_IN_MINUTE = 60;
+    const MINUTES_10AM = 600;
+    const MINUTES_18PM = 1080;
+
+    /**
+     * @param int $minutes
+     *
+     * @return float
+     */
+    public static function getDayMinutesInPercent($minutes)
+    {
+        return round($minutes / (24 * 60 / 100));
+    }
+
+    /**
+     * @param int    $startTimestamp
+     * @param int    $endTimestamp
+     * @param string $default
+     *
+     * @return string
+     * @throws Exception
+     */
+    public static function getTimeDurationInHuman($startTimestamp, $endTimestamp, $default = '0')
+    {
+        $durationDiff = (new DateTime(date('Y-m-d H:i:s', $endTimestamp)))->diff(new DateTime(date('Y-m-d H:i:s', $startTimestamp)));
+
+        $humanFormat = [];
+        $hours = 0;
+        if ($durationDiff->d) {
+            $hours = 24 * $durationDiff->d;
+        }
+        if ($durationDiff->h) {
+            $hours += $durationDiff->h;
+        }
+        if ($hours) {
+            $humanFormat[] = sprintf_wp('%dh', $hours);
+        }
+
+        if ($durationDiff->i) {
+            $humanFormat[] = sprintf_wp('%dm', $durationDiff->i);
+        }
+
+        return !empty($humanFormat) ? implode(' ', $humanFormat) : $default;
+    }
+
+    /**
+     * @param DateTimeInterface $date
+     *
+     * @return int
+     */
+    public static function getWeekNumberByDate(DateTimeInterface $date)
+    {
+        return (int)$date->format('W');
+    }
+}
