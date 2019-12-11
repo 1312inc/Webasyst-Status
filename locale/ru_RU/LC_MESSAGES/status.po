@@ -12,7 +12,7 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: .\n"
 "Language: ru_RU\n"
-"X-Generator: Poedit 2.2.3\n"
+"X-Generator: Poedit 2.2.4\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: .\n"
 
@@ -332,7 +332,7 @@ msgstr "Вс"
 
 #: /wa-apps/status/js/status.js:671
 msgid "Hello! This is a friendly reminder to check in your workday yesterday."
-msgstr "Привет! Это просто напоминание добавить отчет о работе вчера."
+msgstr "Привет! Не забудьте добавить отчет о работе вчера."
 
 #: /wa-apps/status/templates/actions/chronology/ChronologyLoadWeeks.html:5
 #: /wa-apps/status/templates/actions/chronology/ChronologyLoadWeeks.html:13
