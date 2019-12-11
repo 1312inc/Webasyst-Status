@@ -142,20 +142,19 @@
                             console.info('dispatch', [actionName + 'Action', attr]);
                             this[actionName + 'Action'].apply(this, attr);
 
-                            $.storage.set('/status/hash/' + this.options.user_id, hash.join('/'));
-                            this.postExecute(actionName);
+                            this.postExecute(actionName, hash);
                         } else {
                             console.info('Invalid action name:', actionName + 'Action');
                         }
                     } else {
                         this.preExecute();
                         this.defaultAction();
-                        this.postExecute();
+                        this.postExecute('default', hash);
                     }
                 } else {
                     this.preExecute();
                     this.defaultAction();
-                    this.postExecute();
+                    this.postExecute('', hash);
                 }
             },
             redispatch: function () {
@@ -170,10 +169,6 @@
                 this.contactAction(0, function () {
                     $.status.$status_content.trigger('loadEditor.stts');
                 });
-
-                if (!skipSaveHash) {
-                    $.storage.set('/status/hash/' + this.options.user_id, '');
-                }
             },
             contactAction: function (id, callback) {
                 var that = this;
@@ -192,7 +187,11 @@
             },
             preExecute: function () {
             },
-            postExecute: function () {
+            postExecute: function (actionName, hash) {
+                if (actionName !== 'y') {
+                    var value = $.isArray(hash) ? hash.join('/') : '';
+                    $.storage.set('/status/hash/' + this.options.user_id, value);
+                }
                 this.options.self.highlightSidebar();
             },
         },
