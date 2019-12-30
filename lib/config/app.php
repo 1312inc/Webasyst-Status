@@ -6,7 +6,7 @@ return array (
     48 => 'img/status48.png',
     96 => 'img/status96.png',
   ),
-  'version' => '1.0.1',
+  'version' => '1.0.2',
   'vendor' => '1021997',
   'rights' => true,
 

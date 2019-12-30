@@ -36,6 +36,15 @@ class statusWeek
     {
         $this->number = statusTimeHelper::getWeekNumberByDate($sourceDay);
 
+        // last week bug php
+        $nextYearBugDate = clone $sourceDay;
+        $nextYearBugDate->modify('+5 days');
+        if ($nextYearBugDate->format('Y') > $sourceDay->format('Y')) {
+            $prevWeekDay = clone $sourceDay;
+            $prevWeekDay->modify('-1 week');
+            $this->number = statusTimeHelper::getWeekNumberByDate($prevWeekDay) + 1;
+        }
+
         $sourceDay->setISODate($sourceDay->format('Y'), $this->number);
 
         $today = new DateTime(date('Y-m-d'));
