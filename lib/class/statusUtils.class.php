@@ -29,12 +29,12 @@ SQL;
 select * from status_checkin_projects scp where scp.checkin_id = i:checkin_id
 SQL;
 
-        while ($tofix = $model->query($sql)->fetchAll()) {
+        $depth = 10;
+        while (($tofix = $model->query($sql)->fetchAll()) && $depth-- > 0) {
             foreach ($tofix as $tofixDatum) {
                 $delta = $tofixDatum['project_duration'] - $tofixDatum['total_duration'];
                 $projectCheckins = $model->query($projectCheckinsSql, ['checkin_id' => $tofixDatum['id']])->fetchAll();
 
-                $projectId = 0;
                 $deltaPerProject = (int)($delta / count($projectCheckins));
                 foreach ($projectCheckins as $i => &$project) {
                     $project['duration'] -= $deltaPerProject;
