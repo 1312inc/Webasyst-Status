@@ -45,14 +45,19 @@ class statusCheckinSaveController extends statusJsonController
             $this->response = new statusDayCheckinDto($checkin);
         }
 
+        $percents = 0;
         /** @var statusCheckinProjectsModel $chprModel */
         $chprModel = stts()->getModel('statusCheckinProjects');
         foreach ($projects as $projectId => $project) {
             if (!stts()->getRightConfig()->hasAccessToProject($projectId, $user)) {
                 continue;
             }
+            $percents += $project['duration'];
+            if ($percents > 100) {
+                $project['duration'] = 0;
+            }
 
-            if ($project['project_check_id'] && $project['on'] == 0) {
+            if ($project['project_check_id'] && (empty($project['on']) || empty($project['duration']))) {
                 $chprModel->deleteByField(['checkin_id' => $checkin->getId(), 'project_id' => $projectId]);
             } elseif ($project['on'] == 1) {
                 $duration = ceil($project['duration'] * ($checkin->getTotalDuration() / 100));

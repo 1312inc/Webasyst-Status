@@ -39,4 +39,20 @@ SQL;
 
         return $this->generateWithData($this->getModel()->query($sql), true);
     }
+
+    /**
+     * @param statusCheckin $checkin
+     *
+     * @return statusProject[]
+     * @throws waException
+     */
+    public function findByCheckin(statusCheckin $checkin)
+    {
+        $sql = <<<SQL
+select sp.* from status_project sp
+join status_checkin_projects scp on scp.project_id = sp.id and scp.checkin_id = i:checkin_id
+SQL;
+
+        return $this->generateWithData($this->getModel()->query($sql, ['checkin_id' => $checkin->getId()]), true);
+    }
 }

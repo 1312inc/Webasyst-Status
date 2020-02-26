@@ -31,6 +31,7 @@ return array(
         'name' => array('varchar', 255, 'null' => 0),
         'color' => array('varchar', 20),
         'create_datetime' => array('datetime', 'null' => 0),
+        'update_datetime' => array('datetime'),
         'last_checkin_datetime' => array('datetime'),
         'this_week_total_duration' => array('int', 11, 'default' => '0'),
         'is_archived' => array('tinyint', 4, 'default' => '0'),

@@ -162,11 +162,11 @@ class statusUser extends statusAbstractEntity
     public function setContact(waContact $contact)
     {
         $this->contact = $contact;
-        if ($contact->getId() && $contact->exists()) {
+        $this->init();
+        if ($this->getId() && $this->contact->exists()) {
             $this->contact_id = $contact->getId();
-            $this->init();
         } else {
-            throw new kmwaLogicException('No waContact for statusUser');
+//            throw new kmwaLogicException('No waContact for statusUser');
         }
 
         return $this;
