@@ -19,7 +19,7 @@
                                style="background-color: {$u->getTodayStatus()->getBgColor()}; color: {$u->getTodayStatus()->getFontColor()}"
                                title="{$u->getTodayStatus()->getName()|escape}"
                          >
-                             {$u->getTodayStatus()->getName()|escape}
+                             {$u->getTodayStatus()->getName()|escape|truncate:13}
                          </span>
                          {/if}
                      </a>

@@ -9,11 +9,11 @@
         </h3>
     </div>
 
-    <div class="checkins">
+    <div class="s-checkins">
     {foreach $day->userDayInfos as $userDayInfo}
     {* @var statusDayUserInfoDto $userDayInfo *}
     {foreach $userDayInfo->checkins as $checkin}
-        <div class="checkin">
+        <div class="s-checkin">
         <div class="s-day-summary">
             <div class="s-day-summary-timeline">
                 <div class="s-timeline">{strip}
@@ -43,22 +43,23 @@
                     </h5>
 
                     <div class="s-logged-apps">
-                    {foreach $userDayInfo->walogs as $walog}
-                        {if $walog->count && $walog->appId != 'webasyst'}
-                        <a href="#"
-                           class="s-logged-app-counter inline-link"
-                           data-status-walog-contact-id="{$day->users[$userDayInfo->contactId]->contactId}"
-                           data-status-walog-app="{$walog->appId}"
-                           data-status-walog-date="{$day->date}"
-                        ><i class="icon16 s-app-icon" style="background-image: url('{$walog->appIcon}');"></i><b><i>{$walog->count}</i></b></a>
-                        {/if}
-                    {foreachelse}
-                        {if !$checkin->id}
+                        {$_cnt = 0}
+                        {foreach $userDayInfo->walogs as $walog}
+                            {if $walog->count && $walog->appId != 'webasyst'}
+                                <a href="#"
+                                   class="s-logged-app-counter inline-link"
+                                   data-status-walog-contact-id="{$day->users[$userDayInfo->contactId]->contactId}"
+                                   data-status-walog-app="{$walog->appId}"
+                                   data-status-walog-date="{$day->date}"
+                                ><i class="icon16 s-app-icon" style="background-image: url('{$walog->appIcon}');"></i><b><i>{$walog->count}</i></b></a>
+                                {$_cnt = $_cnt + 1}
+                            {/if}
+                        {/foreach}
+                        {if !$_cnt && !$checkin->id}
                             <div class="s-logged-apps gray">
                                 [`No activity recorded`]
                             </div>
                         {/if}
-                    {/foreach}
                     </div>
                 </div>
                 {if $checkin->comment}
