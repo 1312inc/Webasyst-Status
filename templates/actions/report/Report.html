@@ -1,0 +1,32 @@
+<div class="content left200px">
+    {function reportTable reportData=[]}
+        <table class="zebra">
+            <thead>
+            <tr>
+                <th>Проект</th>
+                <th>Длительность</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {foreach $reportData as $reportDatum}
+                <tr>
+                    <td>{$reportDatum->icon}
+                        <a href="#"
+                           class="inline"
+                           data-status-report-action="load-data"
+                           data-status-load-data="users"
+                           data-status-load-data-id="{$reportDatum->identity}"
+                        >{$reportDatum->name|escape}</td>
+                    <td>{$reportDatum->duration}</td>
+                </tr>
+            {/foreach}
+            </tbody>
+        </table>
+    {/function}
+
+    {reportTable reportData=$projects}
+    <br>
+    <br>
+    {reportTable reportData=$users}
+</div>

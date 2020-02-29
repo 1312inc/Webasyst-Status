@@ -185,6 +185,12 @@
                     $('#status-content').html(html);
                 });
             },
+            reportsAction: function (date1, date2) {
+                var that = this;
+                $.get('?module=report', {start: date1, end: date2}, function (html) {
+                    $('#status-content').html(html);
+                });
+            },
             preExecute: function () {
             },
             postExecute: function (actionName, hash) {
