@@ -3,11 +3,8 @@
 /**
  * Class statusReportDataDto
  */
-class statusReportDataDto
+class statusReportDataDto implements JsonSerializable
 {
-    const TYPE_CONTACT = 'contact';
-    const TYPE_PROJECT = 'project';
-
     /**
      * @var string
      */
@@ -17,6 +14,11 @@ class statusReportDataDto
      * @var string
      */
     public $duration;
+
+    /**
+     * @var string
+     */
+    public $durationStr;
 
     /**
      * @var int
@@ -44,8 +46,22 @@ class statusReportDataDto
     public function __construct($name, $duration, $identity, $type)
     {
         $this->duration = $duration;
+        $this->durationStr = statusTimeHelper::getTimeDurationInHuman(0, $duration);
         $this->identity = $identity;
         $this->type = $type;
         $this->name = $name;
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        $data = [];
+        foreach (get_class_vars(self::class) as $propName => $prop) {
+            $data[$propName] = $this->$propName;
+        }
+
+        return $data;
     }
 }

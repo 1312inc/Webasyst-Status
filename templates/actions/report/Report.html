@@ -1,10 +1,35 @@
-<div class="content left200px">
+{** @var statusDatePeriodVO $currentPeriod **}
+<div class="content left200px"
+     data-status-wrapper="report"
+     data-status-report-start="{$currentPeriod->getDateStartFormat()}"
+     data-status-report-end="{$currentPeriod->getDateEndFormat()}"
+     data-status-report-period="{$currentPeriod->getId()}">
+    <ul class="menu-h dropdown">
+        <li>
+            <a href="#" class="inline-link nowrap"
+               style="display: inline;"><b><i>{$currentPeriod->getName()|escape}</i></b> <i
+                        class="icon10 darr"></i></a>
+            <ul class="menu-v">
+                {foreach statusReportService::getPeriods() as $datePeriod}
+                    <li><a href="#/reports/{$datePeriod->getDateStartFormat()}/{$datePeriod->getDateEndFormat()}"
+                           data-status-report-period="{$datePeriod->getId()}">{$datePeriod->getName()|escape}</a></li>
+                {/foreach}
+                    <li><a href="#" data-status-report-period="custom">[`Custom...`]</a></li>
+            </ul>
+        </li>
+    </ul>
+    <div data-status-report-period-custom style="display: none;">
+        <input type="text" name="start" value="{$currentPeriod->getDateStartFormat()}"/>
+        <input type="text" name="end" value="{$currentPeriod->getDateEndFormat()}"/>
+        <a href="#" data-status-report-action="load-custom-period">[`Load`]</a>
+    </div>
+
     {function reportTable reportData=[]}
         <table class="zebra">
             <thead>
             <tr>
-                <th>Проект</th>
-                <th>Длительность</th>
+                <th>[`Project`]</th>
+                <th>[`Duration`]</th>
             </tr>
             </thead>
 
@@ -15,10 +40,11 @@
                         <a href="#"
                            class="inline"
                            data-status-report-action="load-data"
-                           data-status-load-data="users"
+                           data-status-load-data="{$reportDatum->type}"
                            data-status-load-data-id="{$reportDatum->identity}"
-                        >{$reportDatum->name|escape}</td>
-                    <td>{$reportDatum->duration}</td>
+                        >{$reportDatum->name|escape}</a>
+                    </td>
+                    <td>{$reportDatum->durationStr}</td>
                 </tr>
             {/foreach}
             </tbody>
@@ -30,3 +56,91 @@
     <br>
     {reportTable reportData=$users}
 </div>
+
+<script>
+    'use strict';
+    (function () {
+        var $w = $('[data-status-wrapper="report"]'),
+            $loading = $('<i class="icon16 loading">');
+
+        $w
+            .on('click.stts', '[data-status-report-action="load-data"]', function (e) {
+                e.preventDefault();
+
+                var $this = $(this),
+                    loadType = $this.data('status-load-data'),
+                    loadId = $this.data('status-load-data-id'),
+                    start = $w.data('status-report-start'),
+                    end = $w.data('status-report-end'),
+                    $tr = $this.closest('tr'),
+                    hash = loadType + '-' + loadId;
+
+                if ($tr.next().data('status-report-loaded-from') == hash) {
+                    $w.find('[data-status-report-loaded-from="' + hash + '"]').remove();
+                    return;
+                }
+
+                $this.after($loading);
+                $w.find(':input').prop('disable', true);
+
+                $.get('?module=report&action=loadData', {
+                    type: loadType,
+                    id: loadId,
+                    start: start,
+                    end: end
+                }, function (r) {
+                    if (r.status === 'ok') {
+                        $.each(r.data, function () {
+                            $tr.after('<tr data-status-report-loaded-from="' + hash + '">'
+                                + '<td>' + this.icon + ' ' + this.name + '</td>'
+                                + '<td>' + this.durationStr + '</td>'+
+                                +'</tr>');
+                        });
+                    }
+                }).always(function () {
+                    $loading.remove();
+                    $w.find(':input').prop('disable', false);
+                });
+            })
+            .on('click.stts', '[data-status-report-period]', function (e) {
+                var $this = $(this),
+                    type = $this.data('status-report-period');
+
+                if (type === 'custom'){
+                    e.preventDefault();
+                    $w.find('[data-status-report-period-custom]').show();
+                }
+            });
+
+        var initCustom = function () {
+            var dateFormat = 'yy-mm-dd',
+                datepicker_options = {
+                    changeMonth: true,
+                    changeYear: true,
+                    shortYearCutoff: 2,
+                    dateShowWeek: false,
+                    showOtherMonths: true,
+                    selectOtherMonths: true,
+                    stepMonths: 1,
+                    numberOfMonths: 3,
+                    gotoCurrent: true,
+                    constrainInput: false,
+                    dateFormat: dateFormat,
+                },
+                $from = $w.find('[data-status-report-period-custom] input:first').datepicker(datepicker_options),
+                $to = $w.find('[data-status-report-period-custom] input:last').datepicker(datepicker_options);
+
+            $w.on('click.stts', '[data-status-report-action="load-custom-period"]', function (e) {
+                e.preventDefault();
+
+                window.location.hash = 'reports/' + $from.val() + '/' + $to.val();
+            });
+        };
+
+        initCustom();
+
+        if ($w.data('status-report-period') === 'custom') {
+            $w.find('[data-status-report-period-custom]').show();
+        }
+    })();
+</script>

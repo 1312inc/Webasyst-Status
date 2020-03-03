@@ -12,5 +12,5 @@ interface statusReportDataProviderInterface
      *
      * @return statusReportDataDto[]
      */
-    public function getData(DateTime $start, DateTime $end, $filterId = null);
+    public function getData(DateTimeInterface $start, DateTimeInterface $end, $filterId = null);
 }

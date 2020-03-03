@@ -5,33 +5,50 @@
  */
 class statusReportDataUser implements statusReportDataProviderInterface
 {
+    const TYPE = 'user';
+
     /**
-     * @param DateTime $start
-     * @param DateTime $end
-     * @param null|int $filterId
+     * @param DateTimeInterface $start
+     * @param DateTimeInterface $end
+     * @param null|int          $projectId
      *
      * @return statusReportDataDto[]
      * @throws waException
      */
-    public function getData(DateTime $start, DateTime $end, $filterId = null)
+    public function getData(DateTimeInterface $start, DateTimeInterface $end, $projectId = null)
     {
         $dtos = [];
         $sql = <<<SQL
-select sum(sc.total_duration) duration,
+select %s duration,
        sc.contact_id id
 from status_checkin sc
-left join status_checkin_projects scp on sc.id = scp.checkin_id
+%s
 where date(sc.date) between s:start and s:end %s
 group by sc.contact_id;
 SQL;
 
+        $filterSql = ['sum(sc.total_duration)', '', ''];
+        if ($projectId) {
+            $filterSql = [
+                'sum(if(isnull(scp.id), sc.total_duration, scp.duration))',
+                'join status_checkin_projects scp on sc.id = scp.checkin_id',
+                'and scp.project_id = i:id',
+            ];
+        } elseif ($filterSql == 0) {
+            $filterSql = [
+                'sum(if(isnull(scp.id), sc.total_duration, scp.duration))',
+                'left join status_checkin_projects scp on sc.id = scp.checkin_id',
+                'and scp.project_id is null',
+            ];
+        }
+
         $data = stts()->getModel()
             ->query(
-                sprintf($sql, $filterId ? 'and scp.project_id = i:id' : ''),
+                sprintf($sql, $filterSql[0], $filterSql[1], $filterSql[2]),
                 [
                     'start' => $start->format('Y-m-d H:i:s'),
                     'end' => $end->format('Y-m-d H:i:s'),
-                    'ids' => $filterId,
+                    'id' => $projectId,
                 ]
             )->fetchAll('id');
 
@@ -48,7 +65,7 @@ SQL;
                 $contact->getName(),
                 $data[$contactId]['duration'],
                 $contactId,
-                statusReportDataDto::TYPE_CONTACT
+                self::TYPE
             );
             $dtos[$contactId]->icon = sprintf(
                 '<i class="icon16 userpic20" style="background-image: url(%s)"></i>',

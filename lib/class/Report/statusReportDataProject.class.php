@@ -5,19 +5,21 @@
  */
 class statusReportDataProject implements statusReportDataProviderInterface
 {
+    const TYPE = 'project';
+
     /**
-     * @param DateTime $start
-     * @param DateTime $end
-     * @param null|int $filterId
+     * @param DateTimeInterface $start
+     * @param DateTimeInterface $end
+     * @param null|int          $contactId
      *
      * @return statusReportDataDto[]
      * @throws waException
      */
-    public function getData(DateTime $start, DateTime $end, $filterId = null)
+    public function getData(DateTimeInterface $start, DateTimeInterface $end, $contactId = null)
     {
         $dtos = [];
         $sql = <<<SQL
-select if(isnull(sp.name), sum(sc.total_duration), sum(ifnull(scp.duration, 0))) duration,
+select sum(if(isnull(sp.name), sc.total_duration, ifnull(scp.duration, 0))) duration,
        ifnull(sp.id, 0) id
 from status_checkin sc
          left join status_checkin_projects scp on sc.id = scp.checkin_id
@@ -28,11 +30,11 @@ SQL;
 
         $data = stts()->getModel()
             ->query(
-                sprintf($sql, $filterId ? 'and sc.contact_id = i:id' : ''),
+                sprintf($sql, $contactId ? 'and sc.contact_id = i:id' : ''),
                 [
                     'start' => $start->format('Y-m-d H:i:s'),
                     'end' => $end->format('Y-m-d H:i:s'),
-                    'id' => $filterId,
+                    'id' => $contactId,
                 ]
             )->fetchAll('id');
 
@@ -49,7 +51,7 @@ SQL;
                 $project->getName(),
                 $data[$projectId]['duration'],
                 $projectId,
-                statusReportDataDto::TYPE_PROJECT
+                self::TYPE
             );
             $dtos[$projectId]->icon = sprintf(
                 '<i class="icon16 color" style="background: %s;"></i>',
@@ -61,7 +63,7 @@ SQL;
                 _w('No project'),
                 $data[0]['duration'],
                 0,
-                statusReportDataDto::TYPE_PROJECT
+                self::TYPE
             );
             $dtos[0]->icon = '<i class="icon16 color" style="background: #ef81ce; background: linear-gradient(135deg, #ef81ce 25%, #f3a3d5 25%, #f3a3d5 50%, #ef81ce 50%, #ef81ce 75%, #f3a3d5 75%, #f3a3d5 100%) top center/5px 5px;"></i>';
         }

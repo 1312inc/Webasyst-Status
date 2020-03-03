@@ -5,31 +5,63 @@
  */
 class statusReportAction extends statusViewAction
 {
-    /**
-     * @var DateTime
-     */
-    protected $dateStart;
+    const SETTING_PERIOD_DATE_START = 'periodDateStart';
+    const SETTING_PERIOD_DATE_END   = 'periodDateEnd';
 
     /**
-     * @var DateTime
+     * @var statusDatePeriodVO
      */
-    protected $dateEnd;
+    protected $datePeriod;
 
     /**
      * @var statusReportService
      */
     protected $reportService;
 
+    /**
+     * @throws kmwaForbiddenException
+     * @throws waException
+     */
     protected function preExecute()
     {
         parent::preExecute();
 
-        $this->dateStart = new DateTime(waRequest::get('start', date('Y-m-d'), waRequest::TYPE_STRING_TRIM));
-        $this->dateEnd = new DateTime(waRequest::get('end', date('Y-m-d'), waRequest::TYPE_STRING_TRIM));
-        $this->dateStart->setTime(0, 0);
-        $this->dateEnd->setTime(23, 59, 59);
-
         $this->reportService = new statusReportService();
+
+        $this->datePeriod = $this->reportService->getPeriodByDates(
+            new DateTime(
+                waRequest::get(
+                    'start',
+                    $this->getUser()->getSettings(
+                        statusConfig::APP_ID,
+                        self::SETTING_PERIOD_DATE_START,
+                        (new DateTime())->modify('-1 month')->format('Y-m-d')
+                    ),
+                    waRequest::TYPE_STRING_TRIM
+                )
+            ),
+            new DateTime(
+                waRequest::get(
+                    'end',
+                    $this->getUser()->getSettings(
+                        statusConfig::APP_ID,
+                        self::SETTING_PERIOD_DATE_END,
+                        (new DateTime())->format('Y-m-d')
+                    ),
+                    waRequest::TYPE_STRING_TRIM
+                )
+            )
+        );
+        $this->getUser()->setSettings(
+            statusConfig::APP_ID,
+            self::SETTING_PERIOD_DATE_START,
+            $this->datePeriod->getDateStartFormat()
+        );
+        $this->getUser()->setSettings(
+            statusConfig::APP_ID,
+            self::SETTING_PERIOD_DATE_END,
+            $this->datePeriod->getDateEndFormat()
+        );
     }
 
     /**
@@ -40,13 +72,21 @@ class statusReportAction extends statusViewAction
      */
     public function runAction($params = null)
     {
-        $projects = (new statusReportDataProject())->getData($this->dateStart, $this->dateEnd);
-        $users = (new statusReportDataUser())->getData($this->dateStart, $this->dateEnd);
+        $projects = (new statusReportDataProject())->getData(
+            $this->datePeriod->getDateStart(),
+            $this->datePeriod->getDateEnd()
+        );
+        $users = (new statusReportDataUser())->getData(
+            $this->datePeriod->getDateStart(),
+            $this->datePeriod->getDateEnd()
+        );
 
         $this->view->assign(
             [
                 'projects' => $projects,
                 'users' => $users,
+                'currentPeriod' => $this->datePeriod,
+                'today' => new DateTime(),
             ]
         );
     }
