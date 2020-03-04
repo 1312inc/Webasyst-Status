@@ -205,5 +205,7 @@ class statusProject extends statusAbstractEntity
     public function beforeSave()
     {
         $this->updateCreateUpdateDatetime();
+
+        return true;
     }
 }

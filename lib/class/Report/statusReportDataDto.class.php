@@ -46,7 +46,7 @@ class statusReportDataDto implements JsonSerializable
     public function __construct($name, $duration, $identity, $type)
     {
         $this->duration = $duration;
-        $this->durationStr = statusTimeHelper::getTimeDurationInHuman(0, $duration);
+        $this->durationStr = statusTimeHelper::getTimeDurationInHuman(0, $duration * 60);
         $this->identity = $identity;
         $this->type = $type;
         $this->name = $name;
