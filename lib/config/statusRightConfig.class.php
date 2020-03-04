@@ -134,8 +134,11 @@ class statusRightConfig extends waRightConfig
     {
         $right_model = new waContactRightsModel();
 
+        $saveGroup = 0;
         if ($contactId < 1) {
             $contactIds = (new waUserGroupsModel())->getContactIds(abs($contactId));
+            $saveGroup = $contactId;
+            $right_model->save($contactId, statusConfig::APP_ID, $right, $value);
         } else {
             $contactIds = [$contactId];
         }
@@ -147,15 +150,12 @@ class statusRightConfig extends waRightConfig
                 stts()->getEntityPersister()->insert($user);
             }
 
-            $right_model->save(
-                $contactId,
-                statusConfig::APP_ID,
-                $right,
-                $value
-            );
+            if (!$saveGroup) {
+                $right_model->save($contactId, statusConfig::APP_ID, $right, $value);
+            }
         }
 
-        return  true;
+        return true;
 
     }
 
