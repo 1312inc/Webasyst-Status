@@ -125,3 +125,12 @@ i.icon16.s-app-icon { background-size: 16px 16px; }
 
 .s-walog-explained .fields { margin-top: 10px; }
 .s-walog-explained .activity-target { display: inline; }
+
+.s-reports-timeframe ul.menu-h.dropdown { display: inline-block; }
+.s-reports-timeframe ul.menu-h.dropdown ul { width: 200px; left: auto; right: 0px; }
+.s-reports-timeframe input { width: 100px; }
+.s-reports-flexbox { display: flex; margin-top: 10px; }
+.s-reports-table { flex: 1; margin: 0 31px 20px; min-width: 250px; }
+.s-reports-table table.light tr:hover td { background: #f2f7ff; }
+.s-reports-table table.light thead th { padding-bottom: 5px; }
+.s-reports-table table.light tr.s-subrow td { padding-left: 26px; }

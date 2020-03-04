@@ -91,7 +91,7 @@ final class statusReportService
         $periodCustom = new statusDatePeriodVO(
             clone $dateStart->setTime(0, 0),
             clone $dateEnd->setTime(23, 59, 59),
-            _w('Custom...'),
+            _w('Select dates...'),
             'custom'
         );
         if ($custom) {

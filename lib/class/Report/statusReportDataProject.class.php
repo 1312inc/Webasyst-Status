@@ -45,18 +45,21 @@ SQL;
 
         /** @var statusProject[] $projects */
         $projects = stts()->getEntityRepository(statusProject::class)->findById($projectIds);
-        foreach ($projects as $project) {
-            $projectId = $project->getId();
-            $dtos[$projectId] = new statusReportDataDto(
-                $project->getName(),
-                $data[$projectId]['duration'],
-                $projectId,
-                self::TYPE
-            );
-            $dtos[$projectId]->icon = sprintf(
-                '<i class="icon16 color" style="background: %s;"></i>',
-                $project->getColor()
-            );
+        if (count($projects))
+        {
+            foreach ($projects as $project) {
+                $projectId = $project->getId();
+                $dtos[$projectId] = new statusReportDataDto(
+                    $project->getName(),
+                    $data[$projectId]['duration'],
+                    $projectId,
+                    self::TYPE
+                );
+                $dtos[$projectId]->icon = sprintf(
+                    '<i class="icon16 color" style="background: %s;"></i>',
+                    $project->getColor()
+                );
+            }
         }
         if (isset($data[0])) {
             $dtos[0] = new statusReportDataDto(

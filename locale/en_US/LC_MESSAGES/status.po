@@ -15,361 +15,260 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: .\n"
 
-#: /wa-apps/status/templates/include/sidebar.html:7
-#: /wa-apps/status/templates/actions/backend/BackendOld.html:123
-#: /wa-apps/status/templates/actions/backend/BackendOld.html:187
-#: /wa-apps/status/templates/actions/backend/BackendOld.html:211
-#: /wa-apps/status/templates/actions/day/DayEditor.template.html:12
-#: /wa-apps/status/templates/actions/todaystatus/TodaystatusList.html:3
 msgid "Status"
 msgstr ""
 
-#: /wa-apps/status/templates/include/error.html:4
 msgid "Sorry. You are not allowed to see anything on this page."
 msgstr ""
 
-#: /wa-apps/status/templates/layouts/Default.html:46
-#: /wa-apps/status/templates/actions/backend/BackendOld.html:100
-#: /wa-apps/status/templates/actions/todaystatus/TodaystatusList.html:21
 msgid "Custom status..."
 msgstr ""
 
-#: /wa-apps/status/templates/actions/backend/BackendSidebar.html:6
-#: /wa-apps/status/templates/actions/backend/BackendSidebar.html:14
 msgid "This week total"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/backend/BackendSidebar.html:7
-#: /wa-apps/status/templates/actions/backend/BackendOld.html:116
 msgid "My status"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/backend/BackendSidebar.html:31
-#: /wa-apps/status/templates/actions/backend/BackendOld.html:130
 msgid "All users"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/backend/BackendSidebar.html:48
 msgid "Invite users via the <a href=\"%s\">Team app</a> and start tracking time and status together."
 msgstr ""
 
-#: /wa-apps/status/templates/actions/backend/BackendSidebar.html:55
-#: /wa-apps/status/templates/actions/backend/BackendOld.html:139
 msgid "Projects"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/backend/BackendSidebar.html:74
-#: /wa-apps/status/templates/actions/backend/BackendOld.html:154
 msgid "All projects"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/backend/BackendSidebar.html:81
 msgid "Add projects so everyone can add detalization on what they were working on."
 msgstr ""
 
-#: /wa-apps/status/templates/actions/backend/BackendSidebar.html:89
-#: /wa-apps/status/templates/actions/backend/BackendOld.html:162
 msgid "Plugins"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/backend/BackendSidebar.html:92
-#: /wa-apps/status/templates/actions/backend/BackendOld.html:165
 msgid "Widgets"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/backend/BackendSidebar.html:96
-#: /wa-apps/status/templates/actions/backend/BackendOld.html:168
 msgid "Settings"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/backend/BackendOld.html:37
-#: /wa-apps/status/lib/class/Week/statusWeekDtoAssembler.class.php:86
 msgid "No project"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/backend/BackendOld.html:49
 msgid "32 out of 40 clocked hours (84%)"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/backend/BackendOld.html:178
-#: /wa-apps/status/templates/actions/chronology/Chronology.html:5
 msgid "This week"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/backend/BackendOld.html:194
-#: /wa-apps/status/templates/actions/chronology/Chronology.html:36
-#: /wa-apps/status/templates/actions/chronology/Chronology.html:62
 msgid "Tomorrow"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/backend/BackendOld.html:196
-#: /wa-apps/status/templates/actions/backend/BackendOld.html:222
-#: /wa-apps/status/templates/actions/day/DayEditor.html:17
-#: /wa-apps/status/templates/actions/chronology/Chronology.html:39
 msgid "Weekend"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/backend/BackendOld.html:198
-#: /wa-apps/status/templates/actions/backend/BackendOld.html:223
-#: /wa-apps/status/templates/actions/day/DayEditor.html:18
-#: /wa-apps/status/templates/actions/chronology/Chronology.html:40
 msgid "Birthday"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/backend/BackendOld.html:219
-#: /wa-apps/status/templates/actions/day/DayShow.html:5
-#: /wa-apps/status/templates/actions/day/DayEditor.template.html:18
-#: /wa-apps/status/templates/actions/day/DayEditor.html:13
 msgid "Today"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/backend/BackendOld.html:263
-#: /wa-apps/status/templates/actions/day/DayEditor.html:68
 msgid "Break"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/backend/BackendOld.html:270
-#: /wa-apps/status/templates/actions/day/DayEditor.html:75
 msgid "Add another interval for today"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/backend/BackendOld.html:279
-#: /wa-apps/status/templates/actions/day/DayEditor.template.html:28
-#: /wa-apps/status/templates/actions/day/DayEditor.html:84
 msgid "Enter your daily report here..."
 msgstr ""
 
-#: /wa-apps/status/templates/actions/backend/BackendOld.html:281
-#: /wa-apps/status/templates/actions/project/ProjectDialog.html:66
-#: /wa-apps/status/templates/actions/day/DayEditor.template.html:30
-#: /wa-apps/status/templates/actions/day/DayEditor.html:86
-#: /wa-apps/status/templates/actions/todaystatus/TodaystatusDialog.html:40
 msgid "Save"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/backend/BackendOld.html:282
-#: /wa-apps/status/templates/actions/day/DayEditor.template.html:31
-#: /wa-apps/status/templates/actions/day/DayEditor.html:87
 msgid "Saved"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/backend/BackendOld.html:344
-#: /wa-apps/status/templates/actions/day/DayShow.html:39
 msgid "Status for today"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/backend/BackendOld.html:355
 msgid "No app activity logged"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/project/ProjectDialog.html:8
 msgid "(unnamed project)"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/project/ProjectDialog.html:10
 msgid "New project"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/project/ProjectDialog.html:17
 msgid "Project name"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/project/ProjectDialog.html:26
 msgid "Color"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/project/ProjectDialog.html:39
 msgid "Access rights"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/project/ProjectDialog.html:42
 msgid "Use <a href=\"%s\">Team app</a> to configure access: select a user or a group of users &gt; Access tab &gt; Status app &gt; apply the proper access level."
 msgstr ""
 
-#: /wa-apps/status/templates/actions/project/ProjectDialog.html:61
 msgid "Delete project"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/project/ProjectDialog.html:66
-#: /wa-apps/status/templates/actions/todaystatus/TodaystatusDialog.html:40
 msgid "or"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/project/ProjectDialog.html:66
-#: /wa-apps/status/templates/actions/todaystatus/TodaystatusDialog.html:40
 msgid "cancel"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/day/DayShow.html:4
-#: /wa-apps/status/templates/actions/day/DayEditor.html:14
 msgid "Yesterday"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/day/DayShow.html:51
 msgid "No activity recorded"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/day/DayShow.html:83
-#: /wa-apps/status/js/status.js:314
-#: /wa-apps/status/lib/class/Day/statusDayCheckinDto.class.php:122
 msgid "h"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/day/DayEditor.html:61
 msgid "0h"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/todaystatus/TodaystatusDialog.html:5
 msgid "Custom status"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/todaystatus/TodaystatusDialog.html:11
 msgid "Status label"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/todaystatus/TodaystatusDialog.html:14
 msgid "Working remotely"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/todaystatus/TodaystatusDialog.html:19
 msgid "Calendar"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/todaystatus/TodaystatusDialog.html:31
 msgid "The status will be automatically linked with the selected calendar in the Team app."
 msgstr ""
 
-#: /wa-apps/status/templates/actions/todaystatus/TodaystatusList.html:9
 msgid "No status"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/chronology/ChronologyLoadWeeks.html:30
 msgid "Loading..."
 msgstr ""
 
-#: /wa-apps/status/templates/actions/chronology/Chronology.html:10
 msgid "Out of total %d weekly working hours"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/chronology/Chronology.html:21
 msgid "Project settings"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/chronology/Chronology.html:50
 msgid "The user does not have access to the Status app. Grant access rights in the <a href=\"%s\"><i class=\"icon16\" style=\"%s\"></i>Team app</a> so the user can check in too."
 msgstr ""
 
-#: /wa-apps/status/templates/actions/chronology/Chronology.html:72
 msgid "Status for tomorrow"
 msgstr ""
 
-#: /wa-apps/status/js/status.js:317
 msgid "m"
 msgstr ""
 
-#: /wa-apps/status/js/status.js:670
 msgid "(((1)))"
 msgstr ""
 
-#: /wa-apps/status/lib/config/statusRightConfig.class.php:48
 msgid "Can manage self status & timeline"
 msgstr ""
 
-#: /wa-apps/status/lib/config/statusRightConfig.class.php:62
 msgid "Can see teammates"
 msgstr ""
 
-#: /wa-apps/status/lib/config/statusRightConfig.class.php:75
 msgid "Can see & contribute to projects"
 msgstr ""
 
-#: /wa-apps/status/lib/class/Week/statusWeekDtoAssembler.class.php:104
 msgid "No activity"
 msgstr ""
 
-#: /wa-apps/status/lib/class/statusTimeHelper.class.php:38
-#: /wa-apps/status/lib/class/Day/statusDayCheckinDto.class.php:127
 msgid "%dh"
 msgstr ""
 
-#: /wa-apps/status/lib/class/statusTimeHelper.class.php:42
 msgid "%dm"
 msgstr ""
 
-#: /wa-apps/status/lib/vendor/kmwa/Exception/kmwaNotFoundException.php:17
 msgid "Not found"
 msgstr ""
 
-#: /wa-apps/status/lib/vendor/kmwa/Exception/kmwaNotImplementedException.php:17
 msgid "Not implemented for now"
 msgstr ""
 
-#: /wa-apps/status/lib/vendor/kmwa/Exception/kmwaForbiddenException.php:17
 msgid "Access denied"
 msgstr ""
 
-#: /wa-apps/status/js/status.js:671
 msgid "Hello! This is a friendly reminder to check in your workday yesterday."
 msgstr ""
 
-#: /wa-apps/status/templates/actions/chronology/ChronologyLoadWeeks.html:5
-#: /wa-apps/status/templates/actions/chronology/ChronologyLoadWeeks.html:13
 msgid "WEEK #%d"
 msgstr ""
 
-#: /wa-apps/status/lib/actions/week/statusWeekDonut.action.php:20
 msgid "No week found"
 msgstr ""
 
-#: /wa-apps/status/lib/actions/project/statusProjectSave.controller.php:15
-#: /wa-apps/status/lib/actions/project/statusProjectDialog.action.php:31
 msgid "No projects access"
 msgstr ""
 
-#: /wa-apps/status/lib/actions/project/statusProjectSave.controller.php:34
-#: /wa-apps/status/lib/actions/project/statusProjectDelete.controller.php:25
 msgid "No project found"
 msgstr ""
 
-#: /wa-apps/status/lib/actions/project/statusProjectSave.controller.php:38
-#: /wa-apps/status/lib/actions/project/statusProjectDelete.controller.php:29
-#: /wa-apps/status/lib/actions/project/statusProjectDialog.action.php:25
 msgid "No project access"
 msgstr ""
 
-#: /wa-apps/status/lib/actions/day/statusDayShow.action.php:22
 msgid "User not found"
 msgstr ""
 
-#: /wa-apps/status/lib/actions/day/statusDayShow.action.php:29
 msgid "No access to this user"
 msgstr ""
 
-#: /wa-apps/status/lib/actions/day/statusDayEditor.action.php:24
 msgid "User with not found"
 msgstr ""
 
-#: /wa-apps/status/lib/actions/chronology/statusChronology.action.php:55
 msgid "You don`t have access to this user"
 msgstr ""
 
-#: /wa-apps/status/lib/actions/chronology/statusChronology.action.php:68
 msgid "You don`t have access to this project"
 msgstr ""
 
-#: /wa-apps/status/lib/class/View/statusViewAction.class.php:15
 msgid "No app access"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/walog/WalogDialog.html:4
 msgid "%s on %s"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/walog/WalogDialog.html:47
 msgid "Close"
 msgstr ""
 
-#: /wa-apps/status/templates/actions/day/DayEditor.html:75
-#: /wa-apps/status/js/status.js:735
 msgid "Remove interval for today"
+msgstr ""
+
+msgid "Reports"
+msgstr ""
+
+msgid "Select dates..."
+msgstr ""
+
+msgid "Update"
+msgstr ""
+
+msgid "Project"
+msgstr ""
+
+msgid "Hours"
+msgstr ""
+
+msgid "Last 30 days"
+msgstr ""
+
+msgid "Last 90 days"
+msgstr ""
+
+msgid "Last 365 days"
+msgstr ""
+
+msgid "All time"
 msgstr ""
