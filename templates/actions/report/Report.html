@@ -49,9 +49,9 @@
                            data-status-report-action="load-data"
                            data-status-load-data="{$reportDatum->type}"
                            data-status-load-data-id="{$reportDatum->identity}"
-                        >{$reportDatum->name|escape}</a>
+                        >{$reportDatum->nameEscaped}</a>
                     </td>
-                    <td class="align-right nowrap" title="{$reportDatum->durationStr}">{round($reportDatum->duration/60 * 100)/100}</td>
+                    <td class="align-right nowrap" title="{$reportDatum->durationStr}">{$reportDatum->durationFloat}</td>
                 </tr>
             {/foreach}
             </tbody>
@@ -104,12 +104,18 @@
                 }, function (r) {
                     if (r.status === 'ok') {
                         $.each(r.data, function () {
-                            $tr.after('<tr data-status-report-loaded-from="' + hash + '" class="s-subrow">'
-                                + '<td>' + this.icon + ' ' + this.name + '</td>'
-                                + '<td class="align-right" title="' + this.durationStr + '">' + Math.round(this.duration/60 * 100)/100 + '</td>'+
-                                +'</tr>');
-                            $tr.addClass('bold');
+                            var newTr = '<tr data-status-report-loaded-from="' + hash + '" class="s-subrow">'
+                                + '<td>' + this.icon + ' ' + this.nameEscaped + '</td>'
+                                + '<td class="align-right" title="' + this.durationStr + '">' + this.durationFloat + '</td>'+
+                                +'</tr>',
+                                $lastTr = $w.find('[data-status-report-loaded-from="' + hash + '"]:last');
+                            if ($lastTr.length) {
+                                $lastTr.after(newTr);
+                            } else {
+                                $tr.after(newTr);
+                            }
                         });
+                        $tr.addClass('bold');
                     }
                 }).always(function () {
                     $loading.remove();

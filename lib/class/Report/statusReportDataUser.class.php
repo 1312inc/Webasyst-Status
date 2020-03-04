@@ -52,15 +52,15 @@ SQL;
                 ]
             )->fetchAll('id');
 
-        $userIds = array_column($data, 'id');
-        if (!$userIds) {
+        $contactIds = array_column($data, 'id');
+        if (!$contactIds) {
             return $dtos;
         }
 
         /** @var statusUser[] $contacts */
-        $contacts = stts()->getEntityRepository(statusUser::class)->findById($userIds);
+        $contacts = stts()->getEntityRepository(statusUser::class)->findByFields('contact_id', $contactIds, true);
         foreach ($contacts as $contact) {
-            $contactId = $contact->getId();
+            $contactId = $contact->getContactId();
             $dtos[$contactId] = new statusReportDataDto(
                 $contact->getName(),
                 $data[$contactId]['duration'],

@@ -13,12 +13,22 @@ class statusReportDataDto implements JsonSerializable
     /**
      * @var string
      */
+    public $nameEscaped;
+
+    /**
+     * @var string
+     */
     public $duration;
 
     /**
      * @var string
      */
     public $durationStr;
+
+    /**
+     * @var float
+     */
+    public $durationFloat;
 
     /**
      * @var int
@@ -50,6 +60,8 @@ class statusReportDataDto implements JsonSerializable
         $this->identity = $identity;
         $this->type = $type;
         $this->name = $name;
+        $this->nameEscaped = htmlspecialchars($name, ENT_QUOTES);
+        $this->durationFloat = round($duration / 60 * 100) / 100;
     }
 
     /**

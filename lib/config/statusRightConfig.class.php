@@ -183,7 +183,7 @@ class statusRightConfig extends waRightConfig
 
         $this->loadRightsForContactId($user);
 
-        return isset($this->accesses[$user]['backend']) && $this->accesses[$user]['backend'] == PHP_INT_MAX;
+        return isset($this->accesses[$user]['backend']) && $this->accesses[$user]['backend'] > 1;
     }
 
     /**
