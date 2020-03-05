@@ -55,14 +55,14 @@ final class statusReportService
             self::$datePeriods[] = new statusDatePeriodVO(
                 $thisMonth,
                 $date->modify('last day of this month')->setTime(23, 59, 59),
-                sprintf('%s %s',_w($thisMonth->format('F')), $thisMonth->format('Y')),
+                sprintf('%s %s',_ws($thisMonth->format('F')), $thisMonth->format('Y')),
                 'this_month'
             );
             $previousMonth = $date->modify('first day of previous month')->setTime(0, 0);
             self::$datePeriods[] = new statusDatePeriodVO(
                 $previousMonth,
                 $date->modify('last day of previous month')->setTime(23, 59, 59),
-                sprintf('%s %s',_w($previousMonth->format('F')), $previousMonth->format('Y')),
+                sprintf('%s %s',_ws($previousMonth->format('F')), $previousMonth->format('Y')),
                 'prev_month'
             );
         }
