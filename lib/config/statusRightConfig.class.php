@@ -8,6 +8,7 @@ class statusRightConfig extends waRightConfig
     const CAN_MANAGE_SELF_STATUS_TIMELINE = 'can_manage_self_status_timeline';
     const CAN_SEE_TEAMMATES               = 'can_see_teammates';
     const CAN_SEE_CONTRIBUTE_TO_PROJECTS  = 'can_see_contribute_to_projects';
+    const CAN_SEE_REPORTS                 = 'can_see_reports';
 
     const TEAMMATE_USER = 'user';
 
@@ -78,6 +79,9 @@ class statusRightConfig extends waRightConfig
             }
 
             $items[$user->getContactId()] = $user->getContact()->getName();
+            if ($user->isExists()) {
+                $items[$user->getContactId()] .= sprintf(' %s', _w('(inactive)'));
+            }
         }
 
         $this->addItem(
@@ -98,6 +102,12 @@ class statusRightConfig extends waRightConfig
             _w('Can see & contribute to projects'),
             'list',
             ['items' => $items, 'hint1' => 'all_checkbox']
+        );
+
+        $this->addItem(
+            self::CAN_SEE_REPORTS,
+            _w('Can see reports'),
+            'checkbox'
         );
 
         /**
@@ -224,6 +234,7 @@ class statusRightConfig extends waRightConfig
     }
 
     /**
+     * @todo refactor
      * @param int|statusProject|null $project
      * @param int|statusUser|null    $user
      *
@@ -264,6 +275,17 @@ class statusRightConfig extends waRightConfig
      */
     public function hasAccessToApp($user = null)
     {
+        return $this->hasAccessToRight('backend', $user);
+    }
+
+    /**
+     * @param int|statusUser|null $user
+     *
+     * @return bool
+     * @throws waException
+     */
+    public function hasAccessToRight($right, $user = null)
+    {
         if ($user === null) {
             $user = wa()->getUser()->getId();
         }
@@ -277,9 +299,8 @@ class statusRightConfig extends waRightConfig
             return true;
         }
 
-        return !empty($this->accesses[$user]['backend']);
+        return !empty($this->accesses[$user][$right]);
     }
-
 
     /**
      * @param int $contactId

@@ -26,6 +26,11 @@ class statusReportAction extends statusViewAction
     {
         parent::preExecute();
 
+        if (!stts()->getRightConfig()->isAdmin()
+            && !stts()->getRightConfig()->hasAccessToRight(statusRightConfig::CAN_SEE_REPORTS)) {
+            throw new kmwaForbiddenException(_w('No report access'));
+        }
+
         $this->reportService = new statusReportService();
 
         $this->datePeriod = $this->reportService->getPeriodByDates(
