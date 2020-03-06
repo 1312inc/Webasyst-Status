@@ -71,6 +71,12 @@ class statusRightConfig extends waRightConfig
             'always_enabled'
         );
 
+        $this->addItem(
+            self::CAN_SEE_REPORTS,
+            _w('Can see reports for all projects and users'),
+            'checkbox'
+        );
+
         $items = [];
         /** @var statusUser $user */
         foreach (stts()->getEntityRepository(statusUser::class)->findAll() as $user) {
@@ -79,7 +85,7 @@ class statusRightConfig extends waRightConfig
             }
 
             $items[$user->getContactId()] = $user->getContact()->getName();
-            if ($user->isExists()) {
+            if (!$user->isExists()) {
                 $items[$user->getContactId()] .= sprintf(' %s', _w('(inactive)'));
             }
         }
@@ -102,12 +108,6 @@ class statusRightConfig extends waRightConfig
             _w('Can see & contribute to projects'),
             'list',
             ['items' => $items, 'hint1' => 'all_checkbox']
-        );
-
-        $this->addItem(
-            self::CAN_SEE_REPORTS,
-            _w('Can see reports'),
-            'checkbox'
         );
 
         /**

@@ -272,3 +272,12 @@ msgstr ""
 
 msgid "All time"
 msgstr ""
+
+msgid "(inactive)"
+msgstr ""
+
+msgid "Can see reports for all projects and users"
+msgstr ""
+
+msgid "No report access"
+msgstr ""

@@ -294,3 +294,12 @@ msgstr "Последние 365 дней"
 
 msgid "All time"
 msgstr "Все время"
+
+msgid "(inactive)"
+msgstr "(неактивный)"
+
+msgid "Can see reports for all projects and users"
+msgstr "Может смотреть отчеты по всем проектам и пользователям"
+
+msgid "No report access"
+msgstr "Нет доступа к отчетам"
