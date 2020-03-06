@@ -61,7 +61,5 @@ class statusReportLoadDataAction extends statusReportAction
         } catch (Exception $ex) {
             echo waUtils::jsonEncode(['status' => 'fail', 'errors' => $ex->getMessage()]);
         }
-
-        exit;
     }
 }
