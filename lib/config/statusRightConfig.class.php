@@ -8,6 +8,7 @@ class statusRightConfig extends waRightConfig
     const CAN_MANAGE_SELF_STATUS_TIMELINE = 'can_manage_self_status_timeline';
     const CAN_SEE_TEAMMATES               = 'can_see_teammates';
     const CAN_SEE_CONTRIBUTE_TO_PROJECTS  = 'can_see_contribute_to_projects';
+    const CAN_SEE_REPORTS                 = 'can_see_reports';
 
     const TEAMMATE_USER = 'user';
 
@@ -70,6 +71,12 @@ class statusRightConfig extends waRightConfig
             'always_enabled'
         );
 
+        $this->addItem(
+            self::CAN_SEE_REPORTS,
+            _w('Can see reports for all projects and users'),
+            'checkbox'
+        );
+
         $items = [];
         /** @var statusUser $user */
         foreach (stts()->getEntityRepository(statusUser::class)->findAll() as $user) {
@@ -78,6 +85,9 @@ class statusRightConfig extends waRightConfig
             }
 
             $items[$user->getContactId()] = $user->getContact()->getName();
+            if (!$user->isExists()) {
+                $items[$user->getContactId()] .= sprintf(' %s', _w('(inactive)'));
+            }
         }
 
         $this->addItem(
@@ -134,8 +144,11 @@ class statusRightConfig extends waRightConfig
     {
         $right_model = new waContactRightsModel();
 
+        $saveGroup = 0;
         if ($contactId < 1) {
             $contactIds = (new waUserGroupsModel())->getContactIds(abs($contactId));
+            $saveGroup = $contactId;
+            $right_model->save($contactId, statusConfig::APP_ID, $right, $value);
         } else {
             $contactIds = [$contactId];
         }
@@ -147,15 +160,12 @@ class statusRightConfig extends waRightConfig
                 stts()->getEntityPersister()->insert($user);
             }
 
-            $right_model->save(
-                $contactId,
-                statusConfig::APP_ID,
-                $right,
-                $value
-            );
+            if (!$saveGroup) {
+                $right_model->save($contactId, statusConfig::APP_ID, $right, $value);
+            }
         }
 
-        return  true;
+        return true;
 
     }
 
@@ -183,7 +193,7 @@ class statusRightConfig extends waRightConfig
 
         $this->loadRightsForContactId($user);
 
-        return isset($this->accesses[$user]['backend']) && $this->accesses[$user]['backend'] == PHP_INT_MAX;
+        return isset($this->accesses[$user]['backend']) && $this->accesses[$user]['backend'] > 1;
     }
 
     /**
@@ -224,6 +234,7 @@ class statusRightConfig extends waRightConfig
     }
 
     /**
+     * @todo refactor
      * @param int|statusProject|null $project
      * @param int|statusUser|null    $user
      *
@@ -264,6 +275,17 @@ class statusRightConfig extends waRightConfig
      */
     public function hasAccessToApp($user = null)
     {
+        return $this->hasAccessToRight('backend', $user);
+    }
+
+    /**
+     * @param int|statusUser|null $user
+     *
+     * @return bool
+     * @throws waException
+     */
+    public function hasAccessToRight($right, $user = null)
+    {
         if ($user === null) {
             $user = wa()->getUser()->getId();
         }
@@ -277,9 +299,8 @@ class statusRightConfig extends waRightConfig
             return true;
         }
 
-        return !empty($this->accesses[$user]['backend']);
+        return !empty($this->accesses[$user][$right]);
     }
-
 
     /**
      * @param int $contactId

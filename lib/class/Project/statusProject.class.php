@@ -5,6 +5,8 @@
  */
 class statusProject extends statusAbstractEntity
 {
+    use kmwaEntityDatetimeTrait;
+
     /**
      * @var int
      */
@@ -19,11 +21,6 @@ class statusProject extends statusAbstractEntity
      * @var string
      */
     private $color = '#dddddd';
-
-    /**
-     * @var DateTime|string
-     */
-    private $create_datetime;
 
     /**
      * @var DateTime|string
@@ -203,5 +200,12 @@ class statusProject extends statusAbstractEntity
         $this->created_by = $created_by;
 
         return $this;
+    }
+
+    public function beforeSave()
+    {
+        $this->updateCreateUpdateDatetime();
+
+        return true;
     }
 }

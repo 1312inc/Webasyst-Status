@@ -39,6 +39,12 @@ class statusBackendSidebarAction extends statusViewAction
         foreach ($users as $id => $user) {
             if (!stts()->getRightConfig()->hasAccessToTeammate($user->getContactId())) {
                 unset($users[$id]);
+                continue;
+            }
+
+            if (!$user->isExists()) {
+                unset($users[$id]);
+                continue;
             }
         }
 

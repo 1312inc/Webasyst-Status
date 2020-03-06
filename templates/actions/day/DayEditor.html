@@ -37,7 +37,10 @@
                 <div class="s-editor-slider-slider"></div>
                 <div class="s-editor-slider-projects" {if !$checkin->hasProjects}style="display: none;"{/if}>
                 {foreach $checkin->projectsDuration as $projectDuration}
-                    <label class="s-editor-project {if $projectDuration->id}selected{/if}" data-status-project-color="{$projectDuration->project->color}">
+                    <label class="s-editor-project {if $projectDuration->id}selected{/if}"
+                           data-status-project-color="{$projectDuration->project->color}"
+                           data-status-project-id="{$projectDuration->project->id}"
+                    >
                         <input type="hidden" name="projects[{$projectDuration->project->id}][project_check_id]" value="{$projectDuration->id}">
                         <input type="hidden" name="projects[{$projectDuration->project->id}][on]" value="0">
                         <input type="checkbox" name="projects[{$projectDuration->project->id}][on]" value="1" {if $projectDuration->id}checked{/if}>

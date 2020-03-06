@@ -185,6 +185,12 @@
                     $('#status-content').html(html);
                 });
             },
+            reportsAction: function (date1, date2) {
+                var that = this;
+                $.get('?module=report', {start: date1, end: date2}, function (html) {
+                    $('#status-content').html(html);
+                });
+            },
             preExecute: function () {
             },
             postExecute: function (actionName, hash) {
@@ -319,11 +325,16 @@
 
             return str.join(' ');
         },
+        log: function(msg) {
+            window.console && console.log('[cash log]', arguments);
+            // console.log.apply(console, arguments);
+        },
         day: function () {
             var $editorHtml,
                 $dayEl,
                 reloadDayShow = false,
-                lastSavedData = '';
+                lastSavedData = '',
+                requestInAction = false;
 
             function getDataFromCheckin($form) {
                 return {
@@ -340,7 +351,8 @@
                     $durationLabel = $wrapper.find('.s-duration-label'),
                     $durationCheckbox = $wrapper.find('input:checkbox'),
                     $checkin = $durationInput.closest('[data-checkin]'),
-                    manual = false;
+                    manual = false,
+                    id = $wrapper.data('status-project-id');
 
                 type = type || 'break';
 
@@ -404,7 +416,7 @@
                         } else {
                             $durationLabel.text(time + '%');
                         }
-                        $checkin.trigger(type + 'Changed.stts');
+                        $checkin.trigger(type + 'Changed.stts', $durationInput);
                         $durationInput.hide();
                     }
                 });
@@ -429,6 +441,9 @@
                         return manual;
                     },
                     setValue: setValue,
+                    getId: function () {
+                        return id;
+                    },
                     wrapper: $wrapper,
                     input: $durationInput,
                     checkbox: $durationCheckbox,
@@ -503,15 +518,31 @@
 
                         $line.attr('style', style.join(';'));
                     },
-                    recalculateProjects = function () {
+                    recalculateProjects = function (project) {
                         var percent = 100,
                             autoProjects = [],
                             manualProjects = [],
                             autoDurationPercent = 0,
-                            manualDuration = 0;
+                            manualDuration = 0,
+                            currentProject = null;
+
+
+                        if (project) {
+                            var projectId = $(project).closest('.s-editor-project').data('status-project-id');
+                            $.each(projects, function (i, project) {
+                                if (projectId == project.getId()) {
+                                    currentProject = project;
+                                    manualProjects.push(currentProject);
+                                    return;
+                                }
+                            });
+                        }
 
                         $.each(projects, function (i, project) {
                             if (!project.isOn()) {
+                                return;
+                            }
+                            if (currentProject && currentProject.getId() == project.getId()) {
                                 return;
                             }
 
@@ -524,10 +555,11 @@
 
                         $.each(manualProjects, function (i, project) {
                             var projectDuration = project.value();
-                            if (percent <= 0) {
-                                project.setValue(0);
-                            } else {
-                                percent -= projectDuration;
+                            percent -= projectDuration;
+
+                            if (percent < 0) {
+                                project.setValue(projectDuration + percent);
+                                percent = 0;
                             }
                         });
 
@@ -536,8 +568,17 @@
                         }
 
                         $.each(autoProjects, function (i, project) {
-                            project.setValue(autoDurationPercent)
+                            var autoPercent = percent - autoDurationPercent;
+                            project.setValue(autoPercent >= 0 ? autoDurationPercent : 0)
                         });
+
+                        percent = 0;
+                        $.each(projects, function (i, project) {
+                            percent += project.value();
+                        });
+                        if (percent != 100 && projects.length) {
+                            projects[projects.length - 1].setValue(projects[projects.length - 1].value() + (100 - percent));
+                        }
 
                         updateDayDuration();
                         fillSliderWithColor();
@@ -553,8 +594,8 @@
                 });
 
                 $el
-                    .on('projectChanged.stts', function () {
-                        recalculateProjects();
+                    .on('projectChanged.stts', function (e, data) {
+                        recalculateProjects(data);
                         save($form);
                     })
                     .on('breakChanged.stts', function () {
@@ -638,30 +679,67 @@
                 $.status.reloadSidebar();
             }
 
+            function startRequest(request) {
+                if (requestInAction) {
+                    return;
+                }
+                requestInAction = true;
+                $editorHtml.find(':input').prop('disabled', requestInAction);
+                $editorHtml.find('.s-editor-slider-slider').each(function () {
+                    $(this).slider('disable');
+                });
+                request.call()
+            }
+
+            function endRequest() {
+                requestInAction = false;
+                $editorHtml.find(':input').prop('disabled', requestInAction);
+                $editorHtml.find('.s-editor-slider-slider').each(function () {
+                    $(this).slider('enable');
+                });
+            }
+
             function save($form) {
                 if (lastSavedData === $form.serialize()) {
+                    $.status.log('Save day. Same data');
                     return;
                 }
 
                 lastSavedData = $form.serialize();
+                if (!lastSavedData) {
+                    $.status.log('Save day. No data');
+                    return;
+                }
 
                 //индикатор сохранения — показываем крутилку
                 $editorHtml.find('.s-editor-commit-indicator').show();
                 $editorHtml.find('.s-editor-commit-indicator i.icon16').removeClass('yes-bw').addClass('loading');
 
-                $.post('?module=checkin&action=save', lastSavedData, function (r) {
-                    if (r.status === 'ok') {
-                        savedOk(r.data, $form);
-                        $.status.reloadSidebar();
-                    }
+                startRequest(function () {
+                    $.status.log('Save day. Sending post');
+                    $.post('?module=checkin&action=save', lastSavedData, function (r) {
+                        if (r.status === 'ok') {
+                            savedOk(r.data, $form);
+                            $.status.reloadSidebar();
+                        }
+                    }).always(function (r) {
+                        $.status.log('Save day. Received response', r);
+                        endRequest();
+                    });
                 });
             }
 
             function remove(id) {
-                $.post('?module=checkin&action=delete', {id: id}, function (r) {
-                    if (r.status === 'ok') {
-                        removedOk();
-                    }
+                startRequest(function() {
+                    $.status.log('Remove day. Request in action');
+                    $.post('?module=checkin&action=delete', {id: id}, function (r) {
+                        if (r.status === 'ok') {
+                            removedOk();
+                        }
+                    }).always(function (r) {
+                        $.status.log('Remove day. Received response', r);
+                        endRequest()
+                    });
                 });
             }
 
