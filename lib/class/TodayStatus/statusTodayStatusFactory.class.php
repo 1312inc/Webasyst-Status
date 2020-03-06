@@ -97,7 +97,7 @@ SQL;
         $defaultStatus = self::hasDefaultStatus() ? 'wcc.default_status' : 'wcc.name';
 
         $sql = <<<SQL
-select if(isnull(wce.summary), {$defaultStatus}, wce.summary) name,
+select if(isnull(wce.summary), '{$defaultStatus}', wce.summary) name,
        wcc.id calendar_id,
        wcc.bg_color,
        wcc.font_color,
@@ -109,13 +109,15 @@ from wa_contact_calendars wcc
     from wa_contact_events wce
     where wce.is_status = 1
       and wce.contact_id = i:contact_id
-      and wce.start between s:date1 and s:date2
+      and ((wce.start between s:date1 and s:date2)
+        or (wce.start < s:date3 and wce.end > s:date3))
       /*and wce.summary_type = 'custom'*/
     group by wce.calendar_id) last_wce on wcc.id = last_wce.calendar_id
          left join wa_contact_events wce on wce.id = last_wce.last_wce_id
 where wce.is_status = 1
     and wce.contact_id = i:contact_id
-    and wce.start between s:date1 and s:date2
+    and ((wce.start between s:date1 and s:date2)
+        or (wce.start < s:date3 and wce.end > s:date3))
 order by wce.update_datetime DESC
 limit 1
 SQL;
@@ -126,6 +128,7 @@ SQL;
                 'contact_id' => $contactId,
                 'date1' => $date->format('Y-m-d 00:00:00'),
                 'date2' => $date->format('Y-m-d 23:59:59'),
+                'date3' => $date->format('Y-m-d H:i:s'),
             ]
         )->fetchAll();
 

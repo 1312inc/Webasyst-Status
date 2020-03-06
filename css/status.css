@@ -5,7 +5,7 @@
 
 .icon16.color { width: 13px; height: 13px; border: none; margin: 1px; }
 
-.s-status { border-radius: 0.5em; background: #aaa; padding: 1px 6px 2px; font-size: 0.8em; color: #fff; }
+.s-status { border-radius: 0.5em; background: #aaa; padding: 0px 6px 1px; font-size: 0.8em; color: #fff; }
 
 .s-navigation { margin-top: 17px; }
 .s-summary { }
@@ -58,6 +58,9 @@ i.icon16.s-app-icon { background-size: 16px 16px; }
 .s-day.s-editable:hover { background: #f7f7f7; cursor: pointer; }
 .s-day.s-editable.s-this-week:hover { background: #e7e7e7; }
 
+.s-checkins { flex: 1; }
+.s-checkin { display: flex; }
+
 /* Week Summary
 --------------- */
 
@@ -107,6 +110,7 @@ i.icon16.s-app-icon { background-size: 16px 16px; }
 .s-editor-slider .s-editor-slider-more { flex: 0 0 auto; padding-top: 3px; }
 .s-editor-summary {}
 .s-editor-summary textarea.s-editor-comment { width: 100%; outline: 0 none; -webkit-appearance: none; border: 0; font-size: 1.1em; min-height: 5rem; }
+.s-editor-summary textarea.s-editor-comment:disabled { background: transparent; }
 .s-editor-summary .s-logged-apps { border-top: 1px solid #eee; padding-top: 20px; }
 .s-editor-summary .s-editor-commit { float: right; padding-top: 20px; }
 .s-editor-summary .s-editor-commit .s-editor-commit-button { margin-top: -9px; display: none; }
@@ -117,13 +121,16 @@ i.icon16.s-app-icon { background-size: 16px 16px; }
 .s-editor-slider-slider.ui-slider .ui-slider-handle::after { position: absolute; bottom: 25px; font-size: 12px; font-family: 'Helvetica Neue', 'Liberation Sans', Arial, sans-serif; color: #888; }
 .s-editor-slider-slider.ui-slider.s-active .ui-slider-range { background: #ef81ce; background-image: linear-gradient(135deg, #ef81ce 25%, #f3a3d5 25%, #f3a3d5 50%, #ef81ce 50%, #ef81ce 75%, #f3a3d5 75%, #f3a3d5 100%); background-size: 13px 13px; }
 .s-editor-slider-slider.ui-slider .ui-slider-handle::after { content: attr(data-slider-time); }
+.s-editor-slider-slider.ui-slider.ui-state-disabled { opacity: 1; }
 
 .s-walog-explained .fields { margin-top: 10px; }
 .s-walog-explained .activity-target { display: inline; }
 
-.checkins {
-    flex: 1;
-}
-.checkin {
-    display: flex;
-}
+.s-reports-timeframe ul.menu-h.dropdown { display: inline-block; }
+.s-reports-timeframe ul.menu-h.dropdown ul { width: 200px; left: auto; right: 0px; }
+.s-reports-timeframe input { width: 100px; }
+.s-reports-flexbox { display: flex; margin-top: 10px; }
+.s-reports-table { flex: 1; margin: 0 31px 20px; min-width: 250px; }
+.s-reports-table table.light tr:hover td { background: #f2f7ff; }
+.s-reports-table table.light thead th { padding-bottom: 5px; }
+.s-reports-table table.light tr.s-subrow td { padding-left: 26px; }

@@ -5,6 +5,8 @@
  */
 class statusCheckin extends statusAbstractEntity
 {
+    use kmwaEntityDatetimeTrait;
+
     /**
      * @var int
      */
@@ -49,16 +51,6 @@ class statusCheckin extends statusAbstractEntity
      * @var int
      */
     private $timezone;
-
-    /**
-     * @var DateTime|string
-     */
-    private $create_datetime;
-
-    /**
-     * @var DateTime|string
-     */
-    private $update_datetime;
 
     /**
      * @var statusUser
@@ -272,56 +264,13 @@ class statusCheckin extends statusAbstractEntity
     }
 
     /**
-     * @return DateTime|string
-     */
-    public function getCreateDatetime()
-    {
-        return $this->create_datetime;
-    }
-
-    /**
-     * @param DateTime|string $create_datetime
-     *
-     * @return statusCheckin
-     */
-    public function setCreateDatetime($create_datetime)
-    {
-        $this->create_datetime = $create_datetime;
-
-        return $this;
-    }
-
-    /**
-     * @return DateTime|string
-     */
-    public function getUpdateDatetime()
-    {
-        return $this->update_datetime;
-    }
-
-    /**
-     * @param DateTime|string $update_datetime
-     *
-     * @return statusCheckin
-     */
-    public function setUpdateDatetime($update_datetime)
-    {
-        $this->update_datetime = $update_datetime;
-
-        return $this;
-    }
-
-    /**
      * @return bool
      * @throws kmwaLogicException
      * @throws waException
      */
     public function beforeSave()
     {
-        if (!$this->id) {
-            $this->create_datetime = date('Y-m-d H:i:s');
-        }
-        $this->update_datetime = date('Y-m-d H:i:s');
+        $this->updateCreateUpdateDatetime();
 
         if ($this->start_time > $this->end_time) {
             list($this->end_time, $this->start_time) = [$this->start_time, $this->end_time];

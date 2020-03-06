@@ -114,9 +114,11 @@ class statusBaseRepository
      */
     public function findById($id)
     {
-        $cached = $this->getFromCache($id);
-        if ($cached) {
-            return $cached;
+        if (!is_array($id)) {
+            $cached = $this->getFromCache($id);
+            if ($cached) {
+                return $cached;
+            }
         }
 
         $data = $this->getModel()->getById($id);
