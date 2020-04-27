@@ -325,8 +325,8 @@
 
             return str.join(' ');
         },
-        log: function(msg) {
-            window.console && console.log('[cash log]', arguments);
+        log: function() {
+            window.console && console.log('[cash log]', Array.prototype.slice.call(arguments));
             // console.log.apply(console, arguments);
         },
         day: function () {
@@ -352,7 +352,7 @@
                     $durationCheckbox = $wrapper.find('input:checkbox'),
                     $checkin = $durationInput.closest('[data-checkin]'),
                     manual = false,
-                    id = $wrapper.data('status-project-id');
+                    id = parseInt($wrapper.data('status-project-id'));
 
                 type = type || 'break';
 
@@ -524,40 +524,64 @@
                             manualProjects = [],
                             autoDurationPercent = 0,
                             manualDuration = 0,
-                            currentProject = null;
+                            currentProject = null,
+                            logMarker = '[cash app] recalculate projects ' + Math.round(Date.now() / 1000);
 
+                        var projectGetIdsHelper = function (projectsToGetIds) {
+                            return $.map(projectsToGetIds, function (p, i ) {
+                                return p.getId();
+                            }).join(', ');
+                        }
+
+                        window.console && console.group(logMarker);
 
                         if (project) {
                             var projectId = $(project).closest('.s-editor-project').data('status-project-id');
+                            $.status.log('project id ' + projectId);
+
                             $.each(projects, function (i, project) {
                                 if (projectId == project.getId()) {
                                     currentProject = project;
                                     manualProjects.push(currentProject);
+                                    $.status.log('current project: ' + currentProject.getId());
+
                                     return;
                                 }
                             });
                         }
 
+                        $.status.log('iterating projects: ' + projectGetIdsHelper(projects));
                         $.each(projects, function (i, project) {
                             if (!project.isOn()) {
+                                $.status.log('project ' + project.getId() + ' is off');
+
                                 return;
                             }
                             if (currentProject && currentProject.getId() == project.getId()) {
+                                $.status.log('skip current project');
+
                                 return;
                             }
 
                             if (!project.isManual()) {
+                                $.status.log('project ' + project.getId() + ' is auto');
                                 autoProjects.push(project);
                             } else {
                                 manualProjects.push(project);
+                                $.status.log('project ' + project.getId() + ' is manual');
                             }
                         });
 
+                        $.status.log('iterating manual projects: ' + projectGetIdsHelper(manualProjects));
                         $.each(manualProjects, function (i, project) {
                             var projectDuration = project.value();
+                            $.status.log('project ' + project.getId() + ' value (duration): ' + projectDuration);
+
                             percent -= projectDuration;
+                            $.status.log('percent left: ' + percent);
 
                             if (percent < 0) {
+                                $.status.log('percent below zero, set project value = ' + (projectDuration + percent));
                                 project.setValue(projectDuration + percent);
                                 percent = 0;
                             }
@@ -565,24 +589,48 @@
 
                         if (autoProjects.length) {
                             autoDurationPercent = Math.round(percent / autoProjects.length);
+                            $.status.log('percents per each auto project: ' + autoDurationPercent);
                         }
 
+                        $.status.log('iterating auto projects: ' + projectGetIdsHelper(autoProjects));
                         $.each(autoProjects, function (i, project) {
-                            var autoPercent = percent - autoDurationPercent;
-                            project.setValue(autoPercent >= 0 ? autoDurationPercent : 0)
+                            var autoPercent = percent - autoDurationPercent,
+                                value = autoPercent >= 0 ? autoDurationPercent : 0;
+                            $.status.log('set auto project ' + project.getId() + ' value = ' +  value);
+                            project.setValue(value)
                         });
 
+                        $.status.log('check percent consistent (100%)');
                         percent = 0;
                         $.each(projects, function (i, project) {
-                            percent += project.value();
+                            if (project.isOn()) {
+                                percent += project.value();
+                                $.status.log('add project ' + project.getId() + ' value = ' + project.value() + ', total = ' + percent);
+                            }
                         });
+
                         if (percent != 100 && projects.length) {
-                            projects[projects.length - 1].setValue(projects[projects.length - 1].value() + (100 - percent));
+                            var lastProject = projects[projects.length - 1],
+                                lastProjectValue = lastProject.value(),
+                                lastProjectNewValue = lastProjectValue + (100 - percent);
+                            $.status.log('healing last project ' + lastProject.getId()
+                                + ' with old value ' + lastProjectValue + ', set new value = ' + lastProjectNewValue
+                                + '(' + lastProjectValue + ' + (100 - ' + percent + '))');
+                            lastProject.setValue(lastProjectNewValue);
+                        } else {
+                            $.status.log('percent consistent is ok (100 === 100)');
                         }
 
+                        $.status.log('update date duration');
                         updateDayDuration();
+                        
+                        $.status.log('colorize slider');
                         fillSliderWithColor();
+                        
+                        $.status.log('save data', $form.serialize());
                         save($form);
+
+                        window.console && console.groupEnd();
                     };
 
                 updateDayDuration();
