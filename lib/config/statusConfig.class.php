@@ -329,7 +329,12 @@ class statusConfig extends waAppConfig
     public function onCount($onlycount = false)
     {
         $url = $url = $this->getBackendUrl(true).$this->application.'/';
-        if (!(new statusServiceStatusChecker())->hasActivityYesterday(stts()->getUser())) {
+        $user = stts()->getUser();
+        if (!$user instanceof statusUser) {
+            return ['count' => null, 'url' => $url];
+        }
+
+        if (!(new statusServiceStatusChecker())->hasActivityYesterday($user)) {
 
             return ['count' => 1, 'url' => $url.'#/y'];
         }
