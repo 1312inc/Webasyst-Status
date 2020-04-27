@@ -192,6 +192,14 @@
                 });
             },
             preExecute: function () {
+                var $h1 = $.status.$status_content.find('h1:first');
+
+                if ($h1.length) {
+                    $('html, body').animate({
+                        scrollTop: $h1.offset().top
+                    }, 131.2);
+                    $h1.append('<i class="icon16 loading"></i>');
+                }
             },
             postExecute: function (actionName, hash) {
                 if (actionName !== 'y') {
@@ -334,7 +342,8 @@
                 $dayEl,
                 reloadDayShow = false,
                 lastSavedData = '',
-                requestInAction = false;
+                requestInAction = false,
+                $loading = $('<i class="icon16 loading"></i>');
 
             function getDataFromCheckin($form) {
                 return {
@@ -905,7 +914,10 @@
             }
 
             function editor($day) {
+                $day.prepend($loading);
                 $.get('?module=day&action=editor', {date: $day.data('status-day-date')}, function (html) {
+                    $loading.remove();
+
                     close();
                     $dayEl = $day;
                     init(html);
