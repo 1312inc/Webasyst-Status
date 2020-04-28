@@ -80,11 +80,11 @@ class statusRightConfig extends waRightConfig
         $items = [];
         /** @var statusUser $user */
         foreach (stts()->getEntityRepository(statusUser::class)->findAll() as $user) {
-            if ($user->getContact()->getId() == $this->userId) {
+            if ($user->getId() == $this->userId) {
                 continue;
             }
 
-            $items[$user->getContactId()] = $user->getContact()->getName();
+            $items[$user->getContactId()] = $user->getName();
             if (!$user->isExists()) {
                 $items[$user->getContactId()] .= sprintf(' %s', _w('(inactive)'));
             }

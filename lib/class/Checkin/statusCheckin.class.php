@@ -64,7 +64,7 @@ class statusCheckin extends statusAbstractEntity
      */
     public function __construct()
     {
-        $this->timezone = (new DateTimeZone(stts()->getUser()->getContact()->getTimezone()))->getOffset(new DateTime()) / 60 / 60;
+        $this->timezone = (new DateTimeZone(stts()->getUser()->getTimezone()))->getOffset(new DateTime()) / 60 / 60;
         $this->contact_id = stts()->getUser()->getContactId();
     }
 
