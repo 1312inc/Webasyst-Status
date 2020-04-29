@@ -21,7 +21,7 @@ class statusCheckinSaveController extends statusJsonController
             $repository = stts()->getEntityRepository(statusCheckin::class);
             $checkin = $repository->findById($data['id']);
             if (!$checkin instanceof statusCheckin) {
-                throw new kmwaNotFoundException('No checkin with id '.$data['id']);
+                throw new kmwaNotFoundException('No checkin with id ' . $data['id']);
             }
         } else {
             /** @var statusBaseFactory $factory */
@@ -39,7 +39,9 @@ class statusCheckinSaveController extends statusJsonController
         } else {
             $user->setLastCheckinDatetime(date('Y-m-d H:i:s'));
             $totalDuration = (new statusStat())->usersTimeByWeek(new DateTime());
-            $user->setThisWeekTotalDuration($totalDuration[$this->getUser()->getId()]['time'] + $checkin->getTotalDuration());
+            $user->setThisWeekTotalDuration(
+                $totalDuration[$this->getUser()->getId()]['time'] + $checkin->getTotalDuration()
+            );
             stts()->getEntityPersister()->save($user);
 
             $this->response = new statusDayCheckinDto($checkin);
@@ -50,28 +52,33 @@ class statusCheckinSaveController extends statusJsonController
         $chprModel = stts()->getModel('statusCheckinProjects');
         /** @var statusProjectModel $projectModel */
         $projectModel = stts()->getModel(statusProject::class);
-        foreach ($projects as $projectId => $project) {
-            if (!stts()->getRightConfig()->hasAccessToProject($projectId, $user)) {
-                continue;
-            }
-            $percents += $project['duration'];
-            if ($percents > 100) {
-                $project['duration'] = 0;
-            }
 
-            if ($project['project_check_id'] && (empty($project['on']) || empty($project['duration']))) {
-                $chprModel->deleteByField(['checkin_id' => $checkin->getId(), 'project_id' => $projectId]);
-            } elseif ($project['on'] == 1) {
-                $duration = ceil($project['duration'] * ($checkin->getTotalDuration() / 100));
-                $chprModel->insert(
-                    [
+        if ($projects) {
+            $projectsToInsert = [];
+            $chprModel->deleteByField(['checkin_id' => $checkin->getId()]);
+            foreach ($projects as $projectId => $project) {
+                if (!stts()->getRightConfig()->hasAccessToProject($projectId, $user)) {
+                    continue;
+                }
+
+                if (!empty($project['on'])) {
+                    if (($percents + $project['duration']) > 100) {
+                        $project['duration'] = 100 - $project['duration'];
+                    }
+                    $percents += $project['duration'];
+
+                    $duration = ceil($project['duration'] * ($checkin->getTotalDuration() / 100));
+                    $projectsToInsert[] = [
                         'checkin_id' => $checkin->getId(),
                         'project_id' => $projectId,
-                        'duration'   => $duration,
-                    ],
-                    waModel::INSERT_ON_DUPLICATE_KEY_UPDATE
-                );
-                $projectModel->updateById($projectId, ['last_checkin_datetime' => date('Y-m-d H:i:s')]);
+                        'duration' => $duration,
+                    ];
+                    $projectModel->updateById($projectId, ['last_checkin_datetime' => date('Y-m-d H:i:s')]);
+                }
+            }
+
+            if ($projectsToInsert) {
+                $chprModel->multipleInsert($projectsToInsert);
             }
         }
     }
