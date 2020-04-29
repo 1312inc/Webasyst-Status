@@ -60,6 +60,10 @@
         <section id="status-content"></section>
     </div>
 
+    {if method_exists($wa->installer, 'reviewWidget')}
+        {$wa->installer->reviewWidget('app/status')}
+    {/if}
+
     <script>
         'use strict';
 
