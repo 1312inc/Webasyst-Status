@@ -144,14 +144,10 @@ SQL;
 
     /**
      * @return bool
+     * @throws waException
      */
     private static function hasDefaultStatus()
     {
-        try {
-            stts()->getModel()->exec('SELECT default_status FROM wa_contact_calendars LIMIT 0');
-            return true;
-        } catch (Exception $e) {
-            return false;
-        }
+        return stts()->getModel('waContactCalendars')->fieldExists('default_status');
     }
 }
