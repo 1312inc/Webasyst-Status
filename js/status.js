@@ -580,6 +580,7 @@
                         });
 
                         $.status.log('iterating manual projects: ' + projectGetIdsHelper(manualProjects));
+                        var lastOnManualProject = null;
                         $.each(manualProjects, function (i, project) {
                             var projectDuration = project.value();
                             $.status.log('project ' + project.getId() + ' value (duration): ' + projectDuration);
@@ -592,6 +593,7 @@
                                 project.setValue(projectDuration + percent);
                                 percent = 0;
                             }
+                            lastOnManualProject = project;
                         });
 
                         if (autoProjects.length) {
@@ -600,11 +602,13 @@
                         }
 
                         $.status.log('iterating auto projects: ' + projectGetIdsHelper(autoProjects));
+                        var lastOnAutoProject = null;
                         $.each(autoProjects, function (i, project) {
                             var autoPercent = percent - autoDurationPercent,
                                 value = autoPercent >= 0 ? autoDurationPercent : 0;
                             $.status.log('set auto project ' + project.getId() + ' value = ' +  value);
                             project.setValue(value)
+                            lastOnAutoProject = project;
                         });
 
                         $.status.log('check percent consistent (100%)');
@@ -616,8 +620,8 @@
                             }
                         });
 
-                        if (percent != 100 && projects.length) {
-                            var lastProject = projects[projects.length - 1],
+                        if (percent > 100 && projects.length) {
+                            var lastProject = lastOnAutoProject || lastOnManualProject,
                                 lastProjectValue = lastProject.value(),
                                 lastProjectNewValue = lastProjectValue + (100 - percent);
                             $.status.log('healing last project ' + lastProject.getId()

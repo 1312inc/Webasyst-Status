@@ -63,7 +63,7 @@ class statusCheckinSaveController extends statusJsonController
 
                 if (!empty($project['on'])) {
                     if (($percents + $project['duration']) > 100) {
-                        $project['duration'] = 100 - $project['duration'];
+                        $project['duration'] = 100 - $percents;
                     }
                     $percents += $project['duration'];
 
