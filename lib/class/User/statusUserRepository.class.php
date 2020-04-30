@@ -12,7 +12,7 @@ class statusUserRepository extends statusBaseRepository
     /**
      * @param $contactId
      *
-     * @return statusUser|null
+     * @return statusUser
      * @throws waException
      */
     public function findByContactId($contactId)

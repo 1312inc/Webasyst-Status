@@ -155,7 +155,7 @@ class statusRightConfig extends waRightConfig
 
         foreach ($contactIds as $contactId) {
             $user = stts()->getEntityRepository(statusUser::class)->findByContactId($contactId);
-            if (!$user instanceof statusUser) {
+            if (!$user->getId()) {
                 $user = stts()->getEntityFactory(statusUser::class)->createNewWithContact(new waContact($contactId));
                 stts()->getEntityPersister()->insert($user);
             }
