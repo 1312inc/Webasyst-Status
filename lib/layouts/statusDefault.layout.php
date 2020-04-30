@@ -10,6 +10,10 @@ class statusDefaultLayout extends waLayout
      */
     public function execute()
     {
+        $this->assign(
+            'showReviewWidget',
+            stts()->getModel(statusCheckin::class)->countByUser($this->getUser()->getId()) >= 5
+        );
         $this->executeAction('sidebar_html', new statusBackendSidebarAction());
     }
 }

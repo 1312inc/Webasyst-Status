@@ -194,4 +194,15 @@ SQL;
         return $this->query($sql, ['date1' => $dateStart, 'date2' => $dateEnd, 'project_id' => $projectId])
             ->fetchAll('date', 2);
     }
+
+    /**
+     * @param int $contactId
+     *
+     * @return int
+     * @throws waException
+     */
+    public function countByUser($contactId)
+    {
+        return $this->countByField('contact_id', $contactId);
+    }
 }
