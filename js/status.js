@@ -364,7 +364,7 @@
                 type = type || 'break';
 
                 function getValue() {
-                    return parseFloat($durationInput.val()) || 0;
+                    return parseFloat($durationInput.val().replace(',','.')) || 0;
                 }
 
                 // var currentTimeStr = timeValueToStr(value());
