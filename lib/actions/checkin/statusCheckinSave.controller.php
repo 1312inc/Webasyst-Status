@@ -11,6 +11,17 @@ class statusCheckinSaveController extends statusJsonController
      */
     public function execute()
     {
+        if (waSystemConfig::isDebug()) {
+            waLog::log(
+                sprintf(
+                    'Save checkin. Post: %s. Get: %s',
+                    json_encode(waRequest::post(), JSON_UNESCAPED_UNICODE),
+                    json_encode(waRequest::get(), JSON_UNESCAPED_UNICODE)
+                ),
+                'status/debug.log'
+            );
+        }
+
         $user = stts()->getUser();
         $data = waRequest::post('checkin', [], waRequest::TYPE_ARRAY);
         $projects = waRequest::post('projects', [], waRequest::TYPE_ARRAY);
@@ -23,10 +34,18 @@ class statusCheckinSaveController extends statusJsonController
             if (!$checkin instanceof statusCheckin) {
                 throw new kmwaNotFoundException('No checkin with id ' . $data['id']);
             }
+
+            if (waSystemConfig::isDebug()) {
+                waLog::log(sprintf('Found checkin %s', $checkin->getId()), 'status/debug.log');
+            }
         } else {
-            /** @var statusBaseFactory $factory */
+            /** @var statusCheckinFactory $factory */
             $factory = stts()->getEntityFactory(statusCheckin::class);
             $checkin = $factory->createNew();
+
+            if (waSystemConfig::isDebug()) {
+                waLog::log('New checkin', 'status/debug.log');
+            }
         }
 
         if (empty($data['break'])) {
@@ -34,6 +53,13 @@ class statusCheckinSaveController extends statusJsonController
         }
 
         stts()->getHydrator()->hydrate($checkin, $data);
+        if (waSystemConfig::isDebug()) {
+            waLog::log(
+                sprintf('Hydrate checkin with data: %s', json_encode($data, JSON_UNESCAPED_UNICODE)),
+                'status/debug.log'
+            );
+        }
+
         if (!stts()->getEntityPersister()->save($checkin)) {
             $this->setError('Save checkin error');
         } else {

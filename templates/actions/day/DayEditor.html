@@ -64,8 +64,8 @@
                 <h2 data-status-checkin-duration-zero="[`0h`]">{$checkin->durationString}</h2>
             </div>
             <div class="s-editor-slider-break">
+                <input type="hidden" name="checkin[break]" value="0">
                 <label>
-                    <input type="hidden" name="checkin[break]" value="0">
                     <input type="checkbox" {if $checkin->break}checked{/if} name="checkin[break]" value="1">
                     [`Break`]
                     <span class="s-duration">

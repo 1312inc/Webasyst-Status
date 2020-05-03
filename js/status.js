@@ -332,7 +332,7 @@
             return str.join(' ');
         },
         log: function() {
-            window.console && console.log('[cash log]', Array.prototype.slice.call(arguments));
+            window.console && console.log('[status log]', Array.prototype.slice.call(arguments));
             // console.log.apply(console, arguments);
         },
         day: function () {
@@ -722,26 +722,12 @@
                 //перерыв просто уменьшает общее время
             }
 
-            function savedOk(data, $form) {
-                $editorHtml.find('.s-editor-commit-indicator i.icon16').removeClass('loading').addClass('yes-bw');
-                $form.find('[name="checkin[id]"]').val(data.id);
-                var weekNum = parseInt($editorHtml.data('status-week-of-day'));
-                $('[data-status-week-donut="' + weekNum + '"]').trigger('reloadDonut.stts');
-                //меняем цвет слайдера на s-active, чтобы показать, что данные сохранились
-                $form.find('.ui-slider').addClass('s-active');
-                reloadDayShow = true;
-            }
-
-            function removedOk() {
-                var weekNum = parseInt($editorHtml.data('status-week-of-day'));
-                $('[data-status-week-donut="' + weekNum + '"]').trigger('reloadDonut.stts');
-                $.status.reloadSidebar();
-            }
-
             function startRequest(request) {
                 if (requestInAction) {
+                    $.status.log('Request. ABORT.');
                     return;
                 }
+                $.status.log('Request. START.');
                 requestInAction = true;
                 $editorHtml.find(':input').prop('disabled', requestInAction);
                 $editorHtml.find('.s-editor-slider-slider').each(function () {
@@ -756,6 +742,7 @@
                 $editorHtml.find('.s-editor-slider-slider').each(function () {
                     $(this).slider('enable');
                 });
+                $.status.log('Request. END.');
             }
 
             function save($form) {
@@ -775,16 +762,29 @@
                 $editorHtml.find('.s-editor-commit-indicator i.icon16').removeClass('yes-bw').addClass('loading');
 
                 startRequest(function () {
-                    $.status.log('Save day. Sending post');
-                    $.post('?module=checkin&action=save', lastSavedData, function (r) {
-                        if (r.status === 'ok') {
-                            savedOk(r.data, $form);
-                            $.status.reloadSidebar();
-                        }
-                    }).always(function (r) {
-                        $.status.log('Save day. Received response', r);
-                        endRequest();
-                    });
+                    $.status.log('Save day. Sending post', lastSavedData);
+                    $.post('?module=checkin&action=save', lastSavedData)
+                        .done(function (r) {
+                            if (r.status === 'ok') {
+                                $.status.log('Save day. OK', r);
+
+                                $editorHtml.find('.s-editor-commit-indicator i.icon16').removeClass('loading').addClass('yes-bw');
+                                $form.find('[name="checkin[id]"]').val(r.data.id);
+                                var weekNum = parseInt($editorHtml.data('status-week-of-day'));
+                                $('[data-status-week-donut="' + weekNum + '"]').trigger('reloadDonut.stts');
+                                //меняем цвет слайдера на s-active, чтобы показать, что данные сохранились
+                                $form.find('.ui-slider').addClass('s-active');
+                                reloadDayShow = true;
+                                // savedOk(r.data, $form);
+                                $.status.reloadSidebar();
+                            } else {
+                                $.status.log('Save day. FAIL', r);
+                            }
+                        })
+                        .always(function (r) {
+                            $.status.log('Save day. Received response', r);
+                            endRequest();
+                        });
                 });
             }
 
@@ -793,11 +793,16 @@
                     $.status.log('Remove day. Request in action');
                     $.post('?module=checkin&action=delete', {id: id}, function (r) {
                         if (r.status === 'ok') {
-                            removedOk();
+                            $.status.log('Remove checkin. OK', r);
+                            var weekNum = parseInt($editorHtml.data('status-week-of-day'));
+                            $('[data-status-week-donut="' + weekNum + '"]').trigger('reloadDonut.stts');
+                            $.status.reloadSidebar();
+                        } else {
+                            $.status.log('Remove checkin. FAIL', r);
                         }
                     }).always(function (r) {
                         $.status.log('Remove day. Received response', r);
-                        endRequest()
+                        endRequest();
                     });
                 });
             }
