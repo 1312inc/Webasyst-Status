@@ -759,13 +759,13 @@
                     return;
                 }
 
+                lastSavedData = newSaveData;
+
                 //индикатор сохранения — показываем крутилку
                 $editorHtml.find('.s-editor-commit-indicator').show();
                 $editorHtml.find('.s-editor-commit-indicator i.icon16').removeClass('yes-bw').addClass('loading');
 
                 startRequest(function () {
-                    lastSavedData = $form.serialize();
-
                     $.status.log('Save day. Sending post', newSaveData);
                     $.post('?module=checkin&action=save', newSaveData)
                         .done(function (r) {
