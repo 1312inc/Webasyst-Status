@@ -746,13 +746,15 @@
             }
 
             function save($form) {
-                if (lastSavedData === $form.serialize()) {
+                var newSaveData = $form.serialize();
+                $.status.log('Save day form.', $form, newSaveData);
+
+                if (lastSavedData === newSaveData) {
                     $.status.log('Save day. Same data');
                     return;
                 }
 
-                lastSavedData = $form.serialize();
-                if (!lastSavedData) {
+                if (!newSaveData) {
                     $.status.log('Save day. No data');
                     return;
                 }
@@ -762,8 +764,10 @@
                 $editorHtml.find('.s-editor-commit-indicator i.icon16').removeClass('yes-bw').addClass('loading');
 
                 startRequest(function () {
-                    $.status.log('Save day. Sending post', lastSavedData);
-                    $.post('?module=checkin&action=save', lastSavedData)
+                    lastSavedData = $form.serialize();
+
+                    $.status.log('Save day. Sending post', newSaveData);
+                    $.post('?module=checkin&action=save', newSaveData)
                         .done(function (r) {
                             if (r.status === 'ok') {
                                 $.status.log('Save day. OK', r);
