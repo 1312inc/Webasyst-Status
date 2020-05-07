@@ -50,6 +50,12 @@ class statusCheckinSaveController extends statusJsonController
 
         if (empty($data['break'])) {
             $data['break_duration'] = 0;
+        } else {
+            $data['break_duration'] = (int)((float)str_replace(
+                    ',',
+                    '.',
+                    $data['break_duration']
+                ) * statusTimeHelper::MINUTES_IN_HOUR);
         }
 
         stts()->getHydrator()->hydrate($checkin, $data);

@@ -276,8 +276,7 @@ class statusCheckin extends statusAbstractEntity
             list($this->end_time, $this->start_time) = [$this->start_time, $this->end_time];
         }
 
-        $this->break_duration = (float)str_replace(',', '.', $this->break_duration);
-        $this->break_duration = (int)min(($this->break_duration * statusTimeHelper::MINUTES_IN_HOUR), statusTimeHelper::MINUTES_IN_DAY);
+        $this->break_duration = (int)min($this->break_duration, statusTimeHelper::MINUTES_IN_DAY);
         $this->total_duration = $this->end_time - $this->start_time;
         if ($this->break_duration < $this->total_duration) {
             $this->total_duration -= $this->break_duration;
