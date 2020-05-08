@@ -877,8 +877,6 @@
                             .find('i.add')
                             .toggleClass('add delete');
 
-                        $sourceCheckin.after($newCheckin);
-
                         $newCheckin
                             .data('checkin', 0)
                             .attr('data-checkin', 0)
@@ -897,6 +895,9 @@
                         $newCheckin.find('form [name="checkin[id]"]').val('');
                         $newCheckin.find('.s-editor-project').removeClass('selected')
                             .closest('.s-editor-slider-projects').hide();
+
+
+                        $editorHtml.find('[data-checkin]:last').after($newCheckin);
 
                         initCheckin($newCheckin);
                     })
