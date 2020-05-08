@@ -203,7 +203,10 @@ class statusAutoTrace
 
         $checkin->beforeSave();
 
-        $this->model->updateById($checkin->getId(), stts()->getHydrator()->extract($checkin));
+        $checkinData = stts()->getHydrator()->extract($checkin);
+        $checkinData['counter'] = ($checkin->getDataField('counter') ?: 1) + 1;
+        $this->model->updateById($checkin->getId(), $checkinData);
+        $this->debug[] = sprintf('Updated trace checkin data: %s', json_encode($checkinData));
 
         $this->traceSettings['checkin_id'] = $checkin->getId();
 
@@ -230,6 +233,7 @@ class statusAutoTrace
         $checkin->beforeSave();
 
         $checkinData = stts()->getHydrator()->extract($checkin);
+        $checkinData['counter'] = 1;
         $id = $this->model->insert($checkinData);
 
         if ($id) {
@@ -239,6 +243,7 @@ class statusAutoTrace
                 $this->currentDayMinutes,
                 $this->todayWithTime
             );
+            $this->debug[] = sprintf('New trace checkin data: %s', json_encode($checkinData));
 
             $this->traceSettings['checkin_id'] = $id;
             $this->traceSettings['break'] = 0;

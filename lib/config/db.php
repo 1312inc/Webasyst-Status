@@ -38,6 +38,7 @@ return array(
         'timezone' => array('tinyint', 4),
         'create_datetime' => array('datetime'),
         'update_datetime' => array('datetime'),
+        'counter' => array('int', 11, 'default' => '0'),
         ':keys' => array(
             'PRIMARY' => 'id',
         ),
