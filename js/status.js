@@ -372,7 +372,9 @@
                 type = type || 'break';
 
                 function getValue() {
-                    return parseFloat($durationInput.val().replace(',','.')) || 0;
+                    var val = $durationInput.val().replace(',','.');
+
+                    return (type === 'break' ? parseFloat(val) : parseInt(val))|| 0;
                 }
 
                 // var currentTimeStr = timeValueToStr(value());
@@ -426,11 +428,12 @@
                         manual = !!time;
 
                         $durationLabel.show();
-                        if (type === 'break') {
-                            $durationLabel.text($.status.timeValueToStr(time));
-                        } else {
-                            $durationLabel.text(time + '%');
-                        }
+                        setValue(time);
+                        // if (type === 'break') {
+                        //     $durationLabel.text($.status.timeValueToStr(time));
+                        // } else {
+                        //     $durationLabel.text(time + '%');
+                        // }
                         $checkin.trigger(type + 'Changed.stts', $durationInput);
                         $durationInput.hide();
                     }
@@ -438,7 +441,7 @@
 
                 function setValue(value) {
                     $durationInput.val(value);
-                    if (type == 'break') {
+                    if (type === 'break') {
                         $durationLabel.text($.status.timeValueToStr(value));
                     } else {
                         $durationLabel.text(value + '%');
