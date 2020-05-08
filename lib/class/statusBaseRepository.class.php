@@ -114,12 +114,12 @@ class statusBaseRepository
      */
     public function findById($id)
     {
-        if (!is_array($id)) {
-            $cached = $this->getFromCache($id);
-            if ($cached) {
-                return $cached;
-            }
-        }
+//        if (!is_array($id)) {
+//            $cached = $this->getFromCache($id);
+//            if ($cached) {
+//                return $cached;
+//            }
+//        }
 
         $data = $this->getModel()->getById($id);
         if (!$data) {
@@ -134,9 +134,9 @@ class statusBaseRepository
 
         $entities = $this->generateWithData($data, $all);
 
-        if (!$all && $entities) {
-            $this->cache($id, $entities);
-        }
+//        if (!$all && $entities) {
+//            $this->cache($id, $entities);
+//        }
 
         return $entities;
     }

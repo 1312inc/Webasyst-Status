@@ -18,7 +18,7 @@ class statusDayShowAction extends statusViewAction
 
         if ($contactId) {
             $user = stts()->getEntityRepository(statusUser::class)->findByContactId($contactId);
-            if (!$user instanceof statusUser) {
+            if (!$user->getId()) {
                 throw new kmwaNotFoundException(_w('User not found'));
             }
         } else {

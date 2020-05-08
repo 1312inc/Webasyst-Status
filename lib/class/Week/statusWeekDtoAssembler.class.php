@@ -176,27 +176,28 @@ final class statusWeekDtoAssembler
 
         $percent = $donut->totalDuration / 100;
         $degrees = $donut->totalDuration / 360;
-
-        $prevDegree = 0;
-        foreach ($donut->data as $id => $project) {
-            $projectDegree = round($project->totalDuration / $degrees, 2);
-            $project->rotations[] = [
-                'from' => $prevDegree,
-                'to'   => min(180, $projectDegree),
-            ];
-            $prevDegree += $project->rotations[0]['to'];
-
-            if ($project->rotations[0]['to'] === 180) {
-                $projectDegree -= 180;
+        if ($percent && $degrees) {
+            $prevDegree = 0;
+            foreach ($donut->data as $id => $project) {
+                $projectDegree = round($project->totalDuration / $degrees, 2);
                 $project->rotations[] = [
                     'from' => $prevDegree,
-                    'to'   => $projectDegree,
+                    'to' => min(180, $projectDegree),
                 ];
-                $prevDegree += $project->rotations[1]['to'];
-            }
+                $prevDegree += $project->rotations[0]['to'];
 
-            $project->percentsInWeek = round($project->totalDuration / $percent, 2);
-            $donut->hasData = true;
+                if ($project->rotations[0]['to'] === 180) {
+                    $projectDegree -= 180;
+                    $project->rotations[] = [
+                        'from' => $prevDegree,
+                        'to' => $projectDegree,
+                    ];
+                    $prevDegree += $project->rotations[1]['to'];
+                }
+
+                $project->percentsInWeek = round($project->totalDuration / $percent, 2);
+                $donut->hasData = true;
+            }
         }
 
         return $donut;

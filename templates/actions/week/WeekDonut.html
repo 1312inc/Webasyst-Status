@@ -38,7 +38,7 @@
            style="{if $p->type == statusWeekDonutDataDto::PROJECT}background{else}background-image{/if}: {$p->color};"
         ></i>
         {$p->name|escape}
-        <span class="hint bold">{$p->totalDurationStr}</span><br>
+        <span class="hint bold nowrap">{$p->totalDurationStr}</span><br>
         {/if}
     {/foreach}
 </div>

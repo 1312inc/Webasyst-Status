@@ -90,6 +90,8 @@
             },
             /** Implements #hash-based navigation. Called every time location.hash changes. */
             dispatch: function (hash) {
+                var self = this;
+
                 if (this.skipDispatch > 0) {
                     this.skipDispatch--;
                     return false;
@@ -140,21 +142,26 @@
                         if (typeof (this[actionName + 'Action']) == 'function') {
                             this.preExecute(actionName);
                             console.info('dispatch', [actionName + 'Action', attr]);
-                            this[actionName + 'Action'].apply(this, attr);
-
-                            this.postExecute(actionName, hash);
+                            this[actionName + 'Action'].apply(this, attr).done(function () {
+                                self.postExecute(actionName, hash);
+                            });
+                            // this.postExecute(actionName, hash);
                         } else {
                             console.info('Invalid action name:', actionName + 'Action');
                         }
                     } else {
                         this.preExecute();
-                        this.defaultAction();
-                        this.postExecute('default', hash);
+                        this.defaultAction().done(function () {
+                            self.postExecute('default', hash);
+                        });
+                        // this.postExecute('default', hash);
                     }
                 } else {
                     this.preExecute();
-                    this.defaultAction();
-                    this.postExecute('', hash);
+                    this.defaultAction().done(function () {
+                        self.postExecute('', hash);
+                    });
+                    // this.postExecute('', hash);
                 }
             },
             redispatch: function () {
@@ -163,16 +170,16 @@
             },
             yAction: function () {
                 this.defaultAction(true);
-                $.post('?module=backend&action=setSeenNoStatusNotification');
+                return $.post('?module=backend&action=setSeenNoStatusNotification');
             },
             defaultAction: function (skipSaveHash) {
-                this.contactAction(0, function () {
+                return this.contactAction(0, function () {
                     $.status.$status_content.trigger('loadEditor.stts');
                 });
             },
             contactAction: function (id, callback) {
                 var that = this;
-                $.get('?module=chronology&contact_id=' + id, function (html) {
+                return $.get('?module=chronology&contact_id=' + id, function (html) {
                     $('#status-content').html(html);
                     if ($.isFunction(callback)) {
                         callback.call();
@@ -181,17 +188,23 @@
             },
             projectAction: function (id) {
                 var that = this;
-                $.get('?module=chronology&project_id=' + id, function (html) {
+                return $.get('?module=chronology&project_id=' + id, function (html) {
                     $('#status-content').html(html);
                 });
             },
             reportsAction: function (date1, date2) {
                 var that = this;
-                $.get('?module=report', {start: date1, end: date2}, function (html) {
+                return $.get('?module=report', {start: date1, end: date2}, function (html) {
                     $('#status-content').html(html);
                 });
             },
             preExecute: function () {
+                var $h1 = $.status.$status_content.find('h1:first');
+
+                if ($h1.length) {
+                    $('html, body').animate({ scrollTop: 0 }, 131.2);
+                    $h1.append('<i class="icon16 loading"></i>');
+                }
             },
             postExecute: function (actionName, hash) {
                 if (actionName !== 'y') {
@@ -199,6 +212,7 @@
                     $.storage.set('/status/hash/' + this.options.user_id, value);
                 }
                 this.options.self.highlightSidebar();
+                this.options.self.setTitle();
             },
         },
         lazyLoad: function (config) {
@@ -325,8 +339,8 @@
 
             return str.join(' ');
         },
-        log: function(msg) {
-            window.console && console.log('[cash log]', arguments);
+        log: function() {
+            window.console && console.log('[status log]', Array.prototype.slice.call(arguments));
             // console.log.apply(console, arguments);
         },
         day: function () {
@@ -334,7 +348,8 @@
                 $dayEl,
                 reloadDayShow = false,
                 lastSavedData = '',
-                requestInAction = false;
+                requestInAction = false,
+                $loading = $('<i class="icon16 loading"></i>');
 
             function getDataFromCheckin($form) {
                 return {
@@ -352,12 +367,14 @@
                     $durationCheckbox = $wrapper.find('input:checkbox'),
                     $checkin = $durationInput.closest('[data-checkin]'),
                     manual = false,
-                    id = $wrapper.data('status-project-id');
+                    id = parseInt($wrapper.data('status-project-id'));
 
                 type = type || 'break';
 
                 function getValue() {
-                    return parseFloat($durationInput.val()) || 0;
+                    var val = $durationInput.val().replace(',','.');
+
+                    return (type === 'break' ? parseFloat(val) : parseInt(val))|| 0;
                 }
 
                 // var currentTimeStr = timeValueToStr(value());
@@ -411,11 +428,12 @@
                         manual = !!time;
 
                         $durationLabel.show();
-                        if (type === 'break') {
-                            $durationLabel.text($.status.timeValueToStr(time));
-                        } else {
-                            $durationLabel.text(time + '%');
-                        }
+                        setValue(time);
+                        // if (type === 'break') {
+                        //     $durationLabel.text($.status.timeValueToStr(time));
+                        // } else {
+                        //     $durationLabel.text(time + '%');
+                        // }
                         $checkin.trigger(type + 'Changed.stts', $durationInput);
                         $durationInput.hide();
                     }
@@ -423,7 +441,7 @@
 
                 function setValue(value) {
                     $durationInput.val(value);
-                    if (type == 'break') {
+                    if (type === 'break') {
                         $durationLabel.text($.status.timeValueToStr(value));
                     } else {
                         $durationLabel.text(value + '%');
@@ -524,65 +542,117 @@
                             manualProjects = [],
                             autoDurationPercent = 0,
                             manualDuration = 0,
-                            currentProject = null;
+                            currentProject = null,
+                            logMarker = '[cash app] recalculate projects ' + Math.round(Date.now() / 1000);
 
+                        var projectGetIdsHelper = function (projectsToGetIds) {
+                            return $.map(projectsToGetIds, function (p, i ) {
+                                return p.getId();
+                            }).join(', ');
+                        }
+
+                        window.console && console.group(logMarker);
 
                         if (project) {
                             var projectId = $(project).closest('.s-editor-project').data('status-project-id');
+                            $.status.log('project id ' + projectId);
+
                             $.each(projects, function (i, project) {
                                 if (projectId == project.getId()) {
                                     currentProject = project;
                                     manualProjects.push(currentProject);
+                                    $.status.log('current project: ' + currentProject.getId());
+
                                     return;
                                 }
                             });
                         }
 
+                        $.status.log('iterating projects: ' + projectGetIdsHelper(projects));
                         $.each(projects, function (i, project) {
                             if (!project.isOn()) {
+                                $.status.log('project ' + project.getId() + ' is off');
+
                                 return;
                             }
                             if (currentProject && currentProject.getId() == project.getId()) {
+                                $.status.log('skip current project');
+
                                 return;
                             }
 
                             if (!project.isManual()) {
+                                $.status.log('project ' + project.getId() + ' is auto');
                                 autoProjects.push(project);
                             } else {
                                 manualProjects.push(project);
+                                $.status.log('project ' + project.getId() + ' is manual');
                             }
                         });
 
+                        $.status.log('iterating manual projects: ' + projectGetIdsHelper(manualProjects));
+                        var lastOnManualProject = null;
                         $.each(manualProjects, function (i, project) {
                             var projectDuration = project.value();
+                            $.status.log('project ' + project.getId() + ' value (duration): ' + projectDuration);
+
                             percent -= projectDuration;
+                            $.status.log('percent left: ' + percent);
 
                             if (percent < 0) {
+                                $.status.log('percent below zero, set project value = ' + (projectDuration + percent));
                                 project.setValue(projectDuration + percent);
                                 percent = 0;
                             }
+                            lastOnManualProject = project;
                         });
 
                         if (autoProjects.length) {
                             autoDurationPercent = Math.round(percent / autoProjects.length);
+                            $.status.log('percents per each auto project: ' + autoDurationPercent);
                         }
 
+                        $.status.log('iterating auto projects: ' + projectGetIdsHelper(autoProjects));
+                        var lastOnAutoProject = null;
                         $.each(autoProjects, function (i, project) {
-                            var autoPercent = percent - autoDurationPercent;
-                            project.setValue(autoPercent >= 0 ? autoDurationPercent : 0)
+                            var autoPercent = percent - autoDurationPercent,
+                                value = autoPercent >= 0 ? autoDurationPercent : 0;
+                            $.status.log('set auto project ' + project.getId() + ' value = ' +  value);
+                            project.setValue(value)
+                            lastOnAutoProject = project;
                         });
 
+                        $.status.log('check percent consistent (100%)');
                         percent = 0;
                         $.each(projects, function (i, project) {
-                            percent += project.value();
+                            if (project.isOn()) {
+                                percent += project.value();
+                                $.status.log('add project ' + project.getId() + ' value = ' + project.value() + ', total = ' + percent);
+                            }
                         });
-                        if (percent != 100 && projects.length) {
-                            projects[projects.length - 1].setValue(projects[projects.length - 1].value() + (100 - percent));
+
+                        if (percent > 100 && projects.length) {
+                            var lastProject = lastOnAutoProject || lastOnManualProject,
+                                lastProjectValue = lastProject.value(),
+                                lastProjectNewValue = lastProjectValue + (100 - percent);
+                            $.status.log('healing last project ' + lastProject.getId()
+                                + ' with old value ' + lastProjectValue + ', set new value = ' + lastProjectNewValue
+                                + '(' + lastProjectValue + ' + (100 - ' + percent + '))');
+                            lastProject.setValue(lastProjectNewValue);
+                        } else {
+                            $.status.log('percent consistent is ok (100 === 100)');
                         }
 
+                        $.status.log('update date duration');
                         updateDayDuration();
+                        
+                        $.status.log('colorize slider');
                         fillSliderWithColor();
+                        
+                        $.status.log('save data', $form.serialize());
                         save($form);
+
+                        window.console && console.groupEnd();
                     };
 
                 updateDayDuration();
@@ -663,26 +733,12 @@
                 //перерыв просто уменьшает общее время
             }
 
-            function savedOk(data, $form) {
-                $editorHtml.find('.s-editor-commit-indicator i.icon16').removeClass('loading').addClass('yes-bw');
-                $form.find('[name="checkin[id]"]').val(data.id);
-                var weekNum = parseInt($editorHtml.data('status-week-of-day'));
-                $('[data-status-week-donut="' + weekNum + '"]').trigger('reloadDonut.stts');
-                //меняем цвет слайдера на s-active, чтобы показать, что данные сохранились
-                $form.find('.ui-slider').addClass('s-active');
-                reloadDayShow = true;
-            }
-
-            function removedOk() {
-                var weekNum = parseInt($editorHtml.data('status-week-of-day'));
-                $('[data-status-week-donut="' + weekNum + '"]').trigger('reloadDonut.stts');
-                $.status.reloadSidebar();
-            }
-
             function startRequest(request) {
                 if (requestInAction) {
+                    $.status.log('Request. ABORT.');
                     return;
                 }
+                $.status.log('Request. START.');
                 requestInAction = true;
                 $editorHtml.find(':input').prop('disabled', requestInAction);
                 $editorHtml.find('.s-editor-slider-slider').each(function () {
@@ -697,35 +753,53 @@
                 $editorHtml.find('.s-editor-slider-slider').each(function () {
                     $(this).slider('enable');
                 });
+                $.status.log('Request. END.');
             }
 
             function save($form) {
-                if (lastSavedData === $form.serialize()) {
+                var newSaveData = $form.serialize();
+                $.status.log('Save day form.', $form, newSaveData);
+
+                if (lastSavedData === newSaveData) {
                     $.status.log('Save day. Same data');
                     return;
                 }
 
-                lastSavedData = $form.serialize();
-                if (!lastSavedData) {
+                if (!newSaveData) {
                     $.status.log('Save day. No data');
                     return;
                 }
+
+                lastSavedData = newSaveData;
 
                 //индикатор сохранения — показываем крутилку
                 $editorHtml.find('.s-editor-commit-indicator').show();
                 $editorHtml.find('.s-editor-commit-indicator i.icon16').removeClass('yes-bw').addClass('loading');
 
                 startRequest(function () {
-                    $.status.log('Save day. Sending post');
-                    $.post('?module=checkin&action=save', lastSavedData, function (r) {
-                        if (r.status === 'ok') {
-                            savedOk(r.data, $form);
-                            $.status.reloadSidebar();
-                        }
-                    }).always(function (r) {
-                        $.status.log('Save day. Received response', r);
-                        endRequest();
-                    });
+                    $.status.log('Save day. Sending post', newSaveData);
+                    $.post('?module=checkin&action=save', newSaveData)
+                        .done(function (r) {
+                            if (r.status === 'ok') {
+                                $.status.log('Save day. OK', r);
+
+                                $editorHtml.find('.s-editor-commit-indicator i.icon16').removeClass('loading').addClass('yes-bw');
+                                $form.find('[name="checkin[id]"]').val(r.data.id);
+                                var weekNum = parseInt($editorHtml.data('status-week-of-day'));
+                                $('[data-status-week-donut="' + weekNum + '"]').trigger('reloadDonut.stts');
+                                //меняем цвет слайдера на s-active, чтобы показать, что данные сохранились
+                                $form.find('.ui-slider').addClass('s-active');
+                                reloadDayShow = true;
+                                // savedOk(r.data, $form);
+                                $.status.reloadSidebar();
+                            } else {
+                                $.status.log('Save day. FAIL', r);
+                            }
+                        })
+                        .always(function (r) {
+                            $.status.log('Save day. Received response', r);
+                            endRequest();
+                        });
                 });
             }
 
@@ -734,11 +808,16 @@
                     $.status.log('Remove day. Request in action');
                     $.post('?module=checkin&action=delete', {id: id}, function (r) {
                         if (r.status === 'ok') {
-                            removedOk();
+                            $.status.log('Remove checkin. OK', r);
+                            var weekNum = parseInt($editorHtml.data('status-week-of-day'));
+                            $('[data-status-week-donut="' + weekNum + '"]').trigger('reloadDonut.stts');
+                            $.status.reloadSidebar();
+                        } else {
+                            $.status.log('Remove checkin. FAIL', r);
                         }
                     }).always(function (r) {
                         $.status.log('Remove day. Received response', r);
-                        endRequest()
+                        endRequest();
                     });
                 });
             }
@@ -801,8 +880,6 @@
                             .find('i.add')
                             .toggleClass('add delete');
 
-                        $sourceCheckin.after($newCheckin);
-
                         $newCheckin
                             .data('checkin', 0)
                             .attr('data-checkin', 0)
@@ -821,6 +898,9 @@
                         $newCheckin.find('form [name="checkin[id]"]').val('');
                         $newCheckin.find('.s-editor-project').removeClass('selected')
                             .closest('.s-editor-slider-projects').hide();
+
+
+                        $editorHtml.find('[data-checkin]:last').after($newCheckin);
 
                         initCheckin($newCheckin);
                     })
@@ -857,7 +937,10 @@
             }
 
             function editor($day) {
+                $day.prepend($loading);
                 $.get('?module=day&action=editor', {date: $day.data('status-day-date')}, function (html) {
+                    $loading.remove();
+
                     close();
                     $dayEl = $day;
                     init(html);
@@ -875,6 +958,29 @@
             $.get('?module=backend&action=sidebar', function (html) {
                 self.$core_sidebar.html(html);
             })
+        },
+        skipNextTitle: false,
+        setTitle: function (title, skipNext) {
+            var self = this;
+
+            if (self.skipNextTitle === true) {
+                self.skipNextTitle = false;
+                return;
+            }
+
+            self.skipNextTitle = skipNext || false;
+            var $h1 = self.$status_content.find('h1').first();
+            if ($h1.length && !title) {
+                title = $h1.contents().filter(function () {
+                    return this.nodeType == 3 && this.nodeValue.trim().length > 0;
+                })[0].nodeValue.trim()
+            }
+            if (title) {
+                title += ' &mdash; ';
+            } else {
+                title = '';
+            }
+            $('title').html(title + $_('Status') + ' &mdash; ' + self.options.account_name);
         },
         init: function (o) {
             var self = this;
