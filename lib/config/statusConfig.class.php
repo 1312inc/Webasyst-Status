@@ -328,8 +328,18 @@ class statusConfig extends waAppConfig
      */
     public function onCount($onlycount = false)
     {
-        $url = $url = $this->getBackendUrl(true).$this->application.'/';
-        if (!(new statusServiceStatusChecker())->hasActivityYesterday(stts()->getUser())) {
+        $idle = filter_var(waRequest::request('idle', false), FILTER_VALIDATE_BOOLEAN);
+        $app = wa()->getApp();
+        $user = stts()->getUser();
+
+        $url = $this->getBackendUrl(true) . $this->application . '/';
+        if (!$user instanceof statusUser) {
+            return ['count' => null, 'url' => $url];
+        }
+
+        (new statusAutoTrace($user))->addCheckin($idle, $app);
+
+        if (!(new statusServiceStatusChecker())->hasActivityYesterday($user)) {
 
             return ['count' => 1, 'url' => $url.'#/y'];
         }

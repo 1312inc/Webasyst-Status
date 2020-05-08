@@ -42,7 +42,7 @@ class statusChronologyAction extends statusViewAction
             ? stts()->getUser()
             : stts()->getEntityRepository(statusUser::class)->findByContactId($contactId);
 
-        if (!$this->user instanceof statusUser) {
+        if (!$this->user->getId()) {
             $this->user = stts()->getEntityFactory(statusUser::class)->createNewWithContact(new waContact($contactId));
         }
 

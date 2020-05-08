@@ -75,6 +75,10 @@ SQL;
             $dtos[] = $dto;
         }
 
+        usort($dtos, function (statusReportDataDto $d1, statusReportDataDto $d2) {
+            return $d2->duration - $d1->duration;
+        });
+
         return $dtos;
     }
 }

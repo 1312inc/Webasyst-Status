@@ -26,6 +26,23 @@ return array(
             'status_checkin_projects_checkin_id_project_id_uindex' => array('checkin_id', 'project_id', 'unique' => 1),
         ),
     ),
+    'status_checkin_trace' => array(
+        'id' => array('int', 11, 'null' => 0, 'autoincrement' => 1),
+        'contact_id' => array('int', 11, 'null' => 0),
+        'date' => array('date', 'null' => 0),
+        'start_time' => array('int', 11, 'default' => '0'),
+        'end_time' => array('int', 11, 'default' => '0'),
+        'break_duration' => array('int', 11, 'default' => '0'),
+        'total_duration' => array('int', 11, 'default' => '0'),
+        'comment' => array('text'),
+        'timezone' => array('tinyint', 4),
+        'create_datetime' => array('datetime'),
+        'update_datetime' => array('datetime'),
+        'counter' => array('int', 11, 'default' => '0'),
+        ':keys' => array(
+            'PRIMARY' => 'id',
+        ),
+    ),
     'status_project' => array(
         'id' => array('int', 11, 'null' => 0, 'autoincrement' => 1),
         'name' => array('varchar', 255, 'null' => 0),

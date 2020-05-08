@@ -21,7 +21,7 @@ class statusWalogDialogAction extends statusViewAction
         }
 
         $user = stts()->getEntityRepository(statusUser::class)->findByContactId($contactId);
-        if (!$user instanceof statusUser) {
+        if (!$user->getId()) {
             $user = stts()->getEntityFactory(statusUser::class)->createNewWithContact(new waContact($contactId));
         }
 

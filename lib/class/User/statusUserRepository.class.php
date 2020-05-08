@@ -12,19 +12,17 @@ class statusUserRepository extends statusBaseRepository
     /**
      * @param $contactId
      *
-     * @return statusUser|null
+     * @return statusUser
      * @throws waException
      */
     public function findByContactId($contactId)
     {
         $today = new DateTimeImmutable();
-        $user = $this->getFromCache($contactId);
-        if (!$user instanceof statusUser) {
-            $user = $this->findByFields(['contact_id' => $contactId]);
-            if ($user instanceof statusUser) {
-                $user->setTodayStatus(statusTodayStatusFactory::getForContactId($user->getContactId(), $today));
-                $this->cache($contactId, $user);
-            }
+        $user = $this->findByFields(['contact_id' => $contactId]);
+        if ($user instanceof statusUser) {
+            $user->setTodayStatus(statusTodayStatusFactory::getForContactId($user->getContactId(), $today));
+        } else {
+            $user = new statusUser();
         }
 
         return $user;
