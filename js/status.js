@@ -90,6 +90,8 @@
             },
             /** Implements #hash-based navigation. Called every time location.hash changes. */
             dispatch: function (hash) {
+                var self = this;
+
                 if (this.skipDispatch > 0) {
                     this.skipDispatch--;
                     return false;
@@ -140,21 +142,26 @@
                         if (typeof (this[actionName + 'Action']) == 'function') {
                             this.preExecute(actionName);
                             console.info('dispatch', [actionName + 'Action', attr]);
-                            this[actionName + 'Action'].apply(this, attr);
-
-                            this.postExecute(actionName, hash);
+                            this[actionName + 'Action'].apply(this, attr).done(function () {
+                                self.postExecute(actionName, hash);
+                            });
+                            // this.postExecute(actionName, hash);
                         } else {
                             console.info('Invalid action name:', actionName + 'Action');
                         }
                     } else {
                         this.preExecute();
-                        this.defaultAction();
-                        this.postExecute('default', hash);
+                        this.defaultAction().done(function () {
+                            self.postExecute('default', hash);
+                        });
+                        // this.postExecute('default', hash);
                     }
                 } else {
                     this.preExecute();
-                    this.defaultAction();
-                    this.postExecute('', hash);
+                    this.defaultAction().done(function () {
+                        self.postExecute('', hash);
+                    });
+                    // this.postExecute('', hash);
                 }
             },
             redispatch: function () {
@@ -163,16 +170,16 @@
             },
             yAction: function () {
                 this.defaultAction(true);
-                $.post('?module=backend&action=setSeenNoStatusNotification');
+                return $.post('?module=backend&action=setSeenNoStatusNotification');
             },
             defaultAction: function (skipSaveHash) {
-                this.contactAction(0, function () {
+                return this.contactAction(0, function () {
                     $.status.$status_content.trigger('loadEditor.stts');
                 });
             },
             contactAction: function (id, callback) {
                 var that = this;
-                $.get('?module=chronology&contact_id=' + id, function (html) {
+                return $.get('?module=chronology&contact_id=' + id, function (html) {
                     $('#status-content').html(html);
                     if ($.isFunction(callback)) {
                         callback.call();
@@ -181,13 +188,13 @@
             },
             projectAction: function (id) {
                 var that = this;
-                $.get('?module=chronology&project_id=' + id, function (html) {
+                return $.get('?module=chronology&project_id=' + id, function (html) {
                     $('#status-content').html(html);
                 });
             },
             reportsAction: function (date1, date2) {
                 var that = this;
-                $.get('?module=report', {start: date1, end: date2}, function (html) {
+                return $.get('?module=report', {start: date1, end: date2}, function (html) {
                     $('#status-content').html(html);
                 });
             },
@@ -205,6 +212,7 @@
                     $.storage.set('/status/hash/' + this.options.user_id, value);
                 }
                 this.options.self.highlightSidebar();
+                this.options.self.setTitle();
             },
         },
         lazyLoad: function (config) {
@@ -946,6 +954,29 @@
             $.get('?module=backend&action=sidebar', function (html) {
                 self.$core_sidebar.html(html);
             })
+        },
+        skipNextTitle: false,
+        setTitle: function (title, skipNext) {
+            var self = this;
+
+            if (self.skipNextTitle === true) {
+                self.skipNextTitle = false;
+                return;
+            }
+
+            self.skipNextTitle = skipNext || false;
+            var $h1 = self.$status_content.find('h1').first();
+            if ($h1.length && !title) {
+                title = $h1.contents().filter(function () {
+                    return this.nodeType == 3 && this.nodeValue.trim().length > 0;
+                })[0].nodeValue.trim()
+            }
+            if (title) {
+                title += ' &mdash; ';
+            } else {
+                title = '';
+            }
+            $('title').html(title + $_('Status') + ' &mdash; ' + self.options.account_name);
         },
         init: function (o) {
             var self = this;
