@@ -130,7 +130,11 @@ class statusWeekFactory
         }
 
         // получили чекины для каждого пользователя сгрупированные по дате/контакту
-        $checkins = $checkinRepository->findByPeriodAndContactIds($minDay, $maxDay, array_keys($users), $projectId);
+        if ((new statusDebugSettings())->isShowTrace()) {
+            $checkins = $checkinRepository->findWithTraceByPeriodAndContactIds($minDay, $maxDay, array_keys($users), $projectId);
+        } else {
+            $checkins = $checkinRepository->findByPeriodAndContactIds($minDay, $maxDay, array_keys($users), $projectId);
+        }
 
         /** @var statusProjectModel $projectModel */
         $projectModel = stts()->getModel(statusProject::class);
@@ -188,16 +192,16 @@ class statusWeekFactory
                     $dayDtoAssembler
                         ->fillWithCheckins(
                             $userDayInfo,
-                            isset($checkins[$dayDto->date][$userDto->contactId]) ? $checkins[$dayDto->date][$userDto->contactId] : [],
+                            $checkins[$dayDto->date][$userDto->contactId] ?? [],
                             $userDto
                         )
                         ->fillWithWalogs(
                             $userDayInfo,
-                            isset($walogs[$userDto->contactId][$dayDto->date]) ? $walogs[$userDto->contactId][$dayDto->date] : []
+                            $walogs[$userDto->contactId][$dayDto->date] ?? []
                         )
                         ->fillCheckinsWithProjects(
                             $userDayInfo->checkins,
-                            isset($projectData[$userDto->contactId]) ? $projectData[$userDto->contactId] : []
+                            $projectData[$userDto->contactId] ?? []
                         );
 
                     $dayDto->checkinCount += $userDayInfo->realCheckinCount;

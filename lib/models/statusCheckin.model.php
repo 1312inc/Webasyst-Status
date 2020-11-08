@@ -89,6 +89,77 @@ SQL;
     }
 
     /**
+     * @param int|array $contactIds
+     * @param string    $dateStart
+     * @param string    $dateEnd
+     * @param int|null  $projectId
+     *
+     * @return array
+     */
+    public function getWithTraceByContactIdsAndPeriod($contactIds, $dateStart, $dateEnd, $projectId = null): array
+    {
+        if (!is_array($contactIds)) {
+            $contactIds = [$contactIds];
+        }
+
+        if (empty($contactIds)) {
+            return [];
+        }
+
+        $filterByProjectSql = '';
+        if ($projectId) {
+            $filterByProjectSql = ' join status_checkin_projects scp on scp.checkin_id = sc.id and scp.project_id = i:project_id';
+        }
+
+        $sql = <<<SQL
+select sc.id,
+    sc.contact_id,
+    sc.date,
+    sc.start_time,
+    sc.end_time,
+    sc.break_duration,
+    sc.total_duration,
+    sc.comment,
+    sc.timezone,
+    sc.create_datetime,
+    sc.update_datetime,
+    0 trace
+from status_checkin sc
+{$filterByProjectSql} 
+where sc.date between s:date1 and s:date2 
+  and sc.contact_id in (i:contact_ids)
+union all
+select sc.id,
+    sc.contact_id,
+    sc.date,
+    sc.start_time,
+    sc.end_time,
+    sc.break_duration,
+    sc.total_duration,
+    sc.comment,
+    sc.timezone,
+    sc.create_datetime,
+    sc.update_datetime,
+    1 trace
+from status_checkin_trace sc
+{$filterByProjectSql} 
+where sc.date between s:date1 and s:date2 
+  and sc.contact_id in (i:contact_ids)
+SQL;
+
+
+        return $this->query(
+            $sql,
+            [
+                'date1' => $dateStart,
+                'date2' => $dateEnd,
+                'contact_ids' => $contactIds,
+                'project_id' => $projectId,
+            ]
+        )->fetchAll();
+    }
+
+    /**
      * @param string   $dateStart
      * @param string   $dateEnd
      * @param null|int $contactId

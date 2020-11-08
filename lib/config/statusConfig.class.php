@@ -340,12 +340,19 @@ class statusConfig extends waAppConfig
         (new statusAutoTrace($user))->addCheckin($idle, $app);
 
         if (!(new statusServiceStatusChecker())->hasActivityYesterday($user)) {
-
             return ['count' => 1, 'url' => $url.'#/y'];
         }
 
         return ['count' => null, 'url' => $url];
 
+    }
+
+    /**
+     * @return bool
+     */
+    public function canShowTrace(): bool
+    {
+        return (bool) $this->getInfo('show_trace');
     }
 
     private function registerGlobal()

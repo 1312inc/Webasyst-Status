@@ -18,7 +18,8 @@
             <div class="s-day-summary-timeline">
                 <div class="s-timeline">{strip}
                     <div class="s-timeline-content{if !$checkin->id} s-timeline-content-empty{/if}"
-                         style="left: {$checkin->minPercent}%; right: {100 - $checkin->maxPercent}%;"
+                         style="left: {$checkin->minPercent}%; right: {100 - $checkin->maxPercent}%;
+                                 {if $checkin->isTrace}background: #fff700;background-image: linear-gradient(135deg, #fff700 25%, #f3a3d5 75%, #fff700 100%);{/if}"
                          {if $checkin->id}id="s-timeline-content-{$checkin->id}"{/if}
                          {if $checkin->hasProjects}title="{$checkin->projectDurationTitle|escape}"{/if}
                     ></div>

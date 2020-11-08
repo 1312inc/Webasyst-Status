@@ -50,8 +50,41 @@ class statusCheckinRepository extends statusBaseRepository
         statusDay $dayEnd,
         array $contactIds = [],
         $projectId = null
-    ) {
+    ): array {
         $data = $this->getModel()->getByContactIdsAndPeriod(
+            $contactIds,
+            $dayStart->getDate()->format('Y-m-d'),
+            $dayEnd->getDate()->format('Y-m-d'),
+            $projectId
+        );
+
+        $checkins = [];
+        foreach ($data as $datum) {
+            if (!isset($checkins[$datum['date']])) {
+                $checkins[$datum['date']] = [$datum['contact_id'] => []];
+            }
+            $checkins[$datum['date']][$datum['contact_id']][] = $this->generateWithData($datum);
+        }
+
+        return $checkins;
+    }
+
+    /**
+     * @param statusDay          $dayStart
+     * @param statusDay          $dayEnd
+     * @param array              $contactIds
+     * @param int|null $projectId
+     *
+     * @return statusCheckin[]
+     * @throws waException
+     */
+    public function findWithTraceByPeriodAndContactIds(
+        statusDay $dayStart,
+        statusDay $dayEnd,
+        array $contactIds = [],
+        $projectId = null
+    ): array {
+        $data = $this->getModel()->getWithTraceByContactIdsAndPeriod(
             $contactIds,
             $dayStart->getDate()->format('Y-m-d'),
             $dayEnd->getDate()->format('Y-m-d'),
