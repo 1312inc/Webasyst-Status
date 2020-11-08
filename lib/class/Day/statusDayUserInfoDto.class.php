@@ -41,6 +41,11 @@ class statusDayUserInfoDto
     public $walogs = [];
 
     /**
+     * @var statusWaLogDto[]
+     */
+    public $walogsByDatetime = [];
+
+    /**
      * @var int
      */
     public $contactId;

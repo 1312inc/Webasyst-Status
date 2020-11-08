@@ -90,7 +90,7 @@
     <div class="s-day{if $day->isFromCurrentWeek} s-this-week{/if}{if !$isMe} s-non-clickable{elseif !$isProject} s-editable{/if}"
          data-status-day-date="{$day->date}"
     >
-        {include inline file='./../day/DayShow.html' day=$day}
+        {include inline file='./../day/DayShow.html' day=$day showTrace=$showTrace}
     </div>
     {/foreach}
 

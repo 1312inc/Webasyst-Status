@@ -28,6 +28,7 @@ class statusChronologyLoadWeeksAction extends statusChronologyAction
                 'weeks' => $weeks,
                 'isMe' => (int)$this->isMe,
                 'isProject' => (int)$this->isProject,
+                'showTrace' => (new statusDebugSettings())->isShowTrace(),
             ]
         );
     }

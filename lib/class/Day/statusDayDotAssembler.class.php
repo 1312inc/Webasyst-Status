@@ -49,7 +49,14 @@ final class statusDayDotAssembler
     {
         foreach ($walogs as $appId => $log) {
             $userDayInfoDto->walogs[$appId] = new statusWaLogDto($appId, $log);
+            foreach ($log as $item) {
+                $userDayInfoDto->walogsByDatetime[] = $item;
+            }
         }
+
+        usort($userDayInfoDto->walogsByDatetime, static function($a, $b) {
+           return $a['datetime'] < $b['datetime'];
+        });
 
         return $this;
     }

@@ -62,6 +62,9 @@
                             </div>
                         {/if}
                     </div>
+                    {if $showTrace}
+                    <div class="small">{foreach $userDayInfo->walogsByDatetime as $walogByDatetime}{$walogByDatetime|json_encode|escape}<br><br>{/foreach}</div>
+                    {/if}
                 </div>
                 {if $checkin->comment}
                     <p>
