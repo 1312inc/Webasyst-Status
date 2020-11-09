@@ -20,7 +20,7 @@
         </h1>
 
         {foreach $userDayInfo->checkins as $checkin}
-        <div class="s-editor-slider{if 1 || $showTrace && $isAdmin} s-editor-slider-exp{/if}"
+        <div class="s-editor-slider{if 111 || $showTrace && $isAdmin} s-editor-slider-exp{/if}"
              data-checkin="{$checkin->id}"
              {if $checkin->id == $userDayInfo->firstCheckin->id}data-checkin-first{/if}
              data-checkin-has-projects="{$checkin->hasProjects|intval}"
@@ -34,11 +34,13 @@
             <input type="hidden" name="checkin[break_duration]" value="{$checkin->break}"/>
 
             <div class="s-editor-slider-control">
+                {if 111 || $showTrace && $isAdmin}
                 <span class="s-timeline-dial">
                 {for $i=1 to 23}{strip}
                     <i style="left: {round($i*100/24)}%;" class="{if $i % 3 != 0} tick{/if}{if $i>=9 && $i<=18} day{/if}">{if $i % 3 == 0}{$i}{/if}</i>
                 {/strip}{/for}
                 </span>
+                {/if}
                 <div class="s-editor-slider-slider"></div>
                 <div class="s-editor-slider-projects" {if !$checkin->hasProjects}style="display: none;"{/if}>
                 {foreach $checkin->projectsDuration as $projectDuration}
