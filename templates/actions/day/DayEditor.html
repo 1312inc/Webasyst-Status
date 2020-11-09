@@ -20,7 +20,7 @@
         </h1>
 
         {foreach $userDayInfo->checkins as $checkin}
-        <div class="s-editor-slider"
+        <div class="s-editor-slider{if 1 || $showTrace && $isAdmin} s-editor-slider-exp{/if}"
              data-checkin="{$checkin->id}"
              {if $checkin->id == $userDayInfo->firstCheckin->id}data-checkin-first{/if}
              data-checkin-has-projects="{$checkin->hasProjects|intval}"
