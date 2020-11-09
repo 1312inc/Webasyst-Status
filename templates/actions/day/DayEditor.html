@@ -34,6 +34,11 @@
             <input type="hidden" name="checkin[break_duration]" value="{$checkin->break}"/>
 
             <div class="s-editor-slider-control">
+                <span class="s-timeline-dial">
+                {for $i=1 to 23}{strip}
+                    <i style="left: {round($i*100/24)}%;" class="{if $i % 3 != 0} tick{/if}{if $i>=9 && $i<=18} day{/if}">{if $i % 3 == 0}{$i}{/if}</i>
+                {/strip}{/for}
+                </span>
                 <div class="s-editor-slider-slider"></div>
                 <div class="s-editor-slider-projects" {if !$checkin->hasProjects}style="display: none;"{/if}>
                 {foreach $checkin->projectsDuration as $projectDuration}

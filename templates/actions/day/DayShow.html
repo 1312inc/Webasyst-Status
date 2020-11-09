@@ -19,7 +19,13 @@
                 <div class="s-checkin">
                     <div class="s-day-summary">
                         <div class="s-day-summary-timeline">
+
                             <div class="s-timeline s-timeline-exp">
+                                <span class="s-timeline-dial">
+                                {for $i=1 to 23}{strip}
+                                    <i style="left: {round($i*100/24)}%;" class="{if $i % 3 != 0} tick{/if}{if $i>=9 && $i<=18} day{/if}">{if $i % 3 == 0}{$i}{/if}</i>
+                                {/strip}{/for}
+                                </span>
                                 {foreach $userDayInfo->checkins as $checkin}{strip}
                                     <div class="s-timeline-content{if !$checkin->id} s-timeline-content-empty{/if}{if $checkin->isTrace} s-timeline-trace{/if}"
                                          style="left: {$checkin->minPercent}%; right: {100 - $checkin->maxPercent}%;"
