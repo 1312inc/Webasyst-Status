@@ -3,7 +3,7 @@
 /**
  * Class statusAutoTrace
  */
-class statusAutoTrace
+final class statusAutoTrace
 {
     const START_NEW_CHECKIN_TOLERANCE_IN_MINUTES = 15;
     const BREAK_CHECKIN_TOLERANCE_IN_MINUTES     = 5;

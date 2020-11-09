@@ -53,6 +53,18 @@ class statusConfig extends waAppConfig
     protected $rightConfig;
 
     /**
+     * @var statusLogger
+     */
+    private $logger;
+
+    public function __construct($environment, $root_path, $application = null, $locale = null)
+    {
+        parent::__construct($environment, $root_path, $application, $locale);
+
+        $this->logger = new statusLogger();
+    }
+
+    /**
      * @param string $type
      *
      * @return waCache
@@ -200,18 +212,12 @@ class statusConfig extends waAppConfig
         $this->loadVendors();
     }
 
-    public function onInit()
+    /**
+     * @return cashLogger
+     */
+    public function getLogger()
     {
-//        $wa = wa();
-//        $id = $wa->getUser()->getId();
-//        if ($id && ($wa->getApp() == 'pocketlists') && ($wa->getEnv() == 'backend')) {
-//            $this->setCount($this->onCount());
-//        }
-    }
-
-    public function explainLogs($logs)
-    {
-        return $logs;
+        return $this->logger;
     }
 
     /**
@@ -337,7 +343,11 @@ class statusConfig extends waAppConfig
             return ['count' => null, 'url' => $url];
         }
 
-        (new statusAutoTrace($user))->addCheckin($idle, $app);
+        try {
+            (new statusAutoTrace($user))->addCheckin($idle, $app);
+        } catch (Exception $ex) {
+            stts()->getLogger()->error('Error on auto trace handle', $ex);
+        }
 
         if (!(new statusServiceStatusChecker())->hasActivityYesterday($user)) {
             return ['count' => 1, 'url' => $url.'#/y'];
