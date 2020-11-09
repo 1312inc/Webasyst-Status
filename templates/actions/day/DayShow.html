@@ -9,6 +9,109 @@
         </h3>
     </div>
 
+    {if $showTrace && $isAdmin}
+
+
+        <div class="s-checkins">
+            {foreach $day->userDayInfos as $userDayInfo}
+            {* @var statusDayUserInfoDto $userDayInfo *}
+
+                <div class="s-checkin">
+                    <div class="s-day-summary">
+                        <div class="s-day-summary-timeline">
+                            <div class="s-timeline s-timeline-exp">
+                                {foreach $userDayInfo->checkins as $checkin}{strip}
+                                    <div class="s-timeline-content{if !$checkin->id} s-timeline-content-empty{/if}{if $checkin->isTrace} s-timeline-trace{/if}"
+                                         style="left: {$checkin->minPercent}%; right: {100 - $checkin->maxPercent}%;"
+                                         {if $checkin->id}id="s-timeline-content-{$checkin->id}"{/if}
+                                         {if $checkin->hasProjects}title="{$checkin->projectDurationTitle|escape}"{/if}
+                                    ></div>
+                                    {if $checkin->id && $checkin->hasProjects && !$checkin->isTrace}
+                                    <style>
+                                        #s-timeline-content-{$checkin->id} {
+                                            background: -webkit-linear-gradient(left, {$checkin->projectDurationCss});
+                                        }
+                                    </style>
+                                    {/if}
+                                {/strip}{/foreach}
+                                {foreach $userDayInfo->walogsByDatetime as $walogByDatetime}{strip}
+                                    {$_ts = strtotime($walogByDatetime.datetime)}
+                                    {$_t_since_00 = $_ts - strtotime("today", $_ts)}
+                                    {$_t_position = min( 100, max(0, round( 100 * $_t_since_00 / 86400)) )}
+                                    {if $walogByDatetime.app_id != 'webasyst'}
+                                    <div class="s-timeline-content s-timeline-action-mark"
+                                         style="left: {$_t_position}%; background: orangered;"
+                                    ></div>
+                                    {/if}
+                                {/strip}{/foreach}
+                            </div>
+                        </div>
+                        <div class="s-day-summary-user-report">
+                            <div class="s-author">
+                                <h5 class="s-username">
+                                    <i class="icon16 userpic20" style="background-image: url({$day->users[$userDayInfo->contactId]->photoUrl})"></i>
+                                    {$day->users[$userDayInfo->contactId]->name|escape}
+                                    {if $userDayInfo->todayStatus->getCalendarId()}
+                                    <span class="s-status" title="[`Status for today`]" style="background-color: {$userDayInfo->todayStatus->getBgColor()}; color: {$userDayInfo->todayStatus->getFontColor()}">{$userDayInfo->todayStatus->getName()|escape}</span>
+                                    {/if}
+                                </h5>
+
+                                <div class="s-logged-apps">
+                                    {$_cnt = 0}
+                                    {foreach $userDayInfo->walogs as $walog}
+                                        {if $walog->count && $walog->appId != 'webasyst'}
+                                            <a href="#"
+                                               class="s-logged-app-counter inline-link"
+                                               data-status-walog-contact-id="{$day->users[$userDayInfo->contactId]->contactId}"
+                                               data-status-walog-app="{$walog->appId}"
+                                               data-status-walog-date="{$day->date}"
+                                            ><i class="icon16 s-app-icon" style="background-image: url('{$walog->appIcon}');"></i><b><i>{$walog->count}</i></b></a>
+                                            {$_cnt = $_cnt + 1}
+                                        {/if}
+                                    {/foreach}
+                                    {if !$_cnt && !$checkin->id}
+                                        <div class="s-logged-apps gray">
+                                            [`No activity recorded`]
+                                        </div>
+                                    {/if}
+                                </div>
+
+                            </div>
+                            {if $checkin->comment}
+                                <p>
+                                    {$checkin->comment|escape|nl2br}
+                                </p>
+                            {/if}
+                        </div>
+
+                    </div>
+
+                    <div class="s-day-total">
+                        <h4>{$checkin->durationString}</h4>
+
+                        <h4 class="gray" title="[`Backend online time (browser)`]">
+                            <i class="icon16 color" style="background: rgba(0,0,0,0.1);"></i>
+                            TRC h
+                        </h4>
+                    </div>
+                </div>
+
+
+
+            {foreachelse}
+                <div class="s-checkin">
+                    <div class="s-day-summary">
+                        <div class="s-day-summary-timeline"><div class="s-timeline"></div></div>
+                    </div>
+                    <div class="s-day-total">
+                        <h4>0[`h`]</h4>
+                    </div>
+                </div>
+            {/foreach}
+        </div>
+
+
+    {else}
     <div class="s-checkins">
     {foreach $day->userDayInfos as $userDayInfo}
     {* @var statusDayUserInfoDto $userDayInfo *}
@@ -62,9 +165,6 @@
                             </div>
                         {/if}
                     </div>
-                    {if $showTrace}
-                    <div class="small">{foreach $userDayInfo->walogsByDatetime as $walogByDatetime}{$walogByDatetime|json_encode|escape}<br><br>{/foreach}</div>
-                    {/if}
                 </div>
                 {if $checkin->comment}
                     <p>
@@ -91,4 +191,5 @@
         </div>
     {/foreach}
     </div>
+    {/if}
 {*</section>*}
