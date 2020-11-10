@@ -45,7 +45,7 @@
                                     {$_t_position = min( 100, max(0, round( 100 * $_t_since_00 / 86400)) )}
                                     {if $walogByDatetime.app_id != 'webasyst'}
                                     <div class="s-timeline-content s-timeline-action-mark"
-                                         style="left: {$_t_position}%; background: orangered;"
+                                         style="left: {$_t_position}%; background: {$walogByDatetime.app_color};"
                                     ></div>
                                     {/if}
                                 {/strip}{/foreach}

@@ -18,6 +18,11 @@ class statusWaLogDto
     /**
      * @var string
      */
+    public $appColor = 'orangered';
+
+    /**
+     * @var string
+     */
     public $appIcon;
 
     /**
@@ -38,21 +43,17 @@ class statusWaLogDto
      */
     public function __construct($appId, array $logs)
     {
-        waLocale::loadByDomain($appId);
-        $this->appId = $appId;
-        $this->appName = _wd($appId, wa($appId)->getConfig()->getName());
-        $appStatic = wa()->getAppStaticUrl($appId);
-        $appStaticAbsolute = wa()->getConfig()->getRootPath().$appStatic;
-        $possibleFiles = [
-            'img/'.$appId.'48.png',
-            'img/'.$appId.'.png',
-        ];
+        $info = wa()->getAppInfo($appId);
 
-        foreach ($possibleFiles as $possibleFile) {
-            if (file_exists($appStaticAbsolute.$possibleFile)) {
-                $this->appIcon = $appStatic.$possibleFile;
-                break;
-            }
+        $this->appId = $appId;
+        $this->appName = $info['name'];
+
+        if (!empty($info['sash_color'])) {
+            $this->appColor = $info['sash_color'];
+        }
+
+        if (isset($info['icon'][48])) {
+            $this->appIcon = '/' . $info['icon'][48];
         }
 
         $this->logs = $logs;

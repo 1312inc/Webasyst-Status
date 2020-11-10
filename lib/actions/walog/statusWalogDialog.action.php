@@ -36,7 +36,9 @@ class statusWalogDialogAction extends statusViewAction
         $walogs = ifset($walogs, $date, []);
         $walogsDto = [];
         foreach ($walogs as $appId => $log) {
-            $walogsDto[$appId] = new statusWaLogDto($appId, $log);
+            if (wa()->appExists($appId)) {
+                $walogsDto[$appId] = new statusWaLogDto($appId, $log);
+            }
         }
 
         $this->view->assign(

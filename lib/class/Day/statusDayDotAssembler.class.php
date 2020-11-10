@@ -73,10 +73,16 @@ final class statusDayDotAssembler
     public function fillWithWalogs(statusDayUserInfoDto $userDayInfoDto, array $walogs)
     {
         foreach ($walogs as $appId => $log) {
+            if (!wa()->appExists($appId)) {
+                continue;
+            }
+
             $userDayInfoDto->walogs[$appId] = new statusWaLogDto($appId, $log);
-            foreach ($log as $item) {
+            foreach ($log as &$item) {
+                $item['app_color'] = $userDayInfoDto->walogs[$appId]->appColor;
                 $userDayInfoDto->walogsByDatetime[] = $item;
             }
+            unset($item);
         }
 
         usort($userDayInfoDto->walogsByDatetime, static function($a, $b) {
