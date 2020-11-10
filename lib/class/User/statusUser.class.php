@@ -123,5 +123,7 @@ class statusUser extends statusAbstractEntity
         $realId = $this->id;
         $this->setContactParent($contact);
         $this->id = $realId;
+
+        return $this;
     }
 }
