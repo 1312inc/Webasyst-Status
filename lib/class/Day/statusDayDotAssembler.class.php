@@ -21,20 +21,45 @@ final class statusDayDotAssembler
      */
     public function fillWithCheckins(statusDayUserInfoDto $userDayInfoDto, array $checkins, statusUserDto $userDto)
     {
+        $traceDuration = 0;
+        $hasManualCheckins = false;
         foreach ($checkins as $check) {
-            $userDayInfoDto->startTime = min($userDayInfoDto->startTime, $check->getStartTime());
-            $userDayInfoDto->endTime = max($userDayInfoDto->endTime, $check->getEndTime());
             $checkin = new statusDayCheckinDto($check);
+
             $userDayInfoDto->checkins[] = $checkin;
-            $userDayInfoDto->realCheckinCount++;
+
+            if (!$checkin->isTrace) {
+                if (!$hasManualCheckins) {
+                    $hasManualCheckins = true;
+                    $userDayInfoDto->firstCheckin = $checkin;
+                }
+
+                $userDayInfoDto->realCheckinCount++;
+                $userDayInfoDto->startTime = min($userDayInfoDto->startTime, $checkin->min);
+                $userDayInfoDto->endTime = max($userDayInfoDto->endTime, $checkin->max);
+
+            } else {
+                $traceDuration += $checkin->duration;
+            }
         }
 
-        if (empty($userDayInfoDto->checkins)) {
+        if (!$hasManualCheckins) {
             $checkin = new statusDayCheckinDto(stts()->getEntityFactory(statusCheckin::class)->createNew());
             $userDayInfoDto->checkins[] = $checkin;
+            $userDayInfoDto->firstCheckin = $checkin;
         }
 
-        $userDayInfoDto->firstCheckin = $userDayInfoDto->checkins[0];
+        $dayDuration = $userDayInfoDto->endTime - $userDayInfoDto->startTime;
+        $userDayInfoDto->dayDurationString = statusTimeHelper::getTimeDurationInHuman(
+            0,
+            $dayDuration * 60,
+            '0' . _w('h')
+        );
+        $userDayInfoDto->traceDurationString = statusTimeHelper::getTimeDurationInHuman(
+            0,
+            $traceDuration * 60,
+            '0' . _w('h')
+        );
 
         return $this;
     }

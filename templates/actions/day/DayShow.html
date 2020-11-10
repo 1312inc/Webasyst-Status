@@ -9,8 +9,7 @@
         </h3>
     </div>
 
-    {if $showTrace && $isAdmin}
-
+    {if $stts->getDebugSettings()->isShowTrace()}
 
         <div class="s-checkins">
             {foreach $day->userDayInfos as $userDayInfo}
@@ -83,9 +82,9 @@
                                 </div>
 
                             </div>
-                            {if $checkin->comment}
+                            {if $userDayInfo->firstCheckin->comment}
                                 <p>
-                                    {$checkin->comment|escape|nl2br}
+                                    {$userDayInfo->firstCheckin->comment|escape|nl2br}
                                 </p>
                             {/if}
                         </div>
@@ -93,11 +92,11 @@
                     </div>
 
                     <div class="s-day-total">
-                        <h4>{$checkin->durationString}</h4>
+                        <h4>{$userDayInfo->dayDurationString}</h4>
 
                         <h4 class="gray" title="[`Backend online time (browser)`]">
                             <i class="icon16 color" style="background: rgba(0,0,0,0.1);"></i>
-                            TRC h
+                            {$userDayInfo->traceDurationString}
                         </h4>
                     </div>
                 </div>
@@ -116,11 +115,10 @@
             {/foreach}
         </div>
 
-
     {else}
     <div class="s-checkins">
     {foreach $day->userDayInfos as $userDayInfo}
-    {* @var statusDayUserInfoDto $userDayInfo *}
+    {** @var statusDayUserInfoDto $userDayInfo **}
     {foreach $userDayInfo->checkins as $checkin}
         <div class="s-checkin">
         <div class="s-day-summary">

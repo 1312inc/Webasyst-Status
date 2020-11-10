@@ -57,6 +57,11 @@ class statusConfig extends waAppConfig
      */
     private $logger;
 
+    /**
+     * @var statusDebugSettings
+     */
+    private $debugSettings;
+
     public function __construct($environment, $root_path, $application = null, $locale = null)
     {
         parent::__construct($environment, $root_path, $application, $locale);
@@ -180,7 +185,6 @@ class statusConfig extends waAppConfig
     /**
      * @param string $entity
      *
-     * @return statusBaseRepository|statusUserRepository
      * @throws waException
      */
     public function getEntityRepository($entity)
@@ -363,6 +367,15 @@ class statusConfig extends waAppConfig
     public function canShowTrace(): bool
     {
         return (bool) $this->getInfo('show_trace');
+    }
+
+    public function getDebugSettings(): statusDebugSettings
+    {
+        if ($this->debugSettings === null) {
+            $this->debugSettings = new statusDebugSettings();
+        }
+
+        return $this->debugSettings;
     }
 
     private function registerGlobal()

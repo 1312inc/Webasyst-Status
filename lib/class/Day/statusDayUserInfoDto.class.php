@@ -21,7 +21,7 @@ class statusDayUserInfoDto
     public $checkins = [];
 
     /**
-     * @var statusDayCheckinDto[]|null
+     * @var statusDayCheckinDto|null
      */
     public $firstCheckin = null;
 
@@ -54,6 +54,16 @@ class statusDayUserInfoDto
      * @var int
      */
     public $realCheckinCount = 0;
+
+    /**
+     * @var string
+     */
+    public $dayDurationString = '';
+
+    /**
+     * @var string
+     */
+    public $traceDurationString = '';
 
     /**
      * statusDayCheckinUserDto constructor.

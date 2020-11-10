@@ -34,6 +34,20 @@ final class statusWeekDtoAssembler
             $user->getContactId()
         );
 
+        if (stts()->getDebugSettings()->isShowTrace()) {
+            /** @var statusCheckinTraceModel $checkinTraceModel */
+            $checkinTraceModel = stts()->getModel('statusCheckinTrace');
+            $traceDuration = $checkinTraceModel->countTimeByDatesAndContactId(
+                $week->getFirstDay()->getDate()->format('Y-m-d'),
+                $week->getLastDay()->getDate()->format('Y-m-d'),
+                $user->getContactId()
+            );
+            $donut->traceTotalDurationStr = statusTimeHelper::getTimeDurationInHuman(
+                0,
+                $traceDuration * statusTimeHelper::SECONDS_IN_MINUTE
+            );
+        }
+
         $projectDuration = 0;
 
         foreach ($projectsThisWeek as $project) {

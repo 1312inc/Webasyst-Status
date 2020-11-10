@@ -130,7 +130,7 @@ class statusWeekFactory
         }
 
         // получили чекины для каждого пользователя сгрупированные по дате/контакту
-        if ((new statusDebugSettings())->isShowTrace()) {
+        if (stts()->getDebugSettings()->isShowTrace()) {
             $checkins = $checkinRepository->findWithTraceByPeriodAndContactIds($minDay, $maxDay, array_keys($users), $projectId);
         } else {
             $checkins = $checkinRepository->findByPeriodAndContactIds($minDay, $maxDay, array_keys($users), $projectId);
@@ -153,7 +153,6 @@ class statusWeekFactory
         $dayDtoAssembler = new statusDayDotAssembler();
         $weekDtoAssembler = new statusWeekDtoAssembler();
 
-        /** @var statusWeek $week */
         foreach ($weeks as $week) {
             $weekDto = new statusWeekDto($week);
             foreach ($week->getDays() as $day) {

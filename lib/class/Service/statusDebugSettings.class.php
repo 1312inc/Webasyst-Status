@@ -13,13 +13,23 @@ final class statusDebugSettings
     private $appSettingsModel;
 
     /**
-     * statusDebugSettings constructor.
+     * @var waContact
      */
-    public function __construct()
+    private $contact;
+
+    /**
+     * statusDebugSettings constructor.
+     *
+     * @param waContact|null $contact
+     *
+     * @throws waException
+     */
+    public function __construct(waContact $contact = null)
     {
         $this->appSettingsModel = new waAppSettingsModel();
         $data = json_decode($this->appSettingsModel->get(statusConfig::APP_ID, 'debug'), true);
         $this->showTrace = isset($data['show_trace']) ? (bool) $data['show_trace'] : false;
+        $this->contact = $contact ?: wa()->getUser();
     }
 
     /**
@@ -27,7 +37,7 @@ final class statusDebugSettings
      */
     public function isShowTrace(): bool
     {
-        return $this->showTrace;
+        return $this->showTrace && $this->contact->isAdmin();
     }
 
     /**

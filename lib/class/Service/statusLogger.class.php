@@ -3,7 +3,7 @@
 /**
  * Class statusLogger
  */
-class statusLogger
+final class statusLogger
 {
     /**
      * @param        $message

@@ -43,9 +43,11 @@
     {/foreach}
 </div>
 
+{if $stts->getDebugSettings()->isShowTrace()}
 <h4 class="gray" title="[`Backend online time (browser)`]">
     <i class="icon16 color" style="background: rgba(0,0,0,0.1);"></i>
-    TRC WEEK h
+    {$donut->traceTotalDurationStr}
 </h4>
+{/if}
 
 </section>
