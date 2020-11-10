@@ -21,7 +21,7 @@ final class statusDayDotAssembler
      */
     public function fillWithCheckins(statusDayUserInfoDto $userDayInfoDto, array $checkins, statusUserDto $userDto)
     {
-        $traceDuration = 0;
+        $traceDuration = $dayDuration = 0;
         $hasManualCheckins = false;
         foreach ($checkins as $check) {
             $checkin = new statusDayCheckinDto($check);
@@ -37,7 +37,7 @@ final class statusDayDotAssembler
                 $userDayInfoDto->realCheckinCount++;
                 $userDayInfoDto->startTime = min($userDayInfoDto->startTime, $checkin->min);
                 $userDayInfoDto->endTime = max($userDayInfoDto->endTime, $checkin->max);
-
+                $dayDuration += $checkin->duration;
             } else {
                 $traceDuration += $checkin->duration;
             }
@@ -49,7 +49,6 @@ final class statusDayDotAssembler
             $userDayInfoDto->firstCheckin = $checkin;
         }
 
-        $dayDuration = $userDayInfoDto->endTime - $userDayInfoDto->startTime;
         $userDayInfoDto->dayDurationString = statusTimeHelper::getTimeDurationInHuman(
             0,
             $dayDuration * 60,
