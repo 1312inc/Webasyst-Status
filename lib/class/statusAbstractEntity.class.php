@@ -13,13 +13,14 @@ abstract class statusAbstractEntity implements kmwaHydratableInterface
     /**
      * @param string $field
      *
-     * @return mixed
+     * @return mixed|null
      * @throws kmwaLogicException
      */
     public function getDataField($field)
     {
         if (!array_key_exists($field, $this->_dataFields)) {
-            throw new kmwaLogicException(sprintf('Field %s not found in %s', $field, static::class));
+//            throw new kmwaLogicException(sprintf('Field %s not found in %s', $field, static::class));
+            return null;
         }
 
         return $this->_dataFields[$field];

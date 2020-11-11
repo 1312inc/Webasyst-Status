@@ -3,7 +3,7 @@
 /**
  * Class statusAutoTrace
  */
-class statusAutoTrace
+final class statusAutoTrace
 {
     const START_NEW_CHECKIN_TOLERANCE_IN_MINUTES = 15;
     const BREAK_CHECKIN_TOLERANCE_IN_MINUTES     = 5;
@@ -96,7 +96,8 @@ class statusAutoTrace
     {
         $lastCheckin = $this->model->getLastTraceCheckin(
             $this->today,
-            $this->currentDayMinutes - self::START_NEW_CHECKIN_TOLERANCE_IN_MINUTES
+            $this->currentDayMinutes - self::START_NEW_CHECKIN_TOLERANCE_IN_MINUTES,
+            $this->user->getContactId()
         );
 
         if ($lastCheckin) {
@@ -121,8 +122,8 @@ class statusAutoTrace
 
     public function __destruct()
     {
-        if ($this->debug && waSystemConfig::isDebug()) {
-            waLog::log(implode(PHP_EOL, $this->debug), 'status/trace.log');
+        if ($this->debug) {
+            stts()->getLogger()->debug($this->debug, 'trace');
         }
     }
 
@@ -155,8 +156,8 @@ class statusAutoTrace
                 $apps[$this->todayWithTime] = $app;
             }
         }
-        $checkin->setComment(json_encode($apps));
-        $checkin->setEndTime($this->currentDayMinutes);
+        $checkin->setComment(json_encode($apps))
+            ->setEndTime($this->currentDayMinutes);
 
         if ($idle) {
             if (!$this->traceSettings['break']) {

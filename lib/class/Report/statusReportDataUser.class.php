@@ -63,7 +63,7 @@ SQL;
             $contactId = $contact->getContactId();
             $dtos[$contactId] = new statusReportDataDto(
                 $contact->getName(),
-                $data[$contactId]['duration'],
+                isset($data[$contactId]['duration']) ? $data[$contactId]['duration'] : 0,
                 $contactId,
                 self::TYPE
             );

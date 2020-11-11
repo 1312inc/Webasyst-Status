@@ -12,13 +12,12 @@ class statusCheckinSaveController extends statusJsonController
     public function execute()
     {
         if (waSystemConfig::isDebug()) {
-            waLog::log(
+            stts()->getLogger()->debug(
                 sprintf(
                     'Save checkin. Post: %s. Get: %s',
                     json_encode(waRequest::post(), JSON_UNESCAPED_UNICODE),
                     json_encode(waRequest::get(), JSON_UNESCAPED_UNICODE)
-                ),
-                'status/debug.log'
+                )
             );
         }
 

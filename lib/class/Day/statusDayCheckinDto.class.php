@@ -96,6 +96,11 @@ class statusDayCheckinDto implements JsonSerializable
     public $projectPercents = [];
 
     /**
+     * @var bool
+     */
+    public $isTrace = false;
+
+    /**
      * statusDayCheckinDto constructor.
      *
      * @param statusCheckin $checkin
@@ -126,6 +131,8 @@ class statusDayCheckinDto implements JsonSerializable
             (int)$checkin->getBreakDuration() * 60,
             sprintf_wp('%dh', 1)
         );
+
+        $this->isTrace = (bool) $checkin->getDataField('trace');
     }
 
     /**

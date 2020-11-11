@@ -21,20 +21,44 @@ final class statusDayDotAssembler
      */
     public function fillWithCheckins(statusDayUserInfoDto $userDayInfoDto, array $checkins, statusUserDto $userDto)
     {
+        $traceDuration = $dayDuration = 0;
+        $hasManualCheckins = false;
         foreach ($checkins as $check) {
-            $userDayInfoDto->startTime = min($userDayInfoDto->startTime, $check->getStartTime());
-            $userDayInfoDto->endTime = max($userDayInfoDto->endTime, $check->getEndTime());
             $checkin = new statusDayCheckinDto($check);
+
             $userDayInfoDto->checkins[] = $checkin;
-            $userDayInfoDto->realCheckinCount++;
+
+            if (!$checkin->isTrace) {
+                if (!$hasManualCheckins) {
+                    $hasManualCheckins = true;
+                    $userDayInfoDto->firstCheckin = $checkin;
+                }
+
+                $userDayInfoDto->realCheckinCount++;
+                $userDayInfoDto->startTime = min($userDayInfoDto->startTime, $checkin->min);
+                $userDayInfoDto->endTime = max($userDayInfoDto->endTime, $checkin->max);
+                $dayDuration += $checkin->duration;
+            } else {
+                $traceDuration += $checkin->duration;
+            }
         }
 
-        if (empty($userDayInfoDto->checkins)) {
+        if (!$hasManualCheckins) {
             $checkin = new statusDayCheckinDto(stts()->getEntityFactory(statusCheckin::class)->createNew());
             $userDayInfoDto->checkins[] = $checkin;
+            $userDayInfoDto->firstCheckin = $checkin;
         }
 
-        $userDayInfoDto->firstCheckin = $userDayInfoDto->checkins[0];
+        $userDayInfoDto->dayDurationString = statusTimeHelper::getTimeDurationInHuman(
+            0,
+            $dayDuration * 60,
+            '0' . _w('h')
+        );
+        $userDayInfoDto->traceDurationString = statusTimeHelper::getTimeDurationInHuman(
+            0,
+            $traceDuration * 60,
+            '0' . _w('h')
+        );
 
         return $this;
     }
@@ -48,8 +72,21 @@ final class statusDayDotAssembler
     public function fillWithWalogs(statusDayUserInfoDto $userDayInfoDto, array $walogs)
     {
         foreach ($walogs as $appId => $log) {
+            if (!wa()->appExists($appId)) {
+                continue;
+            }
+
             $userDayInfoDto->walogs[$appId] = new statusWaLogDto($appId, $log);
+            foreach ($log as &$item) {
+                $item['app_color'] = $userDayInfoDto->walogs[$appId]->appColor;
+                $userDayInfoDto->walogsByDatetime[] = $item;
+            }
+            unset($item);
         }
+
+        usort($userDayInfoDto->walogsByDatetime, static function($a, $b) {
+           return $a['datetime'] < $b['datetime'];
+        });
 
         return $this;
     }

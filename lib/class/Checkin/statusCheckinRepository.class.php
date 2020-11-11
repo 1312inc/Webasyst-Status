@@ -24,14 +24,32 @@ class statusCheckinRepository extends statusBaseRepository
      * @param statusDay  $day
      * @param statusUser $user
      *
-     * @return statusAbstractEntity|statusAbstractEntity[]
+     * @return statusCheckin[]
      * @throws waException
      */
-    public function findByDayAndUser(statusDay $day, statusUser $user)
+    public function findByDayAndUser(statusDay $day, statusUser $user): array
     {
         return $this->findByFields(
             ['date' => $day->getDate()->format('Y-m-d'), 'contact_id' => $user->getContactId()],
             null,
+            true
+        );
+    }
+
+    /**
+     * @param statusDay  $day
+     * @param statusUser $user
+     *
+     * @return statusCheckin[]
+     * @throws waException
+     */
+    public function findWithTraceByDayAndUser(statusDay $day, statusUser $user): array
+    {
+        return $this->generateWithData(
+            $this->getModel()->getWithTraceByContactIdAndDate(
+                $user->getContactId(),
+                $day->getDate()->format('Y-m-d')
+            ),
             true
         );
     }
@@ -50,8 +68,41 @@ class statusCheckinRepository extends statusBaseRepository
         statusDay $dayEnd,
         array $contactIds = [],
         $projectId = null
-    ) {
+    ): array {
         $data = $this->getModel()->getByContactIdsAndPeriod(
+            $contactIds,
+            $dayStart->getDate()->format('Y-m-d'),
+            $dayEnd->getDate()->format('Y-m-d'),
+            $projectId
+        );
+
+        $checkins = [];
+        foreach ($data as $datum) {
+            if (!isset($checkins[$datum['date']])) {
+                $checkins[$datum['date']] = [$datum['contact_id'] => []];
+            }
+            $checkins[$datum['date']][$datum['contact_id']][] = $this->generateWithData($datum);
+        }
+
+        return $checkins;
+    }
+
+    /**
+     * @param statusDay          $dayStart
+     * @param statusDay          $dayEnd
+     * @param array              $contactIds
+     * @param int|null $projectId
+     *
+     * @return statusCheckin[]
+     * @throws waException
+     */
+    public function findWithTraceByPeriodAndContactIds(
+        statusDay $dayStart,
+        statusDay $dayEnd,
+        array $contactIds = [],
+        $projectId = null
+    ): array {
+        $data = $this->getModel()->getWithTraceByContactIdsAndPeriod(
             $contactIds,
             $dayStart->getDate()->format('Y-m-d'),
             $dayEnd->getDate()->format('Y-m-d'),

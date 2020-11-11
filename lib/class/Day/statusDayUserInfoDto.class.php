@@ -21,7 +21,7 @@ class statusDayUserInfoDto
     public $checkins = [];
 
     /**
-     * @var statusDayCheckinDto[]|null
+     * @var statusDayCheckinDto|null
      */
     public $firstCheckin = null;
 
@@ -41,6 +41,11 @@ class statusDayUserInfoDto
     public $walogs = [];
 
     /**
+     * @var statusWaLogDto[]
+     */
+    public $walogsByDatetime = [];
+
+    /**
      * @var int
      */
     public $contactId;
@@ -49,6 +54,16 @@ class statusDayUserInfoDto
      * @var int
      */
     public $realCheckinCount = 0;
+
+    /**
+     * @var string
+     */
+    public $dayDurationString = '';
+
+    /**
+     * @var string
+     */
+    public $traceDurationString = '';
 
     /**
      * statusDayCheckinUserDto constructor.

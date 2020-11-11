@@ -13,7 +13,7 @@ class statusDayEditor
      * @throws waException
      * @throws Exception
      */
-    public static function createDayDto(statusDay $day, statusUser $user)
+    public static function createDayDto(statusDay $day, statusUser $user): statusDayDto
     {
         $dayDto = new statusDayDto($day);
         $userDto = new statusUserDto($user);
@@ -21,14 +21,19 @@ class statusDayEditor
 
         /** @var statusCheckinRepository $checkinRep */
         $checkinRep = stts()->getEntityRepository(statusCheckin::class);
-        $checkins = $checkinRep->findByDayAndUser($day, $user);
+
+        if (stts()->getDebugSettings()->isShowTrace()) {
+            $checkins = $checkinRep->findWithTraceByDayAndUser($day, $user);
+        } else {
+            $checkins = $checkinRep->findByDayAndUser($day, $user);
+        }
 
         $walogs = (new statusWaLogParser())->parseByDays($day, $day, $userDto->contactId);
 
         $dayDtoAssembler = new statusDayDotAssembler();
         $dayDtoAssembler
             ->fillWithCheckins($userDayInfo, $checkins, $userDto)
-            ->fillWithWalogs($userDayInfo, isset($walogs[$dayDto->date]) ? $walogs[$dayDto->date] : []);
+            ->fillWithWalogs($userDayInfo, $walogs[$dayDto->date] ?? []);
 
         /** @var statusProjectModel $projectModel */
         $projectModel = stts()->getModel(statusProject::class);

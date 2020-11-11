@@ -5,7 +5,9 @@
  */
 class statusUser extends statusAbstractEntity
 {
-    use kmwaWaUserTrait;
+    use kmwaWaUserTrait {
+        setContact as setContactParent;
+    }
 
     /**
      * @var int
@@ -111,6 +113,16 @@ class statusUser extends statusAbstractEntity
     public function setThisWeekTotalDuration($this_week_total_duration)
     {
         $this->this_week_total_duration = $this_week_total_duration;
+
+        return $this;
+    }
+
+    public function setContact(waContact $contact)
+    {
+        // dirty hack to prevent other trait logic
+        $realId = $this->id;
+        $this->setContactParent($contact);
+        $this->id = $realId;
 
         return $this;
     }

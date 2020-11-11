@@ -198,6 +198,11 @@
                     $('#status-content').html(html);
                 });
             },
+            debugAction: function () {
+                return $.get('?module=backend&action=debug', function (html) {
+                    $('#status-content').html(html);
+                });
+            },
             preExecute: function () {
                 var $h1 = $.status.$status_content.find('h1:first');
 
@@ -213,7 +218,7 @@
                 }
                 this.options.self.highlightSidebar();
                 this.options.self.setTitle();
-            },
+            }
         },
         lazyLoad: function (config) {
             $(window).off('scroll.stts');
