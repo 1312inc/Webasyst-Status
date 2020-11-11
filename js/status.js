@@ -877,7 +877,8 @@
                         e.preventDefault();
 
                         var $sourceCheckin = $(this).closest('[data-checkin]'),
-                            $newCheckin = $sourceCheckin.clone();
+                            $newCheckin = $sourceCheckin.clone(),
+                            $logsChecks = $sourceCheckin.find('.s-editor-slider-helpers').clone();
 
                         $newCheckin.find('[data-checkin-action="add"]')
                             .attr('data-checkin-action', 'delete')
@@ -896,7 +897,7 @@
                             .attr('data-checkin-has-projects', 0)
                             .find('input.s-duration-input').val(1)
                             .end().find('input:checkbox').prop('checked', false)
-                            .end().find('.s-editor-slider-slider').empty()
+                            .end().find('.s-editor-slider-slider').empty().append($logsChecks)
                         ;
 
                         // projects
