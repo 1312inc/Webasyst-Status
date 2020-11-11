@@ -26,10 +26,11 @@
                                 {/strip}{/for}
                                 </span>
                                 {foreach $userDayInfo->checkins as $checkin}{strip}
+                                    {$__checkin_density = $checkin->duration / ($checkin->max-$checkin->min)}
                                     <div class="s-timeline-content{if !$checkin->id} s-timeline-content-empty{/if}{if $checkin->isTrace} s-timeline-trace{/if}"
-                                         style="left: {$checkin->minPercent}%; right: {100 - $checkin->maxPercent}%;"
+                                         style="left: {$checkin->minPercent}%; right: {100 - $checkin->maxPercent}%; opacity: {0.1 + 0.9*$__checkin_density};"
                                          {if $checkin->id}id="s-timeline-content-{$checkin->id}"{/if}
-                                         {if $checkin->hasProjects}title="{$checkin->projectDurationTitle|escape}"{/if}
+                                         {if $checkin->hasProjects}title="{$checkin->projectDurationTitle|escape}"{elseif $checkin->isTrace}title="Clocked {$checkin->max-$checkin->min} minutes with {$checkin->break*60} min break = {$checkin->duration} minutes total @ {round($__checkin_density*100)}% density"{/if}
                                     ></div>
                                     {if $checkin->id && $checkin->hasProjects && !$checkin->isTrace}
                                     <style>
