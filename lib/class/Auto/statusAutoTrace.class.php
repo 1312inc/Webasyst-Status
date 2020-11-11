@@ -123,7 +123,7 @@ final class statusAutoTrace
     public function __destruct()
     {
         if ($this->debug) {
-            stts()->getLogger()->debug($this->debug);
+            stts()->getLogger()->debug($this->debug, 'trace');
         }
     }
 
