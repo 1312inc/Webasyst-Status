@@ -27,11 +27,29 @@ class statusCheckinRepository extends statusBaseRepository
      * @return statusCheckin[]
      * @throws waException
      */
-    public function findByDayAndUser(statusDay $day, statusUser $user)
+    public function findByDayAndUser(statusDay $day, statusUser $user): array
     {
         return $this->findByFields(
             ['date' => $day->getDate()->format('Y-m-d'), 'contact_id' => $user->getContactId()],
             null,
+            true
+        );
+    }
+
+    /**
+     * @param statusDay  $day
+     * @param statusUser $user
+     *
+     * @return statusCheckin[]
+     * @throws waException
+     */
+    public function findWithTraceByDayAndUser(statusDay $day, statusUser $user): array
+    {
+        return $this->generateWithData(
+            $this->getModel()->getWithTraceByContactIdAndDate(
+                $user->getContactId(),
+                $day->getDate()->format('Y-m-d')
+            ),
             true
         );
     }

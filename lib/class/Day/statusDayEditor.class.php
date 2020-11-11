@@ -21,7 +21,12 @@ class statusDayEditor
 
         /** @var statusCheckinRepository $checkinRep */
         $checkinRep = stts()->getEntityRepository(statusCheckin::class);
-        $checkins = $checkinRep->findByDayAndUser($day, $user);
+
+        if (stts()->getDebugSettings()->isShowTrace()) {
+            $checkins = $checkinRep->findWithTraceByDayAndUser($day, $user);
+        } else {
+            $checkins = $checkinRep->findByDayAndUser($day, $user);
+        }
 
         $walogs = (new statusWaLogParser())->parseByDays($day, $day, $userDto->contactId);
 

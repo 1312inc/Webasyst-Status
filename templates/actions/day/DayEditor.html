@@ -20,6 +20,7 @@
         </h1>
 
         {foreach $userDayInfo->checkins as $checkin}
+        {if $checkin->isTrace}trace{/if}
         <div class="s-editor-slider{if $stts->getDebugSettings()->isShowTrace()} s-editor-slider-exp{/if}"
              data-checkin="{$checkin->id}"
              {if $checkin->id == $userDayInfo->firstCheckin->id}data-checkin-first{/if}
@@ -40,18 +41,6 @@
                     <i style="left: {round($i*100/24)}%;" class="{if $i % 3 != 0} tick{/if}{if $i>=9 && $i<=18} day{/if}">{if $i % 3 == 0}{$i}{/if}</i>
                 {/strip}{/for}
                 </span>
-
-                {foreach $userDayInfo->walogsByDatetime as $walogByDatetime}{strip}
-                    {$_ts = strtotime($walogByDatetime.datetime)}
-                    {$_t_since_00 = $_ts - strtotime("today", $_ts)}
-                    {$_t_position = min( 100, max(0, round( 100 * $_t_since_00 / 86400)) )}
-                    {if $walogByDatetime.app_id != 'webasyst'}
-                        {$walogByDatetime.app_id}|
-                        <div class="s-timeline-content s-timeline-action-mark"
-                             style="left: {$_t_position}%; background: {$walogByDatetime.app_color};"
-                        ></div>
-                    {/if}
-                {/strip}{/foreach}
                 {/if}
                 <div class="s-editor-slider-slider"></div>
                 <div class="s-editor-slider-projects" {if !$checkin->hasProjects}style="display: none;"{/if}>
@@ -120,6 +109,20 @@
                     ><i class="icon16 s-app-icon" style="background-image: url('{$walog->appIcon}');"></i><b><i>{$walog->count}</i></b></a>
                 {/if}
             {/foreach}
+
+            {if $stts->getDebugSettings()->isShowTrace()}
+            {foreach $userDayInfo->walogsByDatetime as $walogByDatetime}{strip}
+                {$_ts = strtotime($walogByDatetime.datetime)}
+                {$_t_since_00 = $_ts - strtotime("today", $_ts)}
+                {$_t_position = min( 100, max(0, round( 100 * $_t_since_00 / 86400)) )}
+                {if $walogByDatetime.app_id != 'webasyst'}
+                    {$walogByDatetime.app_id}|
+                    <div class="s-timeline-content s-timeline-action-mark"
+                         style="left: {$_t_position}%; background: {$walogByDatetime.app_color};"
+                    ></div>
+                {/if}
+            {/strip}{/foreach}
+            {/if}
         </div>
     </div>
 </div>

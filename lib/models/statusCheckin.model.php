@@ -160,6 +160,60 @@ SQL;
     }
 
     /**
+     * @param int|array $contactIds
+     * @param string    $dateStart
+     * @param string    $dateEnd
+     * @param int|null  $projectId
+     *
+     * @return array
+     */
+    public function getWithTraceByContactIdAndDate($contactId, $date): array
+    {
+        $sql = <<<SQL
+select sc.id,
+    sc.contact_id,
+    sc.date,
+    sc.start_time,
+    sc.end_time,
+    sc.break_duration,
+    sc.total_duration,
+    sc.comment,
+    sc.timezone,
+    sc.create_datetime,
+    sc.update_datetime,
+    0 trace
+from status_checkin sc
+where sc.date = s:date 
+  and sc.contact_id = i:contact_id
+union all
+select sc.id,
+    sc.contact_id,
+    sc.date,
+    sc.start_time,
+    sc.end_time,
+    sc.break_duration,
+    sc.total_duration,
+    sc.comment,
+    sc.timezone,
+    sc.create_datetime,
+    sc.update_datetime,
+    1 trace
+from status_checkin_trace sc
+where sc.date = s:date 
+  and sc.contact_id = i:contact_id
+SQL;
+
+
+        return $this->query(
+            $sql,
+            [
+                'date' => $date,
+                'contact_id' => $contactId,
+            ]
+        )->fetchAll();
+    }
+
+    /**
      * @param string   $dateStart
      * @param string   $dateEnd
      * @param null|int $contactId
