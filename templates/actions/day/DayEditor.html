@@ -48,7 +48,11 @@
                             {foreach $userDayInfo->checkins as $c}{strip}
                                 {* sorry for the inner cycle :) *}
                                 {if $c->isTrace}
-                                    {$__checkin_density = $c->duration / ($c->max-$c->min)}
+                                    {if $c->max > $c->min}
+                                        {$__checkin_density = $c->duration / ($c->max - $c->min)}
+                                    {else}
+                                        {$__checkin_density = 0}
+                                    {/if}
                                     <div class="s-timeline-trace"
                                          style="left: {$c->minPercent}%; right: {100 - $c->maxPercent}%; opacity: {0.1 + 0.9*$__checkin_density};"
                                          title="Clocked {$c->max-$c->min} minutes with {$c->break*60} min break = {$c->duration} minutes total @ {round($__checkin_density*100)}% density"
