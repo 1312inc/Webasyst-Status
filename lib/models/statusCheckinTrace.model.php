@@ -10,14 +10,15 @@ class statusCheckinTraceModel extends statusModel
     /**
      * @param string $date
      * @param int    $endTime
+     * @param int    $contactId
      *
      * @return array
      */
-    public function getLastTraceCheckin($date, $endTime)
+    public function getLastTraceCheckin($date, $endTime, $contactId)
     {
         return $this->query(
-            'select * from status_checkin_trace where date = s:today and end_time >= i:end_time limit 1',
-            ['today' => $date, 'end_time' => $endTime]
+            'select * from status_checkin_trace where date = s:today and end_time >= i:end_time and contact_id = i:contact_id limit 1',
+            ['today' => $date, 'end_time' => $endTime, 'contact_id' => $contactId]
         )->fetchAssoc();
     }
 

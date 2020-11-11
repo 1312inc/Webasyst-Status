@@ -217,7 +217,7 @@ class statusConfig extends waAppConfig
     }
 
     /**
-     * @return cashLogger
+     * @return statusLogger
      */
     public function getLogger()
     {
