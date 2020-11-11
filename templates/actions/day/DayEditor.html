@@ -20,7 +20,7 @@
         </h1>
 
         {foreach $userDayInfo->checkins as $checkin}
-        {if $checkin->isTrace}trace{/if}
+        {if !$checkin->isTrace}
         <div class="s-editor-slider{if $stts->getDebugSettings()->isShowTrace()} s-editor-slider-exp{/if}"
              data-checkin="{$checkin->id}"
              {if $checkin->id == $userDayInfo->firstCheckin->id}data-checkin-first{/if}
@@ -42,7 +42,33 @@
                 {/strip}{/for}
                 </span>
                 {/if}
-                <div class="s-editor-slider-slider"></div>
+                <div class="s-editor-slider-slider">
+                    {if $stts->getDebugSettings()->isShowTrace()}
+                        <div class="s-editor-slider-helpers">
+                            {foreach $userDayInfo->checkins as $c}{strip}
+                                {* sorry for the inner cycle :) *}
+                                {if $c->isTrace}
+                                    {$__checkin_density = $c->duration / ($c->max-$c->min)}
+                                    <div class="s-timeline-trace"
+                                         style="left: {$c->minPercent}%; right: {100 - $c->maxPercent}%; opacity: {0.1 + 0.9*$__checkin_density};"
+                                         title="Clocked {$c->max-$c->min} minutes with {$c->break*60} min break = {$c->duration} minutes total @ {round($__checkin_density*100)}% density"
+                                    ></div>
+                                {/if}
+                            {/strip}{/foreach}
+                            {foreach $userDayInfo->walogsByDatetime as $w}{strip}
+                                {$_ts = strtotime($w.datetime)}
+                                {$_t_since_00 = $_ts - strtotime("today", $_ts)}
+                                {$_t_position = min( 100, max(0, round( 100 * $_t_since_00 / 86400)) )}
+                                {if $w.app_id != 'webasyst'}
+                                <div class="s-timeline-action-mark"
+                                     style="left: {$_t_position}%; background: {$w.app_color};"
+                                ></div>
+                                {/if}
+                            {/strip}{/foreach}
+                        </div>
+                    {/if}
+                </div>
+
                 <div class="s-editor-slider-projects" {if !$checkin->hasProjects}style="display: none;"{/if}>
                 {foreach $checkin->projectsDuration as $projectDuration}
                     <label class="s-editor-project {if $projectDuration->id}selected{/if}"
@@ -87,6 +113,7 @@
             </div>
         </form>
         </div>
+        {/if}
         {/foreach}
     </div>
 
