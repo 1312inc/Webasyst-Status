@@ -26,7 +26,11 @@
                                 {/strip}{/for}
                                 </span>
                                 {foreach $userDayInfo->checkins as $checkin}{strip}
-                                    {$__checkin_density = $checkin->duration / ($checkin->max-$checkin->min)}
+                                    {if $checkin->max > $checkin->min}
+                                        {$__checkin_density = $checkin->duration / ($checkin->max - $checkin->min)}
+                                    {else}
+                                        {$__checkin_density = 0}
+                                    {/if}
                                     <div class="s-timeline-content{if !$checkin->id} s-timeline-content-empty{/if}{if $checkin->isTrace} s-timeline-trace{/if}"
                                          style="left: {$checkin->minPercent}%; right: {100 - $checkin->maxPercent}%; opacity: {0.1 + 0.9*$__checkin_density};"
                                          {if $checkin->id}id="s-timeline-content-{$checkin->id}"{/if}
