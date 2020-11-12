@@ -9,7 +9,8 @@
         defaults: {
             isAdmin: false,
             routingOptions: {},
-            userId: 0
+            userId: 0,
+            backendUrl: ''
         },
         options: {},
         routing: {
@@ -797,6 +798,10 @@
                                 reloadDayShow = true;
                                 // savedOk(r.data, $form);
                                 $.status.reloadSidebar();
+                                if ($.status.routing.hash === 'y') {
+                                    $.get($.status.options.backendUrl + '?action=count&background_process=1&force=1&_=' + (+(new Date())));
+                                    $('#wa-applist #wa-app-status .indicator').remove();
+                                }
                             } else {
                                 $.status.log('Save day. FAIL', r);
                             }

@@ -71,7 +71,8 @@
         $.status.init({
             account_name: '{$wa->accountName()|escape}',
             isAdmin: {$isAdmin},
-            userId: {$stts->getUser()->getContactId()}
+            userId: {$stts->getUser()->getContactId()},
+            backendUrl: '{$wa_backend_url}'
         });
 
         // $.status.routing.defaultAction();
