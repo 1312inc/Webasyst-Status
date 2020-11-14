@@ -147,7 +147,6 @@
                 {$_t_since_00 = $_ts - strtotime("today", $_ts)}
                 {$_t_position = min( 100, max(0, round( 100 * $_t_since_00 / 86400)) )}
                 {if $walogByDatetime.app_id != 'webasyst'}
-                    {$walogByDatetime.app_id}|
                     <div class="s-timeline-content s-timeline-action-mark"
                          style="left: {$_t_position}%; background: {$walogByDatetime.app_color};"
                     ></div>
