@@ -109,30 +109,42 @@ class statusDayCheckinDto implements JsonSerializable
      */
     public function __construct(statusCheckin $checkin)
     {
+        $this->isTrace = (bool) $checkin->getDataField('trace');
+
+        if ($this->isTrace) {
+            $date = DateTimeImmutable::createFromFormat(
+                'Y-m-d|',
+                $checkin->getDate(),
+                wa()->getUser()->getTimezone(true)
+            );
+            $userHourDiff = (new DateTime('midnight'))->setTimezone(wa()->getUser()->getTimezone(true))->diff($date)->h;
+        } else {
+            $date = DateTimeImmutable::createFromFormat('Y-m-d|', $checkin->getDate());
+            $userHourDiff = 0;
+        }
+
         $this->id = $checkin->getId();
         $this->comment = $checkin->getComment();
-        $this->max = $checkin->getEndTime();
-        $this->min = $checkin->getStartTime();
+        $this->max = ($userHourDiff * statusTimeHelper::MINUTES_IN_HOUR) + $checkin->getEndTime();
+        $this->min = ($userHourDiff * statusTimeHelper::MINUTES_IN_HOUR) + $checkin->getStartTime();
         $this->contactId = $checkin->getContactId();
 
         $this->minPercent = statusTimeHelper::getDayMinutesInPercent($this->min);
         $this->maxPercent = statusTimeHelper::getDayMinutesInPercent($this->max);
 
-        $date = (new DateTime($checkin->getDate()))->setTime(0, 0);
         $this->startTimestamp = $date->getTimestamp() + ($checkin->getStartTime() * statusTimeHelper::MINUTES_IN_HOUR);
         $this->endTimestamp = $date->getTimestamp() + ($checkin->getEndTime() * statusTimeHelper::MINUTES_IN_HOUR);
         $this->duration = $checkin->getTotalDuration();
         $this->break = round($checkin->getBreakDuration() / 60, 1);
 
-        $this->durationString = statusTimeHelper::getTimeDurationInHuman(0, $this->duration * 60, '0'._w('h'));
+        $this->durationString = statusTimeHelper::getTimeDurationInHuman(0, $this->duration * 60, '0' . _w('h'));
 
         $this->breakString = statusTimeHelper::getTimeDurationInHuman(
             0,
-            (int)$checkin->getBreakDuration() * 60,
+            (int) $checkin->getBreakDuration() * 60,
             sprintf_wp('%dh', 1)
         );
 
-        $this->isTrace = (bool) $checkin->getDataField('trace');
     }
 
     /**
@@ -146,18 +158,18 @@ class statusDayCheckinDto implements JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'id'             => $this->id,
-            'comment'        => $this->comment,
-            'min'            => $this->min,
-            'max'            => $this->max,
-            'minPercent'     => $this->minPercent,
-            'maxPercent'     => $this->maxPercent,
+            'id' => $this->id,
+            'comment' => $this->comment,
+            'min' => $this->min,
+            'max' => $this->max,
+            'minPercent' => $this->minPercent,
+            'maxPercent' => $this->maxPercent,
             'startTimestamp' => $this->startTimestamp,
-            'endTimestamp'   => $this->endTimestamp,
-            'duration'       => $this->duration,
+            'endTimestamp' => $this->endTimestamp,
+            'duration' => $this->duration,
             'durationString' => $this->durationString,
-            'break'          => $this->break,
-            'breakString'    => $this->breakString,
+            'break' => $this->break,
+            'breakString' => $this->breakString,
         ];
     }
 }

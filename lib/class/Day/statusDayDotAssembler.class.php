@@ -68,9 +68,12 @@ final class statusDayDotAssembler
      * @param array                $walogs
      *
      * @return mixed
+     * @throws waException
      */
     public function fillWithWalogs(statusDayUserInfoDto $userDayInfoDto, array $walogs)
     {
+        $midnight = DateTimeImmutable::createFromFormat('Y-m-d|', date('Y-m-d'));
+
         foreach ($walogs as $appId => $log) {
             if (!wa()->appExists($appId)) {
                 continue;
@@ -78,7 +81,18 @@ final class statusDayDotAssembler
 
             $userDayInfoDto->walogs[$appId] = new statusWaLogDto($appId, $log);
             foreach ($log as &$item) {
+                if ($item['app_id'] === 'webasyst'
+                    || ($item['app_id'] === 'webasyst' && !in_array($item['action'], ['login', 'logout']))
+                ) {
+                    continue;
+                }
+
                 $item['app_color'] = $userDayInfoDto->walogs[$appId]->appColor;
+
+                $userDatetime = new DateTimeImmutable(waDateTime::format('fulltime', $item['datetime']));
+                $secondsFromMidnight = $userDatetime->getTimestamp() - $midnight->getTimestamp();
+                $item['position'] = min(100, max(0, round(100 * $secondsFromMidnight / statusTimeHelper::SECONDS_IN_DAY)));
+
                 $userDayInfoDto->walogsByDatetime[] = $item;
             }
             unset($item);

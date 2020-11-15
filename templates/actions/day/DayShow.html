@@ -45,14 +45,10 @@
                                     {/if}
                                 {/strip}{/foreach}
                                 {foreach $userDayInfo->walogsByDatetime as $walogByDatetime}{strip}
-                                    {$_ts = strtotime($walogByDatetime.datetime)}
-                                    {$_t_since_00 = $_ts - strtotime("today", $_ts)}
-                                    {$_t_position = min( 100, max(0, round( 100 * $_t_since_00 / 86400)) )}
-                                    {if $walogByDatetime.app_id != 'webasyst'}
                                     <div class="s-timeline-content s-timeline-action-mark"
-                                         style="left: {$_t_position}%; background: {$walogByDatetime.app_color};"
+                                         style="left: {$walogByDatetime.position}%; background: {$walogByDatetime.app_color};"
+                                         data-time="{$walogByDatetime.datetime|wa_datetime:datetime}"
                                     ></div>
-                                    {/if}
                                 {/strip}{/foreach}
                             </div>
                         </div>

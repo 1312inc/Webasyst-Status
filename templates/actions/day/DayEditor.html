@@ -60,14 +60,11 @@
                                 {/if}
                             {/strip}{/foreach}
                             {foreach $userDayInfo->walogsByDatetime as $w}{strip}
-                                {$_ts = strtotime($w.datetime)}
-                                {$_t_since_00 = $_ts - strtotime("today", $_ts)}
-                                {$_t_position = min( 100, max(0, round( 100 * $_t_since_00 / 86400)) )}
-                                {if $w.app_id != 'webasyst'}
                                 <div class="s-timeline-action-mark"
-                                     style="left: {$_t_position}%; background: {$w.app_color};"
+                                     style="left: {$w.position}%; background: {$w.app_color};"
+                                     data-time="{$w.datetime|wa_datetime:datetime}"
+
                                 ></div>
-                                {/if}
                             {/strip}{/foreach}
                         </div>
                     {/if}
@@ -139,18 +136,14 @@
                        data-status-walog-date="{$day->date}"
                     ><i class="icon16 s-app-icon" style="background-image: url('{$walog->appIcon}');"></i><b><i>{$walog->count}</i></b></a>
                 {/if}
-            {/foreach}
+            {/foreach}s-editor-slider-helpers
 
             {if $stts->getDebugSettings()->isShowTrace()}
             {foreach $userDayInfo->walogsByDatetime as $walogByDatetime}{strip}
-                {$_ts = strtotime($walogByDatetime.datetime)}
-                {$_t_since_00 = $_ts - strtotime("today", $_ts)}
-                {$_t_position = min( 100, max(0, round( 100 * $_t_since_00 / 86400)) )}
-                {if $walogByDatetime.app_id != 'webasyst'}
-                    <div class="s-timeline-content s-timeline-action-mark"
-                         style="left: {$_t_position}%; background: {$walogByDatetime.app_color};"
-                    ></div>
-                {/if}
+                <div class="s-timeline-content s-timeline-action-mark"
+                     style="left: {$walogByDatetime.position}%; background: {$walogByDatetime.app_color};"
+                     data-time="{$walogByDatetime.datetime|wa_datetime:datetime}"
+                ></div>
             {/strip}{/foreach}
             {/if}
         </div>
