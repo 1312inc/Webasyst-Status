@@ -2,7 +2,7 @@
 
 $m = new statusCheckinTraceModel();
 
-$m->exec("delete from status_checkin_trace where date < '2020-11-11'");
+$m->exec("delete from status_checkin_trace where date < '2020-11-13'");
 
 // пока все оставляем как есть
 //
