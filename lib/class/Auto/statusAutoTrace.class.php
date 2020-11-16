@@ -68,6 +68,7 @@ final class statusAutoTrace
         $this->user = $user;
 
         $this->todayWithTime = date('Y-m-d H:i:s');
+//        $this->todayWithTime = waDateTime::date('Y-m-d H:i:s', time(), $user->getTimezone());
 
         $this->traceSettings = json_decode(
             $this->settingsModel->getOne($this->user->getContactId(), statusConfig::APP_ID, self::SETTINGS_NAME),
@@ -82,6 +83,8 @@ final class statusAutoTrace
         $this->traceSettings['checkin'] = $this->todayWithTime;
         $this->today = date('Y-m-d');
         $this->now = time();
+//        $this->today = waDateTime::date('Y-m-d', time(), $user->getTimezone());
+//        $this->now = strtotime($this->todayWithTime);
         $this->currentDayMinutes = (int)(($this->now - strtotime($this->today)) / 60);
     }
 
@@ -136,7 +139,7 @@ final class statusAutoTrace
      * @throws kmwaLogicException
      * @throws waException
      */
-    private function oldCheckin($lastCheckin, $idle, $app)
+    private function oldCheckin($lastCheckin, $idle, $app): bool
     {
         /** @var statusCheckin $checkin */
         $checkin = stts()->getHydrator()->hydrate(new statusCheckin(), $lastCheckin);
@@ -221,12 +224,13 @@ final class statusAutoTrace
      * @throws kmwaLogicException
      * @throws waException
      */
-    private function newCheckin($app)
+    private function newCheckin($app): bool
     {
         $totalDuration = 1;
         /** @var statusCheckin $checkin */
         $checkin = stts()->getEntityFactory(statusCheckin::class)->createNew()
             ->setStartTime($this->currentDayMinutes)
+//            ->setDate($this->today)
             ->setTotalDuration($totalDuration)
             ->setEndTime($this->currentDayMinutes + $totalDuration)
             ->setBreakDuration(0)

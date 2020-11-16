@@ -37,7 +37,7 @@ final class statusDebugSettings
      */
     public function isShowTrace(): bool
     {
-        return $this->showTrace && $this->contact->isAdmin();
+        return $this->showTrace && stts()->getRightConfig()->isAdmin();
     }
 
     /**

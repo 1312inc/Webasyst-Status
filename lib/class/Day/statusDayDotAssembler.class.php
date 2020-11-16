@@ -91,7 +91,12 @@ final class statusDayDotAssembler
 
                 $userDatetime = new DateTimeImmutable(waDateTime::format('fulltime', $item['datetime']));
                 $secondsFromMidnight = $userDatetime->getTimestamp() - $midnight->getTimestamp();
-                $item['position'] = min(100, max(0, round(100 * $secondsFromMidnight / statusTimeHelper::SECONDS_IN_DAY)));
+                $item['position'] = min(
+                    100,
+                    max(0, round(100 * $secondsFromMidnight / statusTimeHelper::SECONDS_IN_DAY))
+                );
+//                $secondsFromMidnight =  strtotime($item['datetime']) - strtotime($item['date']);
+//                $item['position'] = min(100, max(0, round(100 * $secondsFromMidnight / statusTimeHelper::SECONDS_IN_DAY)));
 
                 $userDayInfoDto->walogsByDatetime[] = $item;
             }

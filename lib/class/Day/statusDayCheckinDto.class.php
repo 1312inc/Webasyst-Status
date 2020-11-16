@@ -144,7 +144,6 @@ class statusDayCheckinDto implements JsonSerializable
             (int) $checkin->getBreakDuration() * 60,
             sprintf_wp('%dh', 1)
         );
-
     }
 
     /**
