@@ -32,7 +32,7 @@
                                         {$__checkin_density = 0}
                                     {/if}
                                     {if $__checkin_density < 0.1}{$__checkin_density = 0.1}{/if}
-                                    <div class="s-timeline-content{if !$checkin->id} s-timeline-content-empty{/if}{if $checkin->isTrace} s-timeline-trace{if $__checkin_density < 0.2} idle{/if}{/if}"
+                                    <div class="s-timeline-content{if !$checkin->id} s-timeline-content-empty{/if}{if $checkin->isTrace} s-timeline-trace{/if}"
                                          style="left: {min(100,$checkin->minPercent)}%; right: {max(0,100 - $checkin->maxPercent)}%;"
                                          {if $checkin->id}id="s-timeline-content-{$checkin->id}"{/if}
                                          {if $checkin->hasProjects}title="{$checkin->projectDurationTitle|escape}"{elseif $checkin->isTrace}title="{sprintf('[`%d minutes of backend online time with %d%% activity (%d minutes were idle)`]', $checkin->max-$checkin->min, round($__checkin_density*100), min($checkin->max-$checkin->min,$checkin->break*60))}"{else}title="{sprintf('[`%s (project not specified)`]', $checkin->durationString)}"{/if}
@@ -98,13 +98,8 @@
                         <h4>{$userDayInfo->dayDurationString}</h4>
 
                         <h4 class="gray small">
-                            <span title="[`Active backend online time (browsing)`]">
-                                <i class="icon16 color s-trace-total-active"></i>
-                                {$userDayInfo->traceDurationString}
-                            </span>
-                            <br>
-                            <span title="[`Passive backend online time (no activity)`]">
-                                <i class="icon16 color s-trace-total-passive"></i>
+                            <span title="{sprintf('[`Webasyst online time: %s active browsing, %s idle`]', '55H55M','99H99M')}">
+                                <i class="icon16 s-trace-total-online"></i>
                                 {$userDayInfo->traceDurationString}
                             </span>
                         </h4>
@@ -199,7 +194,7 @@
                 <div class="s-day-summary-timeline"><div class="s-timeline"></div></div>
             </div>
             <div class="s-day-total">
-                <h4>0[`h`]</h4>
+                <h4>[`0 h`]</h4>
             </div>
         </div>
     {/foreach}

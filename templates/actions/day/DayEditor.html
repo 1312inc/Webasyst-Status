@@ -54,7 +54,7 @@
                                         {$__checkin_density = 0}
                                     {/if}
                                     {if $__checkin_density < 0.1}{$__checkin_density = 0.1}{/if}
-                                    <div class="s-timeline-trace{if $__checkin_density < 0.2} idle{/if}"
+                                    <div class="s-timeline-trace"
                                          style="left: {$c->minPercent}%; right: {100 - $c->maxPercent}%;"
                                          title="{sprintf('[`%d minutes of backend online time with %d%% activity (%d minutes were idle)`]', $c->max-$c->min, round($__checkin_density*100), min($c->max-$c->min,$c->break*60))}"
                                     ></div>

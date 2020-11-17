@@ -44,13 +44,13 @@
 </div>
 
 {if $stts->getDebugSettings()->isShowTrace()}
-<div class="block">
-    <h4 class="gray">[`Backend online time`]</h4>
-    <i class="icon16 color s-trace-total-active"></i>
-    {$donut->traceTotalDurationStr} [`active`]
-    <br>
-    <i class="icon16 color s-trace-total-passive"></i>
-    {$donut->traceTotalDurationStr} [`passive`]
+<div class="block" title="[`Webasyst online time`]" style="margin-top: 20px;">
+    <h4 class="gray"><i class="icon16 s-trace-total-online"></i> {sprintf('[`%s online`]', $donut->traceTotalDurationStr)}</h4>
+
+    <span class="hint">
+        {sprintf('[`%s active browsing`]','55H55M')}<br>
+        {sprintf('[`%s idle`]','99H99M')}
+    </span>
 </div>
 {/if}
 

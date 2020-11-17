@@ -52,12 +52,12 @@ final class statusDayDotAssembler
         $userDayInfoDto->dayDurationString = statusTimeHelper::getTimeDurationInHuman(
             0,
             $dayDuration * 60,
-            '0' . _w('h')
+            '0 ' . _w('h')
         );
         $userDayInfoDto->traceDurationString = statusTimeHelper::getTimeDurationInHuman(
             0,
             $traceDuration * 60,
-            '0' . _w('h')
+            '0 ' . _w('h')
         );
 
         return $this;
