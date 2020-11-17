@@ -132,7 +132,7 @@ msgstr ""
 msgid "h"
 msgstr ""
 
-msgid "0h"
+msgid "0 h"
 msgstr ""
 
 msgid "Custom status"

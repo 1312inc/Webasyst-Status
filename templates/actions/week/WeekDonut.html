@@ -44,10 +44,14 @@
 </div>
 
 {if $stts->getDebugSettings()->isShowTrace()}
-<h4 class="gray" title="[`Backend online time (browser)`]">
-    <i class="icon16 color" style="background: rgba(0,0,0,0.1);"></i>
-    {$donut->traceTotalDurationStr}
-</h4>
+<div class="block">
+    <h4 class="gray">[`Backend online time`]</h4>
+    <i class="icon16 color s-trace-total-active"></i>
+    {$donut->traceTotalDurationStr} [`active`]
+    <br>
+    <i class="icon16 color s-trace-total-passive"></i>
+    {$donut->traceTotalDurationStr} [`passive`]
+</div>
 {/if}
 
 </section>

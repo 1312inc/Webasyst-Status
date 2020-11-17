@@ -133,7 +133,7 @@ msgstr "Не было действий"
 msgid "h"
 msgstr "ч"
 
-msgid "0h"
+msgid "0 h"
 msgstr "0 ч"
 
 msgid "Custom status"

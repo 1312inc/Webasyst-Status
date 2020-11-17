@@ -53,9 +53,10 @@
                                     {else}
                                         {$__checkin_density = 0}
                                     {/if}
-                                    <div class="s-timeline-trace"
-                                         style="left: {$c->minPercent}%; right: {100 - $c->maxPercent}%; opacity: {0.1 + 0.9*$__checkin_density};"
-                                         title="Clocked {$c->max-$c->min} minutes with {$c->break*60} min break = {$c->duration} minutes total @ {round($__checkin_density*100)}% density"
+                                    {if $__checkin_density < 0.1}{$__checkin_density = 0.1}{/if}
+                                    <div class="s-timeline-trace{if $__checkin_density < 0.2} idle{/if}"
+                                         style="left: {$c->minPercent}%; right: {100 - $c->maxPercent}%;"
+                                         title="{sprintf('[`%d minutes of backend online time with %d%% activity (%d minutes were idle)`]', $c->max-$c->min, round($__checkin_density*100), min($c->max-$c->min,$c->break*60))}"
                                     ></div>
                                 {/if}
                             {/strip}{/foreach}
@@ -63,7 +64,7 @@
                                 <div class="s-timeline-action-mark"
                                      style="left: {$w.position}%; background: {$w.app_color};"
                                      data-time="{$w.datetime|wa_datetime:datetime}"
-
+                                     title="{$w.app_id} @ {$w.datetime|wa_datetime:humandatetime}"
                                 ></div>
                             {/strip}{/foreach}
                         </div>
@@ -96,7 +97,7 @@
                 </div>
             </div>
             <div class="s-editor-slider-total">
-                <h2 data-status-checkin-duration-zero="[`0h`]">{$checkin->durationString}</h2>
+                <h2 data-status-checkin-duration-zero="[`0 h`]">{$checkin->durationString}</h2>
             </div>
             <div class="s-editor-slider-break">
                 <input type="hidden" name="checkin[break]" value="0">
