@@ -651,10 +651,10 @@
 
                         $.status.log('update date duration');
                         updateDayDuration();
-                        
+
                         $.status.log('colorize slider');
                         fillSliderWithColor();
-                        
+
                         $.status.log('save data', $form.serialize());
                         save($form);
 
@@ -695,6 +695,7 @@
                     range: true,
                     min: minMax.min,
                     max: minMax.max,
+                    step: 5,
                     values: [data.start_time, data.end_time],
                     create: function (event, ui) {
                         $el.find('.ui-slider .ui-slider-handle:first').attr('data-slider-time', $.status.timeValueToStr(data.start_time / 60, 'time'));
