@@ -71,7 +71,8 @@ SQL;
                 0,
                 self::TYPE
             );
-            $dto->icon = '<i class="icon16 color" style="background: #ef81ce; background: linear-gradient(135deg, #ef81ce 25%, #f3a3d5 25%, #f3a3d5 50%, #ef81ce 50%, #ef81ce 75%, #f3a3d5 75%, #f3a3d5 100%) top center/5px 5px;"></i>';
+            $dto->icon = '<i class="icon16 color" style="background: rgb(230,167,217);
+background: linear-gradient(90deg, rgba(230,167,217,1) 0%, rgba(146,227,255,1) 100%);"></i>';
             $dtos[] = $dto;
         }
 
