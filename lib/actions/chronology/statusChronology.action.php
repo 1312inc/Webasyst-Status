@@ -120,7 +120,7 @@ class statusChronologyAction extends statusViewAction
                 && !$this->project instanceof statusProject),
             'contextUser' => $this->user,
             'tomorrowDto' => $tomorrowDto,
-            'showTrace' => stts()->getDebugSettings()->isShowTrace(),
+            'showTrace' => stts()->canShowTrace(),
         ];
         $this->view->assign($viewData);
     }

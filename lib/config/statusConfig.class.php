@@ -57,11 +57,6 @@ class statusConfig extends waAppConfig
      */
     private $logger;
 
-    /**
-     * @var statusDebugSettings
-     */
-    private $debugSettings;
-
     public function __construct($environment, $root_path, $application = null, $locale = null)
     {
         parent::__construct($environment, $root_path, $application, $locale);
@@ -219,7 +214,7 @@ class statusConfig extends waAppConfig
     /**
      * @return statusLogger
      */
-    public function getLogger()
+    public function getLogger(): statusLogger
     {
         return $this->logger;
     }
@@ -247,8 +242,9 @@ class statusConfig extends waAppConfig
 
     /**
      * @return string
+     * @throws waException
      */
-    public function getUtf8mb4ColumnsPath()
+    public function getUtf8mb4ColumnsPath(): string
     {
         return wa()->getAppPath('lib/config/utf8mb4.php', pocketlistsHelper::APP_ID);
     }
@@ -257,7 +253,7 @@ class statusConfig extends waAppConfig
      * @return statusUser
      * @throws waException
      */
-    public function getUser()
+    public function getUser(): statusUser
     {
         if ($this->user === null) {
             $this->user = $this->getEntityRepository(statusUser::class)->findByContact(wa()->getUser());
@@ -268,8 +264,9 @@ class statusConfig extends waAppConfig
 
     /**
      * @return array
+     * @throws waException
      */
-    public function getDefaultViewVars()
+    public function getDefaultViewVars(): array
     {
         return [
             'backend_url' => $this->getBackendUrl(true),
@@ -284,7 +281,7 @@ class statusConfig extends waAppConfig
     /**
      * @return statusEntityPersist
      */
-    public function getEntityPersister()
+    public function getEntityPersister(): statusEntityPersist
     {
         if ($this->persister === null) {
             $this->persister = new statusEntityPersist();
@@ -297,7 +294,7 @@ class statusConfig extends waAppConfig
      * @return statusUser
      * @throws waException
      */
-    public function getContextUser()
+    public function getContextUser(): statusUser
     {
         if ($this->contextUser === null) {
             $this->contextUser = $this->getUser();
@@ -311,7 +308,7 @@ class statusConfig extends waAppConfig
      *
      * @return statusConfig
      */
-    public function setContextUser($contextUser)
+    public function setContextUser($contextUser): statusConfig
     {
         $this->contextUser = $contextUser;
 
@@ -321,7 +318,7 @@ class statusConfig extends waAppConfig
     /**
      * @return statusRightConfig
      */
-    public function getRightConfig()
+    public function getRightConfig(): statusRightConfig
     {
         if ($this->rightConfig === null) {
             $this->rightConfig = new statusRightConfig();
@@ -359,27 +356,18 @@ class statusConfig extends waAppConfig
         }
 
         return ['count' => null, 'url' => $url];
-
     }
 
     /**
      * @return bool
+     * @throws waException
      */
     public function canShowTrace(): bool
     {
-        return (bool) $this->getInfo('show_trace');
+        return $this->getContextUser()->isMe() || $this->getRightConfig()->isAdmin($this->user);
     }
 
-    public function getDebugSettings(): statusDebugSettings
-    {
-        if ($this->debugSettings === null) {
-            $this->debugSettings = new statusDebugSettings();
-        }
-
-        return $this->debugSettings;
-    }
-
-    private function registerGlobal()
+    private function registerGlobal(): void
     {
         if (!function_exists('stts')) {
             /**
@@ -392,7 +380,7 @@ class statusConfig extends waAppConfig
         }
     }
 
-    protected function loadVendors()
+    protected function loadVendors(): void
     {
         $kmwaLoaderClassPath = 'lib/vendor/kmwa/Wa/kmwaWaConfigHelper.php';
         $appPath = wa()->getAppPath($kmwaLoaderClassPath, self::APP_ID);

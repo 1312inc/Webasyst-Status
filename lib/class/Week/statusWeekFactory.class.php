@@ -130,7 +130,7 @@ class statusWeekFactory
         }
 
         // получили чекины для каждого пользователя сгрупированные по дате/контакту
-        if (stts()->getDebugSettings()->isShowTrace()) {
+        if (stts()->canShowTrace()) {
             $checkins = $checkinRepository->findWithTraceByPeriodAndContactIds($minDay, $maxDay, array_keys($users), $projectId);
         } else {
             $checkins = $checkinRepository->findByPeriodAndContactIds($minDay, $maxDay, array_keys($users), $projectId);

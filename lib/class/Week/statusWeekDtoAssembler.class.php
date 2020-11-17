@@ -34,7 +34,7 @@ final class statusWeekDtoAssembler
             $user->getContactId()
         );
 
-        if (stts()->getDebugSettings()->isShowTrace()) {
+        if (stts()->canShowTrace()) {
             /** @var statusCheckinTraceModel $checkinTraceModel */
             $checkinTraceModel = stts()->getModel('statusCheckinTrace');
             $traceDuration = $checkinTraceModel->countTimeByDatesAndContactId(

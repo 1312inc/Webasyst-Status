@@ -9,7 +9,7 @@
         </h3>
     </div>
 
-    {if $stts->getDebugSettings()->isShowTrace()}
+    {if $stts->canShowTrace()}
 
         <div class="s-checkins">
             {foreach $day->userDayInfos as $userDayInfo}

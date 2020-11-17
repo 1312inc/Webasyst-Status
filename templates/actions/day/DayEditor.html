@@ -21,7 +21,7 @@
 
         {foreach $userDayInfo->checkins as $checkin}
         {if !$checkin->isTrace}
-        <div class="s-editor-slider{if $stts->getDebugSettings()->isShowTrace()} s-editor-slider-exp{/if}"
+        <div class="s-editor-slider{if $stts->canShowTrace()} s-editor-slider-exp{/if}"
              data-checkin="{$checkin->id}"
              {if $checkin->id == $userDayInfo->firstCheckin->id}data-checkin-first{/if}
              data-checkin-has-projects="{$checkin->hasProjects|intval}"
@@ -35,7 +35,7 @@
             <input type="hidden" name="checkin[break_duration]" value="{$checkin->break}"/>
 
             <div class="s-editor-slider-control">
-                {if $stts->getDebugSettings()->isShowTrace()}
+                {if $stts->canShowTrace()}
                 <span class="s-timeline-dial">
                 {for $i=1 to 23}{strip}
                     <i style="left: {round($i*100/24)}%;" class="{if $i % 3 != 0} tick{/if}{if $i>=9 && $i<=18} day{/if}">{if $i % 3 == 0}{$i}{/if}</i>
@@ -43,7 +43,7 @@
                 </span>
                 {/if}
                 <div class="s-editor-slider-slider">
-                    {if $stts->getDebugSettings()->isShowTrace()}
+                    {if $stts->canShowTrace()}
                         <div class="s-editor-slider-helpers">
                             {foreach $userDayInfo->checkins as $c}{strip}
                                 {* sorry for the inner cycle :) *}
@@ -139,7 +139,7 @@
                 {/if}
             {/foreach}
 
-            {if $stts->getDebugSettings()->isShowTrace()}
+            {if $stts->canShowTrace()}
             {foreach $userDayInfo->walogsByDatetime as $walogByDatetime}{strip}
                 <div class="s-timeline-content s-timeline-action-mark"
                      style="left: {$walogByDatetime.position}%; background: {$walogByDatetime.app_color};"
