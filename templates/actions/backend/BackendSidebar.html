@@ -12,8 +12,7 @@
                  <li>
                      <a href="#/contact/{$u->getContactId()}">
                          <span class="count hint" title="[`This week total`]">{$timeByUserStat[$u->getContactId()]['timeStr']}</span>
-                         <i class="icon16 userpic20" style="background-image: url({$u->getPhotoUrl()})"></i>
-                         {if !$u->isExists()}<span class="gray">{/if}{$u->getName()|escape}{if !$u->isExists()}</span>{/if}
+                         <i class="icon16 userpic20" style="background-image: url({$u->getPhotoUrl()})"></i>{if !$u->isExists()}<span class="gray">{/if}{$u->getName()|escape}{if !$u->isExists()}</span>{/if}
                          {if $u->getTodayStatus()->getStatusId()}
                          <span class="s-status nowrap"
                                style="background-color: {$u->getTodayStatus()->getBgColor()}; color: {$u->getTodayStatus()->getFontColor()}"

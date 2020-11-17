@@ -136,7 +136,7 @@ i.icon16.s-app-icon { background-size: 16px 16px; }
 .s-editor-slider-slider.ui-slider .ui-slider-handle::after { content: attr(data-slider-time); }
 .s-editor-slider-slider.ui-slider.ui-state-disabled { opacity: 1; }
 
-.s-editor-slider.s-editor-slider-exp .ui-slider-horizontal { height: 25px; background: rgba(0,0,0,0.075); position: relative; box-shadow: 0 1px 5px -3px rgba(0,0,0,0.2) inset; overflow: hidd1en; }
+.s-editor-slider.s-editor-slider-exp .ui-slider-horizontal { height: 25px; background: rgba(0,0,0,0.075); position: relative; overflow: hidd1en; }
 .s-editor-slider.s-editor-slider-exp .s-editor-slider-control { padding-top: 0; position: relative; }
 .s-editor-slider.s-editor-slider-exp .s-editor-slider-slider.ui-slider .ui-slider-range { top: 7px; z-index: 3; }
 .s-editor-slider.s-editor-slider-exp .s-editor-slider-slider.ui-slider .ui-slider-handle { top: 4px; z-index: 4; }
