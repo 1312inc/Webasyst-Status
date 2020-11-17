@@ -16,6 +16,10 @@ class statusBackendSidebarAction extends statusViewAction
         $teammates = [];
         $users = stts()->getEntityRepository(statusUser::class)->findAllExceptMe();
 
+        usort($users, function (statusUser $user) {
+           return !$user->isExists();
+        });
+
         if (wa()->appExists('team')) {
             wa('team');
 
@@ -37,12 +41,12 @@ class statusBackendSidebarAction extends statusViewAction
         }
 
         foreach ($users as $id => $user) {
-            if (!stts()->getRightConfig()->hasAccessToTeammate($user->getContactId())) {
+            if (!$user->isExists() && !$user->getContact()->exists()) {
                 unset($users[$id]);
                 continue;
             }
 
-            if (!$user->isExists()) {
+            if (!stts()->getRightConfig()->hasAccessToTeammate($user->getContactId())) {
                 unset($users[$id]);
                 continue;
             }

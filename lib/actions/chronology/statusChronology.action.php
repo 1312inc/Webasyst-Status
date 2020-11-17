@@ -46,7 +46,7 @@ class statusChronologyAction extends statusViewAction
             $this->user = stts()->getEntityFactory(statusUser::class)->createNewWithContact(new waContact($contactId));
         }
 
-        if (!$this->user->isExists()) {
+        if (!$this->user->getContact()->exists()) {
             throw new kmwaNotFoundException('User not found');
         }
 
