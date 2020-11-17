@@ -119,7 +119,7 @@
                         <div class="s-day-summary-timeline"><div class="s-timeline"></div></div>
                     </div>
                     <div class="s-day-total">
-                        <h4>0[`h`]</h4>
+                        <h4>[`0 h`]</h4>
                     </div>
                 </div>
             {/foreach}
@@ -135,7 +135,7 @@
             <div class="s-day-summary-timeline">
                 <div class="s-timeline">{strip}
                     <div class="s-timeline-content{if !$checkin->id} s-timeline-content-empty{/if}"
-                         style="left: {min(100,$checkin->minPercent)}%; right: {max(0,100 - $checkin->maxPercent)}%;
+                         style="left: {min(100,$checkin->minPercent)}%; right: {max(0,100 - $checkin->maxPercent)}%;"
                          {if $checkin->id}id="s-timeline-content-{$checkin->id}"{/if}
                          {if $checkin->hasProjects}title="{$checkin->projectDurationTitle|escape}"{/if}
                     ></div>
