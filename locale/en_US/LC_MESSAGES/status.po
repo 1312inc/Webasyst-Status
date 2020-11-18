@@ -11,7 +11,7 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: .\n"
 "Language: en_US\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.3\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: .\n"
 
@@ -280,4 +280,37 @@ msgid "Can see reports for all projects and users"
 msgstr ""
 
 msgid "No report access"
+msgstr ""
+
+msgid "Webasyst online time"
+msgstr ""
+
+msgid "%s online"
+msgstr ""
+
+msgid "Webasyst online time is tracked automatically based on the user activity across different apps."
+msgstr ""
+
+msgid "Active time is counted when the user is browsing the Webasyst backend with a browser navigating from one app to another. Idle time is counted when the backend is opened in a browser window, but nothing happens, i.e. even a mouse cursor won’t move."
+msgstr ""
+
+msgid "Only the user and the Status app admin can see this online time data."
+msgstr ""
+
+msgid "%s active"
+msgstr ""
+
+msgid "%s idle"
+msgstr ""
+
+msgid "%d minutes of Webasyst online time: %s active, %s idle"
+msgstr ""
+
+msgid "%s (project not specified)"
+msgstr ""
+
+msgid "Webasyst online time: %s active, %s idle"
+msgstr ""
+
+msgid "Automatic backend online time tracking will be enabled only after access to the Status app is granted for the user."
 msgstr ""

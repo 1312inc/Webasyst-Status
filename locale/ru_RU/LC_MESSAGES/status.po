@@ -12,7 +12,7 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: .\n"
 "Language: ru_RU\n"
-"X-Generator: Poedit 1.8.7\n"
+"X-Generator: Poedit 2.3\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: .\n"
 
@@ -303,3 +303,36 @@ msgstr "Может смотреть отчеты по всем проектам 
 
 msgid "No report access"
 msgstr "Нет доступа к отчетам"
+
+msgid "Webasyst online time"
+msgstr "Онлайн в бекенде Webasyst"
+
+msgid "%s online"
+msgstr "%s онлайн"
+
+msgid "Webasyst online time is tracked automatically based on the user activity across different apps."
+msgstr "Онлайн-время в бекенде считается по всем установленным приложениям Webasyst."
+
+msgid "Active time is counted when the user is browsing the Webasyst backend with a browser navigating from one app to another. Idle time is counted when the backend is opened in a browser window, but nothing happens, i.e. even a mouse cursor won’t move."
+msgstr "Активное время — это работа в приложениях Webasyst в браузере и переходы между приложениями. Пассивное время (без действий) — это когда бекенд Webasyst открыт в браузере, но никаких действий не выполняется, и даже курсор мыши не двигается."
+
+msgid "Only the user and the Status app admin can see this online time data."
+msgstr "Данные видны только самому пользователю и администратору Webasyst."
+
+msgid "%s active"
+msgstr "%s активно"
+
+msgid "%s idle"
+msgstr "%s без действий"
+
+msgid "%d minutes of Webasyst online time: %s active, %s idle"
+msgstr "%d минут онлайн в бекенде Webasyst: %s активно, %s без действий"
+
+msgid "%s (project not specified)"
+msgstr "%s (проект не указан)"
+
+msgid "Webasyst online time: %s active, %s idle"
+msgstr "Онлайн в бекенде Webasyst: %s активно, %s без действий"
+
+msgid "Automatic backend online time tracking will be enabled only after access to the Status app is granted for the user."
+msgstr "Автоматический подсчет времени, проведенного онлайн в бекенде Webasyst, будет работать только после предоставления пользователю доступа к приложению «Статус»."
