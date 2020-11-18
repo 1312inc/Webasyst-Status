@@ -159,3 +159,7 @@ i.icon16.s-app-icon { background-size: 16px 16px; }
 .s-reports-table table.light tr:hover td { background: #f2f7ff; }
 .s-reports-table table.light thead th { padding-bottom: 5px; }
 .s-reports-table table.light tr.s-subrow td { padding-left: 26px; }
+
+.tooltip-anchor .tooltip { display: none; }
+.tooltip-anchor:hover .tooltip { display: block; left: auto; right: 20px; top: -10px; font-weight: normal; text-align: left; }
+.tooltip-anchor:hover .tooltip .body { display: block; }

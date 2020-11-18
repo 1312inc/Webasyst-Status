@@ -45,10 +45,26 @@
 
 {if $stts->canShowTrace()}
 <div class="block" title="[`Webasyst online time`]" style="margin-top: 20px;">
-    <h4 class="gray"><i class="icon16 s-trace-total-online"></i> {sprintf('[`%s online`]', $donut->traceTotalDurationStr)}</h4>
+    <h4 class="gray">
+        <i class="icon16 s-trace-total-online"></i> {sprintf('[`%s online`]', $donut->traceTotalDurationStr)}
+
+        <div class="tooltip-anchor">
+            <i class="icon10 info"></i>
+            <div class="tooltip">
+                <span class="body">
+                    [`Webasyst online time is tracked automatically based on the user activity across different apps.`]
+                    <br><br>
+                    [`Active time is counted when the user is browsing the Webasyst backend with a browser navigating from one app to another. Idle time is counted when the backend is opened in a browser window, but nothing happens, i.e. even a mouse cursor won’t move.`]
+                    <br><br>
+                    <em>[`Only the user and the Status app admin can see this online time data.`]</em>
+                </span>
+            </div>
+        </div>
+    </h4>
 
     <span class="hint">
-        {sprintf('[`%s active browsing`]','55H55M')}<br>
+        {sprintf('[`%s active`]','55H55M')}
+        <br>
         {sprintf('[`%s idle`]','99H99M')}
     </span>
 </div>

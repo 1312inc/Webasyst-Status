@@ -31,11 +31,10 @@
                                     {else}
                                         {$__checkin_density = 0}
                                     {/if}
-                                    {if $__checkin_density < 0.1}{$__checkin_density = 0.1}{/if}
                                     <div class="s-timeline-content{if !$checkin->id} s-timeline-content-empty{/if}{if $checkin->isTrace} s-timeline-trace{/if}"
                                          style="left: {min(100,$checkin->minPercent)}%; right: {max(0,100 - $checkin->maxPercent)}%;"
                                          {if $checkin->id}id="s-timeline-content-{$checkin->id}"{/if}
-                                         {if $checkin->hasProjects}title="{$checkin->projectDurationTitle|escape}"{elseif $checkin->isTrace}title="{sprintf('[`%d minutes of backend online time with %d%% activity (%d minutes were idle)`]', $checkin->max-$checkin->min, round($__checkin_density*100), min($checkin->max-$checkin->min,$checkin->break*60))}"{else}title="{sprintf('[`%s (project not specified)`]', $checkin->durationString)}"{/if}
+                                         {if $checkin->hasProjects}title="{$checkin->projectDurationTitle|escape}"{elseif $checkin->isTrace}title="{sprintf('[`%d minutes of Webasyst online time: %s active, %s idle`]', $checkin->max-$checkin->min, $checkin->durationString, $checkin->breakString)}"{else}title="{sprintf('[`%s (project not specified)`]', $checkin->durationString)}"{/if}
                                     ></div>
                                     {if $checkin->id && $checkin->hasProjects && !$checkin->isTrace}
                                     <style>
@@ -98,7 +97,7 @@
                         <h4>{$userDayInfo->dayDurationString}</h4>
 
                         <h4 class="gray small">
-                            <span title="{sprintf('[`Webasyst online time: %s active browsing, %s idle`]', '55H55M','99H99M')}">
+                            <span title="{sprintf('[`Webasyst online time: %s active, %s idle`]', '55H55M','99H99M')}">
                                 <i class="icon16 s-trace-total-online"></i>
                                 {$userDayInfo->traceDurationString}
                             </span>
