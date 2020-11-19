@@ -95,7 +95,7 @@
                 <div class="s-day-total">
                     <h4>{$userDayInfo->dayDurationString}</h4>
 
-                    {if $stts->canShowTrace()}
+                    {if $stts->canShowTrace() && !$isProject}
                     <h4 class="gray small">
                         <span title="{sprintf('[`Webasyst online time: %s active, %s idle`]', $userDayInfo->traceDurationString, $userDayInfo->traceBreakDurationString)}">
                             <i class="icon16 s-trace-total-online"></i>

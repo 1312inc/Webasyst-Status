@@ -4,7 +4,7 @@
 
         <h5 class="heading align-center">[`This week`]</h5>
 
-        {include file='./../week/WeekDonut.html' donut=$currentWeek->donut inline}
+        {include file='./../week/WeekDonut.html' donut=$currentWeek->donut isProject=$isProject}
 
         {*
         <div class="block">
@@ -30,12 +30,6 @@
         </div>
 
     {elseif $isMe}
-
-        {if !$contextUser->getLastCheckinDatetime()}
-            <div class="s-title">
-                <p>[`Hello & welcome! Add your first work report by dragging the time slider below or by setting your daily status so all your teammates get to know what you are up to today.`]</span></p>
-            </div>
-        {/if}
 
         <!-- Tomorrow: SET TAG ONLY: Office / Remote / Ill / Day off / Custom tag -->
         <div class="s-tomorrow-planner">
@@ -96,7 +90,7 @@
     <div class="s-day{if $day->isFromCurrentWeek} s-this-week{/if}{if !$isMe} s-non-clickable{elseif !$isProject} s-editable{/if}"
          data-status-day-date="{$day->date}"
     >
-        {include inline file='./../day/DayShow.html' day=$day}
+        {include inline file='./../day/DayShow.html' day=$day isProject=$isProject}
     </div>
     {/foreach}
 
