@@ -47,7 +47,7 @@ i.icon16.s-app-icon { background-size: 16px 16px; }
 
 .s-timeline.s-timeline-exp { height: 25px; background: rgba(0,0,0,0.06125); margin-top: -3px; }
 .s-timeline.s-timeline-exp .s-timeline-content { top: 8px; bottom: 7px; border-radius: 6px; }
-.s-timeline.s-timeline-exp .s-timeline-content.s-timeline-trace { z-index: 1; background: rgba(0,0,0,0.05); top: 0; bottom: 0; border-radius: 0; min-width: 2px; }
+.s-timeline.s-timeline-exp .s-timeline-content.s-timeline-trace { z-index: 1; background: rgba(0,0,0,0.075); top: 0; bottom: 0; border-radius: 0; min-width: 2px; }
 .s-timeline.s-timeline-exp .s-timeline-content.s-timeline-action-mark { z-index: 2; width: 2px; background: black; top: 0; bottom: 0; border-radius: 0; }
 .s-timeline.s-timeline-exp .s-timeline-content.s-timeline-action-mark:hover { width: 4px; margin-left: -1px; transition: 0.2s; }
 
@@ -142,7 +142,7 @@ i.icon16.s-app-icon { background-size: 16px 16px; }
 .s-editor-slider.s-editor-slider-exp .s-editor-slider-slider.ui-slider .ui-slider-range { top: 7px; z-index: 3; }
 .s-editor-slider.s-editor-slider-exp .s-editor-slider-slider.ui-slider .ui-slider-handle { top: 4px; z-index: 4; }
 .s-editor-slider.s-editor-slider-exp .s-editor-slider-slider .s-editor-slider-helpers { position: absolute; top: 0; bottom: 0; left: 0; right: 2%; }
-.s-editor-slider.s-editor-slider-exp .s-editor-slider-slider .s-editor-slider-helpers .s-timeline-trace { position: absolute; z-index: 1; background: rgba(0,0,0,0.05); top: 0; bottom: 0; border-radius: 0; min-width: 2px; }
+.s-editor-slider.s-editor-slider-exp .s-editor-slider-slider .s-editor-slider-helpers .s-timeline-trace { position: absolute; z-index: 1; background: rgba(0,0,0,0.075); top: 0; bottom: 0; border-radius: 0; min-width: 2px; }
 
 .icon16.s-trace-total-online { background: rgba(0,0,0,0.13); border-radius: 2px; width: 10px; height: 10px; margin-top: 3px; }
 
