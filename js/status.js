@@ -486,9 +486,8 @@
                     checkinId = $form.find('[name="checkin[id]"]').val(),
                     minMax = {'min': 0, 'max': 1440};
 
-                var getCheckinDuration = function () {
-                        var values = $slider.slider('option', 'values'),
-                            checkinDuration = values[1] - values[0];
+                var getCheckinDuration = function (values) {
+                        var checkinDuration = values[1] - values[0];
 
                         if (checkinBreak.isOn()) {
                             checkinDuration -= (checkinBreak.value() * 60)
@@ -499,12 +498,12 @@
 
                         return checkinDuration;
                     },
-                    updateDayDuration = function (val) {
-                        var duration = getCheckinDuration(),
+                    updateDayDuration = function (values) {
+                        var duration = getCheckinDuration(values),
                             value = $checkinDuration.data('status-checkin-duration-zero');
 
                         if (duration > 0) {
-                            value = $.status.timeValueToStr(getCheckinDuration() / 60);
+                            value = $.status.timeValueToStr(duration / 60);
                         }
                         $checkinDuration.text(value);
                     },
@@ -650,7 +649,7 @@
                         }
 
                         $.status.log('update date duration');
-                        updateDayDuration();
+                        updateDayDuration($slider.slider('option', 'values'));
 
                         $.status.log('colorize slider');
                         fillSliderWithColor();
@@ -661,7 +660,7 @@
                         window.console && console.groupEnd();
                     };
 
-                updateDayDuration();
+                // updateDayDuration($slider.slider('values'));
                 // $checkinDuration.text($.status.timeValueToStr($form.find('[name="checkin[total_duration]"]').val() / 60));
 
 
@@ -685,7 +684,7 @@
                         values2.push(values[0] < minMax.min ? minMax.min : values[0]);
                         values2.push(values[1] > minMax.max ? minMax.max : values[1]);*/
 
-                        updateDayDuration();
+                        updateDayDuration($slider.slider('option', 'values'));
                         save($form);
                     });
 
@@ -704,7 +703,7 @@
                         if (hasProjects) {
                             fillSliderWithColor();
                         }
-                        updateDayDuration();
+                        updateDayDuration($slider.slider('option', 'values'));
                         if (data.id) {
                             //меняем цвет слайдера на s-active, чтобы показать, что данные сохранились
                             $el.find('.ui-slider').addClass('s-active');
@@ -712,7 +711,7 @@
                         }
                     },
                     slide: function (event, ui) {
-                        updateDayDuration();
+                        updateDayDuration(ui.values);
                         // if (checkinBreak.isOn() && duration > (24 - checkinBreak.value()) * 60) {
                         //     return false;
                         // }
