@@ -105,6 +105,8 @@ i.icon16.s-app-icon { background-size: 16px 16px; }
 .s-editor-status { border-radius: 1rem; background: rgba(0,0,0,0.05); color: #aaa; padding: 5px 6px 5px 10px !important; }
 .s-editor .s-duration-label { font-size: 0.9em; color: #888; border-radius: 2px; padding: 1px 2px 2px; }
 .s-editor .s-duration-input { display: none; width: 2rem; font-size: 0.9em; margin-top: -4px; }
+.s-editor .s-welcome-note { margin: 15px 0px; max-width: 80%; color: #666; }
+.s-editor .s-welcome-note strong { color: #000; }
 .s-editor .s-checkin-reminder { color: #f50; font-weight: bold; }
 .s-editor-slider { padding: 20px 0 10px; display: flex; width: 100%; }
 .s-editor-slider form { overflow: visible; }

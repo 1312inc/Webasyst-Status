@@ -19,6 +19,12 @@
             </span>
         </h1>
 
+        {if 11111}
+            <div class="s-welcome-note">
+                <p>🎉 [`<strong class="highlighted">Hello and welcome!</strong> Add your first work report by <strong>dragging the time slider</strong> or by <strong>selecting your daily status</strong> in the menu so all your teammates get to know what you are up to on this day.`]</p>
+            </div>
+        {/if}
+
         {foreach $userDayInfo->checkins as $checkin}
         {if !$checkin->isTrace}
         <div class="s-editor-slider{if $stts->canShowTrace()} s-editor-slider-exp{/if}"
