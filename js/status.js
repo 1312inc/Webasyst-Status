@@ -871,7 +871,9 @@
                         $editorHtml.find('.s-editor-commit-indicator').hide();
                     })
                     .on('keydown.stts', '.s-editor-comment', function (e) {
-                        if ((e.ctrlKey || e.metaKey) && (e.keyCode || e.which) === 13) {
+                        // ctrl + enter || ctrl + s
+                        if ((e.ctrlKey || e.metaKey) && ((e.keyCode || e.which) === 13 || (e.keyCode || e.which) === 83)) {
+                            e.preventDefault();
                             saveComment();
                         }
                     })
