@@ -28,7 +28,7 @@ class statusDayEditor
             $checkins = $checkinRep->findByDayAndUser($day, $user);
         }
 
-        $walogs = (new statusWaLogParser())->parseByDays($day, $day, $userDto->contactId, true);
+        $walogs = (new statusWaLogParser())->parseByDays($day, $day, $userDto->contactId);
 
         $dayDtoAssembler = new statusDayDotAssembler();
         $dayDtoAssembler

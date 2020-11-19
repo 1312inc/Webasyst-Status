@@ -142,7 +142,7 @@ class statusWeekFactory
         $walogs = [];
         $projectData = [];
         foreach ($userDtos as $userDto) {
-            $walogs[$userDto->contactId] = $logParser->parseByDays($minDay, $maxDay, $userDto->contactId, true);
+            $walogs[$userDto->contactId] = $logParser->parseByDays($minDay, $maxDay, $userDto->contactId);
             $projectData[$userDto->contactId] = $projectModel->getByDatesAndContactId(
                 $minDay->getDate()->format('Y-m-d'),
                 $maxDay->getDate()->format('Y-m-d'),
