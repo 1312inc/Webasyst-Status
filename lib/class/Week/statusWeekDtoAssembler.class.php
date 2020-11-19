@@ -37,14 +37,35 @@ final class statusWeekDtoAssembler
         if (stts()->canShowTrace()) {
             /** @var statusCheckinTraceModel $checkinTraceModel */
             $checkinTraceModel = stts()->getModel('statusCheckinTrace');
+            $traceDurationWithBreak = $checkinTraceModel->countTimeByDatesAndContactId(
+                $week->getFirstDay()->getDate()->format('Y-m-d'),
+                $week->getLastDay()->getDate()->format('Y-m-d'),
+                $user->getContactId(),
+                'total_duration_with_break'
+            );
+            $donut->traceTotalDurationWithBreakStr = statusTimeHelper::getTimeDurationInHuman(
+                0,
+                $traceDurationWithBreak * statusTimeHelper::SECONDS_IN_MINUTE
+            );
             $traceDuration = $checkinTraceModel->countTimeByDatesAndContactId(
                 $week->getFirstDay()->getDate()->format('Y-m-d'),
                 $week->getLastDay()->getDate()->format('Y-m-d'),
-                $user->getContactId()
+                $user->getContactId(),
+                'total_duration'
             );
             $donut->traceTotalDurationStr = statusTimeHelper::getTimeDurationInHuman(
                 0,
                 $traceDuration * statusTimeHelper::SECONDS_IN_MINUTE
+            );
+            $traceBreakDuration = $checkinTraceModel->countTimeByDatesAndContactId(
+                $week->getFirstDay()->getDate()->format('Y-m-d'),
+                $week->getLastDay()->getDate()->format('Y-m-d'),
+                $user->getContactId(),
+                'break_duration'
+            );
+            $donut->traceTotalBreakStr = statusTimeHelper::getTimeDurationInHuman(
+                0,
+                $traceBreakDuration * statusTimeHelper::SECONDS_IN_MINUTE
             );
         }
 

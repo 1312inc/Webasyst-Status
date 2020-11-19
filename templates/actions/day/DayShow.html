@@ -96,9 +96,9 @@
                     <h4>{$userDayInfo->dayDurationString}</h4>
 
                     <h4 class="gray small">
-                        <span title="{sprintf('[`Webasyst online time: %s active, %s idle`]', '55H55M','99H99M')}">
+                        <span title="{sprintf('[`Webasyst online time: %s active, %s idle`]', $userDayInfo->traceDurationString, $userDayInfo->traceBreakDurationString)}">
                             <i class="icon16 s-trace-total-online"></i>
-                            {$userDayInfo->traceDurationString}
+                            {$userDayInfo->traceDurationWithBreakString}
                         </span>
                     </h4>
                 </div>

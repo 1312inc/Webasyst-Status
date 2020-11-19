@@ -46,7 +46,7 @@
 {if $stts->canShowTrace()}
 <div class="block" title="[`Webasyst online time`]" style="margin-top: 20px;">
     <h4 class="gray">
-        <i class="icon16 s-trace-total-online"></i> {sprintf('[`%s online`]', $donut->traceTotalDurationStr)}
+        <i class="icon16 s-trace-total-online"></i> {sprintf('[`%s online`]', $donut->traceTotalDurationWithBreakStr)}
 
         <div class="tooltip-anchor">
             <i class="icon10 info"></i>
@@ -63,9 +63,9 @@
     </h4>
 
     <span class="hint">
-        {sprintf('[`%s active`]','55H55M')}
+        {sprintf('[`%s active`]', $donut->traceTotalDurationStr)}
         <br>
-        {sprintf('[`%s idle`]','99H99M')}
+        {sprintf('[`%s idle`]', $donut->traceTotalBreakStr)}
     </span>
 </div>
 {/if}
