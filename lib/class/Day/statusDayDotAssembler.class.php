@@ -115,31 +115,36 @@ final class statusDayDotAssembler
             unset($item);
         }
 
-        usort($userDayInfoDto->walogsByDatetime, static function($a, $b) {
-           return $a['datetime'] < $b['datetime'];
-        });
+        usort(
+            $userDayInfoDto->walogsByDatetime,
+            static function ($a, $b) {
+                return $a['datetime'] < $b['datetime'];
+            }
+        );
 
         return $this;
     }
 
     /**
-     * @param statusDayCheckinDto[] $checkins
-     * @param array                 $projectData
+     * @param array<statusDayCheckinDto> $checkins
+     * @param array                      $projectData
      *
      * @return mixed
      * @throws Exception
      */
     public function fillCheckinsWithProjects(array $checkins, array $projectData)
     {
-        /** @var statusDayCheckinDto $checkin */
         foreach ($checkins as $checkin) {
+            if ($checkin->isTrace) {
+                continue;
+            }
+
             $css = [];
             $title = [];
             $percents = 0;
 
-            /** @var statusDayProjectDto $projectDto */
             foreach ($this->getProjectsDto() as $projectDto) {
-                $key = $checkin->id.'_'.$projectDto->id;
+                $key = $checkin->id . '_' . $projectDto->id;
                 if (isset($projectData[$key])) {
                     $checkin->hasProjects = true;
                     $checkin->projectsDuration[$projectDto->id] = new statusDayProjectDurationDto(
@@ -155,19 +160,19 @@ final class statusDayDotAssembler
                 $projectDurationDto = $checkin->projectsDuration[$projectDto->id];
                 $value = $checkin->duration ? round($projectDurationDto->duration / ($checkin->duration / 100)) : 0;
                 $checkin->projectPercents[$projectDto->id] = $value;
-                $css[] = $projectDurationDto->project->color.' '.$percents.'%';
+                $css[] = $projectDurationDto->project->color . ' ' . $percents . '%';
                 $percents += $value;
-                $css[] = $projectDurationDto->project->color.' '.$percents.'%';
+                $css[] = $projectDurationDto->project->color . ' ' . $percents . '%';
                 $title[] = $projectDurationDto->project->name
-                    .': '
-                    .statusTimeHelper::getTimeDurationInHuman(
+                    . ': '
+                    . statusTimeHelper::getTimeDurationInHuman(
                         0,
                         $projectDurationDto->duration * statusTimeHelper::SECONDS_IN_MINUTE
                     );
             }
 
             if ($percents < 100) {
-                $css[] = '#f1f2f3 '.$percents.'%';
+                $css[] = '#f1f2f3 ' . $percents . '%';
                 $css[] = '#f1f2f3 100%';
             }
 
@@ -179,10 +184,10 @@ final class statusDayDotAssembler
     }
 
     /**
-     * @return statusDayProjectDto[]
+     * @return array<statusDayProjectDto>
      * @throws waException
      */
-    private function getProjectsDto()
+    private function getProjectsDto(): array
     {
         if ($this->projectsDtos === null) {
             $this->projectsDtos = [];
