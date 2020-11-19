@@ -21,7 +21,7 @@ final class statusDayDotAssembler
      */
     public function fillWithCheckins(statusDayUserInfoDto $userDayInfoDto, array $checkins, statusUserDto $userDto)
     {
-        $traceDuration = $dayDuration = 0;
+        $traceDuration = $dayDuration = $traceDurationWithBreak = $traceBreakDuration = 0;
         $hasManualCheckins = false;
         foreach ($checkins as $check) {
             $checkin = new statusDayCheckinDto($check);
@@ -40,6 +40,8 @@ final class statusDayDotAssembler
                 $dayDuration += $checkin->duration;
             } else {
                 $traceDuration += $checkin->duration;
+                $traceBreakDuration += $checkin->break;
+                $traceDurationWithBreak += ($checkin->duration + $checkin->break);
             }
         }
 
@@ -52,12 +54,22 @@ final class statusDayDotAssembler
         $userDayInfoDto->dayDurationString = statusTimeHelper::getTimeDurationInHuman(
             0,
             $dayDuration * 60,
-            '0' . _w('h')
+            '0 ' . _w('h')
         );
         $userDayInfoDto->traceDurationString = statusTimeHelper::getTimeDurationInHuman(
             0,
             $traceDuration * 60,
-            '0' . _w('h')
+            '0 ' . _w('h')
+        );
+        $userDayInfoDto->traceDurationWithBreakString = statusTimeHelper::getTimeDurationInHuman(
+            0,
+            $traceDurationWithBreak * 60,
+            '0 ' . _w('h')
+        );
+        $userDayInfoDto->traceBreakDurationString = statusTimeHelper::getTimeDurationInHuman(
+            0,
+            $traceBreakDuration * 60,
+            '0 ' . _w('h')
         );
 
         return $this;
@@ -68,9 +80,12 @@ final class statusDayDotAssembler
      * @param array                $walogs
      *
      * @return mixed
+     * @throws waException
      */
     public function fillWithWalogs(statusDayUserInfoDto $userDayInfoDto, array $walogs)
     {
+        $midnight = DateTimeImmutable::createFromFormat('Y-m-d|', date('Y-m-d'));
+
         foreach ($walogs as $appId => $log) {
             if (!wa()->appExists($appId)) {
                 continue;
@@ -78,37 +93,58 @@ final class statusDayDotAssembler
 
             $userDayInfoDto->walogs[$appId] = new statusWaLogDto($appId, $log);
             foreach ($log as &$item) {
+                if ($item['app_id'] === 'webasyst'
+                    || ($item['app_id'] === 'webasyst' && !in_array($item['action'], ['login', 'logout']))
+                ) {
+                    continue;
+                }
+
                 $item['app_color'] = $userDayInfoDto->walogs[$appId]->appColor;
+
+                $userDatetime = new DateTimeImmutable(waDateTime::format('fulltime', $item['datetime']));
+                $secondsFromMidnight = $userDatetime->getTimestamp() - $midnight->getTimestamp();
+                $item['position'] = min(
+                    100,
+                    max(0, round(100 * $secondsFromMidnight / statusTimeHelper::SECONDS_IN_DAY))
+                );
+//                $secondsFromMidnight =  strtotime($item['datetime']) - strtotime($item['date']);
+//                $item['position'] = min(100, max(0, round(100 * $secondsFromMidnight / statusTimeHelper::SECONDS_IN_DAY)));
+
                 $userDayInfoDto->walogsByDatetime[] = $item;
             }
             unset($item);
         }
 
-        usort($userDayInfoDto->walogsByDatetime, static function($a, $b) {
-           return $a['datetime'] < $b['datetime'];
-        });
+        usort(
+            $userDayInfoDto->walogsByDatetime,
+            static function ($a, $b) {
+                return $a['datetime'] < $b['datetime'];
+            }
+        );
 
         return $this;
     }
 
     /**
-     * @param statusDayCheckinDto[] $checkins
-     * @param array                 $projectData
+     * @param array<statusDayCheckinDto> $checkins
+     * @param array                      $projectData
      *
      * @return mixed
      * @throws Exception
      */
     public function fillCheckinsWithProjects(array $checkins, array $projectData)
     {
-        /** @var statusDayCheckinDto $checkin */
         foreach ($checkins as $checkin) {
+            if ($checkin->isTrace) {
+                continue;
+            }
+
             $css = [];
             $title = [];
             $percents = 0;
 
-            /** @var statusDayProjectDto $projectDto */
             foreach ($this->getProjectsDto() as $projectDto) {
-                $key = $checkin->id.'_'.$projectDto->id;
+                $key = $checkin->id . '_' . $projectDto->id;
                 if (isset($projectData[$key])) {
                     $checkin->hasProjects = true;
                     $checkin->projectsDuration[$projectDto->id] = new statusDayProjectDurationDto(
@@ -124,19 +160,19 @@ final class statusDayDotAssembler
                 $projectDurationDto = $checkin->projectsDuration[$projectDto->id];
                 $value = $checkin->duration ? round($projectDurationDto->duration / ($checkin->duration / 100)) : 0;
                 $checkin->projectPercents[$projectDto->id] = $value;
-                $css[] = $projectDurationDto->project->color.' '.$percents.'%';
+                $css[] = $projectDurationDto->project->color . ' ' . $percents . '%';
                 $percents += $value;
-                $css[] = $projectDurationDto->project->color.' '.$percents.'%';
+                $css[] = $projectDurationDto->project->color . ' ' . $percents . '%';
                 $title[] = $projectDurationDto->project->name
-                    .': '
-                    .statusTimeHelper::getTimeDurationInHuman(
+                    . ': '
+                    . statusTimeHelper::getTimeDurationInHuman(
                         0,
                         $projectDurationDto->duration * statusTimeHelper::SECONDS_IN_MINUTE
                     );
             }
 
             if ($percents < 100) {
-                $css[] = '#f1f2f3 '.$percents.'%';
+                $css[] = '#f1f2f3 ' . $percents . '%';
                 $css[] = '#f1f2f3 100%';
             }
 
@@ -148,10 +184,10 @@ final class statusDayDotAssembler
     }
 
     /**
-     * @return statusDayProjectDto[]
+     * @return array<statusDayProjectDto>
      * @throws waException
      */
-    private function getProjectsDto()
+    private function getProjectsDto(): array
     {
         if ($this->projectsDtos === null) {
             $this->projectsDtos = [];

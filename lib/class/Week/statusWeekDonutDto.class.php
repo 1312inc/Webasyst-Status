@@ -26,6 +26,16 @@ class statusWeekDonutDto
     public $traceTotalDurationStr = '';
 
     /**
+     * @var string
+     */
+    public $traceTotalDurationWithBreakStr = '';
+
+    /**
+     * @var string
+     */
+    public $traceTotalBreakStr = '';
+
+    /**
      * @var int
      */
     public $weekNum = 0;

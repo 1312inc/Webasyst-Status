@@ -26,19 +26,39 @@ class statusCheckinTraceModel extends statusModel
      * @param string $dateStart
      * @param string $dateEnd
      * @param int    $contactId
+     * @param string $type
      *
      * @return int
      */
-    public function countTimeByDatesAndContactId($dateStart, $dateEnd, $contactId): int
+    public function countTimeByDatesAndContactId($dateStart, $dateEnd, $contactId, $type): int
     {
         $sql = <<<SQL
-select sum(sc.total_duration) duration_by_user 
+select sum(%s) duration_by_user 
 from status_checkin_trace sc
 where sc.contact_id = i:contact_id 
   and sc.date between s:date1 and s:date2
 SQL;
 
-        return (int) $this->query($sql, ['contact_id' => $contactId, 'date1' => $dateStart, 'date2' => $dateEnd])
+        $select = '';
+        switch ($type) {
+            case 'total_duration':
+                $select = 'sc.total_duration';
+                break;
+
+            case 'break_duration':
+                $select = 'break_duration';
+                break;
+
+            case 'total_duration_with_break':
+            default:
+                $select = 'sc.total_duration + sc.break_duration';
+                break;
+        }
+
+        return (int) $this->query(
+                sprintf($sql, $select),
+                ['contact_id' => $contactId, 'date1' => $dateStart, 'date2' => $dateEnd]
+            )
             ->fetchField('duration_by_user');
     }
 }

@@ -26,7 +26,7 @@ class statusWaLogParser
      *
      * @return array
      */
-    public function parseByWeeks(array $weeks, statusUser $user)
+    public function parseByWeeks(array $weeks, statusUser $user): array
     {
         if (empty($weeks)) {
             return [];
@@ -50,7 +50,7 @@ class statusWaLogParser
      * @return array
      * @throws waException
      */
-    public function parseByDays(statusDay $dayStart, statusDay $dayEnd, $contactId, $explain = false)
+    public function parseByDays(statusDay $dayStart, statusDay $dayEnd, $contactId, $explain = false): array
     {
         $sql = <<<SQL
 SELECT l.*,

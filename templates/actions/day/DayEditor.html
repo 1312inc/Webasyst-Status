@@ -19,9 +19,15 @@
             </span>
         </h1>
 
+        {if !$stts->getContextUser()->getLastCheckinDatetime()}
+            <div class="s-welcome-note">
+                <p>🎉 [`<strong class="highlighted">Hello and welcome!</strong> Add your first work report by <strong>dragging the time slider</strong> or by <strong>selecting your daily status</strong> in the menu so all your teammates get to know what you are up to on this day.`]</p>
+            </div>
+        {/if}
+
         {foreach $userDayInfo->checkins as $checkin}
         {if !$checkin->isTrace}
-        <div class="s-editor-slider{if $stts->getDebugSettings()->isShowTrace()} s-editor-slider-exp{/if}"
+        <div class="s-editor-slider{if $stts->canShowTrace()} s-editor-slider-exp{/if}"
              data-checkin="{$checkin->id}"
              {if $checkin->id == $userDayInfo->firstCheckin->id}data-checkin-first{/if}
              data-checkin-has-projects="{$checkin->hasProjects|intval}"
@@ -35,15 +41,15 @@
             <input type="hidden" name="checkin[break_duration]" value="{$checkin->break}"/>
 
             <div class="s-editor-slider-control">
-                {if $stts->getDebugSettings()->isShowTrace()}
+                {if $stts->canShowTrace()}
                 <span class="s-timeline-dial">
                 {for $i=1 to 23}{strip}
-                    <i style="left: {round($i*100/24)}%;" class="{if $i % 3 != 0} tick{/if}{if $i>=9 && $i<=18} day{/if}">{if $i % 3 == 0}{$i}{/if}</i>
+                    <i style="left: {round($i*100/24)}%;" class="{if $i % 3 != 0} tick{/if}{if $i>=9 && $i<=18} day{/if}" title="{$i}:00">{if $i % 3 == 0}{$i}{/if}</i>
                 {/strip}{/for}
                 </span>
                 {/if}
                 <div class="s-editor-slider-slider">
-                    {if $stts->getDebugSettings()->isShowTrace()}
+                    {if $stts->canShowTrace()}
                         <div class="s-editor-slider-helpers">
                             {foreach $userDayInfo->checkins as $c}{strip}
                                 {* sorry for the inner cycle :) *}
@@ -54,20 +60,17 @@
                                         {$__checkin_density = 0}
                                     {/if}
                                     <div class="s-timeline-trace"
-                                         style="left: {$c->minPercent}%; right: {100 - $c->maxPercent}%; opacity: {0.1 + 0.9*$__checkin_density};"
-                                         title="Clocked {$c->max-$c->min} minutes with {$c->break*60} min break = {$c->duration} minutes total @ {round($__checkin_density*100)}% density"
+                                         style="left: {min(100,$c->minPercent)}%; right: {max(0,100 - $c->maxPercent)}%;"
+                                         title="{sprintf('[`%d minutes of Webasyst online time: %s active, %s idle`]', $c->max-$c->min, $c->durationString, $c->breakString)}"
                                     ></div>
                                 {/if}
                             {/strip}{/foreach}
                             {foreach $userDayInfo->walogsByDatetime as $w}{strip}
-                                {$_ts = strtotime($w.datetime)}
-                                {$_t_since_00 = $_ts - strtotime("today", $_ts)}
-                                {$_t_position = min( 100, max(0, round( 100 * $_t_since_00 / 86400)) )}
-                                {if $w.app_id != 'webasyst'}
                                 <div class="s-timeline-action-mark"
-                                     style="left: {$_t_position}%; background: {$w.app_color};"
+                                     style="left: {$w.position}%; background: {$w.app_color};"
+                                     data-time="{$w.datetime|wa_datetime:datetime}"
+                                     title="{$w.app_id} @ {$w.datetime|wa_datetime:humandatetime}"
                                 ></div>
-                                {/if}
                             {/strip}{/foreach}
                         </div>
                     {/if}
@@ -99,7 +102,7 @@
                 </div>
             </div>
             <div class="s-editor-slider-total">
-                <h2 data-status-checkin-duration-zero="[`0h`]">{$checkin->durationString}</h2>
+                <h2 data-status-checkin-duration-zero="[`0 h`]">{$checkin->durationString}</h2>
             </div>
             <div class="s-editor-slider-break">
                 <input type="hidden" name="checkin[break]" value="0">
@@ -125,7 +128,10 @@
     <div class="s-editor-summary block double-padded blank">
         <textarea class="s-editor-comment" placeholder="[`Enter your daily report here...`]" name="checkin[comment]">{$userDayInfo->firstCheckin->comment|escape}</textarea>
         <div class="s-editor-commit">
-            <input type="button" value="[`Save`]" class="button yellow s-editor-commit-button" />
+            <span class="s-editor-commit-button">
+                <em class="hint">Ctrl + S &nbsp;</em>
+                <input type="button" value="[`Save`]" class="button yellow" />
+            </span>
             <span class="s-editor-commit-indicator italic gray">[`Saved`] <i class="icon16 yes-bw"></i></span>
         </div>
 
@@ -141,17 +147,12 @@
                 {/if}
             {/foreach}
 
-            {if $stts->getDebugSettings()->isShowTrace()}
+            {if $stts->canShowTrace()}
             {foreach $userDayInfo->walogsByDatetime as $walogByDatetime}{strip}
-                {$_ts = strtotime($walogByDatetime.datetime)}
-                {$_t_since_00 = $_ts - strtotime("today", $_ts)}
-                {$_t_position = min( 100, max(0, round( 100 * $_t_since_00 / 86400)) )}
-                {if $walogByDatetime.app_id != 'webasyst'}
-                    {$walogByDatetime.app_id}|
-                    <div class="s-timeline-content s-timeline-action-mark"
-                         style="left: {$_t_position}%; background: {$walogByDatetime.app_color};"
-                    ></div>
-                {/if}
+                <div class="s-timeline-content s-timeline-action-mark"
+                     style="left: {$walogByDatetime.position}%; background: {$walogByDatetime.app_color};"
+                     data-time="{$walogByDatetime.datetime|wa_datetime:datetime}"
+                ></div>
             {/strip}{/foreach}
             {/if}
         </div>

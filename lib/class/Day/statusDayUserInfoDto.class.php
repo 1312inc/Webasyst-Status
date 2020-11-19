@@ -66,6 +66,16 @@ class statusDayUserInfoDto
     public $traceDurationString = '';
 
     /**
+     * @var string
+     */
+    public $traceDurationWithBreakString = '';
+
+    /**
+     * @var string
+     */
+    public $traceBreakDurationString = '';
+
+    /**
      * statusDayCheckinUserDto constructor.
      *
      * @param $date

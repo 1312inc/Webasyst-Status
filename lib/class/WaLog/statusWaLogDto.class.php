@@ -18,7 +18,7 @@ class statusWaLogDto
     /**
      * @var string
      */
-    public $appColor = 'orangered';
+    public $appColor = '#777777'; //fallback for apps with no sash color
 
     /**
      * @var string

@@ -34,17 +34,38 @@ final class statusWeekDtoAssembler
             $user->getContactId()
         );
 
-        if (stts()->getDebugSettings()->isShowTrace()) {
+        if (stts()->canShowTrace()) {
             /** @var statusCheckinTraceModel $checkinTraceModel */
             $checkinTraceModel = stts()->getModel('statusCheckinTrace');
+            $traceDurationWithBreak = $checkinTraceModel->countTimeByDatesAndContactId(
+                $week->getFirstDay()->getDate()->format('Y-m-d'),
+                $week->getLastDay()->getDate()->format('Y-m-d'),
+                $user->getContactId(),
+                'total_duration_with_break'
+            );
+            $donut->traceTotalDurationWithBreakStr = statusTimeHelper::getTimeDurationInHuman(
+                0,
+                $traceDurationWithBreak * statusTimeHelper::SECONDS_IN_MINUTE
+            );
             $traceDuration = $checkinTraceModel->countTimeByDatesAndContactId(
                 $week->getFirstDay()->getDate()->format('Y-m-d'),
                 $week->getLastDay()->getDate()->format('Y-m-d'),
-                $user->getContactId()
+                $user->getContactId(),
+                'total_duration'
             );
             $donut->traceTotalDurationStr = statusTimeHelper::getTimeDurationInHuman(
                 0,
                 $traceDuration * statusTimeHelper::SECONDS_IN_MINUTE
+            );
+            $traceBreakDuration = $checkinTraceModel->countTimeByDatesAndContactId(
+                $week->getFirstDay()->getDate()->format('Y-m-d'),
+                $week->getLastDay()->getDate()->format('Y-m-d'),
+                $user->getContactId(),
+                'break_duration'
+            );
+            $donut->traceTotalBreakStr = statusTimeHelper::getTimeDurationInHuman(
+                0,
+                $traceBreakDuration * statusTimeHelper::SECONDS_IN_MINUTE
             );
         }
 
@@ -102,7 +123,8 @@ final class statusWeekDtoAssembler
 
         $noProjectDuration = $donut->totalDuration - $projectDuration;
         $noProjectDegree = $noProjectDuration > 0? round($noProjectDuration / $degrees, 2) : 0;
-        $noProjectDto = new statusWeekDonutDataDto(0, _w('No project'), '#ef81ce; background: linear-gradient(135deg, #ef81ce 25%, #f3a3d5 25%, #f3a3d5 50%, #ef81ce 50%, #ef81ce 75%, #f3a3d5 75%, #f3a3d5 100%) top center/5px 5px', $noProjectDuration);
+        $noProjectDto = new statusWeekDonutDataDto(0, _w('No project'), 'rgb(230,167,217);
+background: linear-gradient(135deg, rgb(225, 127, 206) 0%, rgb(225, 127, 206) 25%, rgba(52,203,254,1) 25%, rgba(52,203,254,1) 50%, rgb(225, 127, 206) 50%, rgb(225, 127, 206) 75%, rgba(52,203,254,1) 75%, rgba(52,203,254,1) 100%); background-size: 7px 7px', $noProjectDuration);
         $donut->data[0] = $noProjectDto;
         $noProjectDto->rotations[] = [
             'from' => $prevDegree,

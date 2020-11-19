@@ -9,16 +9,17 @@ class statusServiceStatusChecker
 
     /**
      * @param statusUser $user
+     * @param bool       $force
      *
      * @return bool
      * @throws waException
      */
-    public function hasActivityYesterday(statusUser $user)
+    public function hasActivityYesterday(statusUser $user, $force = false)
     {
         $contactId = $user->getContactId();
         $key = sprintf('%s_%d', self::CACHE_KEY, $contactId);
         $cached = stts()->getCache()->get($key);
-        if ($cached !== null) {
+        if ($cached !== null && !$force) {
             return $cached;
         }
 
@@ -58,7 +59,7 @@ class statusServiceStatusChecker
      */
     private function cacheAndReturn($key, $result)
     {
-        stts()->getCache()->set($key, $result, 120);
+        stts()->getCache()->set($key, $result, 200);
 
         return $result;
     }

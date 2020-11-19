@@ -5,6 +5,10 @@
  */
 class statusBackendLocController extends waViewController
 {
+    protected function preExecute()
+    {
+    }
+
     public function execute()
     {
         $this->executeAction(new statusBackendLocAction());

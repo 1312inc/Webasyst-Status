@@ -153,7 +153,7 @@ trait kmwaWaUserTrait
             $this->login = $this->contact->get('login');
             $this->userPic = $this->contact->getPhoto(20);
             $this->status = $this->contact->getStatus();
-            $this->exists = $this->contact->get('is_user') != -1;
+            $this->exists = $this->contact->get('is_user') == 1;
             $this->email = $this->contact->get('email', 'default');
             $this->timezone = $this->contact->getTimezone();
         }

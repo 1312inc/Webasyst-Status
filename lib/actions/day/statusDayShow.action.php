@@ -41,6 +41,7 @@ class statusDayShowAction extends statusViewAction
                 'day' => $dayDto,
                 'statuses' => statusTodayStatusFactory::getAllForUser($user),
                 'user' => new statusUserDto($user),
+                'isProject' => false,
             ]
         );
     }

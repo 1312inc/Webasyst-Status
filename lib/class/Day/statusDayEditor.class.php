@@ -22,7 +22,7 @@ class statusDayEditor
         /** @var statusCheckinRepository $checkinRep */
         $checkinRep = stts()->getEntityRepository(statusCheckin::class);
 
-        if (stts()->getDebugSettings()->isShowTrace()) {
+        if (stts()->canShowTrace()) {
             $checkins = $checkinRep->findWithTraceByDayAndUser($day, $user);
         } else {
             $checkins = $checkinRep->findByDayAndUser($day, $user);
