@@ -993,7 +993,7 @@
             } else {
                 title = '';
             }
-            $('title').html(title + $_('Status') + ' &mdash; ' + self.options.account_name);
+            $('title').text(title + $_('Status') + ' &mdash; ' + self.options.account_name);
         },
         init: function (o) {
             var self = this;
