@@ -122,7 +122,10 @@
     <div class="s-editor-summary block double-padded blank">
         <textarea class="s-editor-comment" placeholder="[`Enter your daily report here...`]" name="checkin[comment]">{$userDayInfo->firstCheckin->comment|escape}</textarea>
         <div class="s-editor-commit">
-            <input type="button" value="[`Save`]" class="button yellow s-editor-commit-button" />
+            <span class="s-editor-commit-button">
+                <em class="hint">Ctrl + S &nbsp;</em>
+                <input type="button" value="[`Save`]" class="button yellow" />
+            </span>
             <span class="s-editor-commit-indicator italic gray">[`Saved`] <i class="icon16 yes-bw"></i></span>
         </div>
 

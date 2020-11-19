@@ -126,7 +126,8 @@ i.icon16.s-app-icon { background-size: 16px 16px; }
 .s-editor-summary textarea.s-editor-comment:disabled { background: transparent; }
 .s-editor-summary .s-logged-apps { border-top: 1px solid #eee; padding-top: 20px; }
 .s-editor-summary .s-editor-commit { float: right; padding-top: 20px; }
-.s-editor-summary .s-editor-commit .s-editor-commit-button { margin-top: -9px; display: none; }
+.s-editor-summary .s-editor-commit .s-editor-commit-button { display: none; }
+.s-editor-summary .s-editor-commit .s-editor-commit-button input { margin-top: -9px; }
 .s-editor-summary .s-editor-commit .s-editor-commit-indicator { display: none; }
 
 .s-editor-slider-slider.ui-slider { width: 100%; }
