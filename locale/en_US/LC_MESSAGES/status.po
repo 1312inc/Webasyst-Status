@@ -314,3 +314,6 @@ msgstr ""
 
 msgid "Automatic backend online time tracking will be enabled only after access to the Status app is granted for the user."
 msgstr ""
+
+msgid "<strong class=\"highlighted\">Hello and welcome!</strong> Add your first work report by <strong>dragging the time slider</strong> or by <strong>selecting your daily status</strong> in the menu so all your teammates get to know what you are up to on this day."
+msgstr ""

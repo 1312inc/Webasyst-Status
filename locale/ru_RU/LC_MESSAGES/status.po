@@ -336,3 +336,6 @@ msgstr "Онлайн в бекенде Webasyst: %s активно, %s без д
 
 msgid "Automatic backend online time tracking will be enabled only after access to the Status app is granted for the user."
 msgstr "Автоматический подсчет времени, проведенного онлайн в бекенде Webasyst, будет работать только после предоставления пользователю доступа к приложению «Статус»."
+
+msgid "<strong class=\"highlighted\">Hello and welcome!</strong> Add your first work report by <strong>dragging the time slider</strong> or by <strong>selecting your daily status</strong> in the menu so all your teammates get to know what you are up to on this day."
+msgstr "<strong class=\"highlighted\">Добро пожаловать!</strong> Добавьте свой первый отчет о работе, <strong>указав рабочее время с помощью слайдера</strong> ниже или <strong>выбрав статус на день</strong> в меню справа."
