@@ -43,7 +43,7 @@
     {/foreach}
 </div>
 
-{if $stts->canShowTrace()}
+{if $stts->canShowTrace() && !$isProject}
 <div class="block" title="[`Webasyst online time`]" style="margin-top: 20px;">
     <h4 class="gray">
         <i class="icon16 s-trace-total-online"></i> {sprintf('[`%s online`]', $donut->traceTotalDurationWithBreakStr)}
