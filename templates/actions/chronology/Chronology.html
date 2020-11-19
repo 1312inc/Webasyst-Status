@@ -31,7 +31,11 @@
 
     {elseif $isMe}
 
-
+        {if !$contextUser->getLastCheckinDatetime()}
+            <div class="s-title">
+                <p>[`Hello & welcome! Add your first work report by dragging the time slider below or by setting your daily status so all your teammates get to know what you are up to today.`]</span></p>
+            </div>
+        {/if}
 
         <!-- Tomorrow: SET TAG ONLY: Office / Remote / Ill / Day off / Custom tag -->
         <div class="s-tomorrow-planner">
