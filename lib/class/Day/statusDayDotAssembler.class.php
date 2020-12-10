@@ -11,6 +11,16 @@ final class statusDayDotAssembler
     private $projectsDtos;
 
     /**
+     * @var statusUserContactRepository
+     */
+    private $statusUserContactRepository;
+
+    public function __construct()
+    {
+        $this->statusUserContactRepository = new statusUserContactRepository();
+    }
+
+    /**
      * @param statusDayUserInfoDto $userDayInfoDto
      * @param statusCheckin[]      $checkins
      * @param statusUserDto        $userDto
@@ -84,7 +94,7 @@ final class statusDayDotAssembler
      */
     public function fillWithWalogs(statusDayUserInfoDto $userDayInfoDto, array $walogs)
     {
-        $midnight = DateTimeImmutable::createFromFormat('Y-m-d|', date('Y-m-d'));
+        $contactRep = new statusUserContactRepository();
 
         foreach ($walogs as $appId => $log) {
             if (!wa()->appExists($appId)) {
@@ -99,10 +109,15 @@ final class statusDayDotAssembler
                     continue;
                 }
 
+                $midnight = statusTimeHelper::createDatetimeForUser(
+                    'Y-m-d 00:00:00',
+                    null,
+                    $this->statusUserContactRepository->loadContact($item['contact_id'])
+                );
                 $item['app_color'] = $userDayInfoDto->walogs[$appId]->appColor;
 
-                $userDatetime = new DateTimeImmutable(waDateTime::format('fulltime', $item['datetime']));
-                $secondsFromMidnight = $userDatetime->getTimestamp() - $midnight->getTimestamp();
+                $userDatetime = strtotime($item['datetime']);
+                $secondsFromMidnight = $userDatetime - $midnight->getTimestamp();
                 $item['position'] = min(
                     100,
                     max(0, round(100 * $secondsFromMidnight / statusTimeHelper::SECONDS_IN_DAY))

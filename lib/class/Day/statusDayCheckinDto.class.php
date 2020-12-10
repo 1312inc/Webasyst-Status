@@ -117,11 +117,10 @@ class statusDayCheckinDto implements JsonSerializable
                 $checkin->getDate(),
                 wa()->getUser()->getTimezone(true)
             );
-            $userHourDiff = (new DateTime('midnight'))->setTimezone(wa()->getUser()->getTimezone(true))->diff($date)->h;
         } else {
             $date = DateTimeImmutable::createFromFormat('Y-m-d|', $checkin->getDate());
-            $userHourDiff = 0;
         }
+        $userHourDiff = 0;
 
         $this->id = $checkin->getId();
         $this->comment = $checkin->getComment();

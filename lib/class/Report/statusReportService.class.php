@@ -32,7 +32,7 @@ final class statusReportService
     public static function getPeriods()
     {
         if (empty(self::$datePeriods)) {
-            $date = new DateTimeImmutable();
+            $date = DateTimeImmutable::createFromMutable(statusTimeHelper::createDatetimeForUser());
             self::$datePeriods[] = new statusDatePeriodVO(
                 $date->modify('-30 days')->setTime(0, 0),
                 clone $date->setTime(23, 59, 59),

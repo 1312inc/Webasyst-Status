@@ -85,7 +85,13 @@ class statusChronologyAction extends statusViewAction
         $weeksDto = statusWeekFactory::getWeeksDto($weeks, $this->user, $this->project);
         $currentWeek = array_shift($weeksDto);
 
-        $tomorrow = new statusDay(new DateTime('tomorrow'));
+        $serverTomorrow = new DateTime('+1 day');
+        $userTomorrow = statusTimeHelper::createDatetimeForUser(
+            'Y-m-d H:i:s',
+            $serverTomorrow,
+            $this->user->getContact()
+        )->setTime(0, 0, 0);
+        $tomorrow = new statusDay($userTomorrow);
         $tomorrowDto = new statusDayDto($tomorrow);
         $userDto = new statusUserDto($this->user);
         $tomorrowDto->users[$userDto->contactId] = $userDto;
@@ -107,16 +113,16 @@ class statusChronologyAction extends statusViewAction
             'weeks' => $weeksDto,
             'sidebar_html' => (new statusBackendSidebarAction())->display(),
             'current_contact_id' => $this->user->getContactId(),
-            'isMe' => (int)$this->isMe,
-            'isProject' => (int)$this->isProject,
-            'tomorrow' => (new DateTime())->modify('+1 day')->format('Y-m-d'),
+            'isMe' => (int) $this->isMe,
+            'isProject' => (int) $this->isProject,
+            'tomorrow' => $userTomorrow->format('Y-m-d'),
             'statuses' => statusTodayStatusFactory::getAllForUser($this->user),
             'nextStatus' => statusTodayStatusFactory::getForContactId(
                 $this->user->getContactId(),
-                (new DateTime())->modify('+1 day')
+                statusTimeHelper::createDatetimeForUser('Y-m-d H:i:s', $serverTomorrow, $this->user->getContact())
             ),
             'project' => $this->project,
-            'dayEditable' => (int)($this->user->getContactId() == stts()->getUser()->getContactId()
+            'dayEditable' => (int) ($this->user->getContactId() == stts()->getUser()->getContactId()
                 && !$this->project instanceof statusProject),
             'contextUser' => $this->user,
             'tomorrowDto' => $tomorrowDto,

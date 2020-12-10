@@ -67,8 +67,7 @@ final class statusAutoTrace
         $this->settingsModel = stts()->getModel('waContactSettings');
         $this->user = $user;
 
-        $this->todayWithTime = date('Y-m-d H:i:s');
-//        $this->todayWithTime = waDateTime::date('Y-m-d H:i:s', time(), $user->getTimezone());
+        $this->todayWithTime = waDateTime::date('Y-m-d H:i:s', time(), $user->getTimezone());
 
         $this->traceSettings = json_decode(
             $this->settingsModel->getOne($this->user->getContactId(), statusConfig::APP_ID, self::SETTINGS_NAME),
@@ -81,11 +80,9 @@ final class statusAutoTrace
             ];
         }
         $this->traceSettings['checkin'] = $this->todayWithTime;
-        $this->today = date('Y-m-d');
-        $this->now = time();
-//        $this->today = waDateTime::date('Y-m-d', time(), $user->getTimezone());
-//        $this->now = strtotime($this->todayWithTime);
-        $this->currentDayMinutes = (int)(($this->now - strtotime($this->today)) / 60);
+        $this->today = waDateTime::date('Y-m-d', time(), $user->getTimezone());
+        $now = strtotime($this->todayWithTime);
+        $this->currentDayMinutes = (int)(($now - strtotime($this->today)) / 60);
     }
 
     /**

@@ -17,7 +17,7 @@ class statusWalogDialogAction extends statusViewAction
         $date = waRequest::request('date', waRequest::TYPE_STRING_TRIM);
         $contactId = waRequest::request('contact_id', waRequest::TYPE_INT);
         if (!$date) {
-            $date = date('Y-m-d');
+            $date = statusTimeHelper::createDatetimeForUser()->format('Y-m-d');
         }
 
         $user = stts()->getEntityRepository(statusUser::class)->findByContactId($contactId);

@@ -40,7 +40,7 @@ class statusReportAction extends statusViewAction
                     $this->getUser()->getSettings(
                         statusConfig::APP_ID,
                         self::SETTING_PERIOD_DATE_START,
-                        (new DateTime())->modify('-1 month')->format('Y-m-d')
+                        statusTimeHelper::createDatetimeForUser('Y-m-d')->modify('-1 month')->format('Y-m-d')
                     ),
                     waRequest::TYPE_STRING_TRIM
                 )
@@ -51,7 +51,7 @@ class statusReportAction extends statusViewAction
                     $this->getUser()->getSettings(
                         statusConfig::APP_ID,
                         self::SETTING_PERIOD_DATE_END,
-                        (new DateTime())->format('Y-m-d')
+                        statusTimeHelper::createDatetimeForUser('Y-m-d')->format('Y-m-d')
                     ),
                     waRequest::TYPE_STRING_TRIM
                 )

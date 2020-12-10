@@ -5,12 +5,12 @@
  */
 final class statusTimeHelper
 {
-    public const MINUTES_IN_DAY = 1440;
-    public const SECONDS_IN_DAY         = 86400;
-    public const MINUTES_IN_HOUR = 60;
-    public const SECONDS_IN_MINUTE      = 60;
-    public const MINUTES_10AM = 600;
-    public const MINUTES_18PM = 1080;
+    public const MINUTES_IN_DAY    = 1440;
+    public const SECONDS_IN_DAY    = 86400;
+    public const MINUTES_IN_HOUR   = 60;
+    public const SECONDS_IN_MINUTE = 60;
+    public const MINUTES_10AM      = 600;
+    public const MINUTES_18PM      = 1080;
 
     /**
      * @param int $minutes
@@ -19,7 +19,7 @@ final class statusTimeHelper
      */
     public static function getDayMinutesInPercent($minutes)
     {
-        return round($minutes / (24 * 60 / 100));
+        return round($minutes / (24 * 60 / 100), 1);
     }
 
     /**
@@ -32,7 +32,9 @@ final class statusTimeHelper
      */
     public static function getTimeDurationInHuman($startTimestamp, $endTimestamp, $default = '0')
     {
-        $durationDiff = (new DateTime(date('Y-m-d H:i:s', $endTimestamp)))->diff(new DateTime(date('Y-m-d H:i:s', $startTimestamp)));
+        $durationDiff = (new DateTime(date('Y-m-d H:i:s', $endTimestamp)))->diff(
+            new DateTime(date('Y-m-d H:i:s', $startTimestamp))
+        );
 
         $humanFormat = [];
         $hours = 0;
@@ -60,6 +62,31 @@ final class statusTimeHelper
      */
     public static function getWeekNumberByDate(DateTimeInterface $date)
     {
-        return (int)$date->format('W');
+        return (int) $date->format('W');
+    }
+
+    /**
+     * @param string                        $format
+     * @param string|DateTimeInterface|null $time
+     * @param waContact|null                $user
+     *
+     * @return DateTime
+     * @throws waException
+     */
+    public static function createDatetimeForUser($format = 'Y-m-d H:i:s', $time = null, waContact $user = null)
+    {
+        if (!$user) {
+            $user = wa()->getUser();
+        }
+
+        if ($time === null) {
+            $time = date($format);
+        } elseif ($time instanceof DateTimeInterface) {
+            $time = $time->format($format);
+        }
+
+        $waTime = waDateTime::date($format, $time, $user->getTimezone());
+
+        return new DateTime($waTime);
     }
 }

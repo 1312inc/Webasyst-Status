@@ -34,6 +34,11 @@
                                      style="left: {min(100,$checkin->minPercent)}%; right: {max(0,100 - $checkin->maxPercent)}%;"
                                      {if $checkin->id}id="s-timeline-content-{$checkin->id}"{/if}
                                      {if $checkin->hasProjects}title="{$checkin->projectDurationTitle|escape}"{elseif $checkin->isTrace}title="{sprintf('[`%d minutes of Webasyst online time: %s active, %s idle`]', $checkin->max-$checkin->min, $checkin->durationString, $checkin->breakString)}"{else}title="{sprintf('[`%s (project not specified)`]', $checkin->durationString)}"{/if}
+                                     data-trace-id="{$checkin->id}"
+                                     data-trace-start="{$checkin->startTimestamp|wa_datetime}"
+                                     data-trace-end="{$checkin->endTimestamp|wa_datetime}"
+                                     data-trace-start-server="{date('Y-m-d H:i:s', $checkin->startTimestamp)}"
+                                     data-trace-end-server="{date('Y-m-d H:i:s', $checkin->endTimestamp)}"
                                 ></div>
                                 {if $checkin->id && $checkin->hasProjects && !$checkin->isTrace}
                                 <style>
