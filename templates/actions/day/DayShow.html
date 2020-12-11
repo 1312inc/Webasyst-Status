@@ -24,6 +24,7 @@
                                 <i style="left: {round($i*100/24)}%;" class="{if $i % 3 != 0} tick{/if}{if $i>=9 && $i<=18} day{/if}" title="{$i}:00">{if $i % 3 == 0}{$i}{/if}</i>
                             {/strip}{/for}
                             </span>
+                            {** @var statusDayCheckinDto $checkin **}
                             {foreach $userDayInfo->checkins as $checkin}{strip}
                                 {if $checkin->max > $checkin->min}
                                     {$__checkin_density = $checkin->duration / ($checkin->max - $checkin->min)}

@@ -50,8 +50,8 @@ final class statusDayDotAssembler
                 $dayDuration += $checkin->duration;
             } else {
                 $traceDuration += $checkin->duration;
-                $traceBreakDuration += $checkin->break;
-                $traceDurationWithBreak += ($checkin->duration + $checkin->break);
+                $traceBreakDuration += ($checkin->max - $checkin->min - $checkin->duration);
+                $traceDurationWithBreak += ($checkin->max - $checkin->min);
             }
         }
 

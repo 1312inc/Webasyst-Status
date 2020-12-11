@@ -16,21 +16,29 @@ class statusDayCheckinDto implements JsonSerializable
     public $comment;
 
     /**
+     * Время начала чекина (мин)
+     *
      * @var int
      */
     public $min = 0;
 
     /**
+     * Время окончания чекина (мин)
+     *
      * @var int
      */
     public $max = 0;
 
     /**
+     * Время начала чекина (unix)
+     *
      * @var int
      */
     public $startTimestamp = 0;
 
     /**
+     * Время окончания чекина (unix)
+     *
      * @var int
      */
     public $endTimestamp = 0;
@@ -46,6 +54,8 @@ class statusDayCheckinDto implements JsonSerializable
     public $durationString = '';
 
     /**
+     * Перерыв в часах
+     *
      * @var int
      */
     public $break = 1;
@@ -61,11 +71,15 @@ class statusDayCheckinDto implements JsonSerializable
     public $contactId;
 
     /**
+     * Время начала чекина (проценты от дня)
+     *
      * @var float
      */
     public $minPercent;
 
     /**
+     * Время окончания чекина (проценты от дня)
+     *
      * @var float
      */
     public $maxPercent;
