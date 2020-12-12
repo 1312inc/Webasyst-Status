@@ -61,7 +61,7 @@
                                     {/if}
                                     <div class="s-timeline-trace"
                                          style="left: {min(100,$c->minPercent)}%; right: {max(0,100 - $c->maxPercent)}%;"
-                                         title="{sprintf('[`%d minutes of Webasyst online time: %s active, %s idle`]', $c->max-$c->min, $c->durationString, $c->breakString)}"
+                                         title="{sprintf('[`%s // %d minutes of Webasyst online time: %s active, %s idle`]', $c->durationDatetimeTitle|escape, $c->max-$c->min, $c->durationString, $c->breakString)}"
                                          data-trace-id="{$c->id}"
                                     ></div>
                                 {/if}

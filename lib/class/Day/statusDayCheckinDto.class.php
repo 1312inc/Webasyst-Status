@@ -30,6 +30,13 @@ class statusDayCheckinDto implements JsonSerializable
     public $max = 0;
 
     /**
+     * время начала (HH:MM) - время окончания (HH:MM) // таймзона
+     *
+     * @var string
+     */
+    public $durationDatetimeTitle = '';
+
+    /**
      * Время начала чекина (unix)
      *
      * @var int
@@ -125,12 +132,9 @@ class statusDayCheckinDto implements JsonSerializable
     {
         $this->isTrace = (bool) $checkin->getDataField('trace');
 
+        $timezone = new DateTimeZone($checkin->getUser()->getContact()->getTimezone());
         if ($this->isTrace) {
-            $date = DateTimeImmutable::createFromFormat(
-                'Y-m-d|',
-                $checkin->getDate(),
-                wa()->getUser()->getTimezone(true)
-            );
+            $date = DateTimeImmutable::createFromFormat('Y-m-d|', $checkin->getDate(), $timezone);
         } else {
             $date = DateTimeImmutable::createFromFormat('Y-m-d|', $checkin->getDate());
         }
@@ -156,6 +160,17 @@ class statusDayCheckinDto implements JsonSerializable
             0,
             (int) $checkin->getBreakDuration() * 60,
             sprintf_wp('%dh', 1)
+        );
+
+        $dateStart = $date->modify("+{$this->min} minutes");
+        $dateEnd = $date->modify("+{$this->max} minutes");
+        $offset = $timezone->getOffset($date) / (statusTimeHelper::SECONDS_IN_MINUTE * statusTimeHelper::MINUTES_IN_HOUR);
+        $this->durationDatetimeTitle = sprintf(
+            '%s — %s @ GMT%s%s',
+            $dateStart->format('H:i'),
+            $dateEnd->format('H:i'),
+            $offset > 0 ? '+' : '',
+            $offset
         );
     }
 
