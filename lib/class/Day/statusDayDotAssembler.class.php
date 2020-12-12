@@ -94,8 +94,6 @@ final class statusDayDotAssembler
      */
     public function fillWithWalogs(statusDayUserInfoDto $userDayInfoDto, array $walogs)
     {
-        $contactRep = new statusUserContactRepository();
-
         foreach ($walogs as $appId => $log) {
             if (!wa()->appExists($appId)) {
                 continue;
@@ -109,15 +107,17 @@ final class statusDayDotAssembler
                     continue;
                 }
 
-                $midnight = statusTimeHelper::createDatetimeForUser(
-                    'Y-m-d 00:00:00',
-                    null,
-                    $this->statusUserContactRepository->loadContact($item['contact_id'])
-                );
                 $item['app_color'] = $userDayInfoDto->walogs[$appId]->appColor;
 
-                $userDatetime = strtotime($item['datetime']);
-                $secondsFromMidnight = $userDatetime - $midnight->getTimestamp();
+                $userDatetime = statusTimeHelper::createDatetimeForUser(
+                    'Y-m-d H:i:s',
+                    strtotime($item['datetime']),
+                    $this->statusUserContactRepository->loadContact($item['contact_id'])
+                );
+                $midnight = clone $userDatetime;
+                $midnight->setTime(0, 0 ,0);
+
+                $secondsFromMidnight = $userDatetime->getTimestamp() - $midnight->getTimestamp();
                 $item['position'] = min(
                     100,
                     max(0, round(100 * $secondsFromMidnight / statusTimeHelper::SECONDS_IN_DAY))
