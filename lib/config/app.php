@@ -2,7 +2,7 @@
 return array (
   'name' => 'Status',
   'icon' => 'img/status.png',
-  'version' => '1.2.0',
+  'version' => '1.2.1',
   'vendor' => '1021997',
   'rights' => true,
 
