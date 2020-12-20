@@ -133,7 +133,7 @@ final class statusDayDotAssembler
         usort(
             $userDayInfoDto->walogsByDatetime,
             static function ($a, $b) {
-                return $a['datetime'] < $b['datetime'];
+                return $a['position'] < $b['position'];
             }
         );
 

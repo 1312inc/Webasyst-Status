@@ -103,7 +103,6 @@ SQL;
                 $user = $this->statusUserContactRepository->loadContact($entry['contact_id']);
                 $userDate = waDateTime::format('Y-m-d', $entry['datetime'], $user->getTimezone());
 
-                $entry['datetime'] = waDateTime::format('Y-m-d H:i:s', $entry['datetime'], $user->getTimezone());
                 $entry['date'] = $userDate;
                 $logsByApp[$appId][] = $entry;
             }
