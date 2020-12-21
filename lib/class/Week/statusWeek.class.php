@@ -45,7 +45,7 @@ class statusWeek
             $this->number = statusTimeHelper::getWeekNumberByDate($prevWeekDay) + 1;
         }
 
-        $sourceDay->setISODate($sourceDay->format('Y'), $this->number);
+        $sourceDay->setISODate($sourceDay->format('Y'), $this->number)->setTime(0, 0, 0);
 
         $today = statusTimeHelper::createDatetimeForUser()->setTime(0, 0, 0);
         for ($day = 6; $day >= 0; $day--) {

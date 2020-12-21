@@ -29,7 +29,8 @@ class statusStat
      */
     public function usersTimeByWeek(DateTime $date)
     {
-        $week = statusWeekFactory::createWeekByDate($date);
+        $userDate = statusTimeHelper::createDatetimeForUser('Y-m-d H:i:s', $date);
+        $week = statusWeekFactory::createWeekByDate($userDate);
 
         $statistics = $this->checkinModel->countTimeByDates(
             $week->getFirstDay()->getDate()->format('Y-m-d'),
@@ -73,7 +74,8 @@ class statusStat
      */
     public function projectsTimeByWeek(DateTime $date)
     {
-        $week = statusWeekFactory::createWeekByDate($date);
+        $userDate = statusTimeHelper::createDatetimeForUser('Y-m-d H:i:s', $date);
+        $week = statusWeekFactory::createWeekByDate($userDate);
 
         $statistics = $this->checkinModel->countTimeByDatesWithProjects(
             $week->getFirstDay()->getDate()->format('Y-m-d'),
