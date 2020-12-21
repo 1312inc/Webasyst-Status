@@ -21,6 +21,11 @@ class statusDayUserInfoDto
     public $checkins = [];
 
     /**
+     * @var array<string>
+     */
+    public $checkinTimezones = [];
+
+    /**
      * @var statusDayCheckinDto|null
      */
     public $firstCheckin = null;

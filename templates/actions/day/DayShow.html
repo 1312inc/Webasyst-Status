@@ -62,7 +62,7 @@
                         <div class="s-author">
                             <h5 class="s-username">
                                 <i class="icon16 userpic20" style="background-image: url({$day->users[$userDayInfo->contactId]->photoUrl})"></i>
-                                {$day->users[$userDayInfo->contactId]->name|escape}
+                                {$day->users[$userDayInfo->contactId]->name|escape}{if $userDayInfo->checkinTimezones} <span class="gray s-user-checkin-timezones">GMT{$userDayInfo->checkinTimezones|implode:', '}</span>{/if}
                                 {if $userDayInfo->todayStatus->getCalendarId()}
                                 <span class="s-status" title="[`Status for today`]" style="background-color: {$userDayInfo->todayStatus->getBgColor()}; color: {$userDayInfo->todayStatus->getFontColor()}">{$userDayInfo->todayStatus->getName()|escape}</span>
                                 {/if}
