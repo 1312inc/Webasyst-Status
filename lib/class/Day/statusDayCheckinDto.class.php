@@ -159,7 +159,7 @@ class statusDayCheckinDto implements JsonSerializable
         $this->breakString = statusTimeHelper::getTimeDurationInHuman(
             0,
             (int) $checkin->getBreakDuration() * 60,
-            sprintf_wp('%dh', 1)
+            '0 ' . _w('h')
         );
 
         $dateStart = $date->modify("+{$this->min} minutes");

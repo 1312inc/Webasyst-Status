@@ -111,7 +111,7 @@
                     <input type="checkbox" {if $checkin->break}checked{/if} name="checkin[break]" value="1">
                     [`Break`]
                     <span class="s-duration">
-                        <a href="#" class="inline-link s-duration-label"><b><i>{$checkin->breakString}</i></b></a>
+                        <a href="#" class="inline-link s-duration-label"><b><i>{if $checkin->break}{$checkin->breakString}{else}1[`h`]{/if}</i></b></a>
                         <input type="input" class="s-duration-input" value="{$checkin->break|default:1}" name="checkin[break_duration]">
                     </span>
                 </label>
