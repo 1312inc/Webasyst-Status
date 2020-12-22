@@ -167,5 +167,4 @@ i.icon16.s-app-icon { background-size: 16px 16px; }
 .tooltip-anchor:hover .tooltip { display: block; left: auto; right: 20px; top: -10px; font-weight: normal; text-align: left; }
 .tooltip-anchor:hover .tooltip .body { display: block; }
 
-.s-user-checkin-timezones { display: none }
-.s-day:hover .s-user-checkin-timezones { display: inline }
+.s-user-checkin-timezones { font-weight: normal; }

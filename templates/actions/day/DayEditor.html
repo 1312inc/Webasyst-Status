@@ -70,7 +70,7 @@
                                 <div class="s-timeline-action-mark"
                                      style="left: {$w.position}%; background: {$w.app_color};"
                                      data-time="{$w.datetime|wa_datetime:datetime}"
-                                     title="{$w.app_id} @ {$w.datetime|wa_datetime:humandatetime}"
+                                     title="{$w.app_id} ({$w.datetime|wa_datetime:humandatetime} @ {$wa->user()->getTimezone()})"
                                 ></div>
                             {/strip}{/foreach}
                         </div>
