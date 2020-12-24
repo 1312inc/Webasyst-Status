@@ -43,8 +43,12 @@ class statusDatePeriodVO implements JsonSerializable
      */
     public function __construct($dateStart, $dateEnd, $name, $id)
     {
-        $this->dateStart = !$dateStart instanceof DateTimeInterface ? new DateTime($dateStart) : $dateStart;
-        $this->dateEnd = !$dateEnd instanceof DateTimeInterface ? new DateTime($dateEnd) : $dateEnd;
+        $this->dateStart = !$dateStart instanceof DateTimeInterface
+            ? statusTimeHelper::createDatetimeForUser('Y-m-d H:i:s', $dateStart)
+            : $dateStart;
+        $this->dateEnd = !$dateEnd instanceof DateTimeInterface
+            ? statusTimeHelper::createDatetimeForUser('Y-m-d H:i:s', $dateEnd)
+            : $dateEnd;
         $this->name = $name;
         $this->id = $id;
     }

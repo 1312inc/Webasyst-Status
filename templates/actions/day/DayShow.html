@@ -24,6 +24,7 @@
                                 <i style="left: {round($i*100/24)}%;" class="{if $i % 3 != 0} tick{/if}{if $i>=9 && $i<=18} day{/if}" title="{$i}:00">{if $i % 3 == 0}{$i}{/if}</i>
                             {/strip}{/for}
                             </span>
+                            {** @var statusDayCheckinDto $checkin **}
                             {foreach $userDayInfo->checkins as $checkin}{strip}
                                 {if $checkin->max > $checkin->min}
                                     {$__checkin_density = $checkin->duration / ($checkin->max - $checkin->min)}
@@ -33,7 +34,12 @@
                                 <div class="s-timeline-content{if !$checkin->id} s-timeline-content-empty{/if}{if $checkin->isTrace} s-timeline-trace{/if}"
                                      style="left: {min(100,$checkin->minPercent)}%; right: {max(0,100 - $checkin->maxPercent)}%;"
                                      {if $checkin->id}id="s-timeline-content-{$checkin->id}"{/if}
-                                     {if $checkin->hasProjects}title="{$checkin->projectDurationTitle|escape}"{elseif $checkin->isTrace}title="{sprintf('[`%d minutes of Webasyst online time: %s active, %s idle`]', $checkin->max-$checkin->min, $checkin->durationString, $checkin->breakString)}"{else}title="{sprintf('[`%s (project not specified)`]', $checkin->durationString)}"{/if}
+                                     {if $checkin->hasProjects}title="{$checkin->durationDatetimeTitle|escape} // {$checkin->projectDurationTitle|escape}"{elseif $checkin->isTrace}title="{sprintf('[`%s // %d minutes of Webasyst online time: %s active, %s idle`]', $checkin->durationDatetimeTitle|escape, $checkin->max-$checkin->min, $checkin->durationString, $checkin->breakString)}"{else}title="{sprintf('[`%s (project not specified)`]', $checkin->durationString)}"{/if}
+                                     data-trace-id="{$checkin->id}"
+                                     data-trace-start="{$checkin->startTimestamp|wa_datetime}"
+                                     data-trace-end="{$checkin->endTimestamp|wa_datetime}"
+                                     data-trace-start-server="{date('Y-m-d H:i:s', $checkin->startTimestamp)}"
+                                     data-trace-end-server="{date('Y-m-d H:i:s', $checkin->endTimestamp)}"
                                 ></div>
                                 {if $checkin->id && $checkin->hasProjects && !$checkin->isTrace}
                                 <style>
@@ -47,7 +53,7 @@
                                 <div class="s-timeline-content s-timeline-action-mark"
                                      style="left: {$walogByDatetime.position}%; background: {$walogByDatetime.app_color};"
                                      data-time="{$walogByDatetime.datetime|wa_datetime:datetime}"
-                                     title="{$walogByDatetime.app_id} @ {$walogByDatetime.datetime|wa_datetime:humandatetime}"
+                                     title="{$walogByDatetime.app_id} ({$walogByDatetime.datetime|wa_datetime:humandatetime} @ {$wa->user()->getTimezone()})"
                                 ></div>
                             {/strip}{/foreach}
                         </div>
@@ -60,6 +66,7 @@
                                 {if $userDayInfo->todayStatus->getCalendarId()}
                                 <span class="s-status" title="[`Status for today`]" style="background-color: {$userDayInfo->todayStatus->getBgColor()}; color: {$userDayInfo->todayStatus->getFontColor()}">{$userDayInfo->todayStatus->getName()|escape}</span>
                                 {/if}
+                                {if $userDayInfo->checkinTimezones} <span class="hint s-user-checkin-timezones">GMT{$userDayInfo->checkinTimezones|implode:', '}</span>{/if}
                             </h5>
 
                             <div class="s-logged-apps">

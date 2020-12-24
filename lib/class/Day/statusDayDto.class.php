@@ -74,7 +74,7 @@ class statusDayDto
         $this->dayHuman = waDateTime::format('humandate', $this->date, date_default_timezone_get());
         $this->today = $day->isToday();
         $this->dayname = _w($day->getDate()->format('D'));
-        if ($day->getDate() == new DateTime('yesterday')) {
+        if ($day->getDate()->format('Y-m-d') == statusTimeHelper::createDatetimeForUser('Y-m-d')) {
             $this->yesterday = true;
         }
         $this->weekNum = statusTimeHelper::getWeekNumberByDate($day->getDate());

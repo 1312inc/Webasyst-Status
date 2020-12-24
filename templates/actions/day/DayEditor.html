@@ -61,7 +61,8 @@
                                     {/if}
                                     <div class="s-timeline-trace"
                                          style="left: {min(100,$c->minPercent)}%; right: {max(0,100 - $c->maxPercent)}%;"
-                                         title="{sprintf('[`%d minutes of Webasyst online time: %s active, %s idle`]', $c->max-$c->min, $c->durationString, $c->breakString)}"
+                                         title="{sprintf('[`%s // %d minutes of Webasyst online time: %s active, %s idle`]', $c->durationDatetimeTitle|escape, $c->max-$c->min, $c->durationString, $c->breakString)}"
+                                         data-trace-id="{$c->id}"
                                     ></div>
                                 {/if}
                             {/strip}{/foreach}
@@ -69,7 +70,7 @@
                                 <div class="s-timeline-action-mark"
                                      style="left: {$w.position}%; background: {$w.app_color};"
                                      data-time="{$w.datetime|wa_datetime:datetime}"
-                                     title="{$w.app_id} @ {$w.datetime|wa_datetime:humandatetime}"
+                                     title="{$w.app_id} ({$w.datetime|wa_datetime:humandatetime} @ {$wa->user()->getTimezone()})"
                                 ></div>
                             {/strip}{/foreach}
                         </div>
@@ -110,7 +111,7 @@
                     <input type="checkbox" {if $checkin->break}checked{/if} name="checkin[break]" value="1">
                     [`Break`]
                     <span class="s-duration">
-                        <a href="#" class="inline-link s-duration-label"><b><i>{$checkin->breakString}</i></b></a>
+                        <a href="#" class="inline-link s-duration-label"><b><i>{if $checkin->break}{$checkin->breakString}{else}1[`h`]{/if}</i></b></a>
                         <input type="input" class="s-duration-input" value="{$checkin->break|default:1}" name="checkin[break_duration]">
                     </span>
                 </label>

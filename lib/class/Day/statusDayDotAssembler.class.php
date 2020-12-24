@@ -11,6 +11,16 @@ final class statusDayDotAssembler
     private $projectsDtos;
 
     /**
+     * @var statusUserRepository
+     */
+    private $statusUserRepository;
+
+    public function __construct()
+    {
+        $this->statusUserRepository = stts()->getEntityRepository(statusUser::class);
+    }
+
+    /**
      * @param statusDayUserInfoDto $userDayInfoDto
      * @param statusCheckin[]      $checkins
      * @param statusUserDto        $userDto
@@ -40,9 +50,11 @@ final class statusDayDotAssembler
                 $dayDuration += $checkin->duration;
             } else {
                 $traceDuration += $checkin->duration;
-                $traceBreakDuration += $checkin->break;
-                $traceDurationWithBreak += ($checkin->duration + $checkin->break);
+                $traceBreakDuration += ($checkin->max - $checkin->min - $checkin->duration);
+                $traceDurationWithBreak += ($checkin->max - $checkin->min);
             }
+
+            $userDayInfoDto->checkinTimezones[$check->getTimezone()] = sprintf('%+d', $check->getTimezone());
         }
 
         if (!$hasManualCheckins) {
@@ -84,8 +96,6 @@ final class statusDayDotAssembler
      */
     public function fillWithWalogs(statusDayUserInfoDto $userDayInfoDto, array $walogs)
     {
-        $midnight = DateTimeImmutable::createFromFormat('Y-m-d|', date('Y-m-d'));
-
         foreach ($walogs as $appId => $log) {
             if (!wa()->appExists($appId)) {
                 continue;
@@ -101,7 +111,14 @@ final class statusDayDotAssembler
 
                 $item['app_color'] = $userDayInfoDto->walogs[$appId]->appColor;
 
-                $userDatetime = new DateTimeImmutable(waDateTime::format('fulltime', $item['datetime']));
+                $userDatetime = statusTimeHelper::createDatetimeForUser(
+                    'Y-m-d H:i:s',
+                    strtotime($item['datetime']),
+                    $this->statusUserRepository->loadUser($item['contact_id'])
+                );
+                $midnight = clone $userDatetime;
+                $midnight->setTime(0, 0 ,0);
+
                 $secondsFromMidnight = $userDatetime->getTimestamp() - $midnight->getTimestamp();
                 $item['position'] = min(
                     100,
@@ -118,7 +135,7 @@ final class statusDayDotAssembler
         usort(
             $userDayInfoDto->walogsByDatetime,
             static function ($a, $b) {
-                return $a['datetime'] < $b['datetime'];
+                return $a['position'] < $b['position'];
             }
         );
 

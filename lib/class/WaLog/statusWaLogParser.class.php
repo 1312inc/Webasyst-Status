@@ -11,13 +11,19 @@ class statusWaLogParser
     private $model;
 
     /**
-     * @var waAppConfig[]
+     * @var array<waAppConfig>
      */
     private $appConfigs = [];
+
+    /**
+     * @var statusUserRepository
+     */
+    private $statusUserRepository;
 
     public function __construct()
     {
         $this->model = new waLogModel();
+        $this->statusUserRepository = stts()->getEntityRepository(statusUser::class);
     }
 
     /**
@@ -70,12 +76,18 @@ where (contact_id = i:contact_id or subject_contact_id = i:contact_id)
     and datetime between s:date1 and s:date2
 SQL;
 
+        // hack to parse dates with respect to for user timezone
+        $start = clone $dayStart->getDate();
+        $start->modify('-1 day');
+        $end = clone $dayEnd->getDate();
+        $end->modify('+1 day');
+
         $logs = $this->model->query(
             $sql,
             [
                 'contact_id' => $contactId,
-                'date1' => sprintf('%s 00:00:00', $dayStart->getDate()->format('Y-m-d')),
-                'date2' => sprintf('%s 23:59:59', $dayEnd->getDate()->format('Y-m-d')),
+                'date1' => $start->format('Y-m-d 00:00:00'),
+                'date2' => $end->format('Y-m-d 23:59:59'),
             ]
         )->fetchAll('date', 2);
 
@@ -86,7 +98,12 @@ SQL;
                 if (!isset($logsByApp[$appId])) {
                     $logsByApp[$appId] = [];
                 }
-                $entry['date'] = date('Y-m-d', strtotime($entry['datetime']));
+//                $serverDate = date('Y-m-d', strtotime($entry['datetime']));
+
+                $user = $this->statusUserRepository->loadUser($entry['contact_id']);
+                $userDate = waDateTime::format('Y-m-d', $entry['datetime'], $user->getTimezone());
+
+                $entry['date'] = $userDate;
                 $logsByApp[$appId][] = $entry;
             }
         }
@@ -203,5 +220,4 @@ SQL;
 
         return $rows;
     }
-
 }

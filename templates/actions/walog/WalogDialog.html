@@ -22,7 +22,7 @@
                                         <strong>{$logs['params_html']}</strong>
                                     {/if}
 
-                                    <span class="hint">{$logs['datetime']|wa_datetime:'humandatetime'}</span>
+                                    <span class="hint">{$logs['datetime']|wa_datetime:'humandatetime'} @ {$wa->user()->getTimezone()}</span>
 
                                     {*
                                         <ul>

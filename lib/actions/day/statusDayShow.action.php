@@ -13,7 +13,11 @@ class statusDayShowAction extends statusViewAction
      */
     public function runAction($params = null)
     {
-        $date = waRequest::get('date', date('Y-m-d'), waRequest::TYPE_STRING_TRIM);
+        $date = waRequest::get(
+            'date',
+            statusTimeHelper::createDatetimeForUser('Y-m-d')->format('Y-m-d'),
+            waRequest::TYPE_STRING_TRIM
+        );
         $contactId = waRequest::get('contact_id', 0, waRequest::TYPE_INT);
 
         if ($contactId) {

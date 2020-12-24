@@ -155,7 +155,12 @@ trait kmwaWaUserTrait
             $this->status = $this->contact->getStatus();
             $this->exists = $this->contact->get('is_user') == 1;
             $this->email = $this->contact->get('email', 'default');
-            $this->timezone = $this->contact->getTimezone();
+
+            if (wa()->getUser() && wa()->getUser()->getId() == $this->contact->getId()) {
+                $this->timezone = wa()->getUser()->getTimezone();
+            } else {
+                $this->timezone = $this->contact->getTimezone();
+            }
         }
 
         return $this;

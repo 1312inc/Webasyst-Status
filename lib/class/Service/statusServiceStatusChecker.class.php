@@ -23,8 +23,8 @@ class statusServiceStatusChecker
             return $cached;
         }
 
-        $today = new DateTime();
-        $yesterday = new DateTime('yesterday');
+        $today = statusTimeHelper::createDatetimeForUser();
+        $yesterday = statusTimeHelper::createDatetimeForUser('Y-m-d H:i:s', 'yesterday');
 
         // monday - relax
         if ($today->format('N') == 1) {
@@ -34,7 +34,7 @@ class statusServiceStatusChecker
         /** @var statusCheckinModel $model */
         $model = stts()->getModel(statusCheckin::class);
         $count = $model->countTimeByDates(
-            date('Y-m-d', strtotime('-1 days')),
+            $yesterday->format('Y-m-d'),
             $today->format('Y-m-d'),
             $contactId
         );

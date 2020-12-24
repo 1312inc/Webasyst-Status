@@ -3,9 +3,9 @@
 /**
  * Class statusWeekFactory
  */
-class statusWeekFactory
+final class statusWeekFactory
 {
-    const DEFAULT_WEEKS_LOAD = 4;
+    public const DEFAULT_WEEKS_LOAD = 4;
 
     /**
      * @param int  $n
@@ -15,10 +15,10 @@ class statusWeekFactory
      * @return statusWeek[]
      * @throws Exception
      */
-    public static function createLastNWeeks($n = self::DEFAULT_WEEKS_LOAD, $includeCurrent = false, $from = 0)
+    public static function createLastNWeeks($n = self::DEFAULT_WEEKS_LOAD, $includeCurrent = false, $from = 0): array
     {
         $weeks = [];
-        $day = new DateTime();
+        $day = statusTimeHelper::createDatetimeForUser();
         if ($includeCurrent) {
             $day->modify('+1 week');
         }
@@ -35,21 +35,12 @@ class statusWeekFactory
     }
 
     /**
-     * @return statusWeek
-     * @throws Exception
-     */
-    public static function createCurrentWeek()
-    {
-        return self::createWeekByDate(new DateTime());
-    }
-
-    /**
      * @param DateTimeInterface $date
      *
      * @return statusWeek
      * @throws Exception
      */
-    public static function createWeekByDate(DateTimeInterface $date)
+    public static function createWeekByDate(DateTimeInterface $date): statusWeek
     {
         return new statusWeek($date);
     }
@@ -60,13 +51,12 @@ class statusWeekFactory
      * @return statusWeek
      * @throws Exception
      */
-    public static function createWeekByNum($num)
+    public static function createWeekByNum($num): statusWeek
     {
-        $date = new DateTime();
+        $date = statusTimeHelper::createDatetimeForUser();
         $date->setISODate($date->format('Y'), $num, 1);
-        $week = self::createWeekByDate($date);
 
-        return $week;
+        return self::createWeekByDate($date);
     }
 
     /**
@@ -77,7 +67,7 @@ class statusWeekFactory
      * @return statusWeekDto[]
      * @throws waException
      */
-    public static function getWeeksDto(array $weeks, statusUser $user = null, statusProject $project = null)
+    public static function getWeeksDto(array $weeks, statusUser $user = null, statusProject $project = null): array
     {
         $weeksDto = [];
         $projectId = false;

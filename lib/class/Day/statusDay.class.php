@@ -34,7 +34,7 @@ class statusDay
     {
         $this->date = $date;
 
-        if ($this->date->format('Y-m-d') === date('Y-m-d')) {
+        if ($this->date->format('Y-m-d') === statusTimeHelper::createDatetimeForUser()->format('Y-m-d')) {
             $this->isToday = true;
         }
     }

@@ -45,11 +45,12 @@ class statusWeek
             $this->number = statusTimeHelper::getWeekNumberByDate($prevWeekDay) + 1;
         }
 
-        $sourceDay->setISODate($sourceDay->format('Y'), $this->number);
+        $sourceDay->setISODate($sourceDay->format('Y'), $this->number)->setTime(0, 0, 0);
 
-        $today = new DateTime(date('Y-m-d'));
+        $today = statusTimeHelper::createDatetimeForUser()->setTime(0, 0, 0);
         for ($day = 6; $day >= 0; $day--) {
-            $dayDate = new DateTime($sourceDay->format('Y-m-d'));
+            $dayDate = statusTimeHelper::createDatetimeForUser('Y-m-d H:i:s', $sourceDay)
+                ->setTime(0, 0, 0);
             $dayDate->modify("+$day days");
             if ($dayDate > $today) {
                 continue;

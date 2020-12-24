@@ -16,21 +16,36 @@ class statusDayCheckinDto implements JsonSerializable
     public $comment;
 
     /**
+     * Время начала чекина (мин)
+     *
      * @var int
      */
     public $min = 0;
 
     /**
+     * Время окончания чекина (мин)
+     *
      * @var int
      */
     public $max = 0;
 
     /**
+     * время начала (HH:MM) - время окончания (HH:MM) // таймзона
+     *
+     * @var string
+     */
+    public $durationDatetimeTitle = '';
+
+    /**
+     * Время начала чекина (unix)
+     *
      * @var int
      */
     public $startTimestamp = 0;
 
     /**
+     * Время окончания чекина (unix)
+     *
      * @var int
      */
     public $endTimestamp = 0;
@@ -46,6 +61,8 @@ class statusDayCheckinDto implements JsonSerializable
     public $durationString = '';
 
     /**
+     * Перерыв в часах
+     *
      * @var int
      */
     public $break = 1;
@@ -61,11 +78,15 @@ class statusDayCheckinDto implements JsonSerializable
     public $contactId;
 
     /**
+     * Время начала чекина (проценты от дня)
+     *
      * @var float
      */
     public $minPercent;
 
     /**
+     * Время окончания чекина (проценты от дня)
+     *
      * @var float
      */
     public $maxPercent;
@@ -111,17 +132,13 @@ class statusDayCheckinDto implements JsonSerializable
     {
         $this->isTrace = (bool) $checkin->getDataField('trace');
 
+        $timezone = new DateTimeZone($checkin->getUser()->getContact()->getTimezone());
         if ($this->isTrace) {
-            $date = DateTimeImmutable::createFromFormat(
-                'Y-m-d|',
-                $checkin->getDate(),
-                wa()->getUser()->getTimezone(true)
-            );
-            $userHourDiff = (new DateTime('midnight'))->setTimezone(wa()->getUser()->getTimezone(true))->diff($date)->h;
+            $date = DateTimeImmutable::createFromFormat('Y-m-d|', $checkin->getDate(), $timezone);
         } else {
             $date = DateTimeImmutable::createFromFormat('Y-m-d|', $checkin->getDate());
-            $userHourDiff = 0;
         }
+        $userHourDiff = 0;
 
         $this->id = $checkin->getId();
         $this->comment = $checkin->getComment();
@@ -142,7 +159,18 @@ class statusDayCheckinDto implements JsonSerializable
         $this->breakString = statusTimeHelper::getTimeDurationInHuman(
             0,
             (int) $checkin->getBreakDuration() * 60,
-            sprintf_wp('%dh', 1)
+            '0 ' . _w('h')
+        );
+
+        $dateStart = $date->modify("+{$this->min} minutes");
+        $dateEnd = $date->modify("+{$this->max} minutes");
+        $offset = $timezone->getOffset($date) / (statusTimeHelper::SECONDS_IN_MINUTE * statusTimeHelper::MINUTES_IN_HOUR);
+        $this->durationDatetimeTitle = sprintf(
+            '%s — %s @ GMT%s%s',
+            $dateStart->format('H:i'),
+            $dateEnd->format('H:i'),
+            $offset > 0 ? '+' : '',
+            $offset
         );
     }
 
