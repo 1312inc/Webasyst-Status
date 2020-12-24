@@ -86,11 +86,8 @@ class statusChronologyAction extends statusViewAction
         $currentWeek = array_shift($weeksDto);
 
         $serverTomorrow = new DateTime('+1 day');
-        $userTomorrow = statusTimeHelper::createDatetimeForUser(
-            'Y-m-d H:i:s',
-            $serverTomorrow,
-            $this->user->getContact()
-        )->setTime(0, 0, 0);
+        $userTomorrow = statusTimeHelper::createDatetimeForUser('Y-m-d H:i:s', $serverTomorrow, $this->user)
+            ->setTime(0, 0, 0);
         $tomorrow = new statusDay($userTomorrow);
         $tomorrowDto = new statusDayDto($tomorrow);
         $userDto = new statusUserDto($this->user);
@@ -119,7 +116,7 @@ class statusChronologyAction extends statusViewAction
             'statuses' => statusTodayStatusFactory::getAllForUser($this->user),
             'nextStatus' => statusTodayStatusFactory::getForContactId(
                 $this->user->getContactId(),
-                statusTimeHelper::createDatetimeForUser('Y-m-d H:i:s', $serverTomorrow, $this->user->getContact())
+                statusTimeHelper::createDatetimeForUser('Y-m-d H:i:s', $serverTomorrow, $this->user)
             ),
             'project' => $this->project,
             'dayEditable' => (int) ($this->user->getContactId() == stts()->getUser()->getContactId()

@@ -16,14 +16,14 @@ class statusWaLogParser
     private $appConfigs = [];
 
     /**
-     * @var statusUserContactRepository
+     * @var statusUserRepository
      */
-    private $statusUserContactRepository;
+    private $statusUserRepository;
 
     public function __construct()
     {
         $this->model = new waLogModel();
-        $this->statusUserContactRepository = new statusUserContactRepository();
+        $this->statusUserRepository = stts()->getEntityRepository(statusUser::class);
     }
 
     /**
@@ -100,7 +100,7 @@ SQL;
                 }
 //                $serverDate = date('Y-m-d', strtotime($entry['datetime']));
 
-                $user = $this->statusUserContactRepository->loadContact($entry['contact_id']);
+                $user = $this->statusUserRepository->loadUser($entry['contact_id']);
                 $userDate = waDateTime::format('Y-m-d', $entry['datetime'], $user->getTimezone());
 
                 $entry['date'] = $userDate;

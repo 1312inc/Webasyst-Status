@@ -10,6 +10,11 @@ class statusUserRepository extends statusBaseRepository
     protected $entity = statusUser::class;
 
     /**
+     * @var array<statusUser>
+     */
+    private $users;
+
+    /**
      * @param $contactId
      *
      * @return statusUser
@@ -60,5 +65,20 @@ class statusUserRepository extends statusBaseRepository
         }
 
         return $users;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return statusUser
+     * @throws waException
+     */
+    public function loadUser($id): statusUser
+    {
+        if (!isset($this->users[$id])) {
+            $this->users[$id] = $this->findByContactId($id);
+        }
+
+        return $this->users[$id];
     }
 }

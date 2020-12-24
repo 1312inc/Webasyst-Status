@@ -11,13 +11,13 @@ final class statusDayDotAssembler
     private $projectsDtos;
 
     /**
-     * @var statusUserContactRepository
+     * @var statusUserRepository
      */
-    private $statusUserContactRepository;
+    private $statusUserRepository;
 
     public function __construct()
     {
-        $this->statusUserContactRepository = new statusUserContactRepository();
+        $this->statusUserRepository = stts()->getEntityRepository(statusUser::class);
     }
 
     /**
@@ -114,7 +114,7 @@ final class statusDayDotAssembler
                 $userDatetime = statusTimeHelper::createDatetimeForUser(
                     'Y-m-d H:i:s',
                     strtotime($item['datetime']),
-                    $this->statusUserContactRepository->loadContact($item['contact_id'])
+                    $this->statusUserRepository->loadUser($item['contact_id'])
                 );
                 $midnight = clone $userDatetime;
                 $midnight->setTime(0, 0 ,0);

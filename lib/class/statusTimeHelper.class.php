@@ -68,15 +68,15 @@ final class statusTimeHelper
     /**
      * @param string                        $format
      * @param string|DateTimeInterface|null $time
-     * @param waContact|null                $user
+     * @param statusUser|null               $user
      *
      * @return DateTime
      * @throws waException
      */
-    public static function createDatetimeForUser($format = 'Y-m-d H:i:s', $time = null, waContact $user = null)
+    public static function createDatetimeForUser($format = 'Y-m-d H:i:s', $time = null, statusUser $user = null)
     {
         if (!$user) {
-            $user = wa()->getUser();
+            $user = stts()->getUser();
         }
 
         if ($time === null) {
