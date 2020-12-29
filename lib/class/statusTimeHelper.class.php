@@ -66,6 +66,8 @@ final class statusTimeHelper
     }
 
     /**
+     * @todo new VO for user datetime
+     *
      * @param string                        $format
      * @param string|DateTimeInterface|null $time
      * @param statusUser|null               $user
