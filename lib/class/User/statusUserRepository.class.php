@@ -27,7 +27,7 @@ class statusUserRepository extends statusBaseRepository
         if ($user instanceof statusUser) {
             $user->setTodayStatus(statusTodayStatusFactory::getForContactId($user->getContactId(), $today));
         } else {
-            $user = new statusUser();
+            $user = stts()->getEntityFactory(statusUser::class)->createNew();
         }
 
         return $user;

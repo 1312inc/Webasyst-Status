@@ -45,19 +45,19 @@ class statusWeek
             $this->number = statusTimeHelper::getWeekNumberByDate($prevWeekDay) + 1;
         }
 
-        $sourceDay->setISODate($sourceDay->format('Y'), $this->number)->setTime(0, 0, 0);
+        $sourceDay->modify('monday this week')->setTime(0, 0, 0);
 
         $today = statusTimeHelper::createDatetimeForUser()->setTime(0, 0, 0);
         for ($day = 6; $day >= 0; $day--) {
-            $dayDate = statusTimeHelper::createDatetimeForUser('Y-m-d H:i:s', $sourceDay)
-                ->setTime(0, 0, 0);
+//            $dayDate = statusTimeHelper::createDatetimeForUser('Y-m-d H:i:s', $sourceDay)->setTime(0, 0, 0);
+            $dayDate = (new DateTime($sourceDay->format('Y-m-d')))->setTime(0, 0, 0);
             $dayDate->modify("+$day days");
-            if ($dayDate > $today) {
+            if ($dayDate->format('Y-m-d') > $today->format('Y-m-d')) {
                 continue;
             }
 
             $this->days[] = (new statusDay($dayDate))->setWeek($this);
-            if ($dayDate == $today) {
+            if ($dayDate->format('Y-m-d') == $today->format('Y-m-d')) {
                 $this->current = true;
             }
         }

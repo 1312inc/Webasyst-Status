@@ -10,7 +10,7 @@ class statusUserFactory extends statusBaseFactory
      */
     public function createNew()
     {
-        return new statusUser();
+        return (new statusUser())->setContact(new waContact());
     }
 
     /**

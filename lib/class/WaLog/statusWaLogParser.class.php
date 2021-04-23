@@ -72,7 +72,7 @@ SELECT l.*,
        c.login
 from wa_log l
 left join wa_contact c ON c.id = contact_id
-where (contact_id = i:contact_id or subject_contact_id = i:contact_id)
+where (contact_id = i:contact_id)
     and datetime between s:date1 and s:date2
 SQL;
 

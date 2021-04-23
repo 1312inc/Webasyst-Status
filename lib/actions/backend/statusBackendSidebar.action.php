@@ -81,8 +81,8 @@ class statusBackendSidebarAction extends statusViewAction
                 'users' => $users,
                 'projects' => $projects,
                 'backend_sidebar' => $eventResult,
-                'timeByUserStat' => $stat->usersTimeByWeek(statusTimeHelper::createDatetimeForUser()),
-                'timeByProjectStat' => $stat->projectsTimeByWeek(statusTimeHelper::createDatetimeForUser()),
+                'timeByUserStat' => $stat->usersTimeByWeek(new DateTime()),
+                'timeByProjectStat' => $stat->projectsTimeByWeek(new DateTime()),
                 'isAdmin' => (int)$this->getUser()->isAdmin('status'),
             ]
         );

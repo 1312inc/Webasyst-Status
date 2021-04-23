@@ -69,7 +69,7 @@ class statusCheckinSaveController extends statusJsonController
             $this->setError('Save checkin error');
         } else {
             $user->setLastCheckinDatetime(date('Y-m-d H:i:s'));
-            $totalDuration = (new statusStat())->usersTimeByWeek(statusTimeHelper::createDatetimeForUser());
+            $totalDuration = (new statusStat())->usersTimeByWeek(new DateTime());
             $user->setThisWeekTotalDuration(
                 $totalDuration[$this->getUser()->getId()]['time'] + $checkin->getTotalDuration()
             );

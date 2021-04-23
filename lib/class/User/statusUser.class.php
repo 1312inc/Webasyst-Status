@@ -6,7 +6,7 @@
 class statusUser extends statusAbstractEntity
 {
     use kmwaWaUserTrait {
-        setContact as setContactParent;
+        kmwaWaUserTrait::setContact as setContactParent;
     }
 
     /**
