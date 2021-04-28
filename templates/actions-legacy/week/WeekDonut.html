@@ -1,0 +1,73 @@
+ {** @var statusWeekDonutDto $donut **}
+ {** @var statusWeekDonutDataDto $p **}
+
+ <section data-status-week-donut="{$donut->weekNum}">
+
+{if $donut->chart}
+<div class="s-donut-chart-container">
+    <div class="s-donut-chart">
+        {** @var statusWeekDonutDataDto $p **}
+        {foreach $donut->data as $p}
+        {if ($p->id != 0 || $p->id == 0 && $p->totalDuration >= 10)}
+        {foreach $p->rotations as $rid => $rotation}
+            <div data-status-donut-project="{$donut->weekNum}-{$p->id}-{$rid}" class="clip" title="Project {$p->name|escape}: {$p->totalDurationStr}">
+            <div class="item"></div>
+        </div>
+        {/foreach}
+        {/if}
+        {/foreach}
+        <div class="center">{$donut->totalDurationStr}</div>
+    </div>
+</div>
+<style>
+    {foreach $donut->data as $p}
+    {if ($p->id != 0 || $p->id == 0 && $p->totalDuration >= 10)}
+    {foreach $p->rotations as $rid => $rotation}
+    .s-donut-chart [data-status-donut-project="{$donut->weekNum}-{$p->id}-{$rid}"] { transform: rotate({$rotation['from']}deg); }
+    .s-donut-chart [data-status-donut-project="{$donut->weekNum}-{$p->id}-{$rid}"] .item { background-color: {$p->color}; transform: rotate({$rotation['to']}deg); }
+    {/foreach}
+    {/if}
+    {/foreach}
+</style>
+{/if}
+
+<div class="s-week-projects">
+    {foreach $donut->data as $p}
+        {if $donut->hasData && ($p->id > 0 || $p->id == 0 && $p->totalDuration >= 10)}
+        <i class="icon16 {if $p->type == statusWeekDonutDataDto::PROJECT}color{else}userpic20{/if}"
+           style="{if $p->type == statusWeekDonutDataDto::PROJECT}background{else}background-image{/if}: {$p->color};"
+        ></i>
+        {$p->name|escape}
+        <span class="hint bold nowrap">{$p->totalDurationStr}</span><br>
+        {/if}
+    {/foreach}
+</div>
+
+{if $stts->canShowTrace() && !$isProject}
+<div class="block" title="[`Webasyst online time`]" style="margin-top: 20px;">
+    <h4 class="gray">
+        <i class="icon16 s-trace-total-online"></i> {sprintf('[`%s online`]', $donut->traceTotalDurationWithBreakStr)}
+
+        <div class="tooltip-anchor">
+            <i class="icon10 info"></i>
+            <div class="tooltip">
+                <span class="body">
+                    [`Webasyst online time is tracked automatically based on the user activity across different apps.`]
+                    <br><br>
+                    [`Active time is counted when the user is browsing the Webasyst backend with a browser navigating from one app to another. Idle time is counted when the backend is opened in a browser window, but nothing happens, i.e. even a mouse cursor won’t move.`]
+                    <br><br>
+                    <em>[`Only the user and the Status app admin can see this online time data.`]</em>
+                </span>
+            </div>
+        </div>
+    </h4>
+
+    <span class="hint">
+        {sprintf('[`%s active`]', $donut->traceTotalDurationStr)}
+        <br>
+        {sprintf('[`%s idle`]', $donut->traceTotalBreakStr)}
+    </span>
+</div>
+{/if}
+
+</section>

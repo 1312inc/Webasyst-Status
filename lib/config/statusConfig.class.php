@@ -367,6 +367,11 @@ class statusConfig extends waAppConfig
         return $this->getContextUser()->isMe() || $this->getRightConfig()->isAdmin($this->user);
     }
 
+    public function getUI2TemplatePath(string $path): string
+    {
+        return sprintf($path, wa()->whichUI() === '1.3' ? '-legacy' : '');
+    }
+
     private function registerGlobal(): void
     {
         if (!function_exists('stts')) {

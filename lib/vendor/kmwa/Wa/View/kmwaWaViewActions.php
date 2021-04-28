@@ -23,7 +23,7 @@ abstract class kmwaWaViewActions extends waViewActions
                 ]
             );
 
-            $this->setTemplate('templates/include/error.html');
+            $this->setTemplate(stts()->getUI2TemplatePath('templates/include%s/error.html'));
         }
     }
 }

@@ -37,7 +37,9 @@ abstract class kmwaWaViewAction extends waViewAction
                 ]
             );
 
-            $result = $this->view->fetch(wa()->getAppPath('templates/include/error.html'));
+            $result = $this->view->fetch(
+                wa()->getAppPath(stts()->getUI2TemplatePath('templates/include%s/error.html'))
+            );
             if ($clear_assign) {
                 $this->view->clearAllAssign();
             }
