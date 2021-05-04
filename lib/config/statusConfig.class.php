@@ -257,6 +257,14 @@ class statusConfig extends waAppConfig
     {
         if ($this->user === null) {
             $this->user = $this->getEntityRepository(statusUser::class)->findByContact(wa()->getUser());
+            if (!$this->user->getId()) {
+                try {
+                    (new statusMissingUserFixer())->fix();
+                    $this->user = $this->getEntityRepository(statusUser::class)->findByContact(wa()->getUser());
+                } catch (Exception $e) {
+                    $this->getLogger()->error('Fail on fix users', $e);
+                }
+            }
         }
 
         return $this->user;
