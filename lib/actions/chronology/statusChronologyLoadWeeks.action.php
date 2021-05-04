@@ -21,13 +21,13 @@ class statusChronologyLoadWeeksAction extends statusChronologyAction
             statusWeekFactory::DEFAULT_WEEKS_LOAD * $offset
         );
 
-        $weeks = statusWeekFactory::getWeeksDto($weeks, $this->user);
+        $weeks = statusWeekFactory::getWeeksDto($weeks, $this->user, $this->project);
 
         $this->view->assign(
             [
                 'weeks' => $weeks,
-                'isMe' => (int)$this->isMe,
-                'isProject' => (int)$this->isProject,
+                'isMe' => (int) $this->isMe,
+                'isProject' => (int) $this->isProject,
             ]
         );
     }
