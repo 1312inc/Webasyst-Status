@@ -1,12 +1,12 @@
 {** @var statusDayDto $day **}
 {*<section id="day-show-{$day->date}">*}
     <div class="s-day-date">
-        <h3>
+        <h4>
             {if $day->yesterday}[`Yesterday`]
             {elseif $day->today}[`Today`]
             {else}{$day->dayHuman}{/if}
             <span class="hint">{$day->dayname}{if $day->yesterday || $day->today}<br> {$day->dayHuman}{/if}</span>
-        </h3>
+        </h4>
     </div>
 
 
