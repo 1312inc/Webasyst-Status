@@ -69,7 +69,7 @@
 
         // $(function () {
         $.status.init({
-            account_name: '{$wa->accountName()|escape}',
+            account_name: '{$wa->accountName()|escape:'javascript'}',
             isAdmin: {$isAdmin},
             userId: {$stts->getUser()->getContactId()},
             backendUrl: '{$wa_backend_url}'
