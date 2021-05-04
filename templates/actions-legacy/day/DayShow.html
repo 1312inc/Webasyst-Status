@@ -32,7 +32,7 @@
                                 {/if}
                                 <div class="s-timeline-content{if !$checkin->id} s-timeline-content-empty{/if}{if $checkin->isTrace} s-timeline-trace{/if}"
                                      style="left: {min(100,$checkin->minPercent)}%; right: {max(0,100 - $checkin->maxPercent)}%;"
-                                     {if $checkin->id}id="s-timeline-content-{$checkin->id}"{/if}
+                                     {if $checkin->id}id="s-timeline-content-{$checkin->id}{if $checkin->isTrace}-trace{/if}"{/if}
                                      {if $checkin->hasProjects}title="{$checkin->projectDurationTitle|escape}"{elseif $checkin->isTrace}title="{sprintf('[`%d minutes of Webasyst online time: %s active, %s idle`]', $checkin->max-$checkin->min, $checkin->durationString, $checkin->breakString)}"{else}title="{sprintf('[`%s (project not specified)`]', $checkin->durationString)}"{/if}
                                 ></div>
                                 {if $checkin->id && $checkin->hasProjects && !$checkin->isTrace}

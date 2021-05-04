@@ -111,7 +111,7 @@
         $.status.lazyLoad({
             $loading: $('#chronology .lazyloading'),
             html_selector: '#olderWeeks',
-            url: '?module=chronology&action=loadWeeks&contact_id={$current_contact_id}'
+            url: '?module=chronology&action=loadWeeks&{if $project}project_id={$project->getId()}{else}contact_id={$current_contact_id}{/if}'
         });
 
         $.status.$status_content
