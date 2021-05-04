@@ -7,13 +7,15 @@
                  <span>[`My status`]</span>
              </a>
          </li>
-         <li class="bottom-padded">
-             <a href="#">
-                 <span class="count">{$timeByUserStat[0]['timeStr']}</span>
-                 <i class="fas fa-users"></i>
-                 <span>[`Everyone`]</span>
-             </a>
-         </li>
+
+         {if count($users) && $stts->getRightConfig()->isAdmin()}
+             <li class="bottom-padded">
+                 <a href="#">
+                     <i class="fas fa-users"></i>
+                     <span>[`Everyone`]</span>
+                 </a>
+             </li>
+         {/if}
 
          {if count($users)}
              {foreach $users as $u}
