@@ -1,30 +1,35 @@
-<div class="s-editor shadowed"
+<div class="s-editor card custom-p-20"
      data-status-day-date="{$day->date}"
      data-status-week-of-day="{$day->weekNum}"
 >
     <!-- TIME & STATUS -->
     <div class="block double-padded">
 
-        <div class="float-right block half-padded">
-            {include inline file='./../todaystatus/TodaystatusList.html' statuses=$statuses currentStatus=$userDayInfo->todayStatus statusDate=$day->date}
+        <div class="flexbox">
+            <div class="wide">
+                <h1 {if $day->yesterday}class="s-yesterday"{/if}>
+                    {if $day->today}[`Today`]{/if}
+                    {if $day->yesterday}[`Yesterday`]{/if}
+                    <span class="hint">
+                        {$day->dayname}, {$day->dayHuman}
+                        <!-- <span title="[`Weekend`]">🏖️Sunday / Saturday</span> -->
+                        <!-- <span title="[`Birthday`]">🎂Birtday</span> -->
+                    </span>
+                </h1>
+            </div>
+
+            <div class="block half-padded">
+                {include inline file='./../todaystatus/TodaystatusList.html' statuses=$statuses currentStatus=$userDayInfo->todayStatus statusDate=$day->date}
+            </div>
         </div>
 
-        <h1 {if $day->yesterday}class="s-yesterday"{/if}>
-            {if $day->today}[`Today`]{/if}
-            {if $day->yesterday}[`Yesterday`]{/if}
-            <span class="hint">
-                {$day->dayname}, {$day->dayHuman}
-                <!-- <span title="[`Weekend`]">🏖️Sunday / Saturday</span> -->
-                <!-- <span title="[`Birthday`]">🎂Birtday</span> -->
-            </span>
-        </h1>
-
         {if !$stts->getContextUser()->getLastCheckinDatetime()}
-            <div class="s-welcome-note">
-                <p>🎉 [`<strong class="highlighted">Hello and welcome!</strong> Add your first work report by <strong>dragging the time slider</strong> or by <strong>selecting your daily status</strong> in the menu so all your teammates get to know what you are up to on this day.`]</p>
+            <div class="s-welcome-note small">
+                <p>🎉  &nbsp; [`<strong class="highlighted">Hello and welcome!</strong> Add your first work report by <strong>dragging the time slider</strong> or by <strong>selecting your daily status</strong> in the menu so all your teammates get to know what you are up to on this day.`]</p>
             </div>
         {/if}
-
+        
+        <div class="custom-my-20">
         {foreach $userDayInfo->checkins as $checkin}
         {if !$checkin->isTrace}
         <div class="s-editor-slider{if $stts->canShowTrace()} s-editor-slider-exp{/if}"
@@ -32,7 +37,7 @@
              {if $checkin->id == $userDayInfo->firstCheckin->id}data-checkin-first{/if}
              data-checkin-has-projects="{$checkin->hasProjects|intval}"
         >
-        <form style="padding: 20px 0 10px;display: flex;width: 100%;">
+        <form class="flexbox space-32 width-100">
             <input type="hidden" name="checkin[id]" value="{$checkin->id}"/>
             <input type="hidden" name="checkin[start_time]" value="{$checkin->min}"/>
             <input type="hidden" name="checkin[end_time]" value="{$checkin->max}"/>
@@ -102,59 +107,81 @@
                 </div>
             </div>
             <div class="s-editor-slider-total">
-                <h2 data-status-checkin-duration-zero="[`0 h`]">{$checkin->durationString}</h2>
+                <div class="large" data-status-checkin-duration-zero="[`0 h`]">{$checkin->durationString}</div>
             </div>
             <div class="s-editor-slider-break">
                 <input type="hidden" name="checkin[break]" value="0">
                 <label>
-                    <input type="checkbox" {if $checkin->break}checked{/if} name="checkin[break]" value="1">
-                    [`Break`]
+                    <span class="wa-checkbox">
+                        <input type="checkbox" {if $checkin->break}checked{/if} name="checkin[break]" value="1">
+                        <span>
+                            <span class="icon">
+                                <i class="fas fa-check"></i>
+                            </span>
+                        </span>
+                    </span>
+                    <span class="small">[`Break`]</span>
                     <span class="s-duration">
-                        <a href="#" class="inline-link s-duration-label"><b><i>{$checkin->breakString}</i></b></a>
-                        <input type="input" class="s-duration-input" value="{$checkin->break|default:1}" name="checkin[break_duration]">
+                        <a href="#" class="inline-link s-duration-label">{$checkin->breakString}</a>
+                        <input type="text" class="s-duration-input" value="{$checkin->break|default:1}" name="checkin[break_duration]">
                     </span>
                 </label>
             </div>
             <div class="s-editor-slider-more">
-                <a href="#" data-checkin-action="delete" title="[`Remove interval for today`]"><i class="icon16 delete"></i></a>
+                <a href="#" data-checkin-action="delete" title="[`Remove interval for today`]"><i class="far fa-trash-alt"></i></a>
             </div>
         </form>
         </div>
         {/if}
         {/foreach}
+        </div>
     </div>
 
     <!-- COMMENT & LOGGED ENTITIES -->
     <div class="s-editor-summary block double-padded blank">
         <textarea class="s-editor-comment" placeholder="[`Enter your daily report here...`]" name="checkin[comment]">{$userDayInfo->firstCheckin->comment|escape}</textarea>
-        <div class="s-editor-commit">
-            <span class="s-editor-commit-button">
-                <em class="hint">Ctrl + S &nbsp;</em>
-                <input type="button" value="[`Save`]" class="button yellow" />
-            </span>
-            <span class="s-editor-commit-indicator italic gray">[`Saved`] <i class="icon16 yes-bw"></i></span>
-        </div>
+        
+        <div class="s-logged-apps custom-mt-12 custom-pt-12 {if count($userDayInfo->walogsByDatetime) || count($userDayInfo->walogs)}bordered-top{/if}">
+            <div class="flexbox">
+                <div class="wide">
+                    {foreach $userDayInfo->walogs as $walog}
+                        {if $walog->count && $walog->appId != 'webasyst'}
+                            <a href="#"
+                            class="inline-link flexbox middle space-4 small"
+                            data-status-walog-contact-id="{$user->contactId}"
+                            data-status-walog-app="{$walog->appId}"
+                            data-status-walog-date="{$day->date}"
+                            >
+                                <span class="icon userpic size-16">
+                                    <i style="background-image: url('{$walog->appIcon}');"></i>
+                                </span>
+                                <span>
+                                    {$walog->count}
+                                </span>
+                            </a>
+                        {/if}
+                    {/foreach}
 
-        <div class="s-logged-apps">
-            {foreach $userDayInfo->walogs as $walog}
-                {if $walog->count && $walog->appId != 'webasyst'}
-                    <a href="#"
-                       class="s-logged-app-counter inline-link"
-                       data-status-walog-contact-id="{$user->contactId}"
-                       data-status-walog-app="{$walog->appId}"
-                       data-status-walog-date="{$day->date}"
-                    ><i class="icon16 s-app-icon" style="background-image: url('{$walog->appIcon}');"></i><b><i>{$walog->count}</i></b></a>
-                {/if}
-            {/foreach}
+                    {if $stts->canShowTrace()}
+                    {foreach $userDayInfo->walogsByDatetime as $walogByDatetime}{strip}
+                        <div class="s-timeline-content s-timeline-action-mark"
+                            style="left: {$walogByDatetime.position}%; background: {$walogByDatetime.app_color};"
+                            data-time="{$walogByDatetime.datetime|wa_datetime:datetime}"
+                        ></div>
+                    {/strip}{/foreach}
+                    {/if}
+                </div>
 
-            {if $stts->canShowTrace()}
-            {foreach $userDayInfo->walogsByDatetime as $walogByDatetime}{strip}
-                <div class="s-timeline-content s-timeline-action-mark"
-                     style="left: {$walogByDatetime.position}%; background: {$walogByDatetime.app_color};"
-                     data-time="{$walogByDatetime.datetime|wa_datetime:datetime}"
-                ></div>
-            {/strip}{/foreach}
-            {/if}
+                <div class="s-editor-commit flexbox">
+                    <div class="s-editor-commit-button">
+                        <em class="hint">Ctrl + S &nbsp;</em>
+                        <input type="button" value="[`Save`]" class="button yellow" />
+                    </div>
+                    <span class="s-editor-commit-indicator italic gray">[`Saved`] <i class="fas fa-check"></i></span>
+                </div>
+
+            </div>
         </div>
+  
     </div>
 </div>

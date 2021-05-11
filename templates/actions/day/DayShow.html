@@ -1,21 +1,21 @@
 {** @var statusDayDto $day **}
 {*<section id="day-show-{$day->date}">*}
     <div class="s-day-date">
-        <h4>
+        <div class="bold">
             {if $day->yesterday}[`Yesterday`]
             {elseif $day->today}[`Today`]
             {else}{$day->dayHuman}{/if}
             <span class="hint">{$day->dayname}{if $day->yesterday || $day->today}<br> {$day->dayHuman}{/if}</span>
-        </h4>
+        </div>
     </div>
 
 
-    <div class="s-checkins">
+    <div class="s-checkins wide">
         {foreach $day->userDayInfos as $userDayInfo}
         {* @var statusDayUserInfoDto $userDayInfo *}
 
-            <div class="s-checkin">
-                <div class="s-day-summary">
+            <div class="s-checkin flexbox">
+                <div class="s-day-summary wide">
                     <div class="s-day-summary-timeline">
 
                         <div class="s-timeline s-timeline-exp">
@@ -53,16 +53,16 @@
                         </div>
                     </div>
                     <div class="s-day-summary-user-report">
-                        <div class="s-author">
-                            <h5 class="s-username">
-                                <i class="icon16 userpic20" style="background-image: url({$day->users[$userDayInfo->contactId]->photoUrl})"></i>
-                                {$day->users[$userDayInfo->contactId]->name|escape}
+                        <div class="s-author flexbox">
+                            <div class="s-username wide flexbox middle space-8">
+                                <i class="userpic userpic-20" style="background-image: url({$day->users[$userDayInfo->contactId]->photoUrl})"></i>
+                                <strong>{$day->users[$userDayInfo->contactId]->name|escape}</strong>
                                 {if $userDayInfo->todayStatus->getCalendarId()}
                                 <span class="s-status" title="[`Status for today`]" style="background-color: {$userDayInfo->todayStatus->getBgColor()}; color: {$userDayInfo->todayStatus->getFontColor()}">{$userDayInfo->todayStatus->getName()|escape}</span>
                                 {/if}
-                            </h5>
+                            </div>
 
-                            <div class="s-logged-apps">
+                            <div class="s-logged-apps flexbox space-8">
                                 {$_cnt = 0}
                                 {foreach $userDayInfo->walogs as $walog}
                                     {if $walog->count && $walog->appId != 'webasyst'}
@@ -71,12 +71,17 @@
                                            data-status-walog-contact-id="{$day->users[$userDayInfo->contactId]->contactId}"
                                            data-status-walog-app="{$walog->appId}"
                                            data-status-walog-date="{$day->date}"
-                                        ><i class="icon16 s-app-icon" style="background-image: url('{$walog->appIcon}');"></i><b><i>{$walog->count}</i></b></a>
+                                        >
+                                        <span class="icon userpic size-16">
+                                            <i style="background-image: url('{$walog->appIcon}');"></i>
+                                        </span>
+
+                                        <span class="small">{$walog->count}</span></a>
                                         {$_cnt = $_cnt + 1}
                                     {/if}
                                 {/foreach}
                                 {if !$_cnt && !$checkin->id}
-                                    <div class="s-logged-apps gray">
+                                    <div class="s-logged-apps gray small">
                                         [`No activity recorded`]
                                     </div>
                                 {/if}
@@ -93,15 +98,15 @@
                 </div>
 
                 <div class="s-day-total">
-                    <h4>{$userDayInfo->dayDurationString}</h4>
+                    <strong>{$userDayInfo->dayDurationString}</strong>
 
                     {if $stts->canShowTrace() && !$isProject}
-                    <h4 class="gray small">
+                    <div class="gray small">
                         <span title="{sprintf('[`Webasyst online time: %s active, %s idle`]', $userDayInfo->traceDurationString, $userDayInfo->traceBreakDurationString)}">
-                            <i class="icon16 s-trace-total-online"></i>
+                            <i class="fas fa-plug"></i>
                             {$userDayInfo->traceDurationWithBreakString}
                         </span>
-                    </h4>
+                    </div>
                     {/if}
                 </div>
             </div>
@@ -114,7 +119,7 @@
                     <div class="s-day-summary-timeline"><div class="s-timeline"></div></div>
                 </div>
                 <div class="s-day-total">
-                    <h4>[`0 h`]</h4>
+                    <div class="large">[`0 h`]</div>
                 </div>
             </div>
         {/foreach}

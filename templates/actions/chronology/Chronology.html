@@ -32,18 +32,20 @@
     {elseif $isMe}
 
         <!-- Tomorrow: SET TAG ONLY: Office / Remote / Ill / Day off / Custom tag -->
-        <div class="s-tomorrow-planner">
-            <div class="float-right">
+        <div class="s-tomorrow-planner flexbox">
+            <div class="wide">
+                <h3>
+                    [`Tomorrow`]
+                    <span class="hint">
+                        {$tomorrowDto->dayname}, {$tomorrowDto->dayHuman}
+                                <!-- <span title="[`Weekend`]">🏖️Sunday / Saturday</span> -->
+                        <!-- <span title="[`Birthday`]">🎂Birtday</span> -->
+                    </span>
+                </h3>
+            </div>
+            <div>
                 {include inline file='./../todaystatus/TodaystatusList.html' statuses=$statuses statusDate='tomorrow' currentStatus=$nextStatus}
             </div>
-            <h3>
-                [`Tomorrow`]
-                <span class="hint">
-                    {$tomorrowDto->dayname}, {$tomorrowDto->dayHuman}
-                            <!-- <span title="[`Weekend`]">🏖️Sunday / Saturday</span> -->
-                    <!-- <span title="[`Birthday`]">🎂Birtday</span> -->
-                </span>
-            </h3>
         </div>
 
     {else}

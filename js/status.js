@@ -850,8 +850,8 @@
                 $firstCheckin.find('[data-checkin-action="delete"]')
                     .attr('data-checkin-action', 'add')
                     .attr('title', $_('Add another interval for today'))
-                    .find('i.delete')
-                    .toggleClass('add delete');
+                    .empty()
+                    .append('<i class="fas fa-plus-circle"></i>');
 
                 var saveComment = function() {
                     $editorHtml.find('.s-editor-commit-button').hide();
@@ -890,8 +890,8 @@
                         $newCheckin.find('[data-checkin-action="add"]')
                             .attr('data-checkin-action', 'delete')
                             .attr('title', $_('Remove interval for today'))
-                            .find('i.add')
-                            .toggleClass('add delete');
+                            .empty()
+                            .append('<i class="far fa-trash-alt"></i>');
 
                         $newCheckin
                             .data('checkin', 0)
