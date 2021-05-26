@@ -8,9 +8,18 @@
              </a>
          </li>
 
-         {if count($users) && $stts->getRightConfig()->isAdmin()}
+         {if count($users) && ($stts->getRightConfig()->isAdmin() || $stts->getRightCongif->hasAccessToTeammate())}
+             {foreach $groups as $_g}
+                 <li>
+                     <a href="#/team/{$_g.id}">
+                         <i class="fas fa-map-marker-alt"></i>
+                         <span>{$_g.name|escape}</span>
+                     </a>
+                 </li>
+             {/foreach}
+
              <li class="bottom-padded">
-                 <a href="#">
+                 <a href="#/contact/-1312">
                      <i class="fas fa-users"></i>
                      <span>[`Everyone`]</span>
                  </a>

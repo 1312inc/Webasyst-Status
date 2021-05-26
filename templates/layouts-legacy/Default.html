@@ -21,7 +21,7 @@
     {/if}
     <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-wa/wa.dialog.js"></script>
 
-    <script type="text/javascript" src="{$wa_app_static_url}js/status.js?v{if !waSystemConfig::isDebug()}{$wa->version()}{/if}"></script>
+    <script type="text/javascript" src="{$wa_app_static_url}js/legacy/status.js?v{if !waSystemConfig::isDebug()}{$wa->version()}{/if}"></script>
     <script type="text/javascript" src="?action=loc&amp;v={if !waSystemConfig::isDebug()}{$wa->version()}{/if}"></script>
 
     {function name=_draw_status_selector}

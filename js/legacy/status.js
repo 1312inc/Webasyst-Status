@@ -187,15 +187,6 @@
                     }
                 });
             },
-            teamAction: function (id, callback) {
-                var that = this;
-                return $.get('?module=chronology&group_id=' + id, function (html) {
-                    $('#status-content').html(html);
-                    if ($.isFunction(callback)) {
-                        callback.call();
-                    }
-                });
-            },
             projectAction: function (id) {
                 var that = this;
                 return $.get('?module=chronology&project_id=' + id, function (html) {
@@ -859,8 +850,8 @@
                 $firstCheckin.find('[data-checkin-action="delete"]')
                     .attr('data-checkin-action', 'add')
                     .attr('title', $_('Add another interval for today'))
-                    .empty()
-                    .append('<i class="fas fa-plus-circle"></i>');
+                    .find('i.delete')
+                    .toggleClass('add delete');
 
                 var saveComment = function() {
                     $editorHtml.find('.s-editor-commit-button').hide();
@@ -899,8 +890,8 @@
                         $newCheckin.find('[data-checkin-action="add"]')
                             .attr('data-checkin-action', 'delete')
                             .attr('title', $_('Remove interval for today'))
-                            .empty()
-                            .append('<i class="far fa-trash-alt"></i>');
+                            .find('i.add')
+                            .toggleClass('add delete');
 
                         $newCheckin
                             .data('checkin', 0)
@@ -1021,57 +1012,61 @@
                 e.preventDefault();
 
                 var projectId = $(this).data('status-project-id') || 0;
-                $.get('?module=project&action=dialog&id=' + projectId, function(html) {
-                    $.waDialog({
-                        html: html,
-                        onOpen: function ($dialog, dialog_instance) {
-                            $dialog
-                                .on('click', '#status-project-color a', function (e) {
-                                    e.preventDefault();
 
-                                    $dialog.find('#status-project-color input').val($(this).data('status-project-color'));
-                                    $(this).addClass('selected')
-                                        .siblings().removeClass('selected')
-                                })
-                                .on('click', '[data-status-action="delete-project"]', function (e) {
-                                    e.preventDefault();
+                $('#stts-project-dialog').waDialog({
+                    'height': '250px',
+                    'width': '600px',
+                    'url': '?module=project&action=dialog&id=' + projectId,
+                    onLoad: function () {
+                        var d = this,
+                            $dialogWrapper = $(d);
 
-                                    $.post('?module=project&action=delete', $dialog.find('form').serialize(), function (r) {
-                                        if (r.status === 'ok') {
-                                            $dialog.trigger('close');
-                                            window.location.hash = '#/';
-                                            $.status.routing.redispatch();
-                                            $.status.reloadSidebar();
-                                        }
-                                    });
-                                })
-                                .on('submit', 'form', function (e) {
-                                    e.preventDefault();
+                        $dialogWrapper
+                            .on('click', '#status-project-color a', function (e) {
+                                e.preventDefault();
 
-                                    $.post('?module=project&action=save', $dialog.find('form').serialize(), function (r) {
-                                        if (r.status === 'ok') {
-                                            $dialog.trigger('close');
-                                            // if (!pocketId) {
-                                            window.location.hash = '#/project/' + r.data.id;
-                                            // }
-                                            $.status.routing.redispatch();
-                                            $.status.reloadSidebar();
-                                        } else {
+                                $dialogWrapper.find('#status-project-color input').val($(this).data('status-project-color'));
+                                $(this).addClass('selected')
+                                    .siblings().removeClass('selected')
+                            })
+                            .on('click', '[data-status-action="delete-project"]', function (e) {
+                                e.preventDefault();
 
-                                        }
-                                    }, 'json');
-                                    return false;
-                                })
-                            ;
+                                $.post('?module=project&action=delete', $dialogWrapper.find('form').serialize(), function (r) {
+                                     if (r.status === 'ok') {
+                                         $dialogWrapper.trigger('close');
+                                         window.location.hash = '#/';
+                                         $.status.routing.redispatch();
+                                         $.status.reloadSidebar();
+                                     }
+                                });
+                            })
+                        ;
 
-                            setTimeout(function () {
-                                if (!$dialog.find('[name="project[id]"]').val() == 0) {
-                                    $dialog.find('[name="project[name]"]').trigger('focus');
-                                }
-                            }, 13.12);
-                        }
-                    });
-                })
+                        setTimeout(function () {
+                            if (!$dialogWrapper.find('[name="project[id]"]').val() == 0) {
+                                $dialogWrapper.find('[name="project[name]"]').trigger('focus');
+                            }
+                        }, 13.12);
+                    },
+                    onSubmit: function (d) {
+                        d.find('.dialog-buttons input[type="button"]').after($.status.$loading);
+                        $.post('?module=project&action=save', d.find('form').serialize(), function (r) {
+                            $.status.$loading.remove();
+                            if (r.status === 'ok') {
+                                d.trigger('close');
+                                // if (!pocketId) {
+                                window.location.hash = '#/project/' + r.data.id;
+                                // }
+                                $.status.routing.redispatch();
+                                $.status.reloadSidebar();
+                            } else {
+
+                            }
+                        }, 'json');
+                        return false;
+                    }
+                });
             };
 
             self.$core_sidebar.on('click', '[data-status-project-action="add"]', projectDialog);
@@ -1085,8 +1080,14 @@
                         date = $this.data('status-walog-date'),
                         contactId = $this.data('status-walog-contact-id');
 
-                    $.get('?module=walog&action=dialog&date=' + encodeURIComponent(date) + '&contact_id=' + contactId, function(html) {
-                        $.waDialog({html: html});
+                    $('#stts-walog-dialog').waDialog({
+                        'height': '300px',
+                        'width': '600px',
+                        'url': '?module=walog&action=dialog&date=' + encodeURIComponent(date) + '&contact_id=' + contactId,
+                        onLoad: function () {
+                            var d = this,
+                                $dialogWrapper = $(d);
+                        }
                     });
                 })
                 .on('click.stts', '[data-status-wrapper="statuses"] [data-status-action="custom-status"]', function (e) {
@@ -1098,32 +1099,34 @@
                             .data('status-today-status-date') || '',
                         $wrapper = $this.closest('[data-status-wrapper="statuses"]');
 
-                    $.get('?module=todaystatus&action=dialog&date=' + encodeURIComponent(date), function(html) {
-                        $.waDialog({
-                            html: html,
-                            onOpen: function ($dialog, dialog_instance) {
-                                setTimeout(function () {
-                                    $dialog.find('status[summary]').trigger('focus');
-                                }, 13.12);
+                    $('#stts-status-dialog').waDialog({
+                        'height': '300px',
+                        'width': '600px',
+                        'url': '?module=todaystatus&action=dialog&date=' + encodeURIComponent(date),
+                        onLoad: function () {
+                            var d = this,
+                                $dialogWrapper = $(d);
 
-                                $dialog.on('submit', 'form', function (e) {
-                                    e.preventDefault();
-                                    $.post('?module=todaystatus&action=save', $dialogfind('form').serialize(), function (r) {
-                                        if (r.status === 'ok') {
-                                            $wrapper.replaceWith(r.data);
-                                            $.status.$status_content.find('.s-editor').trigger('reloadDayShow.stts');
+                            setTimeout(function () {
+                                $dialogWrapper.find('status[summary]').trigger('focus');
+                            }, 13.12);
+                        },
+                        onSubmit: function (d) {
+                            d.find('.dialog-buttons input[type="button"]').after($.status.$loading);
+                            $.post('?module=todaystatus&action=save', d.find('form').serialize(), function (r) {
+                                $.status.$loading.remove();
+                                if (r.status === 'ok') {
+                                    $wrapper.replaceWith(r.data);
+                                    $.status.$status_content.find('.s-editor').trigger('reloadDayShow.stts');
 
-                                            $.status.reloadSidebar();
-                                            $dialogtrigger('close');
-                                        } else {
+                                    $.status.reloadSidebar();
+                                    d.trigger('close');
+                                } else {
 
-                                        }
-                                    }, 'json');
-
-                                    return false;
-                                });
-                            }
-                        });
+                                }
+                            }, 'json');
+                            return false;
+                        }
                     });
                 })
                 .on('click.stts', '[data-status-wrapper="statuses"] [data-status-calendar-id] a', function (e) {

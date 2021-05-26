@@ -1,10 +1,10 @@
-<div class="wa-dialog is-animated" id="status-project-dialog">
-    <div class="wa-dialog-background"></div>
-    <div class="wa-dialog-body">
+<div class="dialog" id="status-project-dialog">
+    <div class="dialog-background"></div>
+    <div class="dialog-body">
         <form>
             <input type="hidden" name="project[id]" value="{$project->getId()|default:0}"/>
             <div data-status-wrapper="project-settings-dialog">
-                <header class="wa-dialog-header">
+                <header class="dialog-header">
                     {if $project->getId()}
                         <h1>{$project->getName()|default:'[`(unnamed project)`]'|escape|truncate:32}</h1>
                     {else}
@@ -12,7 +12,7 @@
                     {/if}
                 </header>
 
-                <div class="wa-dialog-content fields form">
+                <div class="dialog-content fields form">
                     <div class="field-group">
                         <div class="field">
                             <div class="name nowrap">
@@ -52,7 +52,7 @@
                     {* @event backend_project_dialog.%plugin_id% *}
                     {if !empty($backend_project_dialog)}{foreach $backend_project_dialog as $_}{ifset($_)}{/foreach}{/if}
 
-                    <footer class="wa-dialog-footer">
+                    <footer class="dialog-footer">
                         {if $project->getId()}
                             <div class="block half-padded float-right">
                                 <ul class="menu-h">

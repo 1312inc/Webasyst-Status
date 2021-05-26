@@ -74,11 +74,12 @@ SQL;
     /**
      * @param string $dateStart
      * @param string $dateEnd
-     * @param int    $contactId
+     * @param array  $contactIds
      *
      * @return array
+     * @throws waDbException
      */
-    public function getStatByDatesAndContactId($dateStart, $dateEnd, $contactId)
+    public function getStatByDatesAndContactId($dateStart, $dateEnd, array $contactIds)
     {
         $sql = <<<SQL
 select sp.id project_id,
@@ -90,7 +91,7 @@ select sp.id project_id,
 from status_project sp
          join status_checkin_projects scp on sp.id = scp.project_id
          join status_checkin sc on sc.id = scp.checkin_id
-where sc.contact_id = i:contact_id
+where sc.contact_id in (i:contact_ids)
   and sc.date between s:date1 and s:date2
   and sp.is_archived = 0
 group by sp.id
@@ -100,9 +101,9 @@ SQL;
             ->query(
                 $sql,
                 [
-                    'contact_id' => $contactId,
-                    'date1'      => $dateStart,
-                    'date2'      => $dateEnd,
+                    'contact_ids' => $contactIds,
+                    'date1' => $dateStart,
+                    'date2' => $dateEnd,
                 ]
             )
             ->fetchAll('project_id');

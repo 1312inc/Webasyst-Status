@@ -5,6 +5,10 @@
  */
 class statusCheckinTraceModel extends statusModel
 {
+    const TOTAL_DURATION = 'total_duration';
+    const BREAK_DURATION = 'break_duration';
+    const TOTAL_DURATION_WITH_BREAK = 'total_duration_with_break';
+
     protected $table = 'status_checkin_trace';
 
     /**
@@ -25,31 +29,31 @@ class statusCheckinTraceModel extends statusModel
     /**
      * @param string $dateStart
      * @param string $dateEnd
-     * @param int    $contactId
+     * @param array  $contactIds
      * @param string $type
      *
      * @return int
+     * @throws waDbException
      */
-    public function countTimeByDatesAndContactId($dateStart, $dateEnd, $contactId, $type): int
+    public function countTimeByDatesAndContactId($dateStart, $dateEnd, array $contactIds, $type): int
     {
         $sql = <<<SQL
 select sum(%s) duration_by_user 
 from status_checkin_trace sc
-where sc.contact_id = i:contact_id 
+where sc.contact_id in (i:contact_ids) 
   and sc.date between s:date1 and s:date2
 SQL;
 
-        $select = '';
         switch ($type) {
-            case 'total_duration':
+            case self::TOTAL_DURATION:
                 $select = 'sc.total_duration';
                 break;
 
-            case 'break_duration':
+            case self::BREAK_DURATION:
                 $select = 'break_duration';
                 break;
 
-            case 'total_duration_with_break':
+            case self::TOTAL_DURATION_WITH_BREAK:
             default:
                 $select = 'sc.total_duration + sc.break_duration';
                 break;
@@ -57,7 +61,7 @@ SQL;
 
         return (int) $this->query(
                 sprintf($sql, $select),
-                ['contact_id' => $contactId, 'date1' => $dateStart, 'date2' => $dateEnd]
+                ['contact_ids' => $contactIds, 'date1' => $dateStart, 'date2' => $dateEnd]
             )
             ->fetchField('duration_by_user');
     }

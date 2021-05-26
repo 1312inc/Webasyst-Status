@@ -6,16 +6,6 @@
 class statusChronologyAction extends statusViewAction
 {
     /**
-     * @var statusUser
-     */
-    protected $user;
-
-    /**
-     * @var statusProject
-     */
-    protected $project;
-
-    /**
      * @var bool
      */
     protected $isMe = false;
@@ -24,6 +14,31 @@ class statusChronologyAction extends statusViewAction
      * @var bool
      */
     protected $isProject = false;
+
+    /**
+     * @var statusGetWeekDataFilterRequestDto
+     */
+    protected $getWeekDataFilterRequestDto;
+
+    /**
+     * @var statusUser|null
+     */
+    protected $user;
+
+    /**
+     * @var int|null
+     */
+    protected $contactId;
+
+    /**
+     * @var int|null
+     */
+    protected $projectId;
+
+    /**
+     * @var int|null
+     */
+    protected $groupId;
 
     /**
      * @throws kmwaForbiddenException
@@ -35,42 +50,18 @@ class statusChronologyAction extends statusViewAction
     {
         parent::preExecute();
 
-        $contactId = waRequest::get('contact_id', 0, waRequest::TYPE_INT);
-        $projectId = waRequest::get('project_id', 0, waRequest::TYPE_INT);
+        $this->contactId = waRequest::get('contact_id', null, waRequest::TYPE_INT);
+        $this->projectId = waRequest::get('project_id', null, waRequest::TYPE_INT);
+        $this->groupId = waRequest::get('group_id', null, waRequest::TYPE_INT);
 
-        $this->user = !$contactId
-            ? stts()->getUser()
-            : stts()->getEntityRepository(statusUser::class)->findByContactId($contactId);
+        $this->getWeekDataFilterRequestDto = new statusGetWeekDataFilterRequestDto($this->contactId, $this->projectId, $this->groupId);
 
-        if (!$this->user->getId()) {
-            $this->user = stts()->getEntityFactory(statusUser::class)->createNewWithContact(new waContact($contactId));
+        if ($this->getWeekDataFilterRequestDto->getUsers()) {
+            $this->user = $this->getWeekDataFilterRequestDto->getUsers()[0];
+            $this->isMe = $this->user->getContactId() == stts()->getUser()->getContactId();
         }
 
-        if (!$this->user->getContact()->exists()) {
-            throw new kmwaNotFoundException('User not found');
-        }
-
-        if ($this->user->getContactId() != wa()->getUser()->getId()
-            && !stts()->getRightConfig()->hasAccessToTeammate($this->user)) {
-            throw new kmwaForbiddenException(_w('You don`t have access to this user'));
-        }
-
-        stts()->setContextUser($this->user);
-
-        if ($projectId) {
-            $this->project = stts()->getEntityRepository(statusProject::class)->findById($projectId);
-
-            if (!$this->project instanceof statusProject) {
-                throw new kmwaNotFoundException('Project not found');
-            }
-
-            if (!stts()->getRightConfig()->hasAccessToProject($projectId)) {
-                throw new kmwaForbiddenException(_w('You don`t have access to this project'));
-            }
-        }
-
-        $this->isMe = $this->user->getContactId() == stts()->getUser()->getContactId();
-        $this->isProject = $this->project instanceof statusProject;
+        $this->isProject = $this->getWeekDataFilterRequestDto->getProject() instanceof statusProject;
     }
 
     /**
@@ -82,8 +73,12 @@ class statusChronologyAction extends statusViewAction
     public function runAction($params = null)
     {
         $weeks = statusWeekFactory::createLastNWeeks(5, true, 0);
-        $weeksDto = statusWeekFactory::getWeeksDto($weeks, $this->user, $this->project);
+        $weeksDto = statusWeekFactory::getWeeksDto($weeks, $this->getWeekDataFilterRequestDto);
         $currentWeek = array_shift($weeksDto);
+
+        if (!$this->user) {
+            $this->user = stts()->getUser();
+        }
 
         $tomorrow = new statusDay(new DateTime('tomorrow'));
         $tomorrowDto = new statusDayDto($tomorrow);
@@ -102,25 +97,35 @@ class statusChronologyAction extends statusViewAction
         $dayDtoAssembler = new statusDayDotAssembler();
         $dayDtoAssembler->fillWithCheckins($userDayInfo, [], $userDto);
 
+        stts()->setContextUser($this->user);
+
+        $group = false;
+        if ($this->groupId) {
+            $group = (new waGroupModel())->getName($this->groupId);
+        }
+
         $viewData = [
             'currentWeek' => $currentWeek,
             'weeks' => $weeksDto,
             'sidebar_html' => (new statusBackendSidebarAction())->display(),
-            'current_contact_id' => $this->user->getContactId(),
-            'isMe' => (int)$this->isMe,
-            'isProject' => (int)$this->isProject,
+            'current_contact_id' => (int) $this->contactId,
+            'isMe' => (int) $this->isMe,
+            'isProject' => (int) $this->isProject,
             'tomorrow' => (new DateTime())->modify('+1 day')->format('Y-m-d'),
             'statuses' => statusTodayStatusFactory::getAllForUser($this->user),
             'nextStatus' => statusTodayStatusFactory::getForContactId(
                 $this->user->getContactId(),
                 (new DateTime())->modify('+1 day')
             ),
-            'project' => $this->project,
-            'dayEditable' => (int)($this->user->getContactId() == stts()->getUser()->getContactId()
-                && !$this->project instanceof statusProject),
+            'project' => $this->getWeekDataFilterRequestDto->getProject(),
+            'dayEditable' => (int) ($this->user->getContactId() == stts()->getUser()->getContactId()
+                && !$this->getWeekDataFilterRequestDto->getProject()),
             'contextUser' => $this->user,
             'tomorrowDto' => $tomorrowDto,
             'showTrace' => stts()->canShowTrace(),
+            'group' => $group,
+            'groupId' => $this->groupId,
+            'allUsers' => $this->contactId === statusGetWeekDataFilterRequestDto::ALL_USERS_ID,
         ];
         $this->view->assign($viewData);
     }

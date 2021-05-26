@@ -63,6 +63,10 @@ class statusBackendSidebarAction extends statusViewAction
 
         $stat = new statusStat();
 
+        $waGroups = (new waGroupModel())->select('*')
+            ->order('sort')
+            ->fetchAll('id');
+
         /**
          * UI in main sidebar
          *
@@ -84,6 +88,7 @@ class statusBackendSidebarAction extends statusViewAction
                 'timeByUserStat' => $stat->usersTimeByWeek(new DateTime()),
                 'timeByProjectStat' => $stat->projectsTimeByWeek(new DateTime()),
                 'isAdmin' => (int)$this->getUser()->isAdmin('status'),
+                'groups' => $waGroups,
             ]
         );
     }

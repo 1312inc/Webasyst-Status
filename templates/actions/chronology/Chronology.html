@@ -29,6 +29,18 @@
             {/if}
         </div>
 
+    {elseif $group}
+
+        <div class="s-title">
+            <h1>{$group|escape}</h1>
+        </div>
+
+    {elseif $allUsers}
+
+        <div class="s-title">
+            <h1>[`All users`]</h1>
+        </div>
+
     {elseif $isMe}
 
         <!-- Tomorrow: SET TAG ONLY: Office / Remote / Ill / Day off / Custom tag -->
@@ -105,15 +117,12 @@
 <script>
     'use strict';
     (function(){
-        var currentContactId = '{$current_contact_id}',
-            dayEditable = parseInt('{$dayEditable}');
-
-        // $.status.options.userId = currentContactId;
+        var dayEditable = parseInt('{$dayEditable}');
 
         $.status.lazyLoad({
             $loading: $('#chronology .lazyloading'),
             html_selector: '#olderWeeks',
-            url: '?module=chronology&action=loadWeeks&{if $project}project_id={$project->getId()}{else}contact_id={$current_contact_id}{/if}'
+            url: '?module=chronology&action=loadWeeks&{if $project}project_id={$project->getId()}{else}contact_id={$current_contact_id}{/if}{if $groupId}&group_id={$groupId}{/if}'
         });
 
         $.status.$status_content
