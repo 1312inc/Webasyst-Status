@@ -33,39 +33,6 @@ class statusGetWeekDataFilterRequestDto
             if (!stts()->getRightConfig()->hasAccessToProject($projectId)) {
                 throw new kmwaForbiddenException(_w('You don`t have access to this project'));
             }
-        } elseif ($contactId) {
-            if ($contactId != self::ALL_USERS_ID) {
-                $user = !$contactId
-                    ? stts()->getUser()
-                    : $userRepository->findByContactId($contactId);
-
-                if (!$user->getId()) {
-                    $user = stts()->getEntityFactory(statusUser::class)->createNewWithContact(
-                        new waContact($contactId)
-                    );
-                }
-
-                if (!$user->getContact()->exists()) {
-                    throw new kmwaNotFoundException('User not found');
-                }
-
-                if ($user->getContactId() != wa()->getUser()->getId()
-                    && !stts()->getRightConfig()->hasAccessToTeammate($user)) {
-                    throw new kmwaForbiddenException(_w('You don`t have access to this user'));
-                }
-
-                $this->users = [$user];
-            } else {
-                if (!stts()->getRightConfig()->hasAccessToTeammate()) {
-                    throw new kmwaForbiddenException(_w('You don`t have access to this user'));
-                }
-
-                /** @var statusUser[] $allUsers */
-                $allUsers = $userRepository->findAll();
-                foreach ($allUsers as $user) {
-                    $this->users[] = $user;
-                }
-            }
         } elseif ($groupId) {
             $groupContactsIds = (new waUserGroupsModel())->getContactIds($groupId);
 
@@ -77,6 +44,37 @@ class statusGetWeekDataFilterRequestDto
 
                 $this->users[] = $statusUser;
             }
+        } elseif ($contactId == self::ALL_USERS_ID) {
+            if (!stts()->getRightConfig()->hasAccessToTeammate()) {
+                throw new kmwaForbiddenException(_w('You don`t have access to this user'));
+            }
+
+            /** @var statusUser[] $allUsers */
+            $allUsers = $userRepository->findAll();
+            foreach ($allUsers as $user) {
+                $this->users[] = $user;
+            }
+        } else {
+            $user = !$contactId
+                ? stts()->getUser()
+                : $userRepository->findByContactId($contactId);
+
+            if (!$user->getId()) {
+                $user = stts()->getEntityFactory(statusUser::class)->createNewWithContact(
+                    new waContact($contactId)
+                );
+            }
+
+            if (!$user->getContact()->exists()) {
+                throw new kmwaNotFoundException('User not found');
+            }
+
+            if ($user->getContactId() != wa()->getUser()->getId()
+                && !stts()->getRightConfig()->hasAccessToTeammate($user)) {
+                throw new kmwaForbiddenException(_w('You don`t have access to this user'));
+            }
+
+            $this->users = [$user];
         }
     }
 
