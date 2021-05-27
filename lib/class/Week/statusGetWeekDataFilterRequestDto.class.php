@@ -42,7 +42,15 @@ class statusGetWeekDataFilterRequestDto
                     continue;
                 }
 
+                if (!$statusUser->isExists()) {
+                    continue;
+                }
+
                 $this->users[] = $statusUser;
+            }
+
+            if (!$this->users) {
+                throw new kmwaNotFoundException('Team data not found');
             }
         } elseif ($contactId == self::ALL_USERS_ID) {
             if (!stts()->getRightConfig()->hasAccessToTeammate()) {

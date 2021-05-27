@@ -212,7 +212,7 @@ class statusWeekFactory
             if ($projectId) {
                 $weekDto->donut = $weekDtoAssembler->getDonutProjectStatDto($weekDto, $week, $projectId);
             } elseif ($users) {
-                $weekDto->donut = $weekDtoAssembler->getDonutUserStatDto($weekDto, $week, $filterRequestDto->getUsers());
+                $weekDto->donut = $weekDtoAssembler->getDonutUserStatDto($weekDto, $week, $filterRequestDto->getUsers() ?: []);
             }
 
             $weeksDto[] = $weekDto;
