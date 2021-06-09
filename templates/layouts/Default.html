@@ -32,7 +32,7 @@
 
     <div id="wa-app">
         <div class="flexbox wrap-mobile">
-            <section class="sidebar hide-scrollbar flexbox s-navigation" id="status-left-sidebar">{$sidebar_html}</section>
+            <section class="sidebar mobile-friendly width-15rem flexbox s-navigation" id="status-left-sidebar">{$sidebar_html}</section>
             <section class="content blank" id="status-content"></section>
         </div>
     </div>
@@ -55,6 +55,15 @@
         // $.status.routing.defaultAction();
 
         // });
+    </script>
+
+    <script>
+        ( function($) {
+            var $sidebar = $('#status-left-sidebar');
+            $sidebar.waShowSidebar({
+                direction: "down"
+            });
+        })(jQuery);
     </script>
 </div>
 </body>
