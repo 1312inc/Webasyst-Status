@@ -68,7 +68,7 @@ SQL;
                 self::TYPE
             );
             $dtos[$contactId]->icon = sprintf(
-                '<i class="icon16 userpic20" style="background-image: url(%s)"></i>',
+                '<i class="userpic userpic-20" style="background-image: url(%s)"></i>',
                 $contact->getUserPic()
             );
         }
