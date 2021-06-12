@@ -487,16 +487,22 @@
             function initCheckin($el) {
                 var $slider = $el.find('.s-editor-slider-slider'),
                     $form = $el.find('form'),
-                    $checkinDuration = $el.find('.s-editor-slider-total h2'),
+                    $checkinDuration = $el.find('.s-editor-slider-total > div'),
                     checkinBreak = checkboxDuration($el.find('.s-editor-slider-break')),
                     projects = [],
                     data = getDataFromCheckin($form),
                     hasProjects = $el.data('checkin-has-projects'),
                     checkinId = $form.find('[name="checkin[id]"]').val(),
-                    minMax = {'min': 0, 'max': 1440};
+                    minMax = {'min': 0, 'max': 1440},
+                    selectedCheckinIndex = null;
 
                 var getCheckinDuration = function (values) {
-                        var checkinDuration = values[1] - values[0];
+                        var valuesLength = values.length / 2,
+                            checkinDuration = 0;
+
+                        for (let index = 0; index < valuesLength; index++) {
+                            checkinDuration += values[1 + index * 2] - values[0 + index * 2];
+                        }
 
                         if (checkinBreak.isOn()) {
                             checkinDuration -= (checkinBreak.value() * 60)
@@ -517,7 +523,7 @@
                         $checkinDuration.text(value);
                     },
                     fillSliderWithColor = function () {
-                        var $line = $slider.find('.ui-widget-header'),
+                        var $line = $slider.find('.noUi-connect'),
                             width = $line.get(0).style.width,
                             left = $line.get(0).style.left,
                             colors = [];
@@ -672,8 +678,9 @@
                 // updateDayDuration($slider.slider('values'));
                 // $checkinDuration.text($.status.timeValueToStr($form.find('[name="checkin[total_duration]"]').val() / 60));
 
+                console.log('1' + $el.find('.s-editor-slider-projects:visible .s-editor-project'))
 
-                $el.find('.s-editor-project').each(function () {
+                $el.find('.s-editor-slider-projects:visible .s-editor-project').each(function () {
                     projects.push(new checkboxDuration($(this), 'project'));
                 });
 
@@ -696,48 +703,117 @@
                         updateDayDuration($slider.slider('option', 'values'));
                         save($form);
                     });
+                
+                var checkinsSlider = $slider[0];
 
-
-                $slider.slider('destroy');
-                $slider.slider({
-                    range: true,
-                    min: minMax.min,
-                    max: minMax.max,
-                    step: 5,
-                    values: [data.start_time, data.end_time],
-                    create: function (event, ui) {
-                        $el.find('.ui-slider .ui-slider-handle:first').attr('data-slider-time', $.status.timeValueToStr(data.start_time / 60, 'time'));
-                        $el.find('.ui-slider .ui-slider-handle:last').attr('data-slider-time', $.status.timeValueToStr(data.end_time / 60, 'time'));
-
-                        if (hasProjects) {
-                            fillSliderWithColor();
-                        }
-                        updateDayDuration($slider.slider('option', 'values'));
-                        if (data.id) {
-                            //меняем цвет слайдера на s-active, чтобы показать, что данные сохранились
-                            $el.find('.ui-slider').addClass('s-active');
-                            $el.find('.s-editor-slider-projects').slideDown(200);
-                        }
-                    },
-                    slide: function (event, ui) {
-                        updateDayDuration(ui.values);
-                        // if (checkinBreak.isOn() && duration > (24 - checkinBreak.value()) * 60) {
-                        //     return false;
-                        // }
-
-                        $el.find('.ui-slider .ui-slider-handle:first').attr('data-slider-time', $.status.timeValueToStr(ui.values[0] / 60, 'time'));
-                        $el.find('.ui-slider .ui-slider-handle:last').attr('data-slider-time', $.status.timeValueToStr(ui.values[1] / 60, 'time'));
-                    },
-                    change: function (event, ui) {
-                        //показываем опциаональную детализацию по проектам
-                        $el.find('.s-editor-slider-projects').slideDown(200);
-
-                        $form.find('[name="checkin[start_time]"]').val(ui.values[0]);
-                        $form.find('[name="checkin[end_time]"]').val(ui.values[1]);
-
-                        save($form);
-                    }
+                var checkinsArray = $slider.data('start').filter(function (e) {
+                    return e.comment === null;
                 });
+
+                var start = checkinsArray.reduce(function (acc, e) {
+                    acc.push(e.min, e.max);
+                    return acc;
+                }, []);
+
+                var connect = [];
+                for (let index = 1; index < start.length + 2; index++) {
+                    connect.push(index % 2 == 0);
+                }
+
+                noUiSlider.create(checkinsSlider, {
+                    start: start,
+                    connect: connect,
+                    tooltips: start.map(function() {return true}),
+                    behaviour: 'drag',
+                    step: 5,
+                    range: {
+                        'min': [minMax.min],
+                        'max': [minMax.max]
+                    },
+                    // format: {
+                    //     // 'to' the formatted value. Receives a number.
+                    //     to: function (value) {
+                    //         return $.status.timeValueToStr(value / 60, 'time');
+                    //     },
+                    //     // 'from' the formatted value.
+                    //     // Receives a string, should return a number.
+                    //     from: function (value) {
+                    //         return value
+                    //     }
+                    // }
+                });
+
+                checkinsSlider.noUiSlider.on('start', function (values, handle, unencoded, tap, positions, noUiSlider) {
+                    handle++;
+                    selectedCheckinIndex = Math.ceil(handle / 2) - 1;
+                    var connect = $slider[0].querySelectorAll('.noUi-connect');
+                    connect.forEach(function (e) {
+                        e.classList.remove('active');
+                    });
+                    connect[selectedCheckinIndex].classList.add('active');
+                    $el.find('.s-editor-slider-projects')
+                        .hide();
+                    $el.find('.s-editor-slider-projects[data-checkin-id="'+checkinsArray[selectedCheckinIndex].id+'"]')
+                        .show();
+                });
+
+                checkinsSlider.noUiSlider.on('update', function (values) {
+                    updateDayDuration(values);
+                });
+                
+                checkinsSlider.noUiSlider.on('change', function (values, handle) {
+                    //показываем опциаональную детализацию по проектам
+                    var target = checkinsArray[selectedCheckinIndex];
+
+                    $form.find('[name="checkin[id]"]').val(target.id);
+                    $form.find('[name="checkin[start_time]"]').val(values[0 + selectedCheckinIndex*2]);
+                    $form.find('[name="checkin[end_time]"]').val(values[1 + selectedCheckinIndex*2]);
+                    $form.find('[name="checkin[total_duration]"]').val(target.duration);
+                    $form.find('[name="checkin[break_duration]"]').val(target.break);
+
+                    save($form);
+                });
+
+                // $slider.slider('destroy');
+                // $slider.slider({
+                //     range: true,
+                //     min: minMax.min,
+                //     max: minMax.max,
+                //     step: 5,
+                //     values: [data.start_time, data.end_time],
+                //     create: function (event, ui) {
+                //         $el.find('.ui-slider .ui-slider-handle:first').attr('data-slider-time', $.status.timeValueToStr(data.start_time / 60, 'time'));
+                //         $el.find('.ui-slider .ui-slider-handle:last').attr('data-slider-time', $.status.timeValueToStr(data.end_time / 60, 'time'));
+
+                //         if (hasProjects) {
+                //             fillSliderWithColor();
+                //         }
+                //         updateDayDuration($slider.slider('option', 'values'));
+                //         if (data.id) {
+                //             //меняем цвет слайдера на s-active, чтобы показать, что данные сохранились
+                //             $el.find('.ui-slider').addClass('s-active');
+                //             $el.find('.s-editor-slider-projects').slideDown(200);
+                //         }
+                //     },
+                //     slide: function (event, ui) {
+                //         updateDayDuration(ui.values);
+                //         // if (checkinBreak.isOn() && duration > (24 - checkinBreak.value()) * 60) {
+                //         //     return false;
+                //         // }
+
+                //         $el.find('.ui-slider .ui-slider-handle:first').attr('data-slider-time', $.status.timeValueToStr(ui.values[0] / 60, 'time'));
+                //         $el.find('.ui-slider .ui-slider-handle:last').attr('data-slider-time', $.status.timeValueToStr(ui.values[1] / 60, 'time'));
+                //     },
+                //     change: function (event, ui) {
+                //         //показываем опциаональную детализацию по проектам
+                //         $el.find('.s-editor-slider-projects').slideDown(200);
+
+                //         $form.find('[name="checkin[start_time]"]').val(ui.values[0]);
+                //         $form.find('[name="checkin[end_time]"]').val(ui.values[1]);
+
+                //         save($form);
+                //     }
+                // });
 
                 //при выборе проектов закрашиваем слайдер цветами проектов в заданных пропорциях. делаем это средствами градиентов css.
                 // $el
@@ -772,7 +848,7 @@
             }
 
             function save($form) {
-                var newSaveData = $form.serialize();
+                var newSaveData = $form.find(':not(:hidden *)').serialize();
                 $.status.log('Save day form.', $form, newSaveData);
 
                 if (lastSavedData === newSaveData) {

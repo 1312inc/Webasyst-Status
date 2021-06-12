@@ -5,6 +5,7 @@
     <title>{$wa->appName()} &mdash; {$wa->accountName()}</title>
     {$wa->css()}
     <link type="text/css" rel="stylesheet" href="{$wa_app_static_url}css/status.css?v{$wa->version()}">
+    <link type="text/css" rel="stylesheet" href="{$wa_app_static_url}js/vendors/noUiSlider/nouislider.min.css">
     <link type="text/css" rel="stylesheet" href="{$wa_url}wa-content/css/jquery-ui/jquery-ui-1.7.2.custom.css" />
     <script type="text/javascript" src="{$wa_url}wa-content/js/jquery/jquery-1.11.1.min.js"></script>
     <script src="/wa-content/js/jquery/jquery-migrate-1.2.1.min.js"></script>
@@ -16,6 +17,7 @@
     <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.widget.min.js?v{if !waSystemConfig::isDebug()}{$wa->version()}{/if}"></script>
     <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.mouse.min.js?v{if !waSystemConfig::isDebug()}{$wa->version()}{/if}"></script>
     <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.slider.min.js?v{if !waSystemConfig::isDebug()}{$wa->version()}{/if}"></script>
+    <script type="text/javascript" src="{$wa_app_static_url}js/vendors/noUiSlider/nouislider.min.js"></script>
     <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.datepicker.min.js?v{if !waSystemConfig::isDebug()}{$wa->version()}{/if}"></script>
     {if ($wa->locale() == 'ru_RU')}
     <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/i18n/jquery.ui.datepicker-ru_RU.js"></script>

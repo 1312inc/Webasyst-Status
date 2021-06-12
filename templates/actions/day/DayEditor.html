@@ -31,19 +31,19 @@
         
         <div class="custom-my-20">
         {foreach $userDayInfo->checkins as $checkin}
-        {if !$checkin->isTrace}
+        {if !$checkin->isTrace && $checkin->id == $userDayInfo->firstCheckin->id}
         <div class="s-editor-slider{if $stts->canShowTrace()} s-editor-slider-exp{/if}"
              data-checkin="{$checkin->id}"
              {if $checkin->id == $userDayInfo->firstCheckin->id}data-checkin-first{/if}
              data-checkin-has-projects="{$checkin->hasProjects|intval}"
         >
         <form class="flexbox space-32 width-100">
-            <input type="hidden" name="checkin[id]" value="{$checkin->id}"/>
-            <input type="hidden" name="checkin[start_time]" value="{$checkin->min}"/>
-            <input type="hidden" name="checkin[end_time]" value="{$checkin->max}"/>
+            <input type="hidden" name="checkin[id]" value=""/>
+            <input type="hidden" name="checkin[start_time]" value=""/>
+            <input type="hidden" name="checkin[end_time]" value=""/>
             <input type="hidden" name="checkin[date]" value="{$day->date}"/>
-            <input type="hidden" name="checkin[total_duration]" value="{$checkin->duration}"/>
-            <input type="hidden" name="checkin[break_duration]" value="{$checkin->break}"/>
+            <input type="hidden" name="checkin[total_duration]" value=""/>
+            <input type="hidden" name="checkin[break_duration]" value=""/>
 
             <div class="s-editor-slider-control">
                 {if $stts->canShowTrace()}
@@ -53,7 +53,8 @@
                 {/strip}{/for}
                 </span>
                 {/if}
-                <div class="s-editor-slider-slider">
+
+                <div class="s-editor-slider-slider" data-start='{json_encode($userDayInfo->checkins)}'>
                     {if $stts->canShowTrace()}
                         <div class="s-editor-slider-helpers">
                             {foreach $userDayInfo->checkins as $c}{strip}
@@ -81,7 +82,9 @@
                     {/if}
                 </div>
 
-                <div class="s-editor-slider-projects" {if !$checkin->hasProjects}style="display: none;"{/if}>
+                {foreach $userDayInfo->checkins as $checkin}
+
+                <div class="s-editor-slider-projects" data-checkin-id="{$checkin->id}" style="display: none;">
                 {foreach $checkin->projectsDuration as $projectDuration}
                     <label class="s-editor-project {if $projectDuration->id}selected{/if}"
                            data-status-project-color="{$projectDuration->project->color}"
@@ -105,6 +108,8 @@
                     </label>
                 {/foreach}
                 </div>
+
+                {/foreach}
             </div>
             <div class="s-editor-slider-total">
                 <div class="large" data-status-checkin-duration-zero="[`0 h`]">{$checkin->durationString}</div>

@@ -165,3 +165,12 @@ i.icon16.s-app-icon { background-size: 16px 16px; }
 .tooltip-anchor .tooltip { display: none; }
 .tooltip-anchor:hover .tooltip { display: block; left: auto; right: 20px; top: -10px; font-weight: normal; text-align: left; }
 .tooltip-anchor:hover .tooltip .body { display: block; }
+
+.noUi-connect {
+  background: rgb(209,59,179) !important; 
+  background: linear-gradient(90deg, rgba(209,59,179,1) 0%, rgba(52,203,254,1) 100%, rgba(255,255,255,1) 100%) !important;
+}
+
+.noUi-connect.active {
+  border: 2px solid #000;
+}
