@@ -15,6 +15,7 @@ class statusBackendSidebarAction extends statusViewAction
     {
         $teammates = [];
         $users = stts()->getEntityRepository(statusUser::class)->findAllExceptMe();
+        $hiddenUsers = [];
 
         usort($users, function (statusUser $user) {
            return !$user->isExists();
@@ -41,14 +42,15 @@ class statusBackendSidebarAction extends statusViewAction
         }
 
         foreach ($users as $id => $user) {
-            if (!$user->isExists() && !$user->getContact()->exists()) {
+            if (!stts()->getRightConfig()->hasAccessToTeammate($user->getContactId())) {
                 unset($users[$id]);
                 continue;
             }
 
-            if (!stts()->getRightConfig()->hasAccessToTeammate($user->getContactId())) {
+            if (!$user->isExists()) {
+                $hiddenUsers[] = $user;
                 unset($users[$id]);
-                continue;
+//                continue;
             }
         }
 
@@ -108,6 +110,7 @@ class statusBackendSidebarAction extends statusViewAction
             [
                 'teammates' => $teammates,
                 'users' => $users,
+                'hiddenUsers' => $hiddenUsers,
                 'projects' => $projects,
                 'backend_sidebar' => $eventResult,
                 'timeByUserStat' => $stat->usersTimeByWeek(new DateTime()),

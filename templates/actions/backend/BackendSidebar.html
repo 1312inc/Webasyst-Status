@@ -40,7 +40,28 @@
                  <a href="#/contact/{$u->getContactId()}">
                      <span class="count" title="[`This week total`]">{$timeByUserStat[$u->getContactId()]['timeStr']}</span>
                      <span class="icon"><i class="userpic" style="background-image: url({$u->getPhotoUrl()})"></i></span>
-                     {if !$u->isExists()}<span class="gray">{/if}{$u->getName()|escape}{if !$u->isExists()}</span>{/if}
+                     {$u->getName()|escape}
+                     {if $u->getTodayStatus()->getStatusId()}
+                     <span class="s-status nowrap"
+                           style="background-color: {$u->getTodayStatus()->getBgColor()}; color: {$u->getTodayStatus()->getFontColor()}"
+                           title="{$u->getTodayStatus()->getName()|escape}"
+                     >
+                         {$u->getTodayStatus()->getName()|escape|truncate:13}
+                     </span>
+                     {/if}
+                 </a>
+             </li>
+             {/foreach}
+        {/if}
+
+         {if count($hiddenUsers)}
+             <li><a href="#" data-status-action="sidebar-show-all-users">{sprintf('[`Show everyone (%d)`]', count($users) + count($hiddenUsers))}</a></li>
+             {foreach $hiddenUsers as $u}
+             <li style="display:none" data-status-sidebar-hidden-user>
+                 <a href="#/contact/{$u->getContactId()}">
+                     <span class="count" title="[`This week total`]">{$timeByUserStat[$u->getContactId()]['timeStr']}</span>
+                     <span class="icon"><i class="userpic" style="background-image: url({$u->getPhotoUrl()})"></i></span>
+                     <span class="gray">{$u->getName()|escape}</span>
                      {if $u->getTodayStatus()->getStatusId()}
                      <span class="s-status nowrap"
                            style="background-color: {$u->getTodayStatus()->getBgColor()}; color: {$u->getTodayStatus()->getFontColor()}"

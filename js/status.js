@@ -1074,10 +1074,17 @@
                 })
             };
 
-            self.$core_sidebar.on('click', '[data-status-project-action="add"]', projectDialog);
-            self.$status_content.on('click', '[data-status-project-action="add"]', projectDialog);
+            self.$core_sidebar
+                .on('click.stts', '[data-status-project-action="add"]', projectDialog)
+                .on('click.stts', '[data-status-action="sidebar-show-all-users"]', function (e) {
+                    e.preventDefault();
+
+                    self.$core_sidebar.find('[data-status-sidebar-hidden-user]').show();
+                    $(this).closest('li').hide();
+                });
 
             self.$status_content
+                .on('click.stts', '[data-status-project-action="add"]', projectDialog)
                 .on('click.stts', '[data-status-walog-app][data-status-walog-date]', function (e) {
                     e.preventDefault();
 
