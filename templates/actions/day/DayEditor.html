@@ -34,6 +34,7 @@
         {if !$checkin->isTrace && $checkin->id == $userDayInfo->firstCheckin->id}
         <div class="s-editor-slider{if $stts->canShowTrace()} s-editor-slider-exp{/if}"
              data-checkin="{$checkin->id}"
+             data-day-date="{$day->date}"
              {if $checkin->id == $userDayInfo->firstCheckin->id}data-checkin-first{/if}
              data-checkin-has-projects="{$checkin->hasProjects|intval}"
         >
@@ -111,6 +112,10 @@
 
                 {/foreach}
             </div>
+            <div>
+                <a href="#" class="s-editor-slider-add">add</a>
+                <a href="#" class="s-editor-slider-delete">delete</a>
+            </div>
             <div class="s-editor-slider-total">
                 <div class="large" data-status-checkin-duration-zero="[`0 h`]">{$checkin->durationString}</div>
             </div>
@@ -132,9 +137,9 @@
                     </span>
                 </label>
             </div>
-            <div class="s-editor-slider-more">
+            <!-- <div class="s-editor-slider-more">
                 <a href="#" data-checkin-action="delete" title="[`Remove interval for today`]"><i class="far fa-trash-alt"></i></a>
-            </div>
+            </div> -->
         </form>
         </div>
         {/if}

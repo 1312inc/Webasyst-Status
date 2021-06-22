@@ -678,8 +678,6 @@
                 // updateDayDuration($slider.slider('values'));
                 // $checkinDuration.text($.status.timeValueToStr($form.find('[name="checkin[total_duration]"]').val() / 60));
 
-                console.log('1' + $el.find('.s-editor-slider-projects:visible .s-editor-project'))
-
                 $el.find('.s-editor-slider-projects:visible .s-editor-project').each(function () {
                     projects.push(new checkboxDuration($(this), 'project'));
                 });
@@ -703,76 +701,13 @@
                         updateDayDuration($slider.slider('option', 'values'));
                         save($form);
                     });
-                
-                var checkinsSlider = $slider[0];
 
-                var checkinsArray = $slider.data('start').filter(function (e) {
-                    return e.comment === null;
-                });
-
-                var start = checkinsArray.reduce(function (acc, e) {
-                    acc.push(e.min, e.max);
-                    return acc;
-                }, []);
-
-                var connect = [];
-                for (let index = 1; index < start.length + 2; index++) {
-                    connect.push(index % 2 == 0);
-                }
-
-                noUiSlider.create(checkinsSlider, {
-                    start: start,
-                    connect: connect,
-                    tooltips: start.map(function() {return true}),
-                    behaviour: 'drag',
-                    step: 5,
-                    range: {
-                        'min': [minMax.min],
-                        'max': [minMax.max]
-                    },
-                    // format: {
-                    //     // 'to' the formatted value. Receives a number.
-                    //     to: function (value) {
-                    //         return $.status.timeValueToStr(value / 60, 'time');
-                    //     },
-                    //     // 'from' the formatted value.
-                    //     // Receives a string, should return a number.
-                    //     from: function (value) {
-                    //         return value
-                    //     }
-                    // }
-                });
-
-                checkinsSlider.noUiSlider.on('start', function (values, handle, unencoded, tap, positions, noUiSlider) {
-                    handle++;
-                    selectedCheckinIndex = Math.ceil(handle / 2) - 1;
-                    var connect = $slider[0].querySelectorAll('.noUi-connect');
-                    connect.forEach(function (e) {
-                        e.classList.remove('active');
-                    });
-                    connect[selectedCheckinIndex].classList.add('active');
-                    $el.find('.s-editor-slider-projects')
-                        .hide();
-                    $el.find('.s-editor-slider-projects[data-checkin-id="'+checkinsArray[selectedCheckinIndex].id+'"]')
-                        .show();
-                });
-
-                checkinsSlider.noUiSlider.on('update', function (values) {
-                    updateDayDuration(values);
-                });
-                
-                checkinsSlider.noUiSlider.on('change', function (values, handle) {
-                    //показываем опциаональную детализацию по проектам
-                    var target = checkinsArray[selectedCheckinIndex];
-
-                    $form.find('[name="checkin[id]"]').val(target.id);
-                    $form.find('[name="checkin[start_time]"]').val(values[0 + selectedCheckinIndex*2]);
-                    $form.find('[name="checkin[end_time]"]').val(values[1 + selectedCheckinIndex*2]);
-                    $form.find('[name="checkin[total_duration]"]').val(target.duration);
-                    $form.find('[name="checkin[break_duration]"]').val(target.break);
-
-                    save($form);
-                });
+                new TaskSlider($el, {
+                    state: $slider.data('start'),
+                    onChange: function (values) {
+                        updateDayDuration(values)
+                    }
+                });                
 
                 // $slider.slider('destroy');
                 // $slider.slider({
