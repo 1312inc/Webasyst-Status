@@ -490,6 +490,7 @@
                     $form = $el.find('form'),
                     $forms = $.status.$status_content.find('form'),
                     $checkinDuration = $el.find('.s-editor-slider-total > div'),
+                    $deleteButton = $el.find('[data-checkin-action="delete2.0"]'),
                     checkinBreak = checkboxDuration($el.find('.s-editor-slider-break')),
                     projects = [],
                     checkinIndex = null,
@@ -528,7 +529,15 @@
                         }
                         
                         $('.s-editor-slider-projects').hide();
-                        blocks.eq(checkinIndex).find('.s-editor-slider-projects').show();
+                        if (checkinIndex !== null) {
+                            blocks.eq(checkinIndex).find('.s-editor-slider-projects').show();
+                        }
+
+                        $deleteButton.hide();
+                        if (checkinIndex > 0) {
+                            $deleteButton.show();
+                        }
+                        
                     },
                     updateDayDuration = function (values) {
                         var duration = getCheckinDuration(values),
@@ -775,6 +784,30 @@
                         $forms.eq(checkinIndex).find('[name="checkin[start_time]"]').val(+values[0 + checkinIndex*2]);
                         $forms.eq(checkinIndex).find('[name="checkin[end_time]"]').val(+values[1 + checkinIndex*2]);
                         save($forms.eq(checkinIndex));
+                    });
+
+
+                    $deleteButton.on('click', function (e) {                    
+                        e.preventDefault();
+
+                        if(checkinIndex > 0) {
+
+                            var $sourceCheckin = $forms.eq(checkinIndex).parent(),
+                            checkinId = $sourceCheckin.find('form [name="checkin[id]"]').val();
+
+                            if (checkinId) {
+                                remove(checkinId);
+                            }
+
+                            $sourceCheckin.remove();
+                            updateCheckinIndex(null);
+
+                            $editorHtml.find('[data-checkin]').each(function () {
+                                initCheckin($(this));
+                            });
+
+                        }
+
                     });
 
 

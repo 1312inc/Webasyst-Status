@@ -114,7 +114,8 @@ i.icon16.s-app-icon { background-size: 16px 16px; }
 .s-editor-slider .s-editor-slider-total { flex: 0 0 124px; text-align: center; white-space: nowrap; }
 /* .s-editor-slider .s-editor-slider-total h2 { color: #555; } */
 .s-editor-slider .s-editor-slider-control { flex: 1; padding-top: 10px; }
-.s-editor-slider .s-editor-slider-projects { margin-top: 25px; line-height: 1.5rem;}
+.s-editor-slider .s-editor-slider-projects { line-height: 1.5rem;}
+.s-editor-slider--0:first-child .s-editor-slider-projects { margin-top: 22px; }
 .s-editor-slider .s-editor-slider-projects label.s-editor-project { margin-right: 1rem; color: #aaa; white-space: nowrap; }
 .s-editor-slider .s-editor-slider-projects label.s-editor-project i.icon16.color { display: none; }
 .s-editor-slider .s-editor-slider-projects label.s-editor-project .s-editor-project-share { display: none; padding: 2px 5px; border-radius: 4px; }
@@ -123,7 +124,7 @@ i.icon16.s-app-icon { background-size: 16px 16px; }
 .s-editor-slider .s-editor-slider-projects label.s-editor-project.selected .s-editor-project-share { display: inline; }
 .s-editor-slider .s-editor-slider-projects label.s-editor-project.selected .s-editor-project-share .s-duration-label { color: #fff; }
 /* .s-editor-slider .s-editor-slider-break { flex: 0 0 150px; text-align: center; padding-top: 3px; } */
-.s-editor-slider .s-editor-slider-more { flex: 0 0 auto; padding-top: 3px; }
+.s-editor-slider .s-editor-slider-more { flex: 0 0 auto; padding-top: 3px; width: 3rem; }
 .s-editor-summary {}
 .s-editor-summary textarea.s-editor-comment { width: 100%; outline: 0 none; -webkit-appearance: none; border: 0; font-size: 1.1em; min-height: 5rem; }
 .s-editor-summary textarea.s-editor-comment:disabled { background: transparent; }

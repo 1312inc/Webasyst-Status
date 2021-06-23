@@ -38,7 +38,7 @@
              {if $checkin->id == $userDayInfo->firstCheckin->id}data-checkin-first{/if}
              data-checkin-has-projects="{$checkin->hasProjects|intval}"
         >
-        <form class="flexbox space-32 width-100">
+        <form class="flexbox width-100">
             <input type="hidden" name="checkin[id]" value="{$checkin->id}"/>
             <input type="hidden" name="checkin[start_time]" value="{$checkin->min}"/>
             <input type="hidden" name="checkin[end_time]" value="{$checkin->max}"/>
@@ -46,7 +46,7 @@
             <input type="hidden" name="checkin[total_duration]" value="{$checkin->duration}"/>
             <input type="hidden" name="checkin[break_duration]" value="{$checkin->break}"/>
 
-            <div class="s-editor-slider-control">
+            <div class="s-editor-slider-control custom-mr-12">
                 {if $itr === 0}
                     {if $stts->canShowTrace()}
                     <span class="s-timeline-dial">
@@ -83,58 +83,64 @@
                         {/if}
                     </div>
                 {/if}
-
-                <div class="s-editor-slider-projects" style="display: none;">
-                {foreach $checkin->projectsDuration as $projectDuration}
-                    <label class="s-editor-project {if $projectDuration->id}selected{/if}"
-                           data-status-project-color="{$projectDuration->project->color}"
-                           data-status-project-id="{$projectDuration->project->id}"
-                    >
-                        <input type="hidden" name="projects[{$projectDuration->project->id}][project_check_id]" value="{$projectDuration->id}">
-                        <input type="hidden" name="projects[{$projectDuration->project->id}][on]" value="0">
-                        <input type="checkbox" name="projects[{$projectDuration->project->id}][on]" value="1" {if $projectDuration->id}checked{/if}>
-{*                        <!-- <i class="icon16 color" style="background: {$p[0]};"></i> -->*}
-                        {$projectDuration->project->name|escape}
-                        <span class="s-duration s-editor-project-share">
-                            <a href="#" class="inline-link s-duration-label" style="background: {$projectDuration->project->color};">
-                                <b><i>{$projectDuration->durationPercent}%</i></b>
-                            </a>
-                            <input type="text"
-                                   class="s-duration-input"
-                                   value="{$projectDuration->durationPercent}"
-                                   name="projects[{$projectDuration->project->id}][duration]"
-                            >
-                        </span>
-                    </label>
-                {/foreach}
+                
+                <div class="s-editor-slider-projects flexbox full-width" style="display: none;">
+                    <div class="wide">
+                    {foreach $checkin->projectsDuration as $projectDuration}
+                        <label class="s-editor-project {if $projectDuration->id}selected{/if}"
+                            data-status-project-color="{$projectDuration->project->color}"
+                            data-status-project-id="{$projectDuration->project->id}"
+                        >
+                            <input type="hidden" name="projects[{$projectDuration->project->id}][project_check_id]" value="{$projectDuration->id}">
+                            <input type="hidden" name="projects[{$projectDuration->project->id}][on]" value="0">
+                            <input type="checkbox" name="projects[{$projectDuration->project->id}][on]" value="1" {if $projectDuration->id}checked{/if}>
+    {*                        <!-- <i class="icon16 color" style="background: {$p[0]};"></i> -->*}
+                            {$projectDuration->project->name|escape}
+                            <span class="s-duration s-editor-project-share">
+                                <a href="#" class="inline-link s-duration-label" style="background: {$projectDuration->project->color};">
+                                    <b><i>{$projectDuration->durationPercent}%</i></b>
+                                </a>
+                                <input type="text"
+                                    class="s-duration-input"
+                                    value="{$projectDuration->durationPercent}"
+                                    name="projects[{$projectDuration->project->id}][duration]"
+                                >
+                            </span>
+                        </label>
+                    {/foreach}
+                    </div>
+                    <div class="s-editor-slider-break">
+                        <input type="hidden" name="checkin[break]" value="0">
+                        <label>
+                            <span class="wa-checkbox">
+                                <input type="checkbox" {if $checkin->break}checked{/if} name="checkin[break]" value="1">
+                                <span>
+                                    <span class="icon">
+                                        <i class="fas fa-check"></i>
+                                    </span>
+                                </span>
+                            </span>
+                            <span class="small">[`Break`]</span>
+                            <span class="s-duration">
+                                <a href="#" class="inline-link s-duration-label">{$checkin->breakString}</a>
+                                <input type="text" class="s-duration-input" value="{$checkin->break|default:1}" name="checkin[break_duration]">
+                            </span>
+                        </label>
+                    </div>
                 </div>
+                    
             </div>
+            <div class="flexbox" style="width: 200px;">
             {if $itr === 0}
+            <div class="s-editor-slider-more">
+                <a href="#" data-checkin-action="delete" title="[`Remove interval for today`]"><i class="far fa-trash-alt"></i></a>
+                <a href="#" data-checkin-action="delete2.0" style="display: none;" title="[`Remove interval for today`]"><i class="far fa-trash-alt"></i></a>
+            </div>
             <div class="s-editor-slider-total">
                 <div class="large" data-status-checkin-duration-zero="[`0 h`]">{$checkin->durationString}</div>
             </div>
-            <div class="s-editor-slider-break">
-                <input type="hidden" name="checkin[break]" value="0">
-                <label>
-                    <span class="wa-checkbox">
-                        <input type="checkbox" {if $checkin->break}checked{/if} name="checkin[break]" value="1">
-                        <span>
-                            <span class="icon">
-                                <i class="fas fa-check"></i>
-                            </span>
-                        </span>
-                    </span>
-                    <span class="small">[`Break`]</span>
-                    <span class="s-duration">
-                        <a href="#" class="inline-link s-duration-label">{$checkin->breakString}</a>
-                        <input type="text" class="s-duration-input" value="{$checkin->break|default:1}" name="checkin[break_duration]">
-                    </span>
-                </label>
+            {/if}                
             </div>
-            <div class="s-editor-slider-more">
-                <a href="#" data-checkin-action="delete" title="[`Remove interval for today`]"><i class="far fa-trash-alt"></i></a>
-            </div>
-            {/if}
         </form>
         </div>
         {$itr = $itr + 1}
