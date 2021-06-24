@@ -569,8 +569,8 @@
                         });
 
                         if (prevPercent < 100) {
-                            colors.push('#f1f2f3 ' + prevPercent + '%');
-                            colors.push('#f1f2f3 100%');
+                            colors.push('rgba(209,59,179,1) ' + prevPercent + '%');
+                            colors.push('rgba(52,203,254,1) 100%');
                         }
 
                         var gradient = colors.join(', '),
@@ -968,7 +968,8 @@
 
                         var $sourceCheckin = $(this).closest('[data-checkin]'),
                             $newCheckin = $sourceCheckin.clone(),
-                            $logsChecks = $sourceCheckin.find('.s-editor-slider-helpers').clone();
+                            $logsChecks = $sourceCheckin.find('.s-editor-slider-helpers').clone(),
+                            newCheckinIndex = $.status.$status_content.find('[data-checkin-index]').length;
 
                         $newCheckin.find('[data-checkin-action="add"]')
                             .attr('data-checkin-action', 'delete')
@@ -985,6 +986,8 @@
                             .attr('data-checkin-break', 0)
                             .data('checkin-has-projects', 0)
                             .attr('data-checkin-has-projects', 0)
+                            .data('checkin-index', newCheckinIndex)
+                            .attr('data-checkin-index', newCheckinIndex)
                             .find('input.s-duration-input').val(1)
                             .end().find('input:checkbox').prop('checked', false)
                             .end().find('.s-editor-slider-slider').empty().append($logsChecks)
@@ -996,7 +999,7 @@
                             .closest('.s-editor-slider-projects').hide();
 
                         // remove all except project checkboxes
-                        $newCheckin.find('.s-timeline-dial, .s-editor-slider-slider, .s-editor-slider-total, .s-editor-slider-break, .s-editor-slider-more').remove();
+                        $newCheckin.find('.s-timeline-dial, .s-editor-slider-slider, .s-editor-slider-total, .s-editor-slider-more').remove();
                         $newCheckin.find('[name="checkin[start_time]"]').val('1160');
                         $newCheckin.find('[name="checkin[end_time]"]').val('1320');
 
