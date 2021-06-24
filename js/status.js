@@ -489,9 +489,9 @@
                     $sl = $slider.get(0),
                     $form = $el.find('form'),
                     $forms = $.status.$status_content.find('form'),
-                    $checkinDuration = $el.find('.s-editor-slider-total > div'),
+                    $checkinDuration = $.status.$status_content.find('.s-editor-slider-total > div'),
                     $deleteButton = $el.find('[data-checkin-action="delete2.0"]'),
-                    checkinBreak = checkboxDuration($el.find('.s-editor-slider-break')),
+                    checkinBreaks = $.status.$status_content.find('.s-editor-slider-break'),
                     projects = [],
                     checkinIndex = null,
                     formIndex = $el.data('checkin-index'),
@@ -507,10 +507,14 @@
                         for (var index = 0; index < valuesLength; index++) {
                             checkinDuration += values[1 + index * 2] - values[0 + index * 2];
                         }
+                        
+                        checkinBreaks.each(function (i, e) {
+                            var checkinBreak = checkboxDuration($(e));
+                            if (checkinBreak.isOn()) {
+                                checkinDuration -= (checkinBreak.value() * 60);
+                            }
+                        })
 
-                        if (checkinBreak.isOn()) {
-                            checkinDuration -= (checkinBreak.value() * 60)
-                        }
                         if (checkinDuration < 0) {
                             checkinDuration = 0;
                         }
@@ -724,8 +728,10 @@
 
                         values2.push(values[0] < minMax.min ? minMax.min : values[0]);
                         values2.push(values[1] > minMax.max ? minMax.max : values[1]);*/
-                        if($sl && $sl.noUiSlider) {
-                            updateDayDuration($sl.noUiSlider.get());
+                        
+                        var sliderInstance = document.querySelector('.noUi-target').noUiSlider;
+                        if (sliderInstance) {
+                            updateDayDuration(sliderInstance.get());
                         }
                         save($form);
                     });  
