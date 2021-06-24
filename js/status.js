@@ -522,6 +522,8 @@
                         return checkinDuration;
                     },
                     updateCheckinIndex = function (index) {
+                        if(checkinIndex === index) return;
+
                         checkinIndex = index;
                         var connect = $slider.find('.noUi-connect'),
                             blocks = $.status.$status_content.find('.s-editor-slider');
@@ -531,6 +533,15 @@
                         });
                         if (checkinIndex !== null) {
                             connect.eq(checkinIndex).addClass('active');
+
+                            var handler = function (e) {
+                                if ($(e.target).closest('.s-editor-slider-control, [data-checkin-action="delete2.0"]').length === 0) {
+                                    $(document).off('mousedown', handler);
+                                    updateCheckinIndex(null);
+                                }
+                            };
+
+                            $(document).on('mousedown', handler);
                         }
                         
                         $('.s-editor-slider-projects').hide();
@@ -807,6 +818,12 @@
     
                             }
     
+                        });
+
+                        document.addEventListener("keydown", function (event) {
+                            if ((event.code === 'Backspace' || event.code === 'Delete') && checkinIndex > 0) {
+                                $deleteButton.trigger('click');
+                            }
                         });
                         
                     }
