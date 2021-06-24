@@ -491,7 +491,6 @@
                     $forms = $.status.$status_content.find('form'),
                     $checkinDuration = $.status.$status_content.find('.s-editor-slider-total > div'),
                     $deleteButton = $el.find('[data-checkin-action="delete2.0"]'),
-                    checkinBreaks = $.status.$status_content.find('.s-editor-slider-break'),
                     projects = [],
                     checkinIndex = null,
                     formIndex = $el.data('checkin-index'),
@@ -499,6 +498,10 @@
                     hasProjects = $el.data('checkin-has-projects'),
                     checkinId = $form.find('[name="checkin[id]"]').val(),
                     minMax = {'min': 0, 'max': 1440};
+                
+                var checkinBreaks = $.status.$status_content.find('.s-editor-slider-break').map(function (i, e) {
+                    return checkboxDuration($(e));
+                });  
 
                 var getCheckinDuration = function (values) {
                         var valuesLength = values.length / 2,
@@ -508,8 +511,7 @@
                             checkinDuration += values[1 + index * 2] - values[0 + index * 2];
                         }
                         
-                        checkinBreaks.each(function (i, e) {
-                            var checkinBreak = checkboxDuration($(e));
+                        checkinBreaks.each(function (i, checkinBreak) {
                             if (checkinBreak.isOn()) {
                                 checkinDuration -= (checkinBreak.value() * 60);
                             }
