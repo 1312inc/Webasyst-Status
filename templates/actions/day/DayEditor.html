@@ -35,6 +35,7 @@
         {if !$checkin->isTrace}
         <div class="s-editor-slider s-editor-slider--{$itr}{if $stts->canShowTrace()} s-editor-slider-exp{/if}"
              data-checkin="{$checkin->id}"
+             data-checkin-index="{$itr}"
              {if $checkin->id == $userDayInfo->firstCheckin->id}data-checkin-first{/if}
              data-checkin-has-projects="{$checkin->hasProjects|intval}"
         >

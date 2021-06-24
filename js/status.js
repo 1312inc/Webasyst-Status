@@ -494,6 +494,7 @@
                     checkinBreak = checkboxDuration($el.find('.s-editor-slider-break')),
                     projects = [],
                     checkinIndex = null,
+                    formIndex = $el.data('checkin-index'),
                     data = getDataFromCheckin($form),
                     hasProjects = $el.data('checkin-has-projects'),
                     checkinId = $form.find('[name="checkin[id]"]').val(),
@@ -521,7 +522,7 @@
                         var connect = $slider.find('.noUi-connect'),
                             blocks = $.status.$status_content.find('.s-editor-slider');
 
-                        connect.each((i, e) => {
+                        connect.each(function (i, e) {
                             $(e).removeClass('active');
                         });
                         if (checkinIndex !== null) {
@@ -549,16 +550,10 @@
                         $checkinDuration.text(value);
                     },
                     fillSliderWithColor = function () {
-                        var $line = $slider.find('.ui-widget-header');
+                        var $line = $.status.$status_content.find('.s-editor').find('.noUi-connect').eq(formIndex),
+                            colors = [],
+                            prevPercent = 0;
 
-                        // if no slider
-                        if(!$line.length) return;
-
-                        var width = $line.get(0).style.width,
-                            left = $line.get(0).style.left,
-                            colors = [];
-
-                        var prevPercent = 0;
                         $.each(projects, function (i, project) {
                             if (!project.isOn() && project.value()) {
                                 return;
@@ -575,16 +570,15 @@
                         }
 
                         var gradient = colors.join(', '),
+                            oldStyle = $line.css('transform'),
                             style = [
                                 'background: #ffd60a',
                                 'background: -moz-linear-gradient(left, ' + gradient + ')',
                                 'background: -webkit-linear-gradient(left, ' + gradient + ')',
                                 'background: linear-gradient(to right, ' + gradient + ')',
-                                'width: ' + width,
-                                'left: ' + left,
                             ];
 
-                        $line.attr('style', style.join(';'));
+                        $line.attr('style', style.join(';')).css('transform', oldStyle);
                     },
                     recalculateProjects = function (project) {
                         var percent = 100,
@@ -736,121 +730,82 @@
                         save($form);
                     });  
 
-                    var start = [];
-                    $forms.each(function (i, e) {
-                        start.push($(e).find('[name="checkin[start_time]"]').val());
-                        start.push($(e).find('[name="checkin[end_time]"]').val());
-                    });
+                    if ($sl) {
 
-                    var connect = [];
-                    for (var index = 1; index < start.length + 2; index++) {
-                        connect.push(index % 2 == 0);
-                    }
+                        var start = [];
+                        $forms.each(function (i, e) {
+                            start.push($(e).find('[name="checkin[start_time]"]').val());
+                            start.push($(e).find('[name="checkin[end_time]"]').val());
+                        });
 
-                    if (!$sl) return;
-
-                    if ($sl.noUiSlider) {
-                        $sl.noUiSlider.destroy();
-                    }
-
-                    noUiSlider.create($sl, {
-                        start: start,
-                        connect: connect,
-                        tooltips: start.map(function () {
-                            return {
-                                to: function (value) {
-                                    return $.status.timeValueToStr(value / 60, 'time');
-                                },
-                                from: function (value) {
-                                    return value;
-                                }
-                            };
-                        }),
-                        behaviour: 'drag',
-                        step: 5,
-                        range: minMax,
-                    });
-
-                    $sl.noUiSlider.on('start', (values, handle) => {
-                        handle++;
-                        updateCheckinIndex(Math.ceil(handle / 2) - 1);
-                    });
-
-                    $sl.noUiSlider.on('update', (values) => {
-                        updateDayDuration(values);      
-                    });
-
-                    $sl.noUiSlider.on('change', (values) => {
-                        $forms.eq(checkinIndex).find('[name="checkin[start_time]"]').val(+values[0 + checkinIndex*2]);
-                        $forms.eq(checkinIndex).find('[name="checkin[end_time]"]').val(+values[1 + checkinIndex*2]);
-                        save($forms.eq(checkinIndex));
-                    });
-
-
-                    $deleteButton.on('click', function (e) {                    
-                        e.preventDefault();
-
-                        if(checkinIndex > 0) {
-
-                            var $sourceCheckin = $forms.eq(checkinIndex).parent(),
-                            checkinId = $sourceCheckin.find('form [name="checkin[id]"]').val();
-
-                            if (checkinId) {
-                                remove(checkinId);
-                            }
-
-                            $sourceCheckin.remove();
-                            updateCheckinIndex(null);
-
-                            $editorHtml.find('[data-checkin]').each(function () {
-                                initCheckin($(this));
-                            });
-
+                        var connect = [];
+                        for (var index = 1; index < start.length + 2; index++) {
+                            connect.push(index % 2 == 0);
                         }
 
-                    });
+                        if ($sl.noUiSlider) {
+                            $sl.noUiSlider.destroy();
+                        }
+    
+                        noUiSlider.create($sl, {
+                            start: start,
+                            connect: connect,
+                            tooltips: start.map(function () {
+                                return {
+                                    to: function (value) {
+                                        return $.status.timeValueToStr(value / 60, 'time');
+                                    },
+                                    from: function (value) {
+                                        return value;
+                                    }
+                                };
+                            }),
+                            behaviour: 'drag',
+                            step: 5,
+                            range: minMax,
+                        });
+    
+                        $sl.noUiSlider.on('start', function (values, handle) {
+                            handle++;
+                            updateCheckinIndex(Math.ceil(handle / 2) - 1);
+                        });
+    
+                        $sl.noUiSlider.on('update', function (values) {
+                            updateDayDuration(values);      
+                        });
+    
+                        $sl.noUiSlider.on('change', function (values) {
+                            $forms.eq(checkinIndex).find('[name="checkin[start_time]"]').val(+values[0 + checkinIndex*2]);
+                            $forms.eq(checkinIndex).find('[name="checkin[end_time]"]').val(+values[1 + checkinIndex*2]);
+                            save($forms.eq(checkinIndex));
+                        });
+    
+                        $deleteButton.on('click', function (e) {                    
+                            e.preventDefault();
+    
+                            if(checkinIndex > 0) {
+    
+                                var $sourceCheckin = $forms.eq(checkinIndex).parent(),
+                                checkinId = $sourceCheckin.find('form [name="checkin[id]"]').val();
+    
+                                if (checkinId) {
+                                    remove(checkinId);
+                                }
+    
+                                $sourceCheckin.remove();
+                                updateCheckinIndex(null);
+    
+                                $editorHtml.find('[data-checkin]').each(function () {
+                                    initCheckin($(this));
+                                });
+    
+                            }
+    
+                        });
+                        
+                    }
 
-
-                // $slider.slider('destroy');
-                // $slider.slider({
-                //     range: true,
-                //     min: minMax.min,
-                //     max: minMax.max,
-                //     step: 5,
-                //     values: [data.start_time, data.end_time],
-                //     create: function (event, ui) {
-                //         $el.find('.ui-slider .ui-slider-handle:first').attr('data-slider-time', $.status.timeValueToStr(data.start_time / 60, 'time'));
-                //         $el.find('.ui-slider .ui-slider-handle:last').attr('data-slider-time', $.status.timeValueToStr(data.end_time / 60, 'time'));
-
-                //         if (hasProjects) {
-                //             fillSliderWithColor();
-                //         }
-                //         updateDayDuration($slider.slider('option', 'values'));
-                //         if (data.id) {
-                //             //меняем цвет слайдера на s-active, чтобы показать, что данные сохранились
-                //             $el.find('.ui-slider').addClass('s-active');
-                //             $el.find('.s-editor-slider-projects').slideDown(200);
-                //         }
-                //     },
-                //     slide: function (event, ui) {
-                //         updateDayDuration(ui.values);
-                //         // if (checkinBreak.isOn() && duration > (24 - checkinBreak.value()) * 60) {
-                //         //     return false;
-                //         // }
-
-                //         $el.find('.ui-slider .ui-slider-handle:first').attr('data-slider-time', $.status.timeValueToStr(ui.values[0] / 60, 'time'));
-                //         $el.find('.ui-slider .ui-slider-handle:last').attr('data-slider-time', $.status.timeValueToStr(ui.values[1] / 60, 'time'));
-                //     },
-                //     change: function (event, ui) {
-                //         //показываем опциаональную детализацию по проектам
-                //         $el.find('.s-editor-slider-projects').slideDown(200);
-
-                //         $form.find('[name="checkin[start_time]"]').val(ui.values[0]);
-                //         $form.find('[name="checkin[end_time]"]').val(ui.values[1]);
-
-                //         save($form);
-                //     }
-                // });
+                    fillSliderWithColor();
 
                 //при выборе проектов закрашиваем слайдер цветами проектов в заданных пропорциях. делаем это средствами градиентов css.
                 // $el
