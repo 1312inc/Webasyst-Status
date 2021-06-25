@@ -1254,13 +1254,13 @@
 
                                 $dialog.on('submit', 'form', function (e) {
                                     e.preventDefault();
-                                    $.post('?module=todaystatus&action=save', $dialogfind('form').serialize(), function (r) {
+                                    $.post('?module=todaystatus&action=save', $dialog.find('form').serialize(), function (r) {
                                         if (r.status === 'ok') {
                                             $wrapper.replaceWith(r.data);
                                             $.status.$status_content.find('.s-editor').trigger('reloadDayShow.stts');
 
                                             $.status.reloadSidebar();
-                                            $dialogtrigger('close');
+                                            dialog_instance.close();
                                         } else {
 
                                         }
