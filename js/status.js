@@ -491,6 +491,7 @@
                     $forms = $.status.$status_content.find('form'),
                     $checkinDuration = $.status.$status_content.find('.s-editor-slider-total > div'),
                     $deleteButton = $el.find('[data-checkin-action="delete2.0"]'),
+                    $tooltip = $el.find('.s-editor-slider-tooltip'),
                     projects = [],
                     checkinIndex = null,
                     formIndex = $el.data('checkin-index'),
@@ -749,6 +750,7 @@
                         save($form);
                     });  
 
+                    // If noUISlider container exists (first checkin of the day)
                     if ($sl) {
 
                         var start = [];
@@ -762,7 +764,10 @@
                             connect.push(index % 2 == 0);
                         }
 
+                        // Check if noUiSlider exists and inited
+                        var noUiSliderExists = false;
                         if ($sl.noUiSlider) {
+                            noUiSliderExists = true;
                             $sl.noUiSlider.destroy();
                         }
     
@@ -798,38 +803,69 @@
                             $forms.eq(checkinIndex).find('[name="checkin[end_time]"]').val(+values[1 + checkinIndex*2]);
                             save($forms.eq(checkinIndex));
                         });
-    
-                        $deleteButton.on('click', function (e) {                    
-                            e.preventDefault();
-    
-                            if(checkinIndex > 0) {
-    
-                                var $sourceCheckin = $forms.eq(checkinIndex).parent(),
-                                checkinId = $sourceCheckin.find('form [name="checkin[id]"]').val();
-    
-                                if (checkinId) {
-                                    remove(checkinId);
+
+                        // If first-time initialization
+                        if (!noUiSliderExists) {
+                            
+                            // Slider tooltip moving
+                            $($sl).on('mousemove', function (event) {
+                                var pos = event.pageX - $($sl).offset().left,
+                                    t = parseInt(1440 * (pos / $sl.offsetWidth));
+
+                                $tooltip.offset({ left: event.pageX - $tooltip[0].offsetWidth / 2 });
+                                // if (t % 5 === 0) {
+                                $tooltip.text($.status.timeValueToStr(t / 60, 'time'));
+                                // }
+                            });
+                            
+                            // Show slider tooltip
+                            $($sl).on('mouseover', function () {
+                                if ($tooltip.text()) {
+                                    $tooltip.show();
                                 }
-    
-                                $sourceCheckin.remove();
-                                updateCheckinIndex(null);
-    
-                                $editorHtml.find('[data-checkin]').each(function () {
-                                    initCheckin($(this));
-                                });
-    
-                            }
-    
-                        });
+                            });
+                            
+                            // Hide slider tooltip
+                            $($sl).on('mouseout', function () {
+                                $tooltip.hide();
+                            });
+                            
+                            // Delete checkin button event
+                            $deleteButton.on('click', function (e) {                 
+                                e.preventDefault();
+        
+                                if(checkinIndex > 0) {
+        
+                                    var $sourceCheckin = $forms.eq(checkinIndex).parent(),
+                                    checkinId = $sourceCheckin.find('form [name="checkin[id]"]').val();
+        
+                                    if (checkinId) {
+                                        remove(checkinId);
+                                    }
+        
+                                    $sourceCheckin.remove();
+                                    updateCheckinIndex(null);
+        
+                                    $editorHtml.find('[data-checkin]').each(function () {
+                                        initCheckin($(this));
+                                    });
+        
+                                }
+        
+                            });
+                            
+                            // Define checkin deletion if Backspace or Delete key pressed
+                            document.addEventListener("keydown", function (event) {
+                                if ((event.code === 'Backspace' || event.code === 'Delete') && checkinIndex > 0) {
+                                    $deleteButton.trigger('click');
+                                }
+                            });
 
-                        document.addEventListener("keydown", function (event) {
-                            if ((event.code === 'Backspace' || event.code === 'Delete') && checkinIndex > 0) {
-                                $deleteButton.trigger('click');
-                            }
-                        });
+                        }
                         
-                    }
+                    }  
 
+                    // Coloring slider checkins
                     fillSliderWithColor();
 
                 //при выборе проектов закрашиваем слайдер цветами проектов в заданных пропорциях. делаем это средствами градиентов css.

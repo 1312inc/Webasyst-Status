@@ -56,7 +56,8 @@
                     {/strip}{/for}
                     </span>
                     {/if}
-                    <div class="s-editor-slider-slider">
+                    <div style="position: relative;">
+                        <div class="s-editor-slider-slider"></div>
                         {if $stts->canShowTrace()}
                             <div class="s-editor-slider-helpers">
                                 {foreach $userDayInfo->checkins as $c}{strip}
@@ -82,6 +83,7 @@
                                 {/strip}{/foreach}
                             </div>
                         {/if}
+                        <div class="s-editor-slider-tooltip"></div>
                     </div>
                 {/if}
                 
