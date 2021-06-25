@@ -323,6 +323,15 @@
                 }
             }
         },
+        stringToTimeValue: function (time) {
+            var splited = time.split(':');
+            if (splited.length !== 2) return false;
+
+            var hrs = splited[0],
+                mins = splited[1];
+
+            return parseInt(hrs) * 60 + parseInt(mins);
+        },
         timeValueToStr: function (hrs, format) {
             var secs = hrs * 60 * 60,
                 divisor_for_minutes = secs % (60 * 60),
@@ -538,7 +547,7 @@
                             connect.eq(checkinIndex).addClass('active');
 
                             var handler = function (e) {
-                                if ($(e.target).closest('.s-editor-slider-control, [data-checkin-action="delete2.0"]').length === 0) {
+                                if ($(e.target).closest('.s-editor-slider-control, .dialog, [data-checkin-action="delete2.0"]').length === 0) {
                                     $(document).off('mousedown', handler);
                                     updateCheckinIndex(null);
                                 }
@@ -770,7 +779,13 @@
                             noUiSliderExists = true;
                             $sl.noUiSlider.destroy();
                         }
-    
+
+                        var onChange = function (values) {
+                            $forms.eq(checkinIndex).find('[name="checkin[start_time]"]').val(+values[0 + checkinIndex * 2]);
+                            $forms.eq(checkinIndex).find('[name="checkin[end_time]"]').val(+values[1 + checkinIndex * 2]);
+                            save($forms.eq(checkinIndex));
+                        };
+
                         noUiSlider.create($sl, {
                             start: start,
                             connect: connect,
@@ -788,20 +803,42 @@
                             step: 5,
                             range: minMax,
                         });
-    
+
                         $sl.noUiSlider.on('start', function (values, handle) {
                             handle++;
                             updateCheckinIndex(Math.ceil(handle / 2) - 1);
                         });
-    
+
                         $sl.noUiSlider.on('update', function (values) {
-                            updateDayDuration(values);      
+                            updateDayDuration(values);
                         });
-    
-                        $sl.noUiSlider.on('change', function (values) {
-                            $forms.eq(checkinIndex).find('[name="checkin[start_time]"]').val(+values[0 + checkinIndex*2]);
-                            $forms.eq(checkinIndex).find('[name="checkin[end_time]"]').val(+values[1 + checkinIndex*2]);
-                            save($forms.eq(checkinIndex));
+
+                        $sl.noUiSlider.on('change', onChange);
+                        $sl.noUiSlider.on('set', onChange);
+
+                        // Define checkin tooltips logics
+                        $($sl).find('.noUi-tooltip').on('click', function () {
+                            var values = $sl.noUiSlider.get(),
+                                _start = +values[0 + checkinIndex * 2],
+                                _end = +values[1 + checkinIndex * 2],
+                                start_time = $.status.timeValueToStr(_start / 60, 'time'),
+                                end_time = $.status.timeValueToStr(_end / 60, 'time');
+
+                            var dialog_html = "<div class=\"dialog\" id=\"\"> <div class=\"dialog-background\"><\/div> <div class=\"dialog-body\"> <a href=\"#\" class=\"dialog-close js-close-dialog\"><i class=\"fas fa-times\"><\/i><\/a> <div class=\"dialog-content\"> <input type=\"time\" name=\"start_time\" value=\"" + start_time + "\"> <input type=\"time\" name=\"end_time\" value=\"" + end_time + "\"> <\/div> <footer class=\"dialog-footer\"> <button class=\"js-submit-form button\">Save<\/button> <button class=\"js-close-dialog button light-gray\">Close<\/button> <\/footer> <\/div> <\/div> ";
+                            $.waDialog({
+                                html: dialog_html,
+                                onOpen: function ($dialog, dialog_instance) {
+                                    $dialog.on("click", ".js-submit-form", function (event) {
+                                        event.preventDefault();
+
+                                        values[0 + checkinIndex * 2] = $.status.stringToTimeValue($dialog.find('[name="start_time"]').val());
+                                        values[1 + checkinIndex * 2] = $.status.stringToTimeValue($dialog.find('[name="end_time"]').val());
+
+                                        $sl.noUiSlider.set(values);
+                                        dialog_instance.close();
+                                    });
+                                }
+                            });
                         });
 
                         // If first-time initialization
