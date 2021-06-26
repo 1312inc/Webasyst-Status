@@ -8,7 +8,7 @@
                  </a>
              </li>
              {if count($users)}
-                 {foreach $users as $u}
+                 {foreach array_merge($users, $hiddenUsers) as $u}
                  <li>
                      <a href="#/contact/{$u->getContactId()}">
                          <span class="count hint" title="[`This week total`]">{$timeByUserStat[$u->getContactId()]['timeStr']}</span>
