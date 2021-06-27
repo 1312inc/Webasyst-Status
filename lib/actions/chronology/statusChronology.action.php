@@ -56,12 +56,15 @@ class statusChronologyAction extends statusViewAction
 
         $this->getWeekDataFilterRequestDto = new statusGetWeekDataFilterRequestDto($this->contactId, $this->projectId, $this->groupId);
 
+        $this->isProject = $this->getWeekDataFilterRequestDto->getProject() instanceof statusProject;
+
         if ($this->getWeekDataFilterRequestDto->getUsers()) {
             $this->user = $this->getWeekDataFilterRequestDto->getUsers()[0];
-            $this->isMe = $this->user->getContactId() == stts()->getUser()->getContactId();
+            $this->isMe = $this->user->getContactId() == stts()->getUser()->getContactId()
+                && !$this->isProject
+                && !$this->groupId
+                && $this->contactId !== statusGetWeekDataFilterRequestDto::ALL_USERS_ID;
         }
-
-        $this->isProject = $this->getWeekDataFilterRequestDto->getProject() instanceof statusProject;
     }
 
     /**
@@ -118,8 +121,7 @@ class statusChronologyAction extends statusViewAction
                 (new DateTime())->modify('+1 day')
             ),
             'project' => $this->getWeekDataFilterRequestDto->getProject(),
-            'dayEditable' => (int) ($this->user->getContactId() == stts()->getUser()->getContactId()
-                && !$this->getWeekDataFilterRequestDto->getProject()),
+            'dayEditable' => (int) $this->isMe,
             'contextUser' => $this->user,
             'tomorrowDto' => $tomorrowDto,
             'showTrace' => stts()->canShowTrace(),

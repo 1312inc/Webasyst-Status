@@ -42,15 +42,13 @@ class statusBackendSidebarAction extends statusViewAction
         }
 
         foreach ($users as $id => $user) {
-            if (!stts()->getRightConfig()->hasAccessToTeammate($user->getContactId())) {
+            if (!$user->isExists() && !$user->getContact()->exists()) {
                 unset($users[$id]);
                 continue;
             }
 
-            if (!$user->isExists()) {
-                $hiddenUsers[] = $user;
+            if (!stts()->getRightConfig()->hasAccessToTeammate($user->getContactId())) {
                 unset($users[$id]);
-//                continue;
             }
         }
 
@@ -91,6 +89,13 @@ class statusBackendSidebarAction extends statusViewAction
 
             if ($groupIsVisible === false) {
                 unset($waGroups[$i]);
+            }
+        }
+
+        foreach ($users as $i => $user) {
+            if (!$user->isExists()) {
+                unset($users[$i]);
+                $hiddenUsers[] = $user;
             }
         }
 
