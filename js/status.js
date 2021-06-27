@@ -508,10 +508,10 @@
                     hasProjects = $el.data('checkin-has-projects'),
                     checkinId = $form.find('[name="checkin[id]"]').val(),
                     minMax = {'min': 0, 'max': 1440};
-                
+
                 var checkinBreaks = $.status.$status_content.find('.s-editor-slider-break').map(function (i, e) {
                     return checkboxDuration($(e));
-                });  
+                });
 
                 var getCheckinDuration = function (values) {
                         var valuesLength = values.length / 2,
@@ -520,7 +520,7 @@
                         for (var index = 0; index < valuesLength; index++) {
                             checkinDuration += values[1 + index * 2] - values[0 + index * 2];
                         }
-                        
+
                         checkinBreaks.each(function (i, checkinBreak) {
                             if (checkinBreak.isOn()) {
                                 checkinDuration -= (checkinBreak.value() * 60);
@@ -555,7 +555,7 @@
 
                             $(document).on('mousedown', handler);
                         }
-                        
+
                         $('.s-editor-slider-projects').hide();
                         if (checkinIndex !== null) {
                             blocks.eq(checkinIndex).find('.s-editor-slider-projects').show();
@@ -565,7 +565,7 @@
                         if (checkinIndex > 0) {
                             $deleteButton.show();
                         }
-                        
+
                     },
                     updateDayDuration = function (values) {
                         var duration = getCheckinDuration(values),
@@ -751,13 +751,13 @@
 
                         values2.push(values[0] < minMax.min ? minMax.min : values[0]);
                         values2.push(values[1] > minMax.max ? minMax.max : values[1]);*/
-                        
+
                         var sliderInstance = document.querySelector('.noUi-target').noUiSlider;
                         if (sliderInstance) {
                             updateDayDuration(sliderInstance.get());
                         }
                         save($form);
-                    });  
+                    });
 
                     // If noUISlider container exists (first checkin of the day)
                     if ($sl) {
@@ -843,7 +843,7 @@
 
                         // If first-time initialization
                         if (!noUiSliderExists) {
-                            
+
                             // Slider tooltip moving
                             $($sl).on('mousemove', function (event) {
                                 var pos = event.pageX - $($sl).offset().left,
@@ -854,43 +854,43 @@
                                 $tooltip.text($.status.timeValueToStr(t / 60, 'time'));
                                 // }
                             });
-                            
+
                             // Show slider tooltip
                             $($sl).on('mouseover', function () {
                                 if ($tooltip.text()) {
                                     $tooltip.show();
                                 }
                             });
-                            
+
                             // Hide slider tooltip
                             $($sl).on('mouseout', function () {
                                 $tooltip.hide();
                             });
-                            
+
                             // Delete checkin button event
-                            $deleteButton.on('click', function (e) {                 
+                            $deleteButton.on('click', function (e) {
                                 e.preventDefault();
-        
+
                                 if(checkinIndex > 0) {
-        
+
                                     var $sourceCheckin = $forms.eq(checkinIndex).parent(),
                                     checkinId = $sourceCheckin.find('form [name="checkin[id]"]').val();
-        
+
                                     if (checkinId) {
                                         remove(checkinId);
                                     }
-        
+
                                     $sourceCheckin.remove();
                                     updateCheckinIndex(null);
-        
+
                                     $editorHtml.find('[data-checkin]').each(function () {
                                         initCheckin($(this));
                                     });
-        
+
                                 }
-        
+
                             });
-                            
+
                             // Define checkin deletion if Backspace or Delete key pressed
                             document.addEventListener("keydown", function (event) {
                                 if ((event.code === 'Backspace' || event.code === 'Delete') && checkinIndex > 0) {
@@ -899,8 +899,8 @@
                             });
 
                         }
-                        
-                    }  
+
+                    }
 
                     // Coloring slider checkins
                     fillSliderWithColor();
@@ -1026,7 +1026,7 @@
                     .attr('data-checkin-action', 'add')
                     .attr('title', $_('Add another interval for today'))
                     .empty()
-                    .append('<i class="fas fa-plus-circle"></i>');
+                    .append('<i class="fas fa-plus"></i>');
 
                 var saveComment = function() {
                     $editorHtml.find('.s-editor-commit-button').hide();

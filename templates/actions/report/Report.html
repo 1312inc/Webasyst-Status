@@ -3,7 +3,7 @@
      data-status-report-start="{$currentPeriod->getDateStartFormat()}"
      data-status-report-end="{$currentPeriod->getDateEndFormat()}"
      data-status-report-period="{$currentPeriod->getId()}"
-     class="custom-p-24">
+     class="box contentbox s-mega-article">
 
      <div class="flexbox wrap">
          <div class="wide custom-mb-8-mobile">
@@ -12,7 +12,7 @@
          <div>
             <div class="s-reports-timeframe flexbox wrap space-12">
                 <div class="dropdown custom-mb-8-mobile" id="reportSelect">
-                    <button class="dropdown-toggle button outlined" type="button">{$currentPeriod->getName()|escape}</button>
+                    <button class="dropdown-toggle button light-gray" type="button">{$currentPeriod->getName()|escape}</button>
                     <div class="dropdown-body">
                         <ul class="menu">
                             {foreach statusReportService::getPeriods() as $datePeriod}
@@ -24,7 +24,7 @@
                         </ul>
                     </div>
                 </div>
-                
+
                 <div data-status-report-period-custom style="display: none;" class="flexbox space-8 middle">
                     <input type="text" name="start" value="{$currentPeriod->getDateStartFormat()}" style="width: 120px;" />
                     <input type="text" name="end" value="{$currentPeriod->getDateEndFormat()}" style="width: 120px;" />

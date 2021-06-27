@@ -1,4 +1,4 @@
-<div class="box contentbox">
+<div class="box contentbox s-mega-article">
 
     <div class="s-week-summary s-this-week">
 
@@ -17,16 +17,12 @@
     {if $isProject}
 
         <div class="s-title">
-            <h1{if $stts->getRightConfig()->hasAccessToProject()} class="float-left"{/if}>{$project->getName()|escape}</h1>
-            {if $stts->getRightConfig()->hasAccessToProject()}
-                <div class="block half-padded" style="margin-left: 1.5rem;">
-                    <ul class="menu-h">
-                        <li>
-                            <a href="#" class="gray" data-status-project-action="add" data-status-project-id="{$project->getId()}"><i class="icon16 settings"></i>[`Project settings`]</a>
-                        </li>
-                    </ul>
-                </div>
-            {/if}
+            <h1>
+                {$project->getName()|escape}
+                {if $stts->getRightConfig()->hasAccessToProject()}
+                    <a href="#" class="button circle light-gray custom-ml-4" data-status-project-action="add" data-status-project-id="{$project->getId()}" title="[`Project settings`]" style="font-size: 1.125rem; position: relative; top: -0.25rem;"><i class="fas fa-edit text-blue"></i></a>
+                {/if}
+            </h1>
         </div>
 
     {elseif $group}
@@ -50,8 +46,6 @@
                     [`Tomorrow`]
                     <span class="hint">
                         {$tomorrowDto->dayname}, {$tomorrowDto->dayHuman}
-                                <!-- <span title="[`Weekend`]">🏖️Sunday / Saturday</span> -->
-                        <!-- <span title="[`Birthday`]">🎂Birtday</span> -->
                     </span>
                 </h3>
             </div>

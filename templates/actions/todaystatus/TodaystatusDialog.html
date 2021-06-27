@@ -11,26 +11,26 @@
                 <div class="dialog-content fields form">
                     <div class="field-group">
                         <div class="field">
-                            <div class="name nowrap">
+                            <div class="name nowrap for-input">
                                 [`Status label`]
                             </div>
                             <div class="value">
-                                <input type="text" class="bold" name="status[summary]"
-                                       placeholder="[`Working remotely`]"/>
+                                <input type="text" class="bold" name="status[summary]" placeholder="[`Working remotely`]"/>
                             </div>
                         </div>
                         <div class="field">
-                            <div class="name nowrap">
+                            <div class="name for-checkbox">
                                 [`Calendar`]
                             </div>
-                            <div class="value no-shift">
+                            <div class="value">
                                 {foreach $statuses as $status}
-                                <div class="custom-mb-4">
+                                <div class="custom-mb-8">
                                     <label>
-                                        <input type="radio" name="status[calendar_id]"
-                                            value="{$status->getCalendarId()}"/>
-                                        <i class="icon16 color"
-                                        style="background-color: {$status->getBgColor()}"></i>
+                                        <span class="wa-radio">
+                                            <input type="radio" name="status[calendar_id]" value="{$status->getCalendarId()}"/>
+                                            <span></span>
+                                        </span>
+                                        <i class="icon rounded" style="background-color: {$status->getBgColor()}"></i>
                                         {$status->getName()|escape}
                                     </label>
                                 </div>
@@ -42,8 +42,8 @@
                 </div>
 
                 <footer class="dialog-footer">
-                    <input type="submit" value="[`Save`]" class="button green"/> [`or`]
-                    <button class="js-close-dialog button light-gray">[`cancel`]</button>
+                    <input type="submit" value="[`Save`]" class="button"/>
+                    <button class="js-close-dialog button light-gray">[`Cancel`]</button>
                 </footer>
             </div>
         </form>

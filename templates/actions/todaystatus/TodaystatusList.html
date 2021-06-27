@@ -1,7 +1,7 @@
 <div class="dropdown small" data-status-wrapper="statuses" data-status-today-status-date="{$statusDate}">
-    <button class="dropdown-toggle button light-gray"{if isset($currentStatus) && $currentStatus->getCalendarId()} style="background-color: {$currentStatus->getBgColor()}; color: {$currentStatus->getFontColor()}"{/if} data-status-current>
-        {if isset($currentStatus) && $currentStatus->getCalendarId()}{$currentStatus->getName()|escape}{else}[`Status`]{/if}
-    </button>
+    <a href="#" class="dropdown-toggle button rounded{if $statusDate != 'tomorrow'} large{/if} light-gray"{if isset($currentStatus) && $currentStatus->getCalendarId()} style="background-color: {$currentStatus->getBgColor()}; color: {$currentStatus->getFontColor()}"{/if} data-status-current>
+        {if isset($currentStatus) && $currentStatus->getCalendarId()}{$currentStatus->getName()|escape}{else}{if $statusDate == 'tomorrow'}[`Status for tomorrow`]{elseif $statusDate == date('Y-m-d')}[`Status for today`]{else}[`Set daily status`]{/if}{/if}
+    </a>
     <div class="dropdown-body">
         <ul class="menu s-status-selector">
             <li

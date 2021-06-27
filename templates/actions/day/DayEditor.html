@@ -1,9 +1,9 @@
-<div class="s-editor card custom-p-20"
+<div class="s-editor"
      data-status-day-date="{$day->date}"
      data-status-week-of-day="{$day->weekNum}"
 >
     <!-- TIME & STATUS -->
-    <div class="block double-padded">
+    <div class="s-editor-time-and-status">
 
         <div class="flexbox">
             <div class="wide">
@@ -28,7 +28,7 @@
                 <p>🎉  &nbsp; [`<strong class="highlighted">Hello and welcome!</strong> Add your first work report by <strong>dragging the time slider</strong> or by <strong>selecting your daily status</strong> in the menu so all your teammates get to know what you are up to on this day.`]</p>
             </div>
         {/if}
-        
+
         <div class="custom-my-20">
         {$itr = 0}
         {foreach $userDayInfo->checkins as $checkin}
@@ -86,9 +86,9 @@
                         <div class="s-editor-slider-tooltip"></div>
                     </div>
                 {/if}
-                
+
                 <div class="s-editor-slider-projects flexbox full-width" style="display: none;">
-                    <div class="wide">
+                    <div class="wide small">
                     {foreach $checkin->projectsDuration as $projectDuration}
                         <label class="s-editor-project {if $projectDuration->id}selected{/if}"
                             data-status-project-color="{$projectDuration->project->color}"
@@ -96,12 +96,19 @@
                         >
                             <input type="hidden" name="projects[{$projectDuration->project->id}][project_check_id]" value="{$projectDuration->id}">
                             <input type="hidden" name="projects[{$projectDuration->project->id}][on]" value="0">
-                            <input type="checkbox" name="projects[{$projectDuration->project->id}][on]" value="1" {if $projectDuration->id}checked{/if}>
-    {*                        <!-- <i class="icon16 color" style="background: {$p[0]};"></i> -->*}
+                            <span class="wa-checkbox">
+                                <input type="checkbox" name="projects[{$projectDuration->project->id}][on]" value="1" {if $projectDuration->id}checked{/if}>
+                                <span>
+                                    <span class="icon">
+                                        <i class="fas fa-check"></i>
+                                    </span>
+                                </span>
+                            </span>
+
                             {$projectDuration->project->name|escape}
                             <span class="s-duration s-editor-project-share">
-                                <a href="#" class="inline-link s-duration-label" style="background: {$projectDuration->project->color};">
-                                    <b><i>{$projectDuration->durationPercent}%</i></b>
+                                <a href="#" class="s-duration-label" style="background: {$projectDuration->project->color};">
+                                    {$projectDuration->durationPercent}%
                                 </a>
                                 <input type="text"
                                     class="s-duration-input"
@@ -112,7 +119,7 @@
                         </label>
                     {/foreach}
                     </div>
-                    <div class="s-editor-slider-break">
+                    <div class="s-editor-slider-break small nowrap">
                         <input type="hidden" name="checkin[break]" value="0">
                         <label>
                             <span class="wa-checkbox">
@@ -123,26 +130,26 @@
                                     </span>
                                 </span>
                             </span>
-                            <span class="small">[`Break`]</span>
+                            <span>[`Break`]</span>
                             <span class="s-duration">
-                                <a href="#" class="inline-link s-duration-label">{$checkin->breakString}</a>
+                                <a href="#" class="s-duration-label">{$checkin->breakString}</a>
                                 <input type="text" class="s-duration-input" value="{$checkin->break|default:1}" name="checkin[break_duration]">
                             </span>
                         </label>
                     </div>
                 </div>
-                    
+
             </div>
             <div class="flexbox" style="width: 200px;">
             {if $itr === 0}
-            <div class="s-editor-slider-more">
-                <a href="#" data-checkin-action="delete" title="[`Remove interval for today`]"><i class="far fa-trash-alt"></i></a>
-                <a href="#" data-checkin-action="delete2.0" style="display: none;" title="[`Remove interval for today`]"><i class="far fa-trash-alt"></i></a>
+            <div class="s-editor-slider-more nowrap">
+                <a href="#" data-checkin-action="delete" title="[`Remove interval for today`]" class="button circle"><i class="fas fa-trash-alt text-red"></i></a>
+                <a href="#" data-checkin-action="delete2.0" style="display: none;" title="[`Remove interval for today`]" class="button circle light-gray"><i class="fas fa-trash-alt text-red"></i></a>
             </div>
             <div class="s-editor-slider-total">
-                <div class="large" data-status-checkin-duration-zero="[`0 h`]"></div>
+                <div class="large nowrap" data-status-checkin-duration-zero="[`0 h`]"></div>
             </div>
-            {/if}                
+            {/if}
             </div>
         </form>
         </div>
@@ -154,25 +161,25 @@
 
     <!-- COMMENT & LOGGED ENTITIES -->
     <div class="s-editor-summary block double-padded blank">
-        <textarea class="s-editor-comment" placeholder="[`Enter your daily report here...`]" name="checkin[comment]">{$userDayInfo->firstCheckin->comment|escape}</textarea>
-        
-        <div class="s-logged-apps custom-mt-12 custom-pt-12 {if count($userDayInfo->walogsByDatetime) || count($userDayInfo->walogs)}bordered-top{/if}">
+        <textarea class="s-editor-comment semibold" placeholder="[`Enter your daily report here...`]" name="checkin[comment]">{$userDayInfo->firstCheckin->comment|escape}</textarea>
+
+        <div class="s-logged-apps custom-pt-20 custom-mb-0 {if count($userDayInfo->walogsByDatetime) || count($userDayInfo->walogs)}bordered-top{/if}">
             <div class="flexbox">
                 <div class="wide">
                     {foreach $userDayInfo->walogs as $walog}
                         {if $walog->count && $walog->appId != 'webasyst'}
                             <a href="#"
-                            class="inline-link flexbox middle space-4 small"
+                            class="s-logged-app-counter nowrap"
                             data-status-walog-contact-id="{$user->contactId}"
                             data-status-walog-app="{$walog->appId}"
                             data-status-walog-date="{$day->date}"
                             >
-                                <span class="icon userpic size-16">
+                                <span class="icon size-24">
                                     <i style="background-image: url('{$walog->appIcon}');"></i>
                                 </span>
-                                <span>
+                                <strong>
                                     {$walog->count}
-                                </span>
+                                </strong>
                             </a>
                         {/if}
                     {/foreach}
@@ -197,6 +204,6 @@
 
             </div>
         </div>
-  
+
     </div>
 </div>

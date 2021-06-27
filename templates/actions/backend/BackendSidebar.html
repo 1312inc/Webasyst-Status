@@ -6,7 +6,7 @@
         </a>
     </div>
 </nav>
-<div class="sidebar-body"> 
+<div class="sidebar-body">
     <ul class="menu">
          <li class="selected">
              <a href="#" class="bold">
@@ -15,24 +15,31 @@
                  <span>[`My status`]</span>
              </a>
          </li>
+         <li>
+             <a href="#/contact/-1312">
+                 <i class="fas fa-users"></i>
+                 <span>[`Everyone`]</span>
+             </a>
+         </li>
+    </ul>
 
-         {if count($users) && ($stts->getRightConfig()->isAdmin() || $stts->getRightCongif->hasAccessToTeammate())}
+    {if count($users) && ($stts->getRightConfig()->isAdmin() || $stts->getRightCongif->hasAccessToTeammate())}
+        <h5 class="heading">[`Teams`]</h5>
+        <ul class="menu">
              {foreach $groups as $_g}
                  <li>
                      <a href="#/team/{$_g.id}">
-                         <i class="fas fa-map-marker-alt"></i>
+                         <!-- <i class="fas fa-users"></i> -->
                          <span>{$_g.name|escape}</span>
                      </a>
                  </li>
              {/foreach}
+        </ul>
+    {/if}
+    
+    <h5 class="heading">[`Users`]</h5>
+    <ul class="menu">
 
-             <li class="bottom-padded">
-                 <a href="#/contact/-1312">
-                     <i class="fas fa-users"></i>
-                     <span>[`Everyone`]</span>
-                 </a>
-             </li>
-         {/if}
 
          {if count($users)}
              {foreach $users as $u}
