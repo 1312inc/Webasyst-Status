@@ -77,6 +77,12 @@ class statusChronologyAction extends statusViewAction
     {
         $weeks = statusWeekFactory::createLastNWeeks(5, true, 0);
         $weeksDto = statusWeekFactory::getWeeksDto($weeks, $this->getWeekDataFilterRequestDto);
+
+        $weekFilter = new statusWeekFilter();
+        foreach ($weeksDto as $weekDto) {
+            $weekFilter->filterNonExistingUserWithNoActivity($weekDto);
+        }
+
         $currentWeek = array_shift($weeksDto);
 
         if (!$this->user) {
