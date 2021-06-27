@@ -36,10 +36,11 @@
              {/foreach}
         </ul>
     {/if}
-    
+
+    {if count($users) || count($hiddenUsers) || $teammates && $wa->team && $stts->getRightConfig()->isAdmin()}
+
     <h5 class="heading">[`Users`]</h5>
     <ul class="menu">
-
 
          {if count($users)}
              {foreach $users as $u}
@@ -61,10 +62,18 @@
              {/foreach}
         {/if}
 
-         {if count($hiddenUsers)}
-             <li><a href="#" data-status-action="sidebar-show-all-users">{sprintf('[`Show everyone (%d)`]', count($users) + count($hiddenUsers))}</a></li>
-             {foreach $hiddenUsers as $u}
-             <li style="display:none" data-status-sidebar-hidden-user>
+        {if count($hiddenUsers) || $teammates && $wa->team && $stts->getRightConfig()->isAdmin()}
+            {foreach $teammates as $teammate}
+                <li style="display:none" data-status-sidebar-hidden-user>
+                    <a href="#/contact/{$teammate.id}">
+                        <span class="icon"><i class="userpic" style="background-image: url({$teammate.photo_url_32})"></i></span>
+                        <span class="gray">{$teammate.name|escape}</span>
+                    </a>
+                </li>
+            {/foreach}
+
+            {foreach $hiddenUsers as $u}
+            <li style="display:none" data-status-sidebar-hidden-user>
                  <a href="#/contact/{$u->getContactId()}">
                      <span class="count" title="[`This week total`]">{$timeByUserStat[$u->getContactId()]['timeStr']}</span>
                      <span class="icon"><i class="userpic" style="background-image: url({$u->getPhotoUrl()})"></i></span>
@@ -78,27 +87,22 @@
                      </span>
                      {/if}
                  </a>
-             </li>
-             {/foreach}
-
-        {/if}
-        {if $teammates && $wa->team && $stts->getRightConfig()->isAdmin()}
-            {foreach $teammates as $teammate}
-                <li>
-                    <a href="#/contact/{$teammate.id}">
-                        <span class="icon"><i class="userpic" style="background-image: url({$teammate.photo_url_32})"></i></span>
-                        <span class="gray">{$teammate.name|escape}</span>
-                    </a>
-                </li>
+            </li>
             {/foreach}
+
+            <li><a href="#" data-status-action="sidebar-show-all-users"><span class="small text-gray">{sprintf('[`Show more (%d)`]', count($hiddenUsers) + count($teammates))}</span></a></li>
+
         {/if}
 
     </ul>
+    {/if}
+
     {if !count($users) && !count($teammates) && $wa->team}
         <div class="box">
             <p class="hint align-center">{sprintf('[`Invite users via the <a href="%s">Team app</a> and start tracking time and status together.`]', $wa_backend_url|cat:'team/')}</p>
         </div>
     {/if}
+
     {if count($projects) || $stts->getRightConfig()->hasAccessToProject()}
         <h5 class="heading">
             {if $stts->getRightConfig()->hasAccessToProject()}

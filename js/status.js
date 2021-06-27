@@ -824,7 +824,7 @@
                                 start_time = $.status.timeValueToStr(_start / 60, 'time'),
                                 end_time = $.status.timeValueToStr(_end / 60, 'time');
 
-                            var dialog_html = "<div class=\"dialog\" id=\"\"> <div class=\"dialog-background\"><\/div> <div class=\"dialog-body\"> <a href=\"#\" class=\"dialog-close js-close-dialog\"><i class=\"fas fa-times\"><\/i><\/a> <div class=\"dialog-content\"> <input type=\"time\" name=\"start_time\" value=\"" + start_time + "\"> <input type=\"time\" name=\"end_time\" value=\"" + end_time + "\"> <\/div> <footer class=\"dialog-footer\"> <button class=\"js-submit-form button\">Save<\/button> <button class=\"js-close-dialog button light-gray\">Close<\/button> <\/footer> <\/div> <\/div> ";
+                            var dialog_html = "<div class=\"dialog\" id=\"\"> <div class=\"dialog-background\"><\/div> <div class=\"dialog-body\"> <a href=\"#\" class=\"dialog-close js-close-dialog\"><i class=\"fas fa-times\"><\/i><\/a> <div class=\"dialog-content\"> <h2>Adjust time</h2> <p> <input type=\"time\" name=\"start_time\" value=\"" + start_time + "\" class=\"large\"> &mdash; <input type=\"time\" name=\"end_time\" value=\"" + end_time + "\" class=\"large\"> </p> <\/div> <footer class=\"dialog-footer\"> <button class=\"js-submit-form button\">Save<\/button> <button class=\"js-close-dialog button light-gray\">Cancel<\/button> <\/footer> <\/div> <\/div> ";
                             $.waDialog({
                                 html: dialog_html,
                                 onOpen: function ($dialog, dialog_instance) {

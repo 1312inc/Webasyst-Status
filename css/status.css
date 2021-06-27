@@ -173,6 +173,10 @@
 .s-editor .noUi-target.noUi-horizontal .noUi-tooltip { cursor: pointer; color: var(--text-color-link) !important; bottom: 150%; font-size: 0.875rem; font-weight: 500; }
 .s-editor .noUi-target.noUi-horizontal .noUi-tooltip:hover { color: var(--text-color-link-hover) !important; }
 
+input[type="time"] { display: inline-block; padding: 0.3125em 0.5em; border-radius: 0.25em; margin: 0 0.25em 0 0; border: 0.125em solid var(--border-color-input); line-height: 1.25em; background: var(--background-color-input); color: var(--text-color-input); -webkit-appearance: none; -moz-appearance: none; appearance: none; outline: none; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; max-width: 100%; transition: 0.1s; }
+
+.button.light-gray:hover { background: rgba(0,0,0,0.1); }
+
 .s-editor-slider-tooltip {
   display: none;
   position: absolute;
@@ -198,26 +202,3 @@
   border-width: 6px 4px 0 4px;
   border-color: #000 transparent transparent transparent;
 }
-
-
-input[type="time"] {
-  display: inline-block;
-  padding: 0.3125em 0.5em;
-  border-radius: 0.25em;
-  margin: 0 0.25em 0 0;
-  border: 0.125em solid var(--border-color-input);
-  line-height: 1.25em;
-  background: var(--background-color-input);
-  color: var(--text-color-input);
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  outline: none;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  max-width: 100%;
-  transition: 0.1s;
-}
-
-.button.light-gray:hover { background: rgba(0,0,0,0.1); }
