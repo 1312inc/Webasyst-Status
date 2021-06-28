@@ -13,7 +13,7 @@
                         {sprintf('[`WEEK #%d`]', $week->number)}
                     </h5>
                     *}
-                    {include inline file='./../../actions/week/WeekDonut.html' donut=$week->donut isProject=$isProject}
+                    {include inline file='./../../actions-legacy/week/WeekDonut.html' donut=$week->donut isProject=$isProject}
 
                 </div>
             </div>
@@ -22,7 +22,7 @@
             <div class="s-day{if $day->isFromCurrentWeek && $isMe} s-this-week{/if}{if !$isMe} s-non-clickable{elseif !$isProject} s-editable{/if}"
                  data-status-day-date="{$day->date}"
             >
-                {include inline file='./../../actions/day/DayShow.html' day=$day isProject=$isProject}
+                {include inline file='./../../actions-legacy/day/DayShow.html' day=$day isProject=$isProject}
             </div>
             {/foreach}
         {/foreach}
