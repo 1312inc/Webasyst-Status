@@ -4,6 +4,8 @@
   Copyright 1312 Inc.
   */
 
+.clear-right { clear: right; }
+
 .s-status { font-weight: bold; white-space: nowrap; }
 .s-mega-article { max-width: 1312px; margin: 0 auto; }
 .s-navigation { }
@@ -31,7 +33,8 @@
 .s-color-orange { background: #ff9400 !important; }
 .s-color-none { background: #ddd !important; }
 
-.field .value a.selected .icon16.color { border: 3px solid rgba(0,0,0,0.8); }
+.s-project-color-icon .icon { margin: 0 0.25rem 0.5rem 0; border: 3px solid white; }
+.s-project-color-icon.selected .icon { border: 3px solid rgba(0,0,0,0.8); }
 
 /* Check-in Details
 ------------------- */
@@ -74,10 +77,10 @@
 /* Week Summary
 --------------- */
 
-.s-week-divider { margin: 90px 35px 30px; }
+.s-week-divider { margin: 90px 0 30px 35px; }
 .s-week-divider h5 { border-bottom: 1px solid var(--border-color-soft); padding-bottom: 0.5rem; display: block; font-size: 1.125rem; margin: 0 6px; }
 
-.s-week-summary { float: right; width: 200px; text-align: center; }
+.s-week-summary { float: right; width: 200px; margin-left: 30px; text-align: center; }
 .s-week-summary .s-week-projects { list-style: none; font-size: 0.875rem; padding: 0; text-align: left; display: inline-block; }
 .s-week-summary .s-week-projects li { margin-bottom: 0.125rem; }
 .s-week-summary.s-this-week { padding-top: 12px; }
@@ -97,8 +100,8 @@
 .s-tomorrow-planner ul.menu-h.dropdown li:hover { background: transparent; }
 .s-tomorrow-planner .s-editor-status { margin-top: -2px; }
 
-.s-editor { margin: 0 215px 25px 15px; z-index: 1; position: relative; box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.07), 0 0.5rem 1rem -0.5rem rgba(0, 0, 0, 0.13); border-radius: 0.75rem; overflow: hidden; }
-.s-editor .s-editor-time-and-status { background: var(--background-color); padding: 1.25rem 1.5rem 0.25rem; }
+.s-editor { margin: 0 215px 25px 15px; z-index: 1; position: relative; box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.07), 0 0.5rem 1rem -0.5rem rgba(0, 0, 0, 0.13); border-radius: 0.75rem; overflow: hidden; border: 2px solid var(--border-color-soft); }
+.s-editor .s-editor-time-and-status { background: var(--background-color); padding: 1.5rem 1.5rem 0.25rem; }
 .s-editor ul.menu-h.dropdown li:hover { background: transparent; }
 .s-editor-status { border-radius: 1rem; background: rgba(0,0,0,0.05); color: #aaa; padding: 5px 6px 5px 10px !important; }
 .s-editor .s-duration-label { color: var(--background-color); background: var(--gray); border: 1px dashed; padding: 1px 2px 2px; border-radius: 0.25rem; font-weight: bold; }
