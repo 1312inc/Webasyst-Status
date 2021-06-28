@@ -157,7 +157,7 @@ background: linear-gradient(135deg, rgb(225, 127, 206) 0%, rgb(225, 127, 206) 25
 
         $noActivityDuration = $maxDuration - $donut->totalDuration;
         $noActivityDegree = $noActivityDuration > 0 ? round($noActivityDuration / $degrees, 2) : 0;
-        $noActivityDto = new statusWeekDonutDataDto(-1, _w('No activity'), '#eee', $noActivityDuration);
+        $noActivityDto = new statusWeekDonutDataDto(-1, _w('No activity'), wa()->whichUI() == '1.3' ? '#eee' : 'var(--background-color-input)', $noActivityDuration);
         $donut->data[-1] = $noActivityDto;
         $noActivityDto->rotations[] = [
             'from' => $prevDegree,
