@@ -6,12 +6,15 @@
 {** @var statusDayDto $day **}
 {*<section id="day-show-{$day->date}">*}
     <div class="s-day-date">
-        <div class="bold">
+        <div class="bold wide">
             {if $day->yesterday}[`Yesterday`]
             {elseif $day->today}[`Today`]
             {else}{$day->dayHuman}{/if}
             <span class="hint">{$day->dayname}{if $day->yesterday || $day->today}<br> {$day->dayHuman}{/if}</span>
         </div>
+        {if $isMe && !$isProject}
+            <button class="mobile-only light-gray small"><i class="fas fa-edit text-blue"></i> [`Edit`]</button>
+        {/if}
     </div>
 
     <div class="s-checkins wide">
@@ -106,7 +109,7 @@
 
                     {if $userDayInfo->todayStatus->getCalendarId()}
                         <div class="custom-mb-12">
-                            <span class="badge s-status" title="[`Status for today`]" style="background-color: {$userDayInfo->todayStatus->getBgColor()}; color: {$userDayInfo->todayStatus->getFontColor()}">{$userDayInfo->todayStatus->getName()|escape}</span>
+                            <span class="badge s-status" title="[`Daily status`]: {$userDayInfo->todayStatus->getName()|escape}" style="background-color: {$userDayInfo->todayStatus->getBgColor()}; color: {$userDayInfo->todayStatus->getFontColor()}">{$userDayInfo->todayStatus->getName()|escape}</span>
                         </div>
                     {/if}
 

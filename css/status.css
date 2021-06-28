@@ -128,8 +128,7 @@
 .s-editor-slider--0:first-child { padding: 40px 0 10px; }
 .s-editor-slider form { overflow: visible; }
 .s-editor-slider .s-editor-slider-total { flex: 0 0 124px; text-align: center; white-space: nowrap; text-color: var(--text-color-stronger); font-weight: bold; }
-/* .s-editor-slider .s-editor-slider-total h2 { color: #555; } */
-.s-editor-slider .s-editor-slider-control { flex: 1; padding-top: 10px; }
+.s-editor-slider .s-editor-slider-control { flex: 1; padding-top: 10px; margin-right: 12px; }
 .s-editor-slider .s-editor-slider-projects { line-height: 1.5rem;}
 .s-editor-slider--0:first-child .s-editor-slider-projects { margin-top: 32px; }
 .s-editor-slider .s-editor-slider-projects label.s-editor-project { margin-right: 1rem; color: #aaa; white-space: nowrap; }
@@ -139,7 +138,7 @@
 .s-editor-slider .s-editor-slider-projects label.s-editor-project.selected i.icon16.color { display: inline-block; }
 .s-editor-slider .s-editor-slider-projects label.s-editor-project.selected .s-editor-project-share { display: inline; }
 .s-editor-slider .s-editor-slider-projects label.s-editor-project.selected .s-editor-project-share .s-duration-label { color: var(--background-color-blank); }
-/* .s-editor-slider .s-editor-slider-break { flex: 0 0 150px; text-align: center; padding-top: 3px; } */
+.s-editor-slider .s-editor-slider-tools { width: 200px; }
 .s-editor-slider .s-editor-slider-more { flex: 0 0 auto; margin-top: -2px; }
 .s-editor-summary { padding: 1.25rem 1.5rem;}
 .s-editor-summary textarea.s-editor-comment { width: 100%; outline: 0 none; -webkit-appearance: none; border: 0; min-height: 5rem; background: transparent; font-size: 0.9375rem; }
@@ -165,8 +164,7 @@
 .s-walog-explained .fields { margin-top: 10px; }
 .s-walog-explained .activity-target { display: inline; }
 
-.s-reports-timeframe ul.menu-h.dropdown { display: inline-block; }
-.s-reports-timeframe ul.menu-h.dropdown ul { width: 200px; left: auto; right: 0px; }
+.s-reports-timeframe { margin-top: 4px; }
 .s-reports-timeframe input { width: 100px; }
 .s-reports-flexbox { display: flex; margin-top: 10px; }
 .s-reports-table { flex: 1; margin: 0 31px 20px; min-width: 250px; }
@@ -193,7 +191,42 @@
 
 input[type="time"] { display: inline-block; padding: 0.3125em 0.5em; border-radius: 0.25em; margin: 0 0.25em 0 0; border: 0.125em solid var(--border-color-input); line-height: 1.25em; background: var(--background-color-input); color: var(--text-color-input); -webkit-appearance: none; -moz-appearance: none; appearance: none; outline: none; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; max-width: 100%; transition: 0.1s; }
 
+button.light-gray:hover,
 .button.light-gray:hover { background: rgba(0,0,0,0.1); }
+
+@media screen and (max-width: 760px) { /* mobile */
+
+    .s-title { margin: 0; }
+    .s-status { max-width: 70px; overflow: hidden; display: inline-block; }
+
+    .s-week-summary { display: none; }
+    .s-week-divider { margin: 2.5rem 0 0; }
+    .s-week-divider h5 { margin: 0; font-size: 1rem; }
+
+    .s-tomorrow-planner { margin-left: 0; margin-right: 0; }
+    .s-tomorrow-planner .hint { display: none; }
+
+    .s-editor { margin-left: 0; margin-right: 0; border-radius: 0.5rem; }
+    .s-editor h1 { font-size: 1.5rem; }
+    .s-editor .s-editor-time-and-status { padding: 1rem; }
+    .s-editor .s-editor-time-and-status .flexbox { flex-direction: column; }
+    .s-editor .s-editor-time-and-status .s-editor-status-dropdown { text-align: center; padding: 1rem; }
+    .s-editor-slider .s-editor-slider-tools { width: 100%; flex-direction: row !important; }
+    .s-editor-slider .s-editor-slider-total { flex: 0 0 auto; }
+    .s-editor-slider .s-editor-slider-control { margin-bottom: 40px; margin-right: 0; }
+
+    .s-checkin { margin-top: 0.5rem; }
+    .s-day { flex-direction: column; margin-left: 0; margin-right: 0; padding-left: 0; padding-right: 0; }
+    .s-day .s-day-total { flex: 0 0 50px; }
+    .s-day .s-day-total h5 { font-size: 1rem; }
+
+    .s-day .s-day-date { flex: 0 0 2rem; display: flex; width: 100%; margin-bottom: 0.75rem; }
+    .s-day .s-day-date br { display: none; }
+    .s-day .s-day-date button { position: relative; top: -6px; }
+
+    .s-day.s-editable:hover { background: var(--background-color-blank); }
+
+}
 
 .s-editor-slider-tooltip {
   display: none;
