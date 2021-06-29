@@ -134,10 +134,21 @@ class statusDayCheckinDto implements JsonSerializable
                 sprintf('%d/%s', $checkin->getContactId(), '1312')
             );
 
-            $userHourDiff = (new DateTime('midnight'))
-                ->setTimezone(wa()->getUser()->getTimezone(true))
-                ->diff($date)
-                ->h;
+            $serverDate = DateTimeImmutable::createFromFormat('Y-m-d|', date('Y-m-d'), wa()->getUser()->getTimezone(true));
+
+            stts()->getLogger()->log(
+                sprintf('server date %s', $serverDate->format('Y-m-d\TH:i:sP')),
+                sprintf('%d/%s', $checkin->getContactId(), '1312')
+            );
+
+            $diff = $serverDate->diff($date);
+
+            stts()->getLogger()->log(
+                $diff,
+                sprintf('%d/%s', $checkin->getContactId(), '1312')
+            );
+
+            $userHourDiff = $diff->h;
 
             stts()->getLogger()->log(
                 sprintf('hours diff %s', $userHourDiff),
