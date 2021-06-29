@@ -112,12 +112,31 @@ class statusDayCheckinDto implements JsonSerializable
         $this->isTrace = (bool) $checkin->getDataField('trace');
 
         if ($this->isTrace) {
+
+            stts()->getLogger()->log(
+                sprintf(
+                    '+++++ new trace checkin %s, %s, %s',
+                    $checkin->getDate(),
+                    $checkin->getStartTime(),
+                    $checkin->getEndTime()
+                ),
+                '1312'
+            );
+
             $date = DateTimeImmutable::createFromFormat(
                 'Y-m-d|',
                 $checkin->getDate(),
                 wa()->getUser()->getTimezone(true)
             );
-            $userHourDiff = (new DateTime('midnight'))->setTimezone(wa()->getUser()->getTimezone(true))->diff($date)->h;
+
+            stts()->getLogger()->log(sprintf('date %s', $date->format('Y-m-d\TH:i:sP')), '1312');
+
+            $userHourDiff = (new DateTime('midnight'))
+                ->setTimezone(wa()->getUser()->getTimezone(true))
+                ->diff($date)
+                ->h;
+
+            stts()->getLogger()->log(sprintf('hours diff %s', $userHourDiff), '1312');
         } else {
             $date = DateTimeImmutable::createFromFormat('Y-m-d|', $checkin->getDate());
             $userHourDiff = 0;
@@ -144,6 +163,8 @@ class statusDayCheckinDto implements JsonSerializable
             (int) $checkin->getBreakDuration() * 60,
             sprintf_wp('%dh', 1)
         );
+
+        stts()->getLogger()->log($this, '1312');
     }
 
     /**
