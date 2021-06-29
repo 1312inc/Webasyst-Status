@@ -12,7 +12,7 @@
             {else}{$day->dayHuman}{/if}
             <span class="hint">{$day->dayname}{if $day->yesterday || $day->today} {$day->dayHuman}{/if}</span>
         </h6>
-        {if $isMe && !$isProject}
+        {if !empty($isMe) && $isMe && !$isProject}
             <button class="mobile-only light-gray small"><i class="fas fa-edit text-blue"></i> [`Edit`]</button>
         {/if}
     </div>
@@ -107,14 +107,18 @@
 
                 <div class="s-day-total">
 
+                    {$_total_is_shown = 0}
+
                     {if $userDayInfo->todayStatus->getCalendarId()}
                         <div class="custom-mb-12">
                             <span class="badge s-status" title="[`Daily status`]: {$userDayInfo->todayStatus->getName()|escape}" style="background-color: {$userDayInfo->todayStatus->getBgColor()}; color: {$userDayInfo->todayStatus->getFontColor()}">{$userDayInfo->todayStatus->getName()|escape}</span>
                         </div>
+                        {$_total_is_shown = 1}
                     {/if}
 
                     {if $userDayInfo->realCheckinCount}
                         <h5 class="custom-mb-8 custom-mt-0{if $userDayInfo->todayStatus->getCalendarId()} s-dimmed-due-to-daily-status{/if}">{$userDayInfo->dayDurationString}</h5>
+                        {$_total_is_shown = 1}
                     {/if}
 
                     {if count($userDayInfo->walogs)}
@@ -128,7 +132,7 @@
                                        data-status-walog-app="{$walog->appId}"
                                        data-status-walog-date="{$day->date}"
                                         >
-                                        <span class="icon size-20">
+                                        <span class="icon size-16">
                                             <i style="background-image: url('{$walog->appIcon}');"></i>
                                         </span>
 
@@ -138,6 +142,11 @@
                                 {/if}
                             {/foreach}
                         </div>
+                        {$_total_is_shown = 1}
+                    {/if}
+
+                    {if !$_total_is_shown}
+                        <h5 class="text-light-gray" title="[`No activity`]">&mdash;</h5>
                     {/if}
 
 
@@ -161,7 +170,8 @@
                 <div class="s-day-summary wide">
                     <div class="s-day-summary-timeline"><div class="s-timeline"></div></div>
                 </div>
-                <div class="s-day-total">
+                <div class="s-day-total" title="[`No activity`]">
+                    <h5 class="text-light-gray">&mdash;</h5>
                 </div>
             </div>
         {/foreach}

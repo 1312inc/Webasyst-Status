@@ -185,7 +185,7 @@ msgid "Can see & contribute to projects"
 msgstr "Может видеть статистику и участвует в работах"
 
 msgid "No activity"
-msgstr ""
+msgstr "Не было действий"
 
 msgid "%dh"
 msgstr "%d ч"
