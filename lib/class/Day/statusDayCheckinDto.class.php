@@ -120,7 +120,7 @@ class statusDayCheckinDto implements JsonSerializable
                     $checkin->getStartTime(),
                     $checkin->getEndTime()
                 ),
-                '1312'
+                sprintf('%d/%s', $checkin->getContactId(), '1312')
             );
 
             $date = DateTimeImmutable::createFromFormat(
@@ -129,14 +129,20 @@ class statusDayCheckinDto implements JsonSerializable
                 wa()->getUser()->getTimezone(true)
             );
 
-            stts()->getLogger()->log(sprintf('date %s', $date->format('Y-m-d\TH:i:sP')), '1312');
+            stts()->getLogger()->log(
+                sprintf('date %s', $date->format('Y-m-d\TH:i:sP')),
+                sprintf('%d/%s', $checkin->getContactId(), '1312')
+            );
 
             $userHourDiff = (new DateTime('midnight'))
                 ->setTimezone(wa()->getUser()->getTimezone(true))
                 ->diff($date)
                 ->h;
 
-            stts()->getLogger()->log(sprintf('hours diff %s', $userHourDiff), '1312');
+            stts()->getLogger()->log(
+                sprintf('hours diff %s', $userHourDiff),
+                sprintf('%d/%s', $checkin->getContactId(), '1312')
+            );
         } else {
             $date = DateTimeImmutable::createFromFormat('Y-m-d|', $checkin->getDate());
             $userHourDiff = 0;
@@ -164,7 +170,7 @@ class statusDayCheckinDto implements JsonSerializable
             sprintf_wp('%dh', 1)
         );
 
-        stts()->getLogger()->log($this, '1312');
+        stts()->getLogger()->log($this, sprintf('%d/%s', $checkin->getContactId(), '1312'));
     }
 
     /**
