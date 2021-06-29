@@ -1012,7 +1012,7 @@
                 $dayEl.hide().after($editorHtml);
 
                 if ($.status.routing.hash === 'y' && !$editorHtml.find('input[name="checkin[id]"]:first').val()) {
-                    $editorHtml.find('h1.s-yesterday').append('<span class="indicator red">1</span>');
+                    $editorHtml.find('h1.s-yesterday').append('<span class="badge small red">1</span>');
                     $editorHtml.find('h1.s-yesterday').after('<p class="s-checkin-reminder">'+$_('Hello! This is a friendly reminder to check in your workday yesterday.')+'</p>');
                 }
 
