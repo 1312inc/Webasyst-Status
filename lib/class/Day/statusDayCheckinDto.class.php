@@ -112,48 +112,16 @@ class statusDayCheckinDto implements JsonSerializable
         $this->isTrace = (bool) $checkin->getDataField('trace');
 
         if ($this->isTrace) {
-
-            stts()->getLogger()->log(
-                sprintf(
-                    '+++++ new trace checkin %s, %s, %s',
-                    $checkin->getDate(),
-                    $checkin->getStartTime(),
-                    $checkin->getEndTime()
-                ),
-                sprintf('%d/%s', $checkin->getContactId(), '1312')
-            );
-
             $date = DateTimeImmutable::createFromFormat(
                 'Y-m-d|',
                 $checkin->getDate(),
                 wa()->getUser()->getTimezone(true)
             );
 
-            stts()->getLogger()->log(
-                sprintf('date %s', $date->format('Y-m-d\TH:i:sP')),
-                sprintf('%d/%s', $checkin->getContactId(), '1312')
-            );
-
             $serverDate = DateTimeImmutable::createFromFormat('Y-m-d|', date('Y-m-d'), wa()->getUser()->getTimezone(true));
 
-            stts()->getLogger()->log(
-                sprintf('server date %s', $serverDate->format('Y-m-d\TH:i:sP')),
-                sprintf('%d/%s', $checkin->getContactId(), '1312')
-            );
-
             $diff = $serverDate->diff($date);
-
-            stts()->getLogger()->log(
-                $diff,
-                sprintf('%d/%s', $checkin->getContactId(), '1312')
-            );
-
             $userHourDiff = $diff->h;
-
-            stts()->getLogger()->log(
-                sprintf('hours diff %s', $userHourDiff),
-                sprintf('%d/%s', $checkin->getContactId(), '1312')
-            );
         } else {
             $date = DateTimeImmutable::createFromFormat('Y-m-d|', $checkin->getDate());
             $userHourDiff = 0;
