@@ -6,12 +6,12 @@
 {** @var statusDayDto $day **}
 {*<section id="day-show-{$day->date}">*}
     <div class="s-day-date">
-        <div class="bold wide">
+        <h6 class="bold wide">
             {if $day->yesterday}[`Yesterday`]
             {elseif $day->today}[`Today`]
             {else}{$day->dayHuman}{/if}
-            <span class="hint">{$day->dayname}{if $day->yesterday || $day->today}<br> {$day->dayHuman}{/if}</span>
-        </div>
+            <span class="hint">{$day->dayname}{if $day->yesterday || $day->today} {$day->dayHuman}{/if}</span>
+        </h6>
         {if $isMe && !$isProject}
             <button class="mobile-only light-gray small"><i class="fas fa-edit text-blue"></i> [`Edit`]</button>
         {/if}
@@ -128,11 +128,11 @@
                                        data-status-walog-app="{$walog->appId}"
                                        data-status-walog-date="{$day->date}"
                                         >
-                                        <span class="icon size-24">
+                                        <span class="icon size-20">
                                             <i style="background-image: url('{$walog->appIcon}');"></i>
                                         </span>
 
-                                        <strong>{$walog->count}</strong>
+                                        <span class="semibold">{$walog->count}</span>
                                     </a>
                                     {$_cnt = $_cnt + 1}
                                 {/if}
@@ -155,7 +155,8 @@
 
         {foreachelse}
             <div class="s-checkin flexbox">
-                <span class="s-day-userpic">
+                <span class="s-day-userpic" title="[`No activity`]">
+                    <i class="userpic userpic-32" style="background-image: url('{$wa_url}wa-content/img/userpic.svg')"></i>
                 </span>
                 <div class="s-day-summary wide">
                     <div class="s-day-summary-timeline"><div class="s-timeline"></div></div>
