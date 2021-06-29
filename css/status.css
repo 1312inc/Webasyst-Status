@@ -180,7 +180,7 @@
 .tooltip-anchor:hover .tooltip .body { display: block; }
 
 .s-editor .noUi-target.noUi-horizontal { background: var(--s-timeline-color); border: none; box-shadow: none; height: 32px; z-index: 3; padding-top: 10px; }
-.s-editor .noUi-target.noUi-horizontal .noUi-handle { z-index: 4; height: 24px; width: 28px; background: var(--background-color-blank); box-shadow: 0 0.25rem 0.5rem -0.25rem rgba(0,0,0,0.2); border-color: var(--s-editor-handle-border-color); }
+.s-editor .noUi-target.noUi-horizontal .noUi-handle { z-index: 4; height: 24px; width: 28px; background: var(--background-color-blank); box-shadow: 0 0.25rem 0.5rem -0.25rem rgba(0,0,0,0.2); border-color: var(--s-editor-handle-border-color); outline: 0; }
 .s-editor .noUi-target.noUi-horizontal .noUi-handle::before { top: 5px; left: 10px; background: var(--s-editor-handle-border-color); height: 12px; width: 2px; }
 .s-editor .noUi-target.noUi-horizontal .noUi-handle::after { top: 5px; left: 14px; background: var(--s-editor-handle-border-color); height: 12px; width: 2px; }
 

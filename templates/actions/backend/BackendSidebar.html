@@ -48,7 +48,7 @@
                  <a href="#/contact/{$u->getContactId()}">
                      <span class="count" title="[`This week total`]">{$timeByUserStat[$u->getContactId()]['timeStr']}</span>
                      <span class="icon"><i class="userpic" style="background-image: url({$u->getPhotoUrl()})"></i></span>
-                     {$u->getName()|escape}
+                     <span>{$u->getName()|escape}</span>
                      {if $u->getTodayStatus()->getStatusId()}
                      <span class="s-status nowrap"
                            style="background-color: {$u->getTodayStatus()->getBgColor()}; color: {$u->getTodayStatus()->getFontColor()}"
