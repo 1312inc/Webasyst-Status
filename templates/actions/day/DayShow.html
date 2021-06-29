@@ -1,8 +1,3 @@
-{function renderIntAsHHMMTime time_since_0000=0}{strip}
-    {$_mm = $time_since_0000-60*floor($time_since_0000/60)}
-    {if strlen($_mm)==1}{$_mm = '0'|cat:$_mm}{/if}
-    {floor($time_since_0000/60)}:{$_mm}
-{/strip}{/function}
 {** @var statusDayDto $day **}
 {*<section id="day-show-{$day->date}">*}
     <div class="s-day-date">
@@ -64,7 +59,7 @@
                                     empty($_timeline_time_hints_occupation_by_hr[ floor($checkin->min/$_mins_in_hr)+1 ]) &&
                                     empty($_timeline_time_hints_occupation_by_hr[ floor($checkin->min/$_mins_in_hr)-2 ]) &&
                                     empty($_timeline_time_hints_occupation_by_hr[ floor($checkin->min/$_mins_in_hr)+2 ])}
-                                    <span class="s-timeline-content-time-hint" style="left: {min(100,$checkin->minPercent)}%;">{renderIntAsHHMMTime time_since_0000=$checkin->min}</span>
+                                    <span class="s-timeline-content-time-hint" style="left: {min(100,$checkin->minPercent)}%;">{statusTimeHelper::renderIntAsHHMMTime($checkin->min)}</span>
                                     {$_timeline_time_hints_occupation_by_hr[ floor($checkin->min/$_mins_in_hr) ] = 1}
                                 {/if}
                                 {if ($checkin->id || $checkin->isTrace) &&
@@ -73,7 +68,7 @@
                                     empty($_timeline_time_hints_occupation_by_hr[ floor($checkin->max/$_mins_in_hr)+1 ]) &&
                                     empty($_timeline_time_hints_occupation_by_hr[ floor($checkin->max/$_mins_in_hr)-2 ]) &&
                                     empty($_timeline_time_hints_occupation_by_hr[ floor($checkin->max/$_mins_in_hr)+2 ])}
-                                    <span class="s-timeline-content-time-hint" style="right: {max(0,100 - $checkin->maxPercent)}%;">{renderIntAsHHMMTime time_since_0000=$checkin->max}</span>
+                                    <span class="s-timeline-content-time-hint" style="right: {max(0,100 - $checkin->maxPercent)}%;">{statusTimeHelper::renderIntAsHHMMTime($checkin->max)}</span>
                                     {$_timeline_time_hints_occupation_by_hr[ floor($checkin->max/$_mins_in_hr) ] = 1}
                                 {/if}
                                 <script>

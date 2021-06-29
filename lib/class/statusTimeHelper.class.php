@@ -5,12 +5,12 @@
  */
 final class statusTimeHelper
 {
-    public const MINUTES_IN_DAY = 1440;
-    public const SECONDS_IN_DAY         = 86400;
-    public const MINUTES_IN_HOUR = 60;
-    public const SECONDS_IN_MINUTE      = 60;
-    public const MINUTES_10AM = 600;
-    public const MINUTES_18PM = 1080;
+    public const MINUTES_IN_DAY    = 1440;
+    public const SECONDS_IN_DAY    = 86400;
+    public const MINUTES_IN_HOUR   = 60;
+    public const SECONDS_IN_MINUTE = 60;
+    public const MINUTES_10AM      = 600;
+    public const MINUTES_18PM      = 1080;
 
     /**
      * @param int $minutes
@@ -32,7 +32,10 @@ final class statusTimeHelper
      */
     public static function getTimeDurationInHuman($startTimestamp, $endTimestamp, $default = '0')
     {
-        $durationDiff = (new DateTime(date('Y-m-d H:i:s', $endTimestamp)))->diff(new DateTime(date('Y-m-d H:i:s', $startTimestamp)));
+        $durationDiff = (new DateTime(date('Y-m-d H:i:s', $endTimestamp)))
+            ->diff(
+                new DateTime(date('Y-m-d H:i:s', $startTimestamp))
+            );
 
         $humanFormat = [];
         $hours = 0;
@@ -60,6 +63,18 @@ final class statusTimeHelper
      */
     public static function getWeekNumberByDate(DateTimeInterface $date)
     {
-        return (int)$date->format('W');
+        return (int) $date->format('W');
+    }
+
+    public static function renderIntAsHHMMTime($timeSinceMidnight = 0)
+    {
+        return sprintf(
+            '%s:%s',
+            floor($timeSinceMidnight / self::MINUTES_IN_HOUR),
+            sprintf(
+                '%02d',
+                $timeSinceMidnight - self::SECONDS_IN_MINUTE * floor($timeSinceMidnight / self::SECONDS_IN_MINUTE)
+            )
+        );
     }
 }
