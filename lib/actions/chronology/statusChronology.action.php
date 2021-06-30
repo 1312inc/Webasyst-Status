@@ -63,7 +63,7 @@ class statusChronologyAction extends statusViewAction
             $this->isMe = $this->user->getContactId() == stts()->getUser()->getContactId()
                 && !$this->isProject
                 && !$this->groupId
-                && $this->contactId == statusGetWeekDataFilterRequestDto::ALL_USERS_ID;
+                && $this->contactId != statusGetWeekDataFilterRequestDto::ALL_USERS_ID;
         }
     }
 
