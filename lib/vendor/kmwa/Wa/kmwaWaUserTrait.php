@@ -51,6 +51,11 @@ trait kmwaWaUserTrait
     protected $exists = false;
 
     /**
+     * @var bool
+     */
+    protected $deleted = true;
+
+    /**
      * @var int
      */
     protected $lastActivity = 0;
@@ -156,6 +161,7 @@ trait kmwaWaUserTrait
             $this->exists = $this->contact->get('is_user') == 1;
             $this->email = $this->contact->get('email', 'default');
             $this->timezone = $this->contact->getTimezone();
+            $this->deleted = false;
         }
 
         return $this;
@@ -254,5 +260,13 @@ trait kmwaWaUserTrait
     public function getTimezone()
     {
         return $this->timezone;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDeleted()
+    {
+        return $this->deleted;
     }
 }

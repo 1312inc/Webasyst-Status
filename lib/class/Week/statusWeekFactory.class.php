@@ -105,6 +105,9 @@ class statusWeekFactory
         $contactIdsByDates = [];
         if ($filterRequestDto->getUsers()) {
             foreach ($filterRequestDto->getUsers() as $filterUser) {
+                if ($filterUser->isDeleted()) {
+                    continue;
+                }
                 $users[$filterUser->getContactId()] = $filterUser;
                 $userDtos[$filterUser->getContactId()] = new statusUserDto($filterUser);
             }
