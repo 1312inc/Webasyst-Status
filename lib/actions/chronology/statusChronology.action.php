@@ -63,7 +63,7 @@ class statusChronologyAction extends statusViewAction
             $this->isMe = $this->user->getContactId() == stts()->getUser()->getContactId()
                 && !$this->isProject
                 && !$this->groupId
-                && $this->contactId !== statusGetWeekDataFilterRequestDto::ALL_USERS_ID;
+                && $this->contactId == statusGetWeekDataFilterRequestDto::ALL_USERS_ID;
         }
     }
 
@@ -75,7 +75,12 @@ class statusChronologyAction extends statusViewAction
      */
     public function runAction($params = null)
     {
-        $weeks = statusWeekFactory::createLastNWeeks(5, true, 0);
+        $loadWeekCount = 5;
+        if ($this->contactId == statusGetWeekDataFilterRequestDto::ALL_USERS_ID) {
+            $loadWeekCount = 2;
+        }
+
+        $weeks = statusWeekFactory::createLastNWeeks($loadWeekCount, true, 0);
         $weeksDto = statusWeekFactory::getWeeksDto($weeks, $this->getWeekDataFilterRequestDto);
 
         $weekFilter = new statusWeekFilter();
