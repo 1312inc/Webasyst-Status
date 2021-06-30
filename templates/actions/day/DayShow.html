@@ -8,7 +8,7 @@
             <span class="hint">{$day->dayname}{if $day->yesterday || $day->today} {$day->dayHuman}{/if}</span>
         </h6>
         {if !empty($isMe) && $isMe && !$isProject}
-            <button class="mobile-only light-gray small"><i class="fas fa-edit text-blue"></i> [`Edit`]</button>
+            <button class="mobile-only light-gray circle" title="[`Edit`]"><i class="fas fa-edit text-blue"></i></button>
         {/if}
     </div>
 
