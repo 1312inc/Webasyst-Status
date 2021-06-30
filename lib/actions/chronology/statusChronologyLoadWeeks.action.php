@@ -16,8 +16,8 @@ class statusChronologyLoadWeeksAction extends statusChronologyAction
         $offset = waRequest::get('offset', 0, waRequest::TYPE_INT);
 
         $loadWeekCount = statusWeekFactory::DEFAULT_WEEKS_LOAD;
-        if ($this->contactId == statusGetWeekDataFilterRequestDto::ALL_USERS_ID) {
-            $loadWeekCount = 2;
+        if ($this->contactId == statusGetWeekDataFilterRequestDto::ALL_USERS_ID || $this->groupId) {
+            $loadWeekCount = 1;
         }
 
         $weeks = statusWeekFactory::createLastNWeeks(

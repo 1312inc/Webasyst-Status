@@ -76,7 +76,7 @@ class statusChronologyAction extends statusViewAction
     public function runAction($params = null)
     {
         $loadWeekCount = 5;
-        if ($this->contactId == statusGetWeekDataFilterRequestDto::ALL_USERS_ID) {
+        if ($this->contactId == statusGetWeekDataFilterRequestDto::ALL_USERS_ID || $this->groupId) {
             $loadWeekCount = 2;
         }
 
