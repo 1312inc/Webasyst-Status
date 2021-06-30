@@ -605,7 +605,7 @@
                         }
 
                         var gradient = colors.join(', '),
-                            oldStyle = $line.css('transform'),
+                            oldStyle = $line.get(0).style.transform,
                             style = [
                                 'background: #ffd60a',
                                 'background: -moz-linear-gradient(left, ' + gradient + ')',
