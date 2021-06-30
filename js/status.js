@@ -3,7 +3,8 @@
     $.storage = new $.store();
     $.status = {
         waLoading: $.waLoading(),
-        $loading: $('<i class="icon16 loading">'),
+        // $loading: $('<i class="icon16 loading">'),
+        $loading: $('<div class="stub"></div>'),
         $wa: null,
         $status_content: null,
         $core_sidebar: null,
@@ -381,7 +382,7 @@
                 reloadDayShow = false,
                 lastSavedData = '',
                 requestInAction = false,
-                $loading = $('<i class="icon16 loading"></i>');
+                $loading = $('<div class="stub"></div>');
 
             function getDataFromCheckin($form) {
                 return {
@@ -1144,7 +1145,7 @@
             }
 
             function editor($day) {
-                $day.prepend($loading);
+                $day.css('position', 'relative').prepend($loading);
                 $.get('?module=day&action=editor', {date: $day.data('status-day-date')}, function (html) {
                     $loading.remove();
 
