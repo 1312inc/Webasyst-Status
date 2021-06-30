@@ -2,6 +2,7 @@
     'use strict';
     $.storage = new $.store();
     $.status = {
+        waLoading: $.waLoading(),
         $loading: $('<i class="icon16 loading">'),
         $wa: null,
         $status_content: null,
@@ -92,6 +93,9 @@
             /** Implements #hash-based navigation. Called every time location.hash changes. */
             dispatch: function (hash) {
                 var self = this;
+
+                // Show loading status bar
+                $.status.waLoading.animate(6000, 99, true);
 
                 if (this.skipDispatch > 0) {
                     this.skipDispatch--;
@@ -226,6 +230,10 @@
                     var value = $.isArray(hash) ? hash.join('/') : '';
                     $.storage.set('/status/hash/' + this.options.user_id, value);
                 }
+                
+                // Hide loading status bar
+                $.status.waLoading.done();
+
                 this.options.self.highlightSidebar();
                 this.options.self.setTitle();
             }
