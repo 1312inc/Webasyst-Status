@@ -7,33 +7,41 @@
     </div>
 </nav>
 <div class="sidebar-body hide-scrollbar">
-    <ul class="menu">
-         <li class="selected">
-             <a href="#" class="bold">
-                 <span class="count" title="[`This week total`]">{$timeByUserStat[$stts->getUser()->getContactId()]['timeStr']}</span>
-                 <span class="icon"><i class="userpic" style="background-image: url({$stts->getUser()->getPhotoUrl()})"></i></span>
-                 <span>[`My status`]</span>
-             </a>
-         </li>
-         <li>
-             <a href="#/contact/-1312">
-                 <i class="fas fa-users"></i>
-                 <span>[`Everyone`]</span>
-             </a>
-         </li>
-    </ul>
+    <div class="bricks">
+         <a href="#" class="brick full-width">
+             <span class="count" title="[`This week total`]">
+                 {if $stts->getUser()->getTodayStatus()->getStatusId()}
+                     <span class="badge small nowrap"
+                           style="background-color: {$stts->getUser()->getTodayStatus()->getBgColor()}; color: {$stts->getUser()->getTodayStatus()->getFontColor()}"
+                           title="{$stts->getUser()->getTodayStatus()->getName()|escape}"
+                     >
+                         {$stts->getUser()->getTodayStatus()->getName()|escape|truncate:23}
+                     </span>
+                 {else}
+                    {$timeByUserStat[$stts->getUser()->getContactId()]['timeStr']}
+                 {/if}
+             </span>
+             <span class="icon size-32"><i class="userpic" style="background-image: url({$stts->getUser()->getPhotoUrl()})"></i></span>
+             <span>[`My status`]</span>
+         </a>
+    </div>
 
     {if count($users) && ($stts->getRightConfig()->isAdmin() || $stts->getRightCongif->hasAccessToTeammate())}
-        <h5 class="heading">[`Teams`]</h5>
-        <ul class="menu">
-             {foreach $groups as $_g}
+        <ul class="menu custom-mt-0">
+            <li>
+                <a href="#/contact/-1312">
+                    <i class="fas fa-users"></i>
+                    <span>[`Everyone`]</span>
+                </a>
+            </li>
+            {foreach $groups as $_g}
                  <li>
                      <a href="#/team/{$_g.id}">
                          <!-- <i class="fas fa-users"></i> -->
                          <span>{$_g.name|escape}</span>
                      </a>
                  </li>
-             {/foreach}
+            {/foreach}
         </ul>
     {/if}
 
@@ -46,17 +54,20 @@
              {foreach $users as $u}
              <li>
                  <a href="#/contact/{$u->getContactId()}">
-                     <span class="count" title="[`This week total`]">{$timeByUserStat[$u->getContactId()]['timeStr']}</span>
+                     <span class="count">
+                         {if $u->getTodayStatus()->getStatusId()}
+                             <span class="badge small nowrap"
+                                   style="background-color: {$u->getTodayStatus()->getBgColor()}; color: {$u->getTodayStatus()->getFontColor()}"
+                                   title="{$u->getTodayStatus()->getName()|escape}"
+                             >
+                                 {$u->getTodayStatus()->getName()|escape|truncate:13}
+                             </span>
+                         {else}
+                             <span title="[`This week total`]">{$timeByUserStat[$u->getContactId()]['timeStr']}</span>
+                         {/if}
+                     </span>
                      <span class="icon"><i class="userpic" style="background-image: url({$u->getPhotoUrl()})"></i></span>
                      <span>{$u->getName()|escape}</span>
-                     {if $u->getTodayStatus()->getStatusId()}
-                     <span class="s-status nowrap"
-                           style="background-color: {$u->getTodayStatus()->getBgColor()}; color: {$u->getTodayStatus()->getFontColor()}"
-                           title="{$u->getTodayStatus()->getName()|escape}"
-                     >
-                         {$u->getTodayStatus()->getName()|escape|truncate:13}
-                     </span>
-                     {/if}
                  </a>
              </li>
              {/foreach}
@@ -75,17 +86,8 @@
             {foreach $hiddenUsers as $u}
             <li style="display:none" data-status-sidebar-hidden-user>
                  <a href="#/contact/{$u->getContactId()}">
-                     <span class="count" title="[`This week total`]">{$timeByUserStat[$u->getContactId()]['timeStr']}</span>
                      <span class="icon"><i class="userpic" style="background-image: url({$u->getPhotoUrl()})"></i></span>
                      <span class="gray">{$u->getName()|escape}</span>
-                     {if $u->getTodayStatus()->getStatusId()}
-                     <span class="s-status nowrap"
-                           style="background-color: {$u->getTodayStatus()->getBgColor()}; color: {$u->getTodayStatus()->getFontColor()}"
-                           title="{$u->getTodayStatus()->getName()|escape}"
-                     >
-                         {$u->getTodayStatus()->getName()|escape|truncate:13}
-                     </span>
-                     {/if}
                  </a>
             </li>
             {/foreach}

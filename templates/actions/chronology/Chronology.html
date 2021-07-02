@@ -59,7 +59,7 @@
         {if !$contextUser->getId() || ($contextUser->getId() && !$contextUser->isExists())}
             <div class="s-title">
                 <h1>{$contextUser->getName()|escape}</h1>
-                <p>{sprintf('[`The user does not have access to the Status app. Grant access rights in the <a href="%s"><i class="icon16" style="%s"></i>Team app</a> so the user can check in too.`]', $wa_backend_url|cat:'team/', 'background-image: url(/wa-apps/team/img/team48.png); background-size: 16px 16px; margin-top: 3px;')} <span class="gray">[`Automatic backend online time tracking will be enabled only after access to the Status app is granted for the user.`]</span></p>
+                <p class="small">{sprintf('[`The user does not have access to the Status app. Grant access rights in the <a href="%s"><i class="icon16" style="%s"></i>Team app</a> so the user can check in too.`]', $wa_backend_url|cat:'team/', 'background-image: url(/wa-apps/team/img/team48.png); background-size: 16px 16px; margin-top: 3px;')} <span class="gray">[`Automatic backend online time tracking will be enabled only after access to the Status app is granted for the user.`]</span></p>
             </div>
         {else}
             <div class="s-title">
@@ -70,22 +70,40 @@
         {if $nextStatus->getStatusId()}
             <div class="s-day s-this-week" data-status-day-date="{$tomorrowDto->date}">
                 <div class="s-day-date">
-                    <h3>
+                    <h6 class="bold wide">
                         [`Tomorrow`]
                         <span class="hint">{$tomorrowDto->dayname}, {$tomorrowDto->dayHuman}</span>
-                    </h3>
+                    </h6>
                 </div>
-                <div class="s-day-summary">
-                    <div class="s-day-summary-user-report">
-                        <div class="s-author">
-                            <h5 class="s-username">
-                                <i class="icon16 userpic20" style="background-image: url({$tomorrowDto->users[$contextUser->getContactId()]->photoUrl})"></i>
-                                {$tomorrowDto->users[$contextUser->getContactId()]->name|escape}
-                                <span class="s-status" title="[`Status for tomorrow`]" style="background-color: {$nextStatus->getBgColor()}; color: {$nextStatus->getFontColor()}">{$nextStatus->getName()|escape}</span>
-                            </h5>
+                <div class="s-checkins wide">
+
+
+                    <div class="s-checkin flexbox">
+                        <span class="s-day-userpic">
+                            <i class="userpic userpic-32" id="s-day-userpic-4-2021-07-01" style="background-image: url('{$tomorrowDto->users[$contextUser->getContactId()]->photoUrl}')" data-wa-tooltip-content="{$tomorrowDto->users[$contextUser->getContactId()]->name|escape}" data-wa-tooltip-placement="right"></i>
+                            <script>
+                                ( function($) {
+                                    $("#s-day-userpic-4-2021-07-01").waTooltip();
+                                })(jQuery);
+                            </script>
+                        </span>
+
+                        <div class="s-day-summary wide">
+                            <div class="s-day-summary-timeline"></div>
+
                         </div>
 
+
+                        <div class="s-day-total">
+                            <div class="custom-mb-12">
+                                <span class="badge s-status custom-ml-0" title="[`Status for tomorrow`]" style="background-color: {$nextStatus->getBgColor()}; color: {$nextStatus->getFontColor()}">{$nextStatus->getName()|escape}</span>
+                            </div>
+                        </div>
                     </div>
+
+
+
+
                 </div>
 
             </div>
