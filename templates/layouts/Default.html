@@ -4,7 +4,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>{$wa->appName()} &mdash; {$wa->accountName()}</title>
     {$wa->css()}
-    <link type="text/css" rel="stylesheet" href="{$wa_app_static_url}css/status.css?v{$wa->version()}">
+    <link type="text/css" rel="stylesheet" href="{$wa_url}wa-content/css/jquery-ui/jquery-ui-1.7.2.custom.css">
+    <link type="text/css" rel="stylesheet" href="{$wa_app_static_url}css/status.css?v=2{$wa->version()}">
+    <link type="text/css" rel="stylesheet" href="{$wa_app_static_url}js/vendors/noUiSlider/nouislider.min.css">
     <script type="text/javascript" src="{$wa_url}wa-content/js/jquery/jquery-1.11.1.min.js"></script>
     <script src="/wa-content/js/jquery/jquery-migrate-1.2.1.min.js"></script>
     <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-wa/wa.core.js?v{if !waSystemConfig::isDebug()}{$wa->version()}{/if}"></script>
@@ -15,40 +17,16 @@
     <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.widget.min.js?v{if !waSystemConfig::isDebug()}{$wa->version()}{/if}"></script>
     <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.mouse.min.js?v{if !waSystemConfig::isDebug()}{$wa->version()}{/if}"></script>
     <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.slider.min.js?v{if !waSystemConfig::isDebug()}{$wa->version()}{/if}"></script>
+    <script type="text/javascript" src="{$wa_app_static_url}js/vendors/noUiSlider/nouislider.min.js"></script>
     <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/jquery.ui.datepicker.min.js?v{if !waSystemConfig::isDebug()}{$wa->version()}{/if}"></script>
     {if ($wa->locale() == 'ru_RU')}
     <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-ui/i18n/jquery.ui.datepicker-ru_RU.js"></script>
     {/if}
-    <script type="text/javascript" src="{$wa_url}wa-content/js/jquery-wa/wa.dialog.js"></script>
 
-    <script type="text/javascript" src="{$wa_app_static_url}js/status.js?v{if !waSystemConfig::isDebug()}{$wa->version()}{/if}"></script>
+    <script src="{$wa_url}wa-content/js/jquery-wa/wa.js?v={if !waSystemConfig::isDebug()}{$wa->version()}{/if}"></script>
+
+    <script type="text/javascript" src="{$wa_app_static_url}js/status.js?v=2{if !waSystemConfig::isDebug()}{$wa->version()}{/if}"></script>
     <script type="text/javascript" src="?action=loc&amp;v={if !waSystemConfig::isDebug()}{$wa->version()}{/if}"></script>
-
-    {function name=_draw_status_selector}
-        <ul class="menu-v with-icons s-status-selector">
-            <li class="selected">
-                <a href="#"><i class="icon16 color" style="background-color: gray;"></i>Удаленно</a>
-            </li>
-            <li>
-                <a href="#"><i class="icon16 color" style="background-color: yellow;"></i>Мотаюсь</a>
-            </li>
-            <li>
-                <a href="#"><i class="icon16 color" style="background-color: yellow;"></i>Встречи</a>
-            </li>
-            <li>
-                <a href="#"><i class="icon16 color" style="background-color: lime;"></i>Отпуск</a>
-            </li>
-            <li>
-                <a href="#"><i class="icon16 color" style="background-color: lime;"></i>Прогулял</a>
-            </li>
-            <li>
-                <a href="#"><i class="icon16 color" style="background-color: red;"></i>Болею</a>
-            </li>
-            <li>
-                <a href="#" class="s-status-custom-status">[`Custom status...`]</a>
-            </li>
-        </ul>
-    {/function}
 
 </head>
 <body>
@@ -56,20 +34,22 @@
     {$wa->header()}
 
     <div id="wa-app">
-        <section id="status-left-sidebar">{$sidebar_html}</section>
-        <section id="status-content"></section>
+        <div class="flexbox wrap-mobile">
+            <section class="sidebar mobile-friendly width-15rem flexbox s-navigation" id="status-left-sidebar">{$sidebar_html}</section>
+            <section class="content blank" id="status-content"></section>
+        </div>
     </div>
 
-    {if $showReviewWidget && method_exists($wa->installer, 'reviewWidget')}
+    {*if $showReviewWidget && method_exists($wa->installer, 'reviewWidget')}
         {$wa->installer->reviewWidget('app/status')}
-    {/if}
+    {/if*}
 
     <script>
         'use strict';
 
         // $(function () {
         $.status.init({
-            account_name: '{$wa->accountName()|escape}',
+            account_name: '{$wa->accountName()|escape:'javascript'}',
             isAdmin: {$isAdmin},
             userId: {$stts->getUser()->getContactId()},
             backendUrl: '{$wa_backend_url}'
@@ -79,6 +59,21 @@
 
         // });
     </script>
+
+    <script>
+        ( function($) {
+            var $sidebar = $('#status-left-sidebar');
+            $sidebar.waShowSidebar({
+                direction: "down"
+            });
+        })(jQuery);
+    </script>
+
+    <script>$.wa.locale = $.extend($.wa.locale || {}, {
+        'Adjust time': "[`Adjust time`]",
+        'Save': "[`Save`]",
+        'Cancel': "[`Cancel`]",
+    });</script>
 </div>
 </body>
 </html>

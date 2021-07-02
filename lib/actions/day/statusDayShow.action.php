@@ -36,7 +36,8 @@ class statusDayShowAction extends statusViewAction
         $week = statusWeekFactory::createWeekByDate(new DateTime($date));
         $day = new statusDay(new DateTime($date));
         $week->setDays([$day]);
-        $weeksDto = statusWeekFactory::getWeeksDto([$week], $user);
+        $dto = new statusGetWeekDataFilterRequestDto($contactId, null, null);
+        $weeksDto = statusWeekFactory::getWeeksDto([$week], $dto);
         $weekDto = reset($weeksDto);
         $dayDto = reset($weekDto->days);
 

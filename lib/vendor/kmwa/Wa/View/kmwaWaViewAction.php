@@ -27,7 +27,27 @@ abstract class kmwaWaViewAction extends waViewAction
     public function display($clear_assign = true)
     {
         try {
-            return parent::display($clear_assign);
+            $profileData = [
+                'memory' => memory_get_usage(),
+                'time' => microtime(true),
+            ];
+
+            $result = parent::display($clear_assign);
+
+            if (waRequest::method() === 'get') {
+                stts()->getLogger()->debug(
+                    sprintf(
+                        'display %s stat: mem=%s, time=%s. (request: %s)',
+                        get_class($this),
+                        sprintf('%0.2f Mb', (memory_get_usage() - $profileData['memory']) / 1048576),
+                        sprintf('%0.2f s', microtime(true) - $profileData['time']),
+                        json_encode(waRequest::request())
+                    ),
+                    'profile'
+                );
+            }
+
+            return $result;
         } catch (Exception $ex) {
             $this->view->assign(
                 'error',
@@ -37,7 +57,9 @@ abstract class kmwaWaViewAction extends waViewAction
                 ]
             );
 
-            $result = $this->view->fetch(wa()->getAppPath('templates/include/error.html'));
+            $result = $this->view->fetch(
+                wa()->getAppPath(stts()->getUI2TemplatePath('templates/include%s/error.html'))
+            );
             if ($clear_assign) {
                 $this->view->clearAllAssign();
             }
@@ -55,6 +77,24 @@ abstract class kmwaWaViewAction extends waViewAction
             $this->view->smarty->assignGlobal($key, $value);
         }
 
+        $profileData = [
+            'memory' => memory_get_usage(),
+            'time' => microtime(true),
+        ];
+
         $this->runAction($params);
+
+        if (waRequest::method() === 'get') {
+            stts()->getLogger()->debug(
+                sprintf(
+                    'runAction %s stat. mem=%s, time=%s. (request: %s)',
+                    get_class($this),
+                    sprintf('%0.2f Mb', (memory_get_usage() - $profileData['memory']) / 1048576),
+                    sprintf('%0.2f s', microtime(true) - $profileData['time']),
+                    json_encode(waRequest::request())
+                ),
+                'profile'
+            );
+        }
     }
 }

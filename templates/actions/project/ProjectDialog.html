@@ -1,69 +1,76 @@
-<section>
-    <div class="dialog-content">
-        <div data-status-wrapper="project-settings-dialog">
-
+<div class="dialog" id="status-project-dialog">
+    <div class="dialog-background"></div>
+    <div class="dialog-body">
+        <form>
             <input type="hidden" name="project[id]" value="{$project->getId()|default:0}"/>
+            <div data-status-wrapper="project-settings-dialog">
+                <header class="dialog-header">
+                    {if $project->getId()}
+                        <h1>{$project->getName()|default:'[`(unnamed project)`]'|escape|truncate:32}</h1>
+                    {else}
+                        <h1>[`New project`]</h1>
+                    {/if}
+                </header>
 
-            {if $project->getId()}
-                <h1>{$project->getName()|default:'[`(unnamed project)`]'|escape|truncate:32}</h1>
-            {else}
-                <h1>[`New project`]</h1>
-            {/if}
+                <div class="dialog-content">
+                    <div class="fields form">
+                    <div class="field-group">
+                        <div class="field">
+                            <div class="name for-input">
+                                [`Project name`]
+                            </div>
+                            <div class="value">
+                                <input type="text" class="bold" name="project[name]"
+                                       value="{$project->getName()|escape}"/>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="name for-input">
+                                [`Color`]
+                            </div>
+                            <div class="value no-shift" id="status-project-color">
+                                <input type="hidden" name="project[color]" value="{$project->getColor()}"/>
+                                {foreach statusStoreColor::getColors() as $colorName => $color}
+                                    <a href="#" class="s-project-color-icon{if $project->getColor() == $color[1]} selected{/if}"
+                                       data-status-project-color="{$color[1]}">
+                                        <i class="icon rounded size-24 s-color-{$colorName}"></i>
+                                    </a>
+                                {/foreach}
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="name">
+                                [`Access rights`]
+                            </div>
+                            <div class="value no-shift">
+                                <p class="small gray">{sprintf('[`Use <a href="%s">Team app</a> to configure access: select a user or a group of users &gt; Access tab &gt; Status app &gt; apply the proper access level.`]', $wa_backend_url|cat:'team/')}</p>
+                            </div>
+                        </div>
 
-            <div class="fields form">
-                <div class="field-group">
-                    <div class="field">
-                        <div class="name nowrap">
-                            [`Project name`]
-                        </div>
-                        <div class="value">
-                            <input type="text" class="large bold" name="project[name]"
-                                   value="{$project->getName()|escape}"/>
-                        </div>
                     </div>
-                    <div class="field">
-                        <div class="name nowrap">
-                            [`Color`]
-                        </div>
-                        <div class="value no-shift" id="status-project-color">
-                            <input type="hidden" name="project[color]" value="{$project->getColor()}"/>
-                            {foreach statusStoreColor::getColors() as $colorName => $color}
-                                <a href="#" {if $project->getColor() == $color[1]}class="selected"{/if}
-                                   data-status-project-color="{$color[1]}">
-                                    <i class="icon16 color s-color-{$colorName}"></i>
-                                </a>
-                            {/foreach}
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="name">
-                            [`Access rights`]
-                        </div>
-                        <div class="value no-shift">
-                            <p class="hint">{sprintf('[`Use <a href="%s">Team app</a> to configure access: select a user or a group of users &gt; Access tab &gt; Status app &gt; apply the proper access level.`]', $wa_backend_url|cat:'team/')}</p>
-                        </div>
                     </div>
 
+                    <!-- plugin hook: 'backend_project_dialog' -->
+                    {* @event backend_project_dialog.%plugin_id% *}
+                    {if !empty($backend_project_dialog)}{foreach $backend_project_dialog as $_}{ifset($_)}{/foreach}{/if}
                 </div>
 
-                <!-- plugin hook: 'backend_project_dialog' -->
-                {* @event backend_project_dialog.%plugin_id% *}
-                {if !empty($backend_project_dialog)}{foreach $backend_project_dialog as $_}{ifset($_)}{/foreach}{/if}
+                <footer class="dialog-footer">
+                    <div class="flexbox full-width">
+                        <div class="wide">
+                            <input type="submit" value="[`Save`]" class="button"/>
+                            <button class="js-close-dialog button light-gray">[`Cancel`]</button>
+                        </div>
+                        {if $project->getId()}
+                            <div>
+                                <a href="#" data-status-action="delete-project"
+                                   data-status-project-id="{$project->getId()}" class="button red outlined">[`Delete project`]</a>
+                            </div>
+                        {/if}
+                    </div>
+                </footer>
 
             </div>
-        </div>
+        </form>
     </div>
-
-    <div class="dialog-buttons">
-        {if $project->getId()}
-            <div class="block half-padded float-right">
-                <ul class="menu-h">
-                    <li>
-                        <a href="#" data-status-action="delete-project" data-status-project-id="{$project->getId()}"><i class="icon16 delete"></i> [`Delete project`]</a>
-                    </li>
-                </ul>
-            </div>
-        {/if}
-        <input type="submit" value="[`Save`]" class="button green"/> [`or`] <a class="cancel" href="#">[`cancel`]</a>
-    </div>
-</section>
+</div>

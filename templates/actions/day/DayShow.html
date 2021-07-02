@@ -1,30 +1,37 @@
 {** @var statusDayDto $day **}
 {*<section id="day-show-{$day->date}">*}
     <div class="s-day-date">
-        <h3>
+        <h6 class="bold wide">
             {if $day->yesterday}[`Yesterday`]
             {elseif $day->today}[`Today`]
             {else}{$day->dayHuman}{/if}
-            <span class="hint">{$day->dayname}{if $day->yesterday || $day->today}<br> {$day->dayHuman}{/if}</span>
-        </h3>
+            <span class="hint">{$day->dayname}{if $day->yesterday || $day->today} {$day->dayHuman}{/if}</span>
+        </h6>
+        {if !empty($isMe) && $isMe && !$isProject}
+            <button class="mobile-only light-gray circle" title="[`Edit`]"><i class="fas fa-edit text-blue"></i></button>
+        {/if}
     </div>
 
-
-    <div class="s-checkins">
+    <div class="s-checkins wide">
         {foreach $day->userDayInfos as $userDayInfo}
         {* @var statusDayUserInfoDto $userDayInfo *}
 
-            <div class="s-checkin">
-                <div class="s-day-summary">
+            <div class="s-checkin flexbox">
+                <span class="s-day-userpic">
+                    <i class="userpic userpic-32" id="s-day-userpic-{$userDayInfo->contactId}-{$day->date}" style="background-image: url({$day->users[$userDayInfo->contactId]->photoUrl})" data-wa-tooltip-content="{$day->users[$userDayInfo->contactId]->name|escape}" data-wa-tooltip-placement="right"></i>
+                    <script>
+                        ( function($) {
+                            $("#s-day-userpic-{$userDayInfo->contactId}-{$day->date}").waTooltip();
+                        })(jQuery);
+                    </script>
+                </span>
+                <div class="s-day-summary wide{if $userDayInfo->todayStatus->getCalendarId()} s-dimmed-due-to-daily-status{/if}">
                     <div class="s-day-summary-timeline">
 
                         <div class="s-timeline s-timeline-exp">
-                            <span class="s-timeline-dial">
-                            {for $i=1 to 23}{strip}
-                                <i style="left: {round($i*100/24)}%;" class="{if $i % 3 != 0} tick{/if}{if $i>=9 && $i<=18} day{/if}" title="{$i}:00">{if $i % 3 == 0}{$i}{/if}</i>
-                            {/strip}{/for}
-                            </span>
-                            {** @var statusDayCheckinDto $checkin **}
+                            {$_timeline_time_hints_occupation_by_hr = []}{* [h] = 0/1 *}
+                            {$_mins_in_hr = 60}
+                            {$_day_trace_count = 0}
                             {foreach $userDayInfo->checkins as $checkin}{strip}
                                 {if $checkin->max > $checkin->min}
                                     {$__checkin_density = $checkin->duration / ($checkin->max - $checkin->min)}
@@ -34,13 +41,16 @@
                                 <div class="s-timeline-content{if !$checkin->id} s-timeline-content-empty{/if}{if $checkin->isTrace} s-timeline-trace{/if}"
                                      style="left: {min(100,$checkin->minPercent)}%; right: {max(0,100 - $checkin->maxPercent)}%;"
                                      {if $checkin->id}id="s-timeline-content-{$checkin->id}{if $checkin->isTrace}-trace{/if}"{/if}
-                                     {if $checkin->hasProjects}title="{$checkin->durationDatetimeTitle|escape} // {$checkin->projectDurationTitle|escape}"{elseif $checkin->isTrace}title="{sprintf('[`%s // %d minutes of Webasyst online time: %s active, %s idle`]', $checkin->durationDatetimeTitle|escape, $checkin->max-$checkin->min, $checkin->durationString, $checkin->breakString)}"{else}title="{sprintf('[`%s (project not specified)`]', $checkin->durationString)}"{/if}
+                                     {if $checkin->hasProjects}data-wa-tooltip-content="{statusTimeHelper::renderIntAsHHMMTime($checkin->min)}—{statusTimeHelper::renderIntAsHHMMTime($checkin->max)} / {$checkin->projectDurationTitle|escape}"{elseif $checkin->isTrace}data-wa-tooltip-content="{statusTimeHelper::renderIntAsHHMMTime($checkin->min)}—{statusTimeHelper::renderIntAsHHMMTime($checkin->max)} / {sprintf('[`%d minutes of Webasyst online time: %s active, %s idle`]', $checkin->max-$checkin->min, $checkin->durationString, $checkin->breakString)}"{else}data-wa-tooltip-content="{statusTimeHelper::renderIntAsHHMMTime($checkin->min)}—{statusTimeHelper::renderIntAsHHMMTime($checkin->max)} / {sprintf('[`%s (project not specified)`]', $checkin->durationString)}"{/if}
                                      data-trace-id="{$checkin->id}"
                                      data-trace-start="{$checkin->startTimestamp|wa_datetime}"
                                      data-trace-end="{$checkin->endTimestamp|wa_datetime}"
                                      data-trace-start-server="{date('Y-m-d H:i:s', $checkin->startTimestamp)}"
                                      data-trace-end-server="{date('Y-m-d H:i:s', $checkin->endTimestamp)}"
                                 ></div>
+                                {if $checkin->isTrace}
+                                    {$_day_trace_count = $_day_trace_count + 1}
+                                {/if}
                                 {if $checkin->id && $checkin->hasProjects && !$checkin->isTrace}
                                 <style>
                                     #s-timeline-content-{$checkin->id} {
@@ -48,80 +58,120 @@
                                     }
                                 </style>
                                 {/if}
+                                {if ($checkin->id || $checkin->isTrace) && floor($checkin->min/60)<23 &&
+                                    empty($_timeline_time_hints_occupation_by_hr[ floor($checkin->min/$_mins_in_hr) ]) &&
+                                    empty($_timeline_time_hints_occupation_by_hr[ floor($checkin->min/$_mins_in_hr)-1 ]) &&
+                                    empty($_timeline_time_hints_occupation_by_hr[ floor($checkin->min/$_mins_in_hr)+1 ]) &&
+                                    empty($_timeline_time_hints_occupation_by_hr[ floor($checkin->min/$_mins_in_hr)-2 ]) &&
+                                    empty($_timeline_time_hints_occupation_by_hr[ floor($checkin->min/$_mins_in_hr)+2 ])}
+                                    <span class="s-timeline-content-time-hint" style="left: {min(100,$checkin->minPercent)}%;">{statusTimeHelper::renderIntAsHHMMTime($checkin->min)}</span>
+                                    {$_timeline_time_hints_occupation_by_hr[ floor($checkin->min/$_mins_in_hr) ] = 1}
+                                {/if}
+                                {if ($checkin->id || $checkin->isTrace) &&
+                                    empty($_timeline_time_hints_occupation_by_hr[ floor($checkin->max/$_mins_in_hr) ]) &&
+                                    empty($_timeline_time_hints_occupation_by_hr[ floor($checkin->max/$_mins_in_hr)-1 ]) &&
+                                    empty($_timeline_time_hints_occupation_by_hr[ floor($checkin->max/$_mins_in_hr)+1 ]) &&
+                                    empty($_timeline_time_hints_occupation_by_hr[ floor($checkin->max/$_mins_in_hr)-2 ]) &&
+                                    empty($_timeline_time_hints_occupation_by_hr[ floor($checkin->max/$_mins_in_hr)+2 ])}
+                                    <span class="s-timeline-content-time-hint" style="right: {max(0,100 - $checkin->maxPercent)}%;">{statusTimeHelper::renderIntAsHHMMTime($checkin->max)}</span>
+                                    {$_timeline_time_hints_occupation_by_hr[ floor($checkin->max/$_mins_in_hr) ] = 1}
+                                {/if}
+                                <script>
+                                    ( function($) {
+                                        $("#s-timeline-content-{$checkin->id}{if $checkin->isTrace}-trace{/if}").waTooltip( { 'class':'s-timeline-sontent-tooltip{if $checkin->isTrace}-trace{/if}' } );
+                                    })(jQuery);
+                                </script>
                             {/strip}{/foreach}
                             {foreach $userDayInfo->walogsByDatetime as $walogByDatetime}{strip}
                                 <div class="s-timeline-content s-timeline-action-mark"
                                      style="left: {$walogByDatetime.position}%; background: {$walogByDatetime.app_color};"
                                      data-time="{$walogByDatetime.datetime|wa_datetime:datetime}"
-                                     title="{$walogByDatetime.app_id} ({$walogByDatetime.datetime|wa_datetime:humandatetime} @ {$wa->user()->getTimezone()})"
+                                     id="s-timeline-action-mark-{$walogByDatetime.app_id}-{$walogByDatetime.datetime|strtotime}"
+                                     data-wa-tooltip-content="{$walogByDatetime.app_id} @ {$walogByDatetime.datetime|wa_datetime:humandatetime}"
                                 ></div>
+                                <script>
+                                    ( function($) {
+                                        $("#s-timeline-action-mark-{$walogByDatetime.app_id}-{$walogByDatetime.datetime|strtotime}").waTooltip( { 'style': 'background: {$walogByDatetime.app_color};' } );
+                                    })(jQuery);
+                                </script>
                             {/strip}{/foreach}
                         </div>
                     </div>
-                    <div class="s-day-summary-user-report">
-                        <div class="s-author">
-                            <h5 class="s-username">
-                                <i class="icon16 userpic20" style="background-image: url({$day->users[$userDayInfo->contactId]->photoUrl})"></i>
-                                {$day->users[$userDayInfo->contactId]->name|escape}
-                                {if $userDayInfo->todayStatus->getCalendarId()}
-                                <span class="s-status" title="[`Status for today`]" style="background-color: {$userDayInfo->todayStatus->getBgColor()}; color: {$userDayInfo->todayStatus->getFontColor()}">{$userDayInfo->todayStatus->getName()|escape}</span>
-                                {/if}
-                                {if $userDayInfo->checkinTimezones} <span class="hint s-user-checkin-timezones">GMT{$userDayInfo->checkinTimezones|implode:', '}</span>{/if}
-                            </h5>
-
-                            <div class="s-logged-apps">
-                                {$_cnt = 0}
-                                {foreach $userDayInfo->walogs as $walog}
-                                    {if $walog->count && $walog->appId != 'webasyst'}
-                                        <a href="#"
-                                           class="s-logged-app-counter inline-link"
-                                           data-status-walog-contact-id="{$day->users[$userDayInfo->contactId]->contactId}"
-                                           data-status-walog-app="{$walog->appId}"
-                                           data-status-walog-date="{$day->date}"
-                                        ><i class="icon16 s-app-icon" style="background-image: url('{$walog->appIcon}');"></i><b><i>{$walog->count}</i></b></a>
-                                        {$_cnt = $_cnt + 1}
-                                    {/if}
-                                {/foreach}
-                                {if !$_cnt && !$checkin->id}
-                                    <div class="s-logged-apps gray">
-                                        [`No activity recorded`]
-                                    </div>
-                                {/if}
-                            </div>
-
-                        </div>
-                        {if $userDayInfo->firstCheckin->comment}
-                            <p>
-                                {$userDayInfo->firstCheckin->comment|escape|nl2br}
-                            </p>
-                        {/if}
-                    </div>
+                    {if $userDayInfo->firstCheckin->comment}
+                        <p class="s-day-summary-user-report">
+                            {$userDayInfo->firstCheckin->comment|escape|nl2br}
+                        </p>
+                    {/if}
 
                 </div>
 
                 <div class="s-day-total">
-                    <h4>{$userDayInfo->dayDurationString}</h4>
 
-                    {if $stts->canShowTrace() && !$isProject}
-                    <h4 class="gray small">
-                        <span title="{sprintf('[`Webasyst online time: %s active, %s idle`]', $userDayInfo->traceDurationString, $userDayInfo->traceBreakDurationString)}">
-                            <i class="icon16 s-trace-total-online"></i>
-                            {$userDayInfo->traceDurationWithBreakString}
-                        </span>
-                    </h4>
+                    {$_total_is_shown = 0}
+
+                    {if $userDayInfo->todayStatus->getCalendarId()}
+                        <div class="custom-mb-12">
+                            <span class="badge s-status" title="[`Daily status`]: {$userDayInfo->todayStatus->getName()|escape}" style="background-color: {$userDayInfo->todayStatus->getBgColor()}; color: {$userDayInfo->todayStatus->getFontColor()}">{$userDayInfo->todayStatus->getName()|escape}</span>
+                        </div>
+                        {$_total_is_shown = 1}
                     {/if}
+
+                    {if $userDayInfo->realCheckinCount}
+                        <h5 class="custom-mb-8 custom-mt-0{if $userDayInfo->todayStatus->getCalendarId()} s-dimmed-due-to-daily-status{/if}">{$userDayInfo->dayDurationString}</h5>
+                        {$_total_is_shown = 1}
+                    {/if}
+
+                    {if count($userDayInfo->walogs)}
+                        <div class="s-logged-apps">
+                            {$_cnt = 0}
+                            {foreach $userDayInfo->walogs as $walog}
+                                {if $walog->count && $walog->appId != 'webasyst'}
+                                    <a href="#"
+                                       class="s-logged-app-counter nowrap{if $userDayInfo->todayStatus->getCalendarId()} s-dimmed-due-to-daily-status{/if}"
+                                       data-status-walog-contact-id="{$day->users[$userDayInfo->contactId]->contactId}"
+                                       data-status-walog-app="{$walog->appId}"
+                                       data-status-walog-date="{$day->date}"
+                                        >
+                                        <span class="icon size-16">
+                                            <i style="background-image: url('{$walog->appIcon}');"></i>
+                                        </span>
+
+                                        <span class="semibold">{$walog->count}</span>
+                                    </a>
+                                    {$_cnt = $_cnt + 1}
+                                {/if}
+                            {/foreach}
+                        </div>
+                        {$_total_is_shown = 1}
+                    {/if}
+
+                    {if !$_total_is_shown}
+                        <h5 class="text-light-gray" title="[`No activity`]">&mdash;</h5>
+                    {/if}
+
+
+                    {* REQUIRES SOME ADDITIONAL RESEARCH ON BOTH DENSITY & CALCULATION if $stts->canShowTrace() && !$isProject && $_day_trace_count > 0}
+                    <div class="gray small{if $_cnt} custom-mt-8{/if}">
+                        <span title="{sprintf('[`Webasyst online time: %s active, %s idle`]', $userDayInfo->traceDurationString, $userDayInfo->traceBreakDurationString)}">
+                            {$userDayInfo->traceDurationString}
+                        </span>
+                    </div>
+                    {/if *}
                 </div>
             </div>
 
 
 
         {foreachelse}
-            <div class="s-checkin">
-                <div class="s-day-summary">
+            <div class="s-checkin flexbox">
+                <span class="s-day-userpic" title="[`No activity`]">
+                    <i class="userpic userpic-32" style="background-image: url('{$wa_url}wa-content/img/userpic.svg')"></i>
+                </span>
+                <div class="s-day-summary wide">
                     <div class="s-day-summary-timeline"><div class="s-timeline"></div></div>
                 </div>
-                <div class="s-day-total">
-                    <h4>[`0 h`]</h4>
+                <div class="s-day-total" title="[`No activity`]">
+                    <h5 class="text-light-gray">&mdash;</h5>
                 </div>
             </div>
         {/foreach}

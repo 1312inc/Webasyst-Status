@@ -12,7 +12,7 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: .\n"
 "Language: ru_RU\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 3.0\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: .\n"
 
@@ -185,7 +185,7 @@ msgid "Can see & contribute to projects"
 msgstr "Может видеть статистику и участвует в работах"
 
 msgid "No activity"
-msgstr ""
+msgstr "Не было действий"
 
 msgid "%dh"
 msgstr "%d ч"
@@ -339,3 +339,33 @@ msgstr "Автоматический подсчет времени, провед
 
 msgid "<strong class=\"highlighted\">Hello and welcome!</strong> Add your first work report by <strong>dragging the time slider</strong> or by <strong>selecting your daily status</strong> in the menu so all your teammates get to know what you are up to on this day."
 msgstr "<strong class=\"highlighted\">Добро пожаловать!</strong> Добавьте свой первый отчет о работе, <strong>указав рабочее время с помощью слайдера</strong> ниже или <strong>выбрав статус на день</strong> в меню справа."
+
+msgid "Menu"
+msgstr "Меню"
+
+msgid "Everyone"
+msgstr "Вся команда"
+
+msgid "Teams"
+msgstr "Команда"
+
+msgid "Users"
+msgstr "Пользователи"
+
+msgid "Show more (%d)"
+msgstr "Показать еще (%d)"
+
+msgid "Edit"
+msgstr "Редактировать"
+
+msgid "Daily status"
+msgstr "Статус на день"
+
+msgid "Cancel"
+msgstr "Отмена"
+
+msgid "Set daily status"
+msgstr "Установить статус"
+
+msgid "Adjust time"
+msgstr "Точное время"

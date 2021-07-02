@@ -31,42 +31,56 @@
 </style>
 {/if}
 
-<div class="s-week-projects">
+<ul class="s-week-projects{if !$donut->chart} custom-mt-24{/if}">
     {foreach $donut->data as $p}
-        {if $donut->hasData && ($p->id > 0 || $p->id == 0 && $p->totalDuration >= 10)}
-        <i class="icon16 {if $p->type == statusWeekDonutDataDto::PROJECT}color{else}userpic20{/if}"
-           style="{if $p->type == statusWeekDonutDataDto::PROJECT}background{else}background-image{/if}: {$p->color};"
-        ></i>
-        {$p->name|escape}
-        <span class="hint bold nowrap">{$p->totalDurationStr}</span><br>
+        {if $donut->hasData && ($p->id > 0 && $p->totalDuration > 0 || $p->id == 0 && $p->totalDuration >= 10)}
+            <li>
+                <i class="icon {if $p->type == statusWeekDonutDataDto::PROJECT}rounded{else}userpic{/if}"
+                   style="{if $p->type == statusWeekDonutDataDto::PROJECT}background{else}background-image{/if}: {$p->color};"
+                ></i>
+                {$p->name|escape}
+                <span class="hint bold nowrap">{$p->totalDurationStr}</span>
+            </li>
         {/if}
     {/foreach}
-</div>
+</ul>
 
 {if $stts->canShowTrace() && !$isProject}
-<div class="block" title="[`Webasyst online time`]" style="margin-top: 20px;">
-    <h4 class="gray">
-        <i class="icon16 s-trace-total-online"></i> {sprintf('[`%s online`]', $donut->traceTotalDurationWithBreakStr)}
-
-        <div class="tooltip-anchor">
-            <i class="icon10 info"></i>
-            <div class="tooltip">
-                <span class="body">
-                    [`Webasyst online time is tracked automatically based on the user activity across different apps.`]
-                    <br><br>
-                    [`Active time is counted when the user is browsing the Webasyst backend with a browser navigating from one app to another. Idle time is counted when the backend is opened in a browser window, but nothing happens, i.e. even a mouse cursor won’t move.`]
-                    <br><br>
-                    <em>[`Only the user and the Status app admin can see this online time data.`]</em>
-                </span>
-            </div>
-        </div>
-    </h4>
-
-    <span class="hint">
+<div class="box small" title="[`Webasyst online time`]">
+    <h6 class="gray">
+        {sprintf('[`%s online`]', $donut->traceTotalDurationWithBreakStr)}
+        <span id="s-weekly-online-time-hint-icon-{$donut->weekNum}" class="text-light-gray">
+            <i class="fas fa-info-circle" ></i>
+        </span>
+    </h6>
+    <p class="hint custom-mt-12 semibold">
         {sprintf('[`%s active`]', $donut->traceTotalDurationStr)}
         <br>
         {sprintf('[`%s idle`]', $donut->traceTotalBreakStr)}
-    </span>
+    </p>
+
+    <div class="wa-tooltip-template" id="s-weekly-online-time-hint-body-{$donut->weekNum}">
+        <div class="box small">
+            <p>
+                [`Webasyst online time is tracked automatically based on the user activity across different apps.`]
+            </p>
+            <p>
+                [`Active time is counted when the user is browsing the Webasyst backend with a browser navigating from one app to another. Idle time is counted when the backend is opened in a browser window, but nothing happens, i.e. even a mouse cursor won’t move.`]
+            </p>
+            <p class="text-gray">
+                <i class="fas fa-lock"></i> [`Only the user and the Status app admin can see this online time data.`]
+            </p>
+        </div>
+    </div>
+
+    <script>
+        $("#s-weekly-online-time-hint-icon-{$donut->weekNum}").waTooltip({
+            template: '#s-weekly-online-time-hint-body-{$donut->weekNum}',
+            placement: 'left',
+        });
+    </script>
+
+
 </div>
 {/if}
 

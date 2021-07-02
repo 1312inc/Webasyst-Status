@@ -58,7 +58,7 @@ SQL;
                     self::TYPE
                 );
                 $dto->icon = sprintf(
-                    '<i class="icon16 color" style="background: %s;"></i>',
+                    '<span class="icon"><i class="rounded" style="background: %s;"></i></span>',
                     $project->getColor()
                 );
                 $dtos[] = $dto;
@@ -71,8 +71,8 @@ SQL;
                 0,
                 self::TYPE
             );
-            $dto->icon = '<i class="icon16 color" style="background: rgb(130,167,217);
-background: linear-gradient(135deg, rgb(225, 127, 206) 0%, rgb(225, 127, 206) 25%, rgba(52,203,254,1) 25%, rgba(52,203,254,1) 50%, rgb(225, 127, 206) 50%, rgb(225, 127, 206) 75%, rgba(52,203,254,1) 75%, rgba(52,203,254,1) 100%); background-size: 7px 7px;"></i>';
+            $dto->icon = '<span class="icon"><i class="rounded" style="background: rgb(130,167,217);
+background: linear-gradient(135deg, rgb(225, 127, 206) 0%, rgb(225, 127, 206) 25%, rgba(52,203,254,1) 25%, rgba(52,203,254,1) 50%, rgb(225, 127, 206) 50%, rgb(225, 127, 206) 75%, rgba(52,203,254,1) 75%, rgba(52,203,254,1) 100%); background-size: 7px 7px;"></i></span>';
             $dtos[] = $dto;
         }
 

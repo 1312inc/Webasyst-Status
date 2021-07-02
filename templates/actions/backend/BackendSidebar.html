@@ -1,96 +1,145 @@
-<div class="sidebar left200px s-navigation">
-    <div class="block">
-        <ul class="menu-v with-icons">
-             <li class="selected bottom-padded">
-                 <a href="#" class="bold">
-                     <span class="count hint" title="[`This week total`]">{$timeByUserStat[$stts->getUser()->getContactId()]['timeStr']}</span>
-                     <i class="icon16 userpic20" style="background-image: url({$stts->getUser()->getPhotoUrl()})"></i>[`My status`]
+<nav class="sidebar-mobile-toggle">
+    <div class="box align-center">
+        <a href="#" href="javascript:void(0);">
+            <i class="fas fa-bars"></i>
+            [`Menu`]
+        </a>
+    </div>
+</nav>
+<div class="sidebar-body hide-scrollbar">
+    <div class="bricks">
+         <a href="#" class="brick full-width">
+             <span class="count" title="[`This week total`]">
+                 {if $stts->getUser()->getTodayStatus()->getStatusId()}
+                     <span class="badge small nowrap"
+                           style="background-color: {$stts->getUser()->getTodayStatus()->getBgColor()}; color: {$stts->getUser()->getTodayStatus()->getFontColor()}"
+                           title="{$stts->getUser()->getTodayStatus()->getName()|escape}"
+                     >
+                         {$stts->getUser()->getTodayStatus()->getName()|escape|truncate:23}
+                     </span>
+                 {else}
+                    {$timeByUserStat[$stts->getUser()->getContactId()]['timeStr']}
+                 {/if}
+             </span>
+             <span class="icon size-32"><i class="userpic" style="background-image: url({$stts->getUser()->getPhotoUrl()})"></i></span>
+             <span>[`My status`]</span>
+         </a>
+    </div>
+
+    {if count($users) && ($stts->getRightConfig()->isAdmin() || $stts->getRightCongif->hasAccessToTeammate())}
+        <ul class="menu custom-mt-0">
+            <li>
+                <a href="#/contact/-1312">
+                    <i class="fas fa-users"></i>
+                    <span>[`Everyone`]</span>
+                </a>
+            </li>
+            {foreach $groups as $_g}
+                 <li>
+                     <a href="#/team/{$_g.id}">
+                         <!-- <i class="fas fa-users"></i> -->
+                         <span>{$_g.name|escape}</span>
+                     </a>
+                 </li>
+            {/foreach}
+        </ul>
+    {/if}
+
+    {if count($users) || count($hiddenUsers) || $teammates && $wa->team && $stts->getRightConfig()->isAdmin()}
+
+    <h5 class="heading">[`Users`]</h5>
+    <ul class="menu">
+
+         {if count($users)}
+             {foreach $users as $u}
+             <li>
+                 <a href="#/contact/{$u->getContactId()}">
+                     <span class="count">
+                         {if $u->getTodayStatus()->getStatusId()}
+                             <span class="badge small nowrap"
+                                   style="background-color: {$u->getTodayStatus()->getBgColor()}; color: {$u->getTodayStatus()->getFontColor()}"
+                                   title="{$u->getTodayStatus()->getName()|escape}"
+                             >
+                                 {$u->getTodayStatus()->getName()|escape|truncate:13}
+                             </span>
+                         {else}
+                             <span title="[`This week total`]">{$timeByUserStat[$u->getContactId()]['timeStr']}</span>
+                         {/if}
+                     </span>
+                     <span class="icon"><i class="userpic" style="background-image: url({$u->getPhotoUrl()})"></i></span>
+                     <span>{$u->getName()|escape}</span>
                  </a>
              </li>
-             {if count($users)}
-                 {foreach $users as $u}
+             {/foreach}
+        {/if}
+
+        {if count($hiddenUsers) || $teammates && $wa->team && $stts->getRightConfig()->isAdmin()}
+            {foreach $teammates as $teammate}
+                <li style="display:none" data-status-sidebar-hidden-user>
+                    <a href="#/contact/{$teammate.id}">
+                        <span class="icon"><i class="userpic" style="background-image: url({$teammate.photo_url_32})"></i></span>
+                        <span class="gray">{$teammate.name|escape}</span>
+                    </a>
+                </li>
+            {/foreach}
+
+            {foreach $hiddenUsers as $u}
+            <li style="display:none" data-status-sidebar-hidden-user>
+                 <a href="#/contact/{$u->getContactId()}">
+                     <span class="icon"><i class="userpic" style="background-image: url({$u->getPhotoUrl()})"></i></span>
+                     <span class="gray">{$u->getName()|escape}</span>
+                 </a>
+            </li>
+            {/foreach}
+
+            <li><a href="#" data-status-action="sidebar-show-all-users"><span class="small text-gray">{sprintf('[`Show more (%d)`]', count($hiddenUsers) + count($teammates))}</span></a></li>
+
+        {/if}
+
+    </ul>
+    {/if}
+
+    {if !count($users) && !count($teammates) && $wa->team}
+        <div class="box">
+            <p class="hint align-center">{sprintf('[`Invite users via the <a href="%s">Team app</a> and start tracking time and status together.`]', $wa_backend_url|cat:'team/')}</p>
+        </div>
+    {/if}
+
+    {if count($projects) || $stts->getRightConfig()->hasAccessToProject()}
+        <h5 class="heading">
+            {if $stts->getRightConfig()->hasAccessToProject()}
+            <a href="#" class="count" data-status-project-action="add" title="[`New project`]"><i class="fas fa-plus-circle"></i></a>
+            {/if}
+            <span>[`Projects`]</span>
+        </h5>
+        {if count($projects)}
+            <ul class="menu">
+                 {foreach $projects as $p}
                  <li>
-                     <a href="#/contact/{$u->getContactId()}">
-                         <span class="count hint" title="[`This week total`]">{$timeByUserStat[$u->getContactId()]['timeStr']}</span>
-                         <i class="icon16 userpic20" style="background-image: url({$u->getPhotoUrl()})"></i>{if !$u->isExists()}<span class="gray">{/if}{$u->getName()|escape}{if !$u->isExists()}</span>{/if}
-                         {if $u->getTodayStatus()->getStatusId()}
-                         <span class="s-status nowrap"
-                               style="background-color: {$u->getTodayStatus()->getBgColor()}; color: {$u->getTodayStatus()->getFontColor()}"
-                               title="{$u->getTodayStatus()->getName()|escape}"
-                         >
-                             {$u->getTodayStatus()->getName()|escape|truncate:13}
-                         </span>
-                         {/if}
+                     <a href="#/project/{$p->getId()}">
+                         <span class="count">{$timeByProjectStat[$p->getId()]['timeStr']}</span>
+                         <span class="icon"><i class="rounded" style="background: {$p->getColor()};"></i></span>
+                         <span>{$p->getName()|escape}</span>
                      </a>
                  </li>
                  {/foreach}
-                 {*
-                 <li>
-                     <a href="#">
-                         <span class="count hint">{$timeByUserStat[0]['timeStr']}</span>
-                         <span class="gray">[`All users`]</span>
-                     </a>
-                 </li>
-                 *}
-            {/if}
-            {if $teammates && $wa->team && $stts->getRightConfig()->isAdmin()}
-                {foreach $teammates as $teammate}
-                    <li>
-                        <a href="#/contact/{$teammate.id}">
-                            <i class="icon16 userpic20" style="background-image: url({$teammate.photo_url_32})"></i><span class="gray">{$teammate.name|escape}</span>
-                        </a>
-                    </li>
-                {/foreach}
-            {/if}
-        </ul>
-        {if !count($users) && !count($teammates) && $wa->team}
-            <div class="block">
-                <p class="hint align-center">{sprintf('[`Invite users via the <a href="%s">Team app</a> and start tracking time and status together.`]', $wa_backend_url|cat:'team/')}</p>
+            </ul>
+        {elseif $stts->getRightConfig()->isAdmin()}
+            <div class="box">
+                <p class="hint align-center">[`Add projects so everyone can add detalization on what they were working on.`]</p>
             </div>
         {/if}
-    </div>
-    <div class="block">
-        {if count($projects) || $stts->getRightConfig()->hasAccessToProject()}
-            <h5 class="heading top-padded">
-                {if $stts->getRightConfig()->hasAccessToProject()}
-                <a href="#" class="count" data-status-project-action="add"><i class="icon16 add"></i></a>
-                {/if}
-                [`Projects`]
-            </h5>
-            {if count($projects)}
-                <ul class="menu-v with-icons">
+    {/if}
+</div>
 
-                     {foreach $projects as $p}
-                     <li>
-                         <a href="#/project/{$p->getId()}">
-                             <span class="count hint">{$timeByProjectStat[$p->getId()]['timeStr']}</span>
-                             <i class="icon16 color" style="background: {$p->getColor()};"></i>
-                             {$p->getName()|escape}
-                         </a>
-                     </li>
-                     {/foreach}
-                     {*
-                     <li>
-                         <a href="#">
-                             <span class="count hint">42h</span>
-                             <i class="icon16 color" style="background: white;"></i>
-                             <span class="gray">[`All projects`]</span>
-                         </a>
-                     </li>
-                     *}
-                </ul>
-            {elseif $stts->getRightConfig()->isAdmin()}
-                <div class="block">
-                    <p class="hint align-center">[`Add projects so everyone can add detalization on what they were working on.`]</p>
-                </div>
-            {/if}
-        {/if}
-
-        {if $stts->getRightConfig()->isAdmin() ||$stts->getRightConfig()->hasAccessToRight(statusRightConfig::CAN_SEE_REPORTS)}
-        <hr>
-        <ul class="menu-v with-icons">
+{if $stts->getRightConfig()->isAdmin() ||$stts->getRightConfig()->hasAccessToRight(statusRightConfig::CAN_SEE_REPORTS)}
+    <div class="sidebar-footer shadowed">
+        <ul class="menu">
             <li>
-                <a href="#/reports/"><i class="icon16 reports"></i>[`Reports`]</a>
+                <a href="#/reports/">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>[`Reports`]</span>
+                </a>
             </li>
             {*
              <li>
@@ -104,6 +153,5 @@
              </li>
              *}
         </ul>
-        {/if}
     </div>
-</div>
+{/if}

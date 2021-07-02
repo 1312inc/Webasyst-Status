@@ -2,7 +2,9 @@
     'use strict';
     $.storage = new $.store();
     $.status = {
-        $loading: $('<i class="icon16 loading">'),
+        waLoading: $.waLoading(),
+        // $loading: $('<i class="icon16 loading">'),
+        $loading: $('<div class="stub"></div>'),
         $wa: null,
         $status_content: null,
         $core_sidebar: null,
@@ -92,6 +94,9 @@
             /** Implements #hash-based navigation. Called every time location.hash changes. */
             dispatch: function (hash) {
                 var self = this;
+
+                // Show loading status bar
+                $.status.waLoading.animate(6000, 99, true);
 
                 if (this.skipDispatch > 0) {
                     this.skipDispatch--;
@@ -187,6 +192,15 @@
                     }
                 });
             },
+            teamAction: function (id, callback) {
+                var that = this;
+                return $.get('?module=chronology&group_id=' + id, function (html) {
+                    $('#status-content').html(html);
+                    if ($.isFunction(callback)) {
+                        callback.call();
+                    }
+                });
+            },
             projectAction: function (id) {
                 var that = this;
                 return $.get('?module=chronology&project_id=' + id, function (html) {
@@ -217,6 +231,10 @@
                     var value = $.isArray(hash) ? hash.join('/') : '';
                     $.storage.set('/status/hash/' + this.options.user_id, value);
                 }
+                
+                // Hide loading status bar
+                $.status.waLoading.done();
+
                 this.options.self.highlightSidebar();
                 this.options.self.setTitle();
             }
@@ -314,6 +332,15 @@
                 }
             }
         },
+        stringToTimeValue: function (time) {
+            var splited = time.split(':');
+            if (splited.length !== 2) return false;
+
+            var hrs = splited[0],
+                mins = splited[1];
+
+            return parseInt(hrs) * 60 + parseInt(mins);
+        },
         timeValueToStr: function (hrs, format) {
             var secs = hrs * 60 * 60,
                 divisor_for_minutes = secs % (60 * 60),
@@ -355,7 +382,7 @@
                 reloadDayShow = false,
                 lastSavedData = '',
                 requestInAction = false,
-                $loading = $('<i class="icon16 loading"></i>');
+                $loading = $('<div class="stub"></div>');
 
             function getDataFromCheckin($form) {
                 return {
@@ -477,26 +504,102 @@
 
             function initCheckin($el) {
                 var $slider = $el.find('.s-editor-slider-slider'),
+                    $sl = $slider.get(0),
                     $form = $el.find('form'),
-                    $checkinDuration = $el.find('.s-editor-slider-total h2'),
-                    checkinBreak = checkboxDuration($el.find('.s-editor-slider-break')),
+                    $forms = $.status.$status_content.find('form'),
+                    $checkinDuration = $.status.$status_content.find('.s-editor-slider-total > div'),
+                    $deleteButton = $el.find('[data-checkin-action="delete2.0"]'),
+                    $tooltip = $el.find('.s-editor-slider-tooltip'),
                     projects = [],
+                    checkinIndex = null,
+                    formIndex = $el.data('checkin-index'),
                     data = getDataFromCheckin($form),
                     hasProjects = $el.data('checkin-has-projects'),
                     checkinId = $form.find('[name="checkin[id]"]').val(),
                     minMax = {'min': 0, 'max': 1440};
 
-                var getCheckinDuration = function (values) {
-                        var checkinDuration = values[1] - values[0];
+                var checkinBreaks = $.status.$status_content.find('.s-editor-slider-break').map(function (i, e) {
+                    return checkboxDuration($(e));
+                });
 
-                        if (checkinBreak.isOn()) {
-                            checkinDuration -= (checkinBreak.value() * 60)
+                var getCheckinDuration = function (values) {
+                        var valuesLength = values.length / 2,
+                            checkinDuration = 0;
+
+                        for (var index = 0; index < valuesLength; index++) {
+                            checkinDuration += values[1 + index * 2] - values[0 + index * 2];
                         }
+
+                        checkinBreaks.each(function (i, checkinBreak) {
+                            if (checkinBreak.isOn()) {
+                                checkinDuration -= (checkinBreak.value() * 60);
+                            }
+                        })
+
                         if (checkinDuration < 0) {
                             checkinDuration = 0;
                         }
 
                         return checkinDuration;
+                    },
+                    updateCheckinIndex = function (index) {
+                        if(checkinIndex === index) return;
+
+                        checkinIndex = index;
+                        var connect = $slider.find('.noUi-connect'),
+                            blocks = $.status.$status_content.find('.s-editor-slider');
+
+                        connect.each(function (i, e) {
+                            $(e).removeClass('active');
+                        });
+                        if (checkinIndex !== null) {
+                            connect.eq(checkinIndex).addClass('active');
+
+                            var handler = function (e) {
+                                if ($(e.target).closest('.s-editor-slider-control, .dialog, [data-checkin-action="delete2.0"]').length === 0) {
+                                    $(document).off('mousedown', handler);
+                                    updateCheckinIndex(null);
+                                }
+                            };
+
+                            $(document).on('mousedown', handler);
+                        }
+
+                        $('.s-editor-slider-projects').hide();
+                        if (checkinIndex !== null) {
+                            blocks.eq(checkinIndex).find('.s-editor-slider-projects').show();
+                        }
+
+                        $deleteButton.hide();
+                        if (checkinIndex > 0) {
+                            $deleteButton.show();
+
+                            // Delete checkin button event
+                            $deleteButton.off('click.stts').on('click.stts', function (e) {
+                                e.preventDefault();
+
+                                if(checkinIndex > 0) {
+
+                                    var $sourceCheckin = $forms.eq(checkinIndex).parent(),
+                                    checkinId = $sourceCheckin.find('form [name="checkin[id]"]').val();
+
+                                    if (checkinId) {
+                                        remove(checkinId);
+                                    }
+
+                                    $sourceCheckin.remove();
+                                    updateCheckinIndex(null);
+
+                                    $editorHtml.find('[data-checkin]').each(function () {
+                                        initCheckin($(this));
+                                    });
+
+                                }
+
+                            });
+
+                        }
+
                     },
                     updateDayDuration = function (values) {
                         var duration = getCheckinDuration(values),
@@ -508,12 +611,12 @@
                         $checkinDuration.text(value);
                     },
                     fillSliderWithColor = function () {
-                        var $line = $slider.find('.ui-widget-header'),
-                            width = $line.get(0).style.width,
-                            left = $line.get(0).style.left,
-                            colors = [];
+                        var $line = $.status.$status_content.find('.s-editor').find('.noUi-connect').eq(formIndex),
+                            colors = [],
+                            prevPercent = 0;
 
-                        var prevPercent = 0;
+                        if(!$line.length) return;
+
                         $.each(projects, function (i, project) {
                             if (!project.isOn() && project.value()) {
                                 return;
@@ -525,21 +628,20 @@
                         });
 
                         if (prevPercent < 100) {
-                            colors.push('#f1f2f3 ' + prevPercent + '%');
-                            colors.push('#f1f2f3 100%');
+                            colors.push('rgba(209,59,179,1) ' + prevPercent + '%');
+                            colors.push('rgba(52,203,254,1) 100%');
                         }
 
                         var gradient = colors.join(', '),
+                            oldStyle = $line.get(0).style.transform,
                             style = [
                                 'background: #ffd60a',
                                 'background: -moz-linear-gradient(left, ' + gradient + ')',
                                 'background: -webkit-linear-gradient(left, ' + gradient + ')',
                                 'background: linear-gradient(to right, ' + gradient + ')',
-                                'width: ' + width,
-                                'left: ' + left,
                             ];
 
-                        $line.attr('style', style.join(';'));
+                        $line.attr('style', style.join(';')).css('transform', oldStyle);
                     },
                     recalculateProjects = function (project) {
                         var percent = 100,
@@ -649,7 +751,9 @@
                         }
 
                         $.status.log('update date duration');
-                        updateDayDuration($slider.slider('option', 'values'));
+                        if($sl && $sl.noUiSlider) {
+                            updateDayDuration($sl.noUiSlider.get());
+                        }
 
                         $.status.log('colorize slider');
                         fillSliderWithColor();
@@ -684,51 +788,135 @@
                         values2.push(values[0] < minMax.min ? minMax.min : values[0]);
                         values2.push(values[1] > minMax.max ? minMax.max : values[1]);*/
 
-                        updateDayDuration($slider.slider('option', 'values'));
+                        var sliderInstance = document.querySelector('.noUi-target').noUiSlider;
+                        if (sliderInstance) {
+                            updateDayDuration(sliderInstance.get());
+                        }
                         save($form);
                     });
 
+                    // If noUISlider container exists (first checkin of the day)
+                    if ($sl) {
 
-                $slider.slider('destroy');
-                $slider.slider({
-                    range: true,
-                    min: minMax.min,
-                    max: minMax.max,
-                    step: 5,
-                    values: [data.start_time, data.end_time],
-                    create: function (event, ui) {
-                        $el.find('.ui-slider .ui-slider-handle:first').attr('data-slider-time', $.status.timeValueToStr(data.start_time / 60, 'time'));
-                        $el.find('.ui-slider .ui-slider-handle:last').attr('data-slider-time', $.status.timeValueToStr(data.end_time / 60, 'time'));
+                        var start = [];
+                        $forms.each(function (i, e) {
+                            start.push($(e).find('[name="checkin[start_time]"]').val());
+                            start.push($(e).find('[name="checkin[end_time]"]').val());
+                        });
 
-                        if (hasProjects) {
-                            fillSliderWithColor();
+                        var connect = [];
+                        for (var index = 1; index < start.length + 2; index++) {
+                            connect.push(index % 2 == 0);
                         }
-                        updateDayDuration($slider.slider('option', 'values'));
-                        if (data.id) {
-                            //меняем цвет слайдера на s-active, чтобы показать, что данные сохранились
-                            $el.find('.ui-slider').addClass('s-active');
-                            $el.find('.s-editor-slider-projects').slideDown(200);
+
+                        // Check if noUiSlider exists and inited
+                        var noUiSliderExists = false;
+                        if ($sl.noUiSlider) {
+                            noUiSliderExists = true;
+                            $sl.noUiSlider.destroy();
                         }
-                    },
-                    slide: function (event, ui) {
-                        updateDayDuration(ui.values);
-                        // if (checkinBreak.isOn() && duration > (24 - checkinBreak.value()) * 60) {
-                        //     return false;
-                        // }
 
-                        $el.find('.ui-slider .ui-slider-handle:first').attr('data-slider-time', $.status.timeValueToStr(ui.values[0] / 60, 'time'));
-                        $el.find('.ui-slider .ui-slider-handle:last').attr('data-slider-time', $.status.timeValueToStr(ui.values[1] / 60, 'time'));
-                    },
-                    change: function (event, ui) {
-                        //показываем опциаональную детализацию по проектам
-                        $el.find('.s-editor-slider-projects').slideDown(200);
+                        var onChange = function (values) {
+                            $forms.eq(checkinIndex).find('[name="checkin[start_time]"]').val(+values[0 + checkinIndex * 2]);
+                            $forms.eq(checkinIndex).find('[name="checkin[end_time]"]').val(+values[1 + checkinIndex * 2]);
+                            save($forms.eq(checkinIndex));
+                        };
 
-                        $form.find('[name="checkin[start_time]"]').val(ui.values[0]);
-                        $form.find('[name="checkin[end_time]"]').val(ui.values[1]);
+                        noUiSlider.create($sl, {
+                            start: start,
+                            connect: connect,
+                            tooltips: start.map(function () {
+                                return {
+                                    to: function (value) {
+                                        return $.status.timeValueToStr(value / 60, 'time');
+                                    },
+                                    from: function (value) {
+                                        return value;
+                                    }
+                                };
+                            }),
+                            behaviour: 'drag',
+                            step: 5,
+                            range: minMax,
+                        });
 
-                        save($form);
+                        $sl.noUiSlider.on('start', function (values, handle) {
+                            handle++;
+                            updateCheckinIndex(Math.ceil(handle / 2) - 1);
+                        });
+
+                        $sl.noUiSlider.on('update', function (values) {
+                            updateDayDuration(values);
+                        });
+
+                        $sl.noUiSlider.on('change', onChange);
+                        $sl.noUiSlider.on('set', onChange);
+
+                        // Define checkin tooltips logics
+                        $($sl).find('.noUi-tooltip').on('click', function () {
+                            var values = $sl.noUiSlider.get(),
+                                _start = +values[0 + checkinIndex * 2],
+                                _end = +values[1 + checkinIndex * 2],
+                                start_time = $.status.timeValueToStr(_start / 60, 'time'),
+                                end_time = $.status.timeValueToStr(_end / 60, 'time');
+
+                            $.waDialog({
+                                header: "<h2>"+$.wa.locale['Adjust time']+"</h2>",
+                                content: "<input type=\"time\" name=\"start_time\" value=\"" + start_time + "\" class=\"large\"> &mdash; <input type=\"time\" name=\"end_time\" value=\"" + end_time + "\" class=\"large\">",
+                                footer: "<button class=\"js-submit-form button\">"+$.wa.locale['Save']+"<\/button> <button class=\"js-close-dialog button light-gray\">"+$.wa.locale['Cancel']+"<\/button>",
+                                onOpen: function ($dialog, dialog_instance) {
+                                    $dialog.on("click", ".js-submit-form", function (event) {
+                                        event.preventDefault();
+
+                                        values[0 + checkinIndex * 2] = $.status.stringToTimeValue($dialog.find('[name="start_time"]').val());
+                                        values[1 + checkinIndex * 2] = $.status.stringToTimeValue($dialog.find('[name="end_time"]').val());
+
+                                        $sl.noUiSlider.set(values);
+                                        dialog_instance.close();
+                                    });
+                                }
+                            });
+                        });
+
+                        // If first-time initialization
+                        if (!noUiSliderExists) {
+
+                            // Slider tooltip moving
+                            $($sl).on('mousemove', function (event) {
+                                var pos = event.pageX - $($sl).offset().left,
+                                    t = parseInt(1440 * (pos / $sl.offsetWidth));
+
+                                $tooltip.offset({ left: event.pageX - $tooltip[0].offsetWidth / 2 });
+                                // if (t % 5 === 0) {
+                                $tooltip.text($.status.timeValueToStr(t / 60, 'time'));
+                                // }
+                            });
+
+                            // Show slider tooltip
+                            $($sl).on('mouseover', function () {
+                                if ($tooltip.text()) {
+                                    $tooltip.show();
+                                }
+                            });
+
+                            // Hide slider tooltip
+                            $($sl).on('mouseout', function () {
+                                $tooltip.hide();
+                            });
+
+                            // Define checkin deletion if Backspace or Delete key pressed
+                            document.addEventListener("keydown", function (event) {
+                                if ((event.code === 'Backspace' || event.code === 'Delete') && checkinIndex > 0) {
+                                    $deleteButton.trigger('click');
+                                }
+                            });
+
+                        }
+
                     }
-                });
+
+                    // Coloring slider checkins
+                    fillSliderWithColor();
 
                 //при выборе проектов закрашиваем слайдер цветами проектов в заданных пропорциях. делаем это средствами градиентов css.
                 // $el
@@ -837,7 +1025,7 @@
                 $dayEl.hide().after($editorHtml);
 
                 if ($.status.routing.hash === 'y' && !$editorHtml.find('input[name="checkin[id]"]:first').val()) {
-                    $editorHtml.find('h1.s-yesterday').append('<span class="indicator red">1</span>');
+                    //$editorHtml.find('h1.s-yesterday').append('<span class="badge small red">1</span>');
                     $editorHtml.find('h1.s-yesterday').after('<p class="s-checkin-reminder">'+$_('Hello! This is a friendly reminder to check in your workday yesterday.')+'</p>');
                 }
 
@@ -850,8 +1038,8 @@
                 $firstCheckin.find('[data-checkin-action="delete"]')
                     .attr('data-checkin-action', 'add')
                     .attr('title', $_('Add another interval for today'))
-                    .find('i.delete')
-                    .toggleClass('add delete');
+                    .empty()
+                    .append('<i class="fas fa-plus"></i>');
 
                 var saveComment = function() {
                     $editorHtml.find('.s-editor-commit-button').hide();
@@ -885,13 +1073,14 @@
 
                         var $sourceCheckin = $(this).closest('[data-checkin]'),
                             $newCheckin = $sourceCheckin.clone(),
-                            $logsChecks = $sourceCheckin.find('.s-editor-slider-helpers').clone();
+                            $logsChecks = $sourceCheckin.find('.s-editor-slider-helpers').clone(),
+                            newCheckinIndex = $.status.$status_content.find('[data-checkin-index]').length;
 
                         $newCheckin.find('[data-checkin-action="add"]')
                             .attr('data-checkin-action', 'delete')
                             .attr('title', $_('Remove interval for today'))
-                            .find('i.add')
-                            .toggleClass('add delete');
+                            .empty()
+                            .append('<i class="far fa-trash-alt"></i>');
 
                         $newCheckin
                             .data('checkin', 0)
@@ -902,6 +1091,8 @@
                             .attr('data-checkin-break', 0)
                             .data('checkin-has-projects', 0)
                             .attr('data-checkin-has-projects', 0)
+                            .data('checkin-index', newCheckinIndex)
+                            .attr('data-checkin-index', newCheckinIndex)
                             .find('input.s-duration-input').val(1)
                             .end().find('input:checkbox').prop('checked', false)
                             .end().find('.s-editor-slider-slider').empty().append($logsChecks)
@@ -912,10 +1103,17 @@
                         $newCheckin.find('.s-editor-project').removeClass('selected')
                             .closest('.s-editor-slider-projects').hide();
 
+                        // remove all except project checkboxes
+                        $newCheckin.find('.s-timeline-dial, .s-editor-slider-slider, .s-editor-slider-total, .s-editor-slider-more').remove();
+                        $newCheckin.find('[name="checkin[start_time]"]').val('1160');
+                        $newCheckin.find('[name="checkin[end_time]"]').val('1320');
 
                         $editorHtml.find('[data-checkin]:last').after($newCheckin);
 
-                        initCheckin($newCheckin);
+                        //init sliders
+                        $editorHtml.find('[data-checkin]').each(function () {
+                            initCheckin($(this));
+                        });
                     })
                     //+ напротив слайдера добавляет еще один слайдер за этот день
                     .on('click.stts', '[data-checkin-action="delete"]', function (e) {
@@ -950,7 +1148,7 @@
             }
 
             function editor($day) {
-                $day.prepend($loading);
+                $day.css('position', 'relative').prepend($loading);
                 $.get('?module=day&action=editor', {date: $day.data('status-day-date')}, function (html) {
                     $loading.remove();
 
@@ -993,7 +1191,7 @@
             } else {
                 title = '';
             }
-            $('title').text(title + $_('Status') + ' &mdash; ' + self.options.account_name);
+            $('title').html(title + $_('Status') + ' &mdash; ' + self.options.account_name);
         },
         init: function (o) {
             var self = this;
@@ -1012,67 +1210,71 @@
                 e.preventDefault();
 
                 var projectId = $(this).data('status-project-id') || 0;
+                $.get('?module=project&action=dialog&id=' + projectId, function(html) {
+                    $.waDialog({
+                        html: html,
+                        onOpen: function ($dialog, dialog_instance) {
+                            $dialog
+                                .on('click', '#status-project-color a', function (e) {
+                                    e.preventDefault();
 
-                $('#stts-project-dialog').waDialog({
-                    'height': '250px',
-                    'width': '600px',
-                    'url': '?module=project&action=dialog&id=' + projectId,
-                    onLoad: function () {
-                        var d = this,
-                            $dialogWrapper = $(d);
+                                    $dialog.find('#status-project-color input').val($(this).data('status-project-color'));
+                                    $(this).addClass('selected')
+                                        .siblings().removeClass('selected')
+                                })
+                                .on('click', '[data-status-action="delete-project"]', function (e) {
+                                    e.preventDefault();
+                                    if (confirm($_("DANGER: The project will be permanently deleted with no ability to restore the data. Delete?"))) {
+                                        $.post('?module=project&action=delete', $dialog.find('form').serialize(), function (r) {
+                                            if (r.status === 'ok') {
+                                                dialog_instance.close();
+                                                window.location.hash = '#/';
+                                                $.status.routing.redispatch();
+                                                $.status.reloadSidebar();
+                                            }
+                                        });
+                                    }
+                                })
+                                .on('submit', 'form', function (e) {
+                                    e.preventDefault();
 
-                        $dialogWrapper
-                            .on('click', '#status-project-color a', function (e) {
-                                e.preventDefault();
+                                    $.post('?module=project&action=save', $dialog.find('form').serialize(), function (r) {
+                                        if (r.status === 'ok') {
+                                            dialog_instance.close();
+                                            // if (!pocketId) {
+                                            window.location.hash = '#/project/' + r.data.id;
+                                            // }
+                                            $.status.routing.redispatch();
+                                            $.status.reloadSidebar();
+                                        } else {
 
-                                $dialogWrapper.find('#status-project-color input').val($(this).data('status-project-color'));
-                                $(this).addClass('selected')
-                                    .siblings().removeClass('selected')
-                            })
-                            .on('click', '[data-status-action="delete-project"]', function (e) {
-                                e.preventDefault();
+                                        }
+                                    }, 'json');
+                                    return false;
+                                })
+                            ;
 
-                                $.post('?module=project&action=delete', $dialogWrapper.find('form').serialize(), function (r) {
-                                     if (r.status === 'ok') {
-                                         $dialogWrapper.trigger('close');
-                                         window.location.hash = '#/';
-                                         $.status.routing.redispatch();
-                                         $.status.reloadSidebar();
-                                     }
-                                });
-                            })
-                        ;
-
-                        setTimeout(function () {
-                            if (!$dialogWrapper.find('[name="project[id]"]').val() == 0) {
-                                $dialogWrapper.find('[name="project[name]"]').trigger('focus');
-                            }
-                        }, 13.12);
-                    },
-                    onSubmit: function (d) {
-                        d.find('.dialog-buttons input[type="button"]').after($.status.$loading);
-                        $.post('?module=project&action=save', d.find('form').serialize(), function (r) {
-                            $.status.$loading.remove();
-                            if (r.status === 'ok') {
-                                d.trigger('close');
-                                // if (!pocketId) {
-                                window.location.hash = '#/project/' + r.data.id;
-                                // }
-                                $.status.routing.redispatch();
-                                $.status.reloadSidebar();
-                            } else {
-
-                            }
-                        }, 'json');
-                        return false;
-                    }
-                });
+                            setTimeout(function () {
+                                if (!$dialog.find('[name="project[id]"]').val() == 0) {
+                                    $dialog.find('[name="project[name]"]').trigger('focus');
+                                }
+                            }, 13.12);
+                        }
+                    });
+                })
             };
 
-            self.$core_sidebar.on('click', '[data-status-project-action="add"]', projectDialog);
-            self.$status_content.on('click', '[data-status-project-action="add"]', projectDialog);
+            self.$core_sidebar
+                .on('click.stts', '[data-status-project-action="add"]', projectDialog)
+                .on('click.stts', '[data-status-action="sidebar-show-all-users"]', function (e) {
+                    e.preventDefault();
+
+                    self.$core_sidebar.find('[data-status-sidebar-hidden-user]').show();
+                    $(this).closest('li').hide();
+                });
 
             self.$status_content
+                .on('click.stts', '[data-status-project-action="add"]', projectDialog)
                 .on('click.stts', '[data-status-walog-app][data-status-walog-date]', function (e) {
                     e.preventDefault();
 
@@ -1080,14 +1282,8 @@
                         date = $this.data('status-walog-date'),
                         contactId = $this.data('status-walog-contact-id');
 
-                    $('#stts-walog-dialog').waDialog({
-                        'height': '300px',
-                        'width': '600px',
-                        'url': '?module=walog&action=dialog&date=' + encodeURIComponent(date) + '&contact_id=' + contactId,
-                        onLoad: function () {
-                            var d = this,
-                                $dialogWrapper = $(d);
-                        }
+                    $.get('?module=walog&action=dialog&date=' + encodeURIComponent(date) + '&contact_id=' + contactId, function(html) {
+                        $.waDialog({html: html});
                     });
                 })
                 .on('click.stts', '[data-status-wrapper="statuses"] [data-status-action="custom-status"]', function (e) {
@@ -1099,34 +1295,32 @@
                             .data('status-today-status-date') || '',
                         $wrapper = $this.closest('[data-status-wrapper="statuses"]');
 
-                    $('#stts-status-dialog').waDialog({
-                        'height': '300px',
-                        'width': '600px',
-                        'url': '?module=todaystatus&action=dialog&date=' + encodeURIComponent(date),
-                        onLoad: function () {
-                            var d = this,
-                                $dialogWrapper = $(d);
+                    $.get('?module=todaystatus&action=dialog&date=' + encodeURIComponent(date), function(html) {
+                        $.waDialog({
+                            html: html,
+                            onOpen: function ($dialog, dialog_instance) {
+                                setTimeout(function () {
+                                    $dialog.find('status[summary]').trigger('focus');
+                                }, 13.12);
 
-                            setTimeout(function () {
-                                $dialogWrapper.find('status[summary]').trigger('focus');
-                            }, 13.12);
-                        },
-                        onSubmit: function (d) {
-                            d.find('.dialog-buttons input[type="button"]').after($.status.$loading);
-                            $.post('?module=todaystatus&action=save', d.find('form').serialize(), function (r) {
-                                $.status.$loading.remove();
-                                if (r.status === 'ok') {
-                                    $wrapper.replaceWith(r.data);
-                                    $.status.$status_content.find('.s-editor').trigger('reloadDayShow.stts');
+                                $dialog.on('submit', 'form', function (e) {
+                                    e.preventDefault();
+                                    $.post('?module=todaystatus&action=save', $dialog.find('form').serialize(), function (r) {
+                                        if (r.status === 'ok') {
+                                            $wrapper.replaceWith(r.data);
+                                            $.status.$status_content.find('.s-editor').trigger('reloadDayShow.stts');
 
-                                    $.status.reloadSidebar();
-                                    d.trigger('close');
-                                } else {
+                                            $.status.reloadSidebar();
+                                            dialog_instance.close();
+                                        } else {
 
-                                }
-                            }, 'json');
-                            return false;
-                        }
+                                        }
+                                    }, 'json');
+
+                                    return false;
+                                });
+                            }
+                        });
                     });
                 })
                 .on('click.stts', '[data-status-wrapper="statuses"] [data-status-calendar-id] a', function (e) {

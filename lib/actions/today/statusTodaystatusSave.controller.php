@@ -111,7 +111,10 @@ class statusTodaystatusSaveController extends statusJsonController
         );
 
         $this->response = $view->fetch(
-            wa()->getAppPath('templates/actions/todaystatus/TodaystatusList.html', 'status')
+            wa()->getAppPath(
+                stts()->getUI2TemplatePath('templates/actions%s/todaystatus/TodaystatusList.html'),
+                'status'
+            )
         );
     }
 }

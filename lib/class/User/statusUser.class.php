@@ -126,4 +126,13 @@ class statusUser extends statusAbstractEntity
 
         return $this;
     }
+
+    public function getContactId()
+    {
+        if (!$this->contact_id) {
+            return sprintf('_%d', $this->id);
+        }
+
+        return $this->contact_id;
+    }
 }

@@ -180,12 +180,14 @@ final class statusDayDotAssembler
                 $css[] = $projectDurationDto->project->color . ' ' . $percents . '%';
                 $percents += $value;
                 $css[] = $projectDurationDto->project->color . ' ' . $percents . '%';
-                $title[] = $projectDurationDto->project->name
-                    . ': '
-                    . statusTimeHelper::getTimeDurationInHuman(
-                        0,
-                        $projectDurationDto->duration * statusTimeHelper::SECONDS_IN_MINUTE
-                    );
+                if ($value > 0) {
+                    $title[] = $projectDurationDto->project->name
+                        . ': '
+                        . statusTimeHelper::getTimeDurationInHuman(
+                            0,
+                            $projectDurationDto->duration * statusTimeHelper::SECONDS_IN_MINUTE
+                        );
+                }
             }
 
             if ($percents < 100) {

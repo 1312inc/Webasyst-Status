@@ -140,6 +140,24 @@ class statusDayCheckinDto implements JsonSerializable
         }
         $userHourDiff = 0;
 
+        /*
+         if ($this->isTrace) {
+            $date = DateTimeImmutable::createFromFormat(
+                'Y-m-d|',
+                $checkin->getDate(),
+                wa()->getUser()->getTimezone(true)
+            );
+
+            $serverDate = DateTimeImmutable::createFromFormat('Y-m-d|', date('Y-m-d'), wa()->getUser()->getTimezone(true));
+
+            $diff = $serverDate->diff($date);
+            $userHourDiff = $diff->h;
+        } else {
+            $date = DateTimeImmutable::createFromFormat('Y-m-d|', $checkin->getDate());
+            $userHourDiff = 0;
+        }
+         */
+
         $this->id = $checkin->getId();
         $this->comment = $checkin->getComment();
         $this->max = ($userHourDiff * statusTimeHelper::MINUTES_IN_HOUR) + $checkin->getEndTime();
@@ -161,6 +179,14 @@ class statusDayCheckinDto implements JsonSerializable
             (int) $checkin->getBreakDuration() * 60,
             '0 ' . _w('h')
         );
+
+        /*
+              $this->breakString = statusTimeHelper::getTimeDurationInHuman(
+            0,
+            (int) $checkin->getBreakDuration() * 60,
+            sprintf_wp('%dh', 1)
+        );
+         */
 
         $dateStart = $date->modify("+{$this->min} minutes");
         $dateEnd = $date->modify("+{$this->max} minutes");
