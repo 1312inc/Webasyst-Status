@@ -573,6 +573,31 @@
                         $deleteButton.hide();
                         if (checkinIndex > 0) {
                             $deleteButton.show();
+
+                            // Delete checkin button event
+                            $deleteButton.off('click.stts').on('click.stts', function (e) {
+                                e.preventDefault();
+
+                                if(checkinIndex > 0) {
+
+                                    var $sourceCheckin = $forms.eq(checkinIndex).parent(),
+                                    checkinId = $sourceCheckin.find('form [name="checkin[id]"]').val();
+
+                                    if (checkinId) {
+                                        remove(checkinId);
+                                    }
+
+                                    $sourceCheckin.remove();
+                                    updateCheckinIndex(null);
+
+                                    $editorHtml.find('[data-checkin]').each(function () {
+                                        initCheckin($(this));
+                                    });
+
+                                }
+
+                            });
+
                         }
 
                     },
@@ -589,6 +614,8 @@
                         var $line = $.status.$status_content.find('.s-editor').find('.noUi-connect').eq(formIndex),
                             colors = [],
                             prevPercent = 0;
+
+                        if(!$line.length) return;
 
                         $.each(projects, function (i, project) {
                             if (!project.isOn() && project.value()) {
@@ -875,30 +902,6 @@
                             // Hide slider tooltip
                             $($sl).on('mouseout', function () {
                                 $tooltip.hide();
-                            });
-
-                            // Delete checkin button event
-                            $deleteButton.on('click', function (e) {
-                                e.preventDefault();
-
-                                if(checkinIndex > 0) {
-
-                                    var $sourceCheckin = $forms.eq(checkinIndex).parent(),
-                                    checkinId = $sourceCheckin.find('form [name="checkin[id]"]').val();
-
-                                    if (checkinId) {
-                                        remove(checkinId);
-                                    }
-
-                                    $sourceCheckin.remove();
-                                    updateCheckinIndex(null);
-
-                                    $editorHtml.find('[data-checkin]').each(function () {
-                                        initCheckin($(this));
-                                    });
-
-                                }
-
                             });
 
                             // Define checkin deletion if Backspace or Delete key pressed
