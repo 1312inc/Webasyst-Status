@@ -71,8 +71,10 @@ class statusDayDto
 //        }
 
         $this->date = $day->getDate()->format('Y-m-d');
-        $this->dayHuman = waDateTime::format('humandate', $this->date, date_default_timezone_get());
         $this->today = $day->isToday();
+        $this->dayHuman = $this->today
+            ? waDateTime::format('humandatetime')
+            : waDateTime::format('humandate', $this->date, date_default_timezone_get());
         $this->dayname = _w($day->getDate()->format('D'));
         if ($day->getDate()->format('Y-m-d') == statusTimeHelper::createDatetimeForUser('Y-m-d')) {
             $this->yesterday = true;
