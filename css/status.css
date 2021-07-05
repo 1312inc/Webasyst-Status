@@ -190,6 +190,8 @@
 .s-editor .noUi-connect { background: rgb(209,59,179); background: linear-gradient(90deg, rgba(209,59,179,1) 0%, rgba(52,203,254,1) 100%, rgba(255,255,255,1) 100%); top: -1px; height: 14px; }
 .s-editor .noUi-connect.active { top: -3px; height: 18px; box-shadow: 0 0.125em 0.5em -0.25em rgba(0, 0, 0, 0.5); border: 2px solid rgba(0,0,0,0.4); }
 
+.s-editor [data-checkin=""] .noUi-connect { opacity: 0.5; }
+
 .s-editor .noUi-target.noUi-horizontal .noUi-tooltip { cursor: pointer; color: var(--text-color-link) !important; bottom: 150%; font-size: 0.875rem; font-weight: 500; background: var(--background-color-blank); border-color: var(--border-color-soft); }
 .s-editor .noUi-target.noUi-horizontal .noUi-tooltip:hover { color: var(--text-color-link-hover) !important; }
 

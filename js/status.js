@@ -295,7 +295,7 @@
 
             var self = this;
 
-            var $all_li = self.$core_sidebar.find('li');
+            var $all_li = self.$core_sidebar.find('li, .brick');
             if ($li) {
                 $all_li.removeClass('selected');
                 $li.addClass('selected');
@@ -979,6 +979,7 @@
 
                                 $editorHtml.find('.s-editor-commit-indicator i.icon16').removeClass('loading').addClass('yes-bw');
                                 $form.find('[name="checkin[id]"]').val(r.data.id);
+                                $form.parent().attr('data-checkin', r.data.id);
                                 var weekNum = parseInt($editorHtml.data('status-week-of-day'));
                                 $('[data-status-week-donut="' + weekNum + '"]').trigger('reloadDonut.stts');
                                 //меняем цвет слайдера на s-active, чтобы показать, что данные сохранились
