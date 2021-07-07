@@ -1,51 +1,47 @@
 <div class="dialog" id="status-todaystatus-dialog">
     <div class="dialog-background"></div>
-    <div class="dialog-body">
-        <form>
-            <div data-status-wrapper="status-settings-dialog">
-                <input type="hidden" name="status[date]" value="{$date}"/>
-                <header class="dialog-header">
-                    <h1>[`Custom status`]</h1>
-                </header>
+    <form class="dialog-body">
+        <input type="hidden" name="status[date]" value="{$date}"/>
+        <header class="dialog-header">
+            <h1>[`Custom status`]</h1>
+        </header>
 
-                <div class="dialog-content fields form">
-                    <div class="field-group">
-                        <div class="field">
-                            <div class="name nowrap for-input">
-                                [`Status label`]
-                            </div>
-                            <div class="value">
-                                <input type="text" class="bold" name="status[summary]" placeholder="[`Working remotely`]"/>
-                            </div>
-                        </div>
-                        <div class="field">
-                            <div class="name for-checkbox">
-                                [`Calendar`]
-                            </div>
-                            <div class="value">
-                                {foreach $statuses as $status}
-                                <div class="custom-mb-8">
-                                    <label>
-                                        <span class="wa-radio">
-                                            <input type="radio" name="status[calendar_id]" value="{$status->getCalendarId()}"/>
-                                            <span></span>
-                                        </span>
-                                        <i class="icon rounded" style="background-color: {$status->getBgColor()}"></i>
-                                        {$status->getName()|escape}
-                                    </label>
-                                </div>
-                                {/foreach}
-                                <p class="hint">[`The status will be automatically linked with the selected calendar in the Team app.`]</p>
-                            </div>
-                        </div>
+        <div class="dialog-content fields form">
+            <div class="field-group">
+                <div class="field">
+                    <div class="name nowrap for-input">
+                        [`Status label`]
+                    </div>
+                    <div class="value">
+                        <input type="text" class="bold" name="status[summary]" placeholder="[`Working remotely`]"/>
                     </div>
                 </div>
-
-                <footer class="dialog-footer">
-                    <input type="submit" value="[`Save`]" class="button"/>
-                    <button class="js-close-dialog button light-gray">[`Cancel`]</button>
-                </footer>
+                <div class="field">
+                    <div class="name for-checkbox">
+                        [`Calendar`]
+                    </div>
+                    <div class="value">
+                        {foreach $statuses as $status}
+                        <div class="custom-mb-8">
+                            <label>
+                                <span class="wa-radio">
+                                    <input type="radio" name="status[calendar_id]" value="{$status->getCalendarId()}"/>
+                                    <span></span>
+                                </span>
+                                <i class="icon rounded" style="background-color: {$status->getBgColor()}"></i>
+                                {$status->getName()|escape}
+                            </label>
+                        </div>
+                        {/foreach}
+                        <p class="hint">[`The status will be automatically linked with the selected calendar in the Team app.`]</p>
+                    </div>
+                </div>
             </div>
-        </form>
-    </div>
+        </div>
+
+        <footer class="dialog-footer">
+            <input type="submit" value="[`Save`]" class="button"/>
+            <button class="js-close-dialog button light-gray">[`Cancel`]</button>
+        </footer>
+    </form>
 </div>
