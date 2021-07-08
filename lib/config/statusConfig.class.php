@@ -358,11 +358,6 @@ class statusConfig extends waAppConfig
             stts()->getLogger()->error('Error on auto trace handle', $ex);
         }
 
-        $force = (bool) waRequest::get('force', false);
-        if (!(new statusServiceStatusChecker())->hasActivityYesterday($user, $force)) {
-            return ['count' => 1, 'url' => $url.'#/y'];
-        }
-
         return ['count' => null, 'url' => $url];
     }
 
