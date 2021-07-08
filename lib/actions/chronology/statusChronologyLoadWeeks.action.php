@@ -26,11 +26,16 @@ class statusChronologyLoadWeeksAction extends statusChronologyAction
             $loadWeekCount * $offset
         );
 
-        $weeks = statusWeekFactory::getWeeksDto($weeks, $this->getWeekDataFilterRequestDto);
+        $weeksDto = statusWeekFactory::getWeeksDto($weeks, $this->getWeekDataFilterRequestDto);
+
+        $weekFilter = new statusWeekFilter();
+        foreach ($weeksDto as $weekDto) {
+            $weekFilter->filterNonExistingUserWithNoActivity($weekDto);
+        }
 
         $this->view->assign(
             [
-                'weeks' => $weeks,
+                'weeks' => $weeksDto,
                 'isMe' => (int) $this->isMe,
                 'isProject' => (int) $this->isProject,
             ]
