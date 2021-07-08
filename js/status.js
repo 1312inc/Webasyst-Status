@@ -881,6 +881,8 @@
                         // If first-time initialization
                         if (!noUiSliderExists) {
                             
+                            var timer;
+
                             function moveTooltip (pageX) {
                                 if (!pageX) {
                                     var dt = new Date(),
@@ -896,15 +898,20 @@
                                 $tooltip.offset({ left: pageX - $tooltip[0].offsetWidth / 2 });
                             }
 
-                            $(window).on('resize.tooltip', function() {
+                            function enableTooltipListener () {
+                                $(window).on('resize.tooltip', function () {
+                                    moveTooltip();
+                                });
+                                timer = setInterval(function () {
+                                    moveTooltip();
+                                }, 5000);
                                 moveTooltip();
-                            });
+                            }
 
-                            var timer = setInterval(function () {
-                                moveTooltip();
-                            }, 5000);
-
-                            moveTooltip();
+                            function disableTooltipListener () {
+                                $(window).off('resize.tooltip');
+                                clearInterval(timer);
+                            }
 
                             // Slider tooltip moving
                             $($sl).on('mousemove', function (event) {
@@ -913,17 +920,15 @@
 
                             // Show slider tooltip
                             $($sl).on('mouseover', function () {
-                                if ($tooltip.text()) {
-                                    $tooltip.show();
-                                }
-                                $(window).off('resize.tooltip');
-                                clearInterval(timer);
+                                disableTooltipListener();
                             });
 
                             // Hide slider tooltip
                             $($sl).on('mouseout', function () {
-                                $tooltip.hide();
+                                enableTooltipListener();
                             });
+
+                            enableTooltipListener();
 
                             // Define checkin deletion if Backspace or Delete key pressed
                             document.addEventListener("keydown", function (event) {
