@@ -54,7 +54,8 @@ final class statusDayDotAssembler
                 $traceDurationWithBreak += ($checkin->max - $checkin->min);
             }
 
-            $userDayInfoDto->checkinTimezones[$check->getTimezone()] = sprintf('%+d', $check->getTimezone());
+            $checkTimezone = $check->getTimezone();
+            $userDayInfoDto->checkinTimezones[$checkTimezone] = sprintf('%+d', $checkTimezone);
         }
 
         if (!$hasManualCheckins) {

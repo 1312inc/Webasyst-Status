@@ -97,6 +97,7 @@
                             {/strip}{/foreach}
                         </div>
                     </div>
+                    {if $userDayInfo->checkinTimezones} <span class="hint s-user-checkin-timezones">GMT{$userDayInfo->checkinTimezones|implode:', '}</span>{/if}
 
                     {if $userDayInfo->todayStatus->getCalendarId()}
                         <p class="s-day-summary-user-status">
