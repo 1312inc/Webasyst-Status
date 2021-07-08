@@ -10,11 +10,34 @@
                 <h1 {if $day->yesterday}class="s-yesterday"{/if}>
                     {if $day->today}[`Today`]{/if}
                     {if $day->yesterday}[`Yesterday`]{/if}
-                    <span class="hint">
-                        {$day->dayname}, {$day->dayHuman}
-                        <!-- <span title="[`Weekend`]">🏖️Sunday / Saturday</span> -->
-                        <!-- <span title="[`Birthday`]">🎂Birtday</span> -->
-                    </span>
+                    {if $day->today}
+                        <span class="hint">
+                            {$day->dayname}, <span class="s-editor-time-and-status-time"></span>
+                            <script>
+                                (function () {
+                                        var ct = document.querySelector('.s-editor-time-and-status-time'),
+                                            timer = function () {
+                                                if (ct) {
+                                                    var dt = new Date();
+                                                    ct.innerHTML = dt.getHours() + ":" + dt.getMinutes();
+                                                }
+                                            };
+
+                                        setInterval(function () {
+                                            timer();
+                                        }, 1000);
+
+                                        timer();
+                                    })();
+                            </script>
+                        </span>
+                    {else}
+                        <span class="hint">
+                            {$day->dayname}, {$day->dayHuman}
+                            <!-- <span title="[`Weekend`]">🏖️Sunday / Saturday</span> -->
+                            <!-- <span title="[`Birthday`]">🎂Birtday</span> -->
+                        </span>
+                    {/if}
                 </h1>
             </div>
 
