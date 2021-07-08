@@ -21,7 +21,7 @@
 
 .clear-right { clear: right; }
 
-.s-status { font-weight: bold; white-space: nowrap; font-size: 0.9375rem; }
+.s-status { font-weight: bold; white-space: nowrap; font-size: 0.875rem; }
 .s-mega-article { max-width: 1440px; margin: 0 auto; }
 .s-navigation { }
 .s-summary { }
@@ -80,10 +80,11 @@
 .s-day .s-day-date { margin-bottom: 1.25rem; }
 .s-day .s-day-date h6 { font-size: 1rem; }
 .s-day .s-day-summary-timeline { }
+.s-day .s-day-summary-user-status { margin-bottom: 0.75rem; }
 .s-day .s-day-summary-user-report { font-size: 0.875rem; margin-bottom: 2rem; }
 .s-day .s-day-userpic { flex: 0 0 45px; }
 .s-day .s-day-userpic .userpic { margin-top: -3px; }
-.s-day .s-day-total { flex: 0 0 130px; padding-left: 1rem; text-align: center; padding-top: 2px; }
+.s-day .s-day-total { flex: 0 0 15%; padding-left: 1rem; text-align: center; padding-top: 2px; }
 .s-day .s-day-total h5 { font-size: 1rem; padding-top: 2px; }
 .s-day .s-day-total .s-logged-apps { margin-top: -2px; }
 .s-day .s-dimmed-due-to-daily-status { /* REMOVED DUE TO CUSTOM 'NON-VACATION' STATUSES SUCH AS 'REMOTE' opacity: 0.5; transition: 0.1s; */ }
@@ -123,7 +124,7 @@
 .s-editor .s-editor-time-and-status { background: var(--background-color); padding: 1.5rem 1.25rem 0.25rem; }
 .s-editor ul.menu-h.dropdown li:hover { background: transparent; }
 .s-editor-status { border-radius: 1rem; background: rgba(0,0,0,0.05); color: #aaa; padding: 5px 6px 5px 10px !important; }
-.s-editor .s-duration-label { color: var(--background-color); background: var(--gray); border: 1px dashed; padding: 1px 2px 2px; border-radius: 0.25rem; font-weight: bold; }
+.s-editor .s-duration-label { background: var(--background-color); color: var(--gray); border: 1px dashed; padding: 1px 2px 2px; border-radius: 0.25rem; font-weight: bold; }
 .s-editor .s-duration-input { display: none; width: 2.25rem; font-size: 0.875em; font-weight: bold; margin-top: -4px; }
 .s-editor .s-welcome-note { margin: 15px 0px; max-width: 80%; color: #666; }
 .s-editor .s-welcome-note strong { color: #000; }
@@ -181,9 +182,9 @@
 .tooltip-anchor:hover .tooltip .body { display: block; }
 
 .s-editor .noUi-target.noUi-horizontal { background: var(--s-timeline-color); border: none; box-shadow: none; height: 32px; z-index: 3; padding-top: 11px; }
-.s-editor .noUi-target.noUi-horizontal .noUi-handle { z-index: 4; height: 24px; width: 28px; background: var(--background-color-blank); box-shadow: 0 0.25rem 0.5rem -0.25rem rgba(0,0,0,0.2); border-color: var(--s-editor-handle-border-color); outline: 0; top: -7px; }
-.s-editor .noUi-target.noUi-horizontal .noUi-handle::before { top: 5px; left: 10px; background: var(--s-editor-handle-border-color); height: 12px; width: 2px; opacity: 0.5; }
-.s-editor .noUi-target.noUi-horizontal .noUi-handle::after { top: 5px; left: 14px; background: var(--s-editor-handle-border-color); height: 12px; width: 2px; opacity: 0.5; }
+.s-editor .noUi-target.noUi-horizontal .noUi-handle { z-index: 4; height: 24px; width: 24px; background: var(--background-color-blank); box-shadow: 0 0.25rem 0.5rem -0.25rem rgba(0,0,0,0.2); border-color: var(--s-editor-handle-border-color); outline: 0; top: -7px; }
+.s-editor .noUi-target.noUi-horizontal .noUi-handle::before { top: 5px; left: 8px; background: var(--s-editor-handle-border-color); height: 12px; width: 2px; opacity: 0.5; }
+.s-editor .noUi-target.noUi-horizontal .noUi-handle::after { top: 5px; left: 12px; background: var(--s-editor-handle-border-color); height: 12px; width: 2px; opacity: 0.5; }
 
 .s-editor .noUi-connects { overflow: visible !important; }
 
@@ -203,7 +204,7 @@ button.light-gray:hover,
 @media screen and (max-width: 760px) { /* mobile */
 
     .s-title { margin: 0; }
-    .s-status { max-width: 90px; margin-left: 0.5rem; overflow: hidden; display: inline-block; }
+    .s-status { max-width: 190px; overflow: hidden; display: inline-block; }
 
     .s-week-summary { display: none; }
     .s-week-divider { margin: 2.5rem 0 0; }
@@ -224,7 +225,7 @@ button.light-gray:hover,
     .s-checkin { margin-top: 0.5rem; flex-wrap: wrap; }
     .s-day { margin-left: 0; margin-right: 0; padding-left: 0; padding-right: 0; }
     .s-day .s-day-userpic { order: 1; }
-    .s-day .s-day-summary.wide { order: 3; flex-basis: 100%; padding-top: 0.25rem; }
+    .s-day .s-day-summary.wide { order: 3; flex-basis: 100%; padding-top: 0.125rem; }
     .s-day .s-day-total { flex: 1; order: 2; display: flex; flex-direction: row-reverse; }
     .s-day .s-day-total h5 { font-size: 1rem; padding-top: 0; margin: 0 0 0 0.5rem !important; }
     .s-day .s-day-total .s-logged-app-counter { padding: 0 0.25rem 0 0; }

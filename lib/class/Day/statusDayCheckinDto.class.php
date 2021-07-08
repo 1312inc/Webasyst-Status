@@ -177,7 +177,7 @@ class statusDayCheckinDto implements JsonSerializable
         $this->breakString = statusTimeHelper::getTimeDurationInHuman(
             0,
             (int) $checkin->getBreakDuration() * 60,
-            '0 ' . _w('h')
+            '1 ' . _w('h')
         );
 
         /*

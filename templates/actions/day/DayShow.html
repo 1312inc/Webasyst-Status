@@ -5,7 +5,7 @@
             {if $day->yesterday}[`Yesterday`]
             {elseif $day->today}[`Today`]
             {else}{$day->dayHuman}{/if}
-            <span class="hint">{$day->dayname}{if $day->yesterday || $day->today} {$day->dayHuman}{/if}</span>
+            <span class="hint">{$day->dayname}</span>
         </h6>
         {if !empty($isMe) && $isMe && !$isProject}
             <button class="mobile-only light-gray circle" title="[`Edit`]"><i class="fas fa-edit text-blue"></i></button>
@@ -97,6 +97,13 @@
                             {/strip}{/foreach}
                         </div>
                     </div>
+
+                    {if $userDayInfo->todayStatus->getCalendarId()}
+                        <p class="s-day-summary-user-status">
+                            <span class="badge s-status" title="[`Daily status`]: {$userDayInfo->todayStatus->getName()|escape}" style="background-color: {$userDayInfo->todayStatus->getBgColor()}; color: {$userDayInfo->todayStatus->getFontColor()}">{$userDayInfo->todayStatus->getName()|escape}</span>
+                        </p>
+                    {/if}
+
                     {if $userDayInfo->firstCheckin->comment}
                         <p class="s-day-summary-user-report">
                             {$userDayInfo->firstCheckin->comment|escape|nl2br}
@@ -108,13 +115,6 @@
                 <div class="s-day-total">
 
                     {$_total_is_shown = 0}
-
-                    {if $userDayInfo->todayStatus->getCalendarId()}
-                        <div class="custom-mb-12">
-                            <span class="badge s-status" title="[`Daily status`]: {$userDayInfo->todayStatus->getName()|escape}" style="background-color: {$userDayInfo->todayStatus->getBgColor()}; color: {$userDayInfo->todayStatus->getFontColor()}">{$userDayInfo->todayStatus->getName()|escape}</span>
-                        </div>
-                        {$_total_is_shown = 1}
-                    {/if}
 
                     {if $userDayInfo->realCheckinCount}
                         <h5 class="custom-mb-8 custom-mt-0{if $userDayInfo->todayStatus->getCalendarId()} s-dimmed-due-to-daily-status{/if}">{$userDayInfo->dayDurationString}</h5>
