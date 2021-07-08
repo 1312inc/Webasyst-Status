@@ -882,6 +882,12 @@
                         if (!noUiSliderExists) {
                             
                             function moveTooltip (pageX) {
+                                if (!pageX) {
+                                    var dt = new Date(),
+                                        mins = dt.getMinutes() + (60 * dt.getHours());
+                                    pageX = mins / 1440 * $sl.offsetWidth + $($sl).offset().left;
+                                }
+
                                 var pos = pageX - $($sl).offset().left,
                                     t = 1440 * pos / $sl.offsetWidth;
 
@@ -890,13 +896,15 @@
                                 $tooltip.offset({ left: pageX - $tooltip[0].offsetWidth / 2 });
                             }
 
-                            var dt = new Date();
-                            var mins = dt.getMinutes() + (60 * dt.getHours());
-                            $(window).resize(function () {
-                                moveTooltip(mins / 1440 * $sl.offsetWidth + $($sl).offset().left);
+                            $(window).on('resize.tooltip', function() {
+                                moveTooltip();
                             });
-                            $(window).trigger("resize");
 
+                            var timer = setInterval(function () {
+                                moveTooltip();
+                            }, 5000);
+
+                            moveTooltip();
 
                             // Slider tooltip moving
                             $($sl).on('mousemove', function (event) {
@@ -908,6 +916,8 @@
                                 if ($tooltip.text()) {
                                     $tooltip.show();
                                 }
+                                $(window).off('resize.tooltip');
+                                clearInterval(timer);
                             });
 
                             // Hide slider tooltip
