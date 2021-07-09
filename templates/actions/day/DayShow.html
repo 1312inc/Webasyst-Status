@@ -25,12 +25,21 @@
                         })(jQuery);
                     </script>
                 </span>
-                <div class="s-day-summary wide{if $userDayInfo->todayStatus->getCalendarId()} s-dimmed-due-to-daily-status{/if}">
+                {if $userDayInfo->todayStatus->getCalendarId()}
+                    <div class="s-day-summary-user-status">
+                        <span class="badge s-status" title="[`Daily status`]: {$userDayInfo->todayStatus->getName()|escape}" style="background-color: {$userDayInfo->todayStatus->getBgColor()}; color: {$userDayInfo->todayStatus->getFontColor()}">{$userDayInfo->todayStatus->getName()|escape|truncate:42}</span>
+                    </div>
+                {/if}
+                <div class="s-day-summary wide{if $userDayInfo->todayStatus->getCalendarId()} s-dimmed-due-to-daily-status{/if}{if $userDayInfo->firstCheckin->comment && $userDayInfo->todayStatus->getCalendarId()} s-mobile-full-width{/if}">
                     <div class="s-day-summary-timeline">
 
                         <div class="s-timeline s-timeline-exp">
                             {$_timeline_time_hints_occupation_by_hr = []}{* [h] = 0/1 *}
-                            {$_mins_in_hr = 60}
+                            {if $wa->isMobile()}
+                                {$_mins_in_hr = 120}
+                            {else}
+                                {$_mins_in_hr = 60}
+                            {/if}
                             {$_day_trace_count = 0}
                             {foreach $userDayInfo->checkins as $checkin}{strip}
                                 {if $checkin->max > $checkin->min}
@@ -98,12 +107,6 @@
                         </div>
                     </div>
 
-                    {if $userDayInfo->todayStatus->getCalendarId()}
-                        <p class="s-day-summary-user-status">
-                            <span class="badge s-status" title="[`Daily status`]: {$userDayInfo->todayStatus->getName()|escape}" style="background-color: {$userDayInfo->todayStatus->getBgColor()}; color: {$userDayInfo->todayStatus->getFontColor()}">{$userDayInfo->todayStatus->getName()|escape}</span>
-                        </p>
-                    {/if}
-
                     {if $userDayInfo->firstCheckin->comment}
                         <p class="s-day-summary-user-report">
                             {$userDayInfo->firstCheckin->comment|escape|nl2br}
@@ -146,7 +149,7 @@
                     {/if}
 
                     {if !$_total_is_shown}
-                        <h5 class="text-light-gray" title="[`No activity`]">&mdash;</h5>
+                        <h5 class="text-light-gray s-day-no-activity" title="[`No activity`]">&mdash;</h5>
                     {/if}
 
 
