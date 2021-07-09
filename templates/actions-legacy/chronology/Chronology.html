@@ -1,0 +1,167 @@
+<div class="content left200px">
+
+    <div class="s-week-summary s-this-week">
+
+        <h5 class="heading align-center">[`This week`]</h5>
+
+        {include file='./../week/WeekDonut.html' donut=$currentWeek->donut isProject=$isProject}
+
+        {*
+        <div class="block">
+            <p class="hint">{sprintf('[`Out of total %d weekly working hours`]', 40)}</p>
+        </div>
+        *}
+
+    </div>
+
+    {if $isProject}
+
+        <div class="s-title">
+            <h1{if $stts->getRightConfig()->hasAccessToProject()} class="float-left"{/if}>{$project->getName()|escape}</h1>
+            {if $stts->getRightConfig()->hasAccessToProject()}
+                <div class="block half-padded" style="margin-left: 1.5rem;">
+                    <ul class="menu-h">
+                        <li>
+                            <a href="#" class="gray" data-status-project-action="add" data-status-project-id="{$project->getId()}"><i class="icon16 settings"></i>[`Project settings`]</a>
+                        </li>
+                    </ul>
+                </div>
+            {/if}
+        </div>
+
+    {elseif $isMe}
+
+        <!-- Tomorrow: SET TAG ONLY: Office / Remote / Ill / Day off / Custom tag -->
+        <div class="s-tomorrow-planner">
+            <div class="float-right">
+                {include inline file='./../todaystatus/TodaystatusList.html' statuses=$statuses statusDate='tomorrow' currentStatus=$nextStatus}
+            </div>
+            <h3>
+                [`Tomorrow`]
+                <span class="hint">
+                    {$tomorrowDto->dayname}, {$tomorrowDto->dayHuman}
+                            <!-- <span title="[`Weekend`]">🏖️Sunday / Saturday</span> -->
+                    <!-- <span title="[`Birthday`]">🎂Birtday</span> -->
+                </span>
+            </h3>
+        </div>
+
+    {else}
+
+        {if !$contextUser->getId() || ($contextUser->getId() && !$contextUser->isExists())}
+            <div class="s-title">
+                <h1>{$contextUser->getName()|escape}</h1>
+                <p>{sprintf('[`The user does not have access to the Status app. Grant access rights in the <a href="%s"><i class="icon16" style="%s"></i>Team app</a> so the user can check in too.`]', $wa_backend_url|cat:'team/', 'background-image: url(/wa-apps/team/img/team48.png); background-size: 16px 16px; margin-top: 3px;')} <span class="gray">[`Automatic backend online time tracking will be enabled only after access to the Status app is granted for the user.`]</span></p>
+            </div>
+        {else}
+            <div class="s-title">
+                <h1>{$contextUser->getName()|escape}</h1>
+            </div>
+        {/if}
+
+        {if $nextStatus->getStatusId()}
+            <div class="s-day s-this-week" data-status-day-date="{$tomorrowDto->date}">
+                <div class="s-day-date">
+                    <h3>
+                        [`Tomorrow`]
+                        <span class="hint">{$tomorrowDto->dayname}, {$tomorrowDto->dayHuman}</span>
+                    </h3>
+                </div>
+                <div class="s-day-summary">
+                    <div class="s-day-summary-user-report">
+                        <div class="s-author">
+                            <h5 class="s-username">
+                                <i class="icon16 userpic20" style="background-image: url({$tomorrowDto->users[$contextUser->getContactId()]->photoUrl})"></i>
+                                {$tomorrowDto->users[$contextUser->getContactId()]->name|escape}
+                                <span class="s-status" title="[`Status for tomorrow`]" style="background-color: {$nextStatus->getBgColor()}; color: {$nextStatus->getFontColor()}">{$nextStatus->getName()|escape}</span>
+                            </h5>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        {/if}
+
+    {/if}
+
+
+    {foreach $currentWeek->days as $day}
+    <div class="s-day{if $day->isFromCurrentWeek} s-this-week{/if}{if !$isMe} s-non-clickable{elseif !$isProject} s-editable{/if}"
+         data-status-day-date="{$day->date}"
+    >
+        {include inline file='./../day/DayShow.html' day=$day isProject=$isProject}
+    </div>
+    {/foreach}
+
+    <!-- CHRONOLOGY -->
+
+    {include inline file='./../chronology/ChronologyLoadWeeks.html' weeks=$weeks}
+
+</div>
+
+<script>
+    'use strict';
+    (function(){
+        var currentContactId = '{$current_contact_id}',
+            dayEditable = parseInt('{$dayEditable}');
+
+        // $.status.options.userId = currentContactId;
+
+        $.status.lazyLoad({
+            $loading: $('#chronology .lazyloading'),
+            html_selector: '#olderWeeks',
+            url: '?module=chronology&action=loadWeeks&{if $project}project_id={$project->getId()}{else}contact_id={$current_contact_id}{/if}'
+        });
+
+        $.status.$status_content
+            .on('click.stts', '[data-status-walog-app]', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                var $this = $(this),
+                    appId = $this.data('status-walog-app');
+
+                $this.closest('.s-day-summary-user-report')
+                    .find('[data-status-walog-app-logs="'+appId+'"]').slideDown(100)
+                    .siblings().hide();
+
+                return false;
+            });
+
+        $.status.$status_content.on('reloadDonut.stts', '[data-status-week-donut]', function () {
+            var $donut = $(this),
+                weekNum = $donut.data('status-week-donut');
+
+            $.get('?module=week&action=donut&week_num='+weekNum, function (html) {
+                $donut.replaceWith(html);
+            })
+        });
+
+        $.status.$status_content.off('click.stts', '.s-day');
+        if (dayEditable) {
+            $.status.$status_content.on('click.stts', '.s-day', function (e) {
+                if ($(e.target).closest('[data-status-walog-app-logs]').length) {
+                    return;
+                }
+
+                $.status.dayEditor($(this));
+            });
+
+            // var $editableDay = $.status.$status_content.find('.s-editable-now');
+            // if (!$editableDay.length) {
+            // var $editableDay = $.status.$status_content.find('.s-day:first');
+            // }
+            // $editableDay.trigger('click.stts');
+
+            $.status.$status_content.on('loadEditor.stts', function () {
+                var loadSelector = '.s-day:first';
+                if ($.status.routing.hash === 'y') {
+                    loadSelector = '.s-day:eq(1)';
+                }
+                $.status.$status_content.find(loadSelector).trigger('click.stts');
+            });
+        }
+
+    }());
+</script>

@@ -32,9 +32,10 @@ final class statusTimeHelper
      */
     public static function getTimeDurationInHuman($startTimestamp, $endTimestamp, $default = '0')
     {
-        $durationDiff = (new DateTime(date('Y-m-d H:i:s', $endTimestamp)))->diff(
-            new DateTime(date('Y-m-d H:i:s', $startTimestamp))
-        );
+        $durationDiff = (new DateTime(date('Y-m-d H:i:s', $endTimestamp)))
+            ->diff(
+                new DateTime(date('Y-m-d H:i:s', $startTimestamp))
+            );
 
         $humanFormat = [];
         $hours = 0;
@@ -90,5 +91,17 @@ final class statusTimeHelper
         $waTime = waDateTime::date($format, $time, $user->getTimezone());
 
         return new DateTime($waTime);
+    }
+
+    public static function renderIntAsHHMMTime($timeSinceMidnight = 0)
+    {
+        return sprintf(
+            '%s:%s',
+            floor($timeSinceMidnight / self::MINUTES_IN_HOUR),
+            sprintf(
+                '%02d',
+                $timeSinceMidnight - self::SECONDS_IN_MINUTE * floor($timeSinceMidnight / self::SECONDS_IN_MINUTE)
+            )
+        );
     }
 }

@@ -11,7 +11,7 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: .\n"
 "Language: en_US\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 3.0\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: .\n"
 
@@ -316,4 +316,34 @@ msgid "Automatic backend online time tracking will be enabled only after access 
 msgstr ""
 
 msgid "<strong class=\"highlighted\">Hello and welcome!</strong> Add your first work report by <strong>dragging the time slider</strong> or by <strong>selecting your daily status</strong> in the menu so all your teammates get to know what you are up to on this day."
+msgstr ""
+
+msgid "Menu"
+msgstr ""
+
+msgid "Everyone"
+msgstr ""
+
+msgid "Teams"
+msgstr ""
+
+msgid "Users"
+msgstr ""
+
+msgid "Show more (%d)"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Daily status"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Set daily status"
+msgstr ""
+
+msgid "Adjust time"
 msgstr ""

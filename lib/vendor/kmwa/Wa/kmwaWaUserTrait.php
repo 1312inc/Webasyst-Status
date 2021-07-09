@@ -23,12 +23,12 @@ trait kmwaWaUserTrait
     /**
      * @var string
      */
-    protected $photoUrl = '/wa-content/img/userpic96@2x.jpg';
+    protected $photoUrl = '/wa-content/img/userpic.svg';
 
     /**
      * @var string
      */
-    protected $userPic = '/wa-content/img/userpic20@2x.jpg';
+    protected $userPic = '/wa-content/img/userpic.svg';
 
     /**
      * @var string
@@ -49,6 +49,11 @@ trait kmwaWaUserTrait
      * @var bool
      */
     protected $exists = false;
+
+    /**
+     * @var bool
+     */
+    protected $deleted = true;
 
     /**
      * @var int
@@ -155,12 +160,12 @@ trait kmwaWaUserTrait
             $this->status = $this->contact->getStatus();
             $this->exists = $this->contact->get('is_user') == 1;
             $this->email = $this->contact->get('email', 'default');
-
             if (wa()->getUser() && wa()->getUser()->getId() == $this->contact->getId()) {
                 $this->timezone = wa()->getUser()->getTimezone();
             } else {
                 $this->timezone = $this->contact->getTimezone();
             }
+            $this->deleted = false;
         }
 
         return $this;
@@ -259,5 +264,13 @@ trait kmwaWaUserTrait
     public function getTimezone()
     {
         return $this->timezone;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDeleted()
+    {
+        return $this->deleted;
     }
 }

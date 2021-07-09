@@ -1,0 +1,34 @@
+<section id="chronology" class="clear-right">
+    <div id="olderWeeks">
+        {foreach $weeks as $week}
+            <div class="s-week-divider">
+                <h5 class="heading">{sprintf('[`WEEK #%d`]', $week->number)}</h5>
+            </div>
+
+            <div class="s-week-summary">
+                <div class="block">
+
+                    {*
+                    <h5 class="heading align-center">
+                        {sprintf('[`WEEK #%d`]', $week->number)}
+                    </h5>
+                    *}
+                    {include inline file='./../../actions-legacy/week/WeekDonut.html' donut=$week->donut isProject=$isProject}
+
+                </div>
+            </div>
+
+            {foreach $week->days as $day}
+            <div class="s-day{if $day->isFromCurrentWeek && $isMe} s-this-week{/if}{if !$isMe} s-non-clickable{elseif !$isProject} s-editable{/if}"
+                 data-status-day-date="{$day->date}"
+            >
+                {include inline file='./../../actions-legacy/day/DayShow.html' day=$day isProject=$isProject}
+            </div>
+            {/foreach}
+        {/foreach}
+    </div>
+
+    <div class="block double-padded lazyloading" style="display: none;">
+        <i class="icon16 loading"></i> [`Loading...`]
+    </div>
+</section>

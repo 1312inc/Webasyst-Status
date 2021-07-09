@@ -1,0 +1,50 @@
+<section>
+    <div class="dialog-content">
+        <div data-status-wrapper="status-settings-dialog" class="s-walog-explained">
+            <h1>{sprintf('[`%s on %s`]', $user->getName()|escape, $date|wa_date:humandate)}</h1>
+
+            <div class="fields width100px">
+                {foreach $walogs as $walog}
+                    {if $walog->appId != 'webasyst'}
+                        <div class="field-group">
+                        <div class="field">
+                            <div class="name">
+                                <i class="icon16 s-app-icon" style="background-image: url('{$walog->appIcon}');"></i>
+                                {$walog->appName|escape}
+                            </div>
+
+                            {foreach $walog->logs as $logs}
+                                <div class="value">
+
+                                    <i class="icon16 userpic20" style="background-image: url('{$logs['contact_photo_url']}');"></i>
+                                    {$logs['action_name']}
+                                    {if !empty($logs['params_html'])}
+                                        <strong>{$logs['params_html']}</strong>
+                                    {/if}
+
+                                    <span class="hint">{$logs['datetime']|wa_datetime:'humandatetime'}</span>
+
+                                    {*
+                                        <ul>
+                                            {foreach $logs as $name => $log}
+                                            <li>{$name}: {$log|print_r}</li>
+                                            {/foreach}
+                                        </ul>
+                                    *}
+                                </div>
+                            {/foreach}
+                        </div>
+                        </div>
+                    {/if}
+                {/foreach}
+            </div>
+
+        </div>
+    </div>
+
+    <div class="dialog-buttons">
+        <div class="block">
+            <a class="cancel" href="#">[`Close`]</a>
+        </div>
+    </div>
+</section>

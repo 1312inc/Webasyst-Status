@@ -26,12 +26,10 @@ final class statusLogger
      */
     public function log($message, $file = 'log')
     {
-        if (waSystemConfig::isDebug()) {
-            if (is_string($message)) {
-                waLog::log($message, sprintf('status/%s.log', $file));
-            } else {
-                waLog::dump($message, sprintf('status/%s.log', $file));
-            }
+        if (is_string($message)) {
+            waLog::log($message, sprintf('status/%s.log', $file));
+        } else {
+            waLog::dump($message, sprintf('status/%s.log', $file));
         }
     }
 

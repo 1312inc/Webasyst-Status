@@ -1,50 +1,53 @@
-<section>
-    <div class="dialog-content">
-        <div data-status-wrapper="status-settings-dialog" class="s-walog-explained">
-            <h1>{sprintf('[`%s on %s`]', $user->getName()|escape, $date|wa_date:humandate)}</h1>
+<div class="dialog" id="status-walog-dialog">
+    <div class="dialog-background"></div>
+        <div class="dialog-body">
+            <header class="dialog-header">
+                <h3>{$date|wa_date:humandate} <span class="hint">{$user->getName()|escape}</span></h3>
+            </header>
 
-            <div class="fields width100px">
+            <div class="dialog-content fields">
                 {foreach $walogs as $walog}
                     {if $walog->appId != 'webasyst'}
-                        <div class="field-group">
-                        <div class="field">
-                            <div class="name">
-                                <i class="icon16 s-app-icon" style="background-image: url('{$walog->appIcon}');"></i>
-                                {$walog->appName|escape}
-                            </div>
-
+                        <div class="fields-group">
+                            {$_i = 0}
                             {foreach $walog->logs as $logs}
+                            <div class="field">
+                                <div class="name">
+                                    {if $_i == 0}
+                                    <div class="flexbox middle space-8">
+                                        <i class="icon size-24"
+                                            style="background-image: url('{$walog->appIcon}');"></i>
+                                        <span>{$walog->appName|escape}</span>
+                                    </div>
+                                    {/if}
+                                </div>
+
+
                                 <div class="value">
 
-                                    <i class="icon16 userpic20" style="background-image: url('{$logs['contact_photo_url']}');"></i>
-                                    {$logs['action_name']}
-                                    {if !empty($logs['params_html'])}
-                                        <strong>{$logs['params_html']}</strong>
-                                    {/if}
+                                    <div class="small"{if $_i == 0} style="margin-top: 6px;"{/if}>
+                                        <i class="icon userpic top"
+                                           style="background-image: url('{$logs['contact_photo_url']}');"></i>
+                                        <span>{$logs['action_name']}</span>
+                                        {if !empty($logs['params_html'])}
+                                            <strong>{$logs['params_html']}</strong>
+                                        {/if}
 
-                                    <span class="hint">{$logs['datetime']|wa_datetime:'humandatetime'} @ {$wa->user()->getTimezone()}</span>
+                                        <span class="hint">{$logs['datetime']|wa_datetime:'humandatetime'}</span>
+                                    </div>
 
-                                    {*
-                                        <ul>
-                                            {foreach $logs as $name => $log}
-                                            <li>{$name}: {$log|print_r}</li>
-                                            {/foreach}
-                                        </ul>
-                                    *}
                                 </div>
+
+                            </div>
+                            {$_i = $_i + 1}
                             {/foreach}
-                        </div>
                         </div>
                     {/if}
                 {/foreach}
             </div>
 
+            <footer class="dialog-footer">
+                <button class="js-close-dialog button light-gray">[`Close`]</button>
+            </footer>
         </div>
-    </div>
-
-    <div class="dialog-buttons">
-        <div class="block">
-            <a class="cancel" href="#">[`Close`]</a>
-        </div>
-    </div>
-</section>
+</div>

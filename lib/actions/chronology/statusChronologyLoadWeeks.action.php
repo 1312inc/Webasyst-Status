@@ -15,19 +15,29 @@ class statusChronologyLoadWeeksAction extends statusChronologyAction
     {
         $offset = waRequest::get('offset', 0, waRequest::TYPE_INT);
 
+        $loadWeekCount = statusWeekFactory::DEFAULT_WEEKS_LOAD;
+        if ($this->contactId == statusGetWeekDataFilterRequestDto::ALL_USERS_ID || $this->groupId) {
+            $loadWeekCount = 1;
+        }
+
         $weeks = statusWeekFactory::createLastNWeeks(
-            statusWeekFactory::DEFAULT_WEEKS_LOAD,
+            $loadWeekCount,
             false,
-            statusWeekFactory::DEFAULT_WEEKS_LOAD * $offset
+            $loadWeekCount * $offset
         );
 
-        $weeks = statusWeekFactory::getWeeksDto($weeks, $this->user);
+        $weeksDto = statusWeekFactory::getWeeksDto($weeks, $this->getWeekDataFilterRequestDto);
+
+        $weekFilter = new statusWeekFilter();
+        foreach ($weeksDto as $weekDto) {
+            $weekFilter->filterNonExistingUserWithNoActivity($weekDto);
+        }
 
         $this->view->assign(
             [
-                'weeks' => $weeks,
-                'isMe' => (int)$this->isMe,
-                'isProject' => (int)$this->isProject,
+                'weeks' => $weeksDto,
+                'isMe' => (int) $this->isMe,
+                'isProject' => (int) $this->isProject,
             ]
         );
     }

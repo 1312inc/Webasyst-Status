@@ -54,7 +54,8 @@ final class statusDayDotAssembler
                 $traceDurationWithBreak += ($checkin->max - $checkin->min);
             }
 
-            $userDayInfoDto->checkinTimezones[$check->getTimezone()] = sprintf('%+d', $check->getTimezone());
+            $checkTimezone = $check->getTimezone();
+            $userDayInfoDto->checkinTimezones[$checkTimezone] = sprintf('%+d', $checkTimezone);
         }
 
         if (!$hasManualCheckins) {
@@ -180,12 +181,14 @@ final class statusDayDotAssembler
                 $css[] = $projectDurationDto->project->color . ' ' . $percents . '%';
                 $percents += $value;
                 $css[] = $projectDurationDto->project->color . ' ' . $percents . '%';
-                $title[] = $projectDurationDto->project->name
-                    . ': '
-                    . statusTimeHelper::getTimeDurationInHuman(
-                        0,
-                        $projectDurationDto->duration * statusTimeHelper::SECONDS_IN_MINUTE
-                    );
+                if ($value > 0) {
+                    $title[] = $projectDurationDto->project->name
+                        . ': '
+                        . statusTimeHelper::getTimeDurationInHuman(
+                            0,
+                            $projectDurationDto->duration * statusTimeHelper::SECONDS_IN_MINUTE
+                        );
+                }
             }
 
             if ($percents < 100) {

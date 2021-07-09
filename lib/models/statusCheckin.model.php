@@ -277,20 +277,21 @@ SQL;
     /**
      * @param string $dateStart
      * @param string $dateEnd
-     * @param int    $contactId
+     * @param array  $contactIds
      *
      * @return int
+     * @throws waDbException
      */
-    public function countTimeByDatesAndContactId($dateStart, $dateEnd, $contactId)
+    public function countTimeByDatesAndContactId($dateStart, $dateEnd, array $contactIds)
     {
         $sql = <<<SQL
 select sum(sc.total_duration) duration_by_user 
 from status_checkin sc
-where sc.contact_id = i:contact_id 
+where sc.contact_id in (i:contact_ids) 
   and sc.date between s:date1 and s:date2
 SQL;
 
-        return $this->query($sql, ['contact_id' => $contactId, 'date1' => $dateStart, 'date2' => $dateEnd])
+        return $this->query($sql, ['contact_ids' => $contactIds, 'date1' => $dateStart, 'date2' => $dateEnd])
             ->fetchField('duration_by_user');
     }
 

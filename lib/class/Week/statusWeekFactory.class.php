@@ -67,7 +67,7 @@ final class statusWeekFactory
      * @return statusWeekDto[]
      * @throws waException
      */
-    public static function getWeeksDto(array $weeks, statusUser $user = null, statusProject $project = null): array
+    public static function getWeeksDto(array $weeks, statusGetWeekDataFilterRequestDto $filterRequestDto)
     {
         $weeksDto = [];
         $projectId = false;
@@ -87,15 +87,20 @@ final class statusWeekFactory
         // собрали пользователей для заданных недель
         $users = [];
         $userDtos = [];
-        if ($project instanceof statusProject) {
+        if ($filterRequestDto->getProject()) {
             $user = null;
-            $projectId = $project->getId();
+            $projectId = $filterRequestDto->getProject()->getId();
         }
 
         $contactIdsByDates = [];
-        if ($user instanceof statusUser) {
-            $users[$user->getContactId()] = $user;
-            $userDtos[$user->getContactId()] = new statusUserDto($users[$user->getContactId()]);
+        if ($filterRequestDto->getUsers()) {
+            foreach ($filterRequestDto->getUsers() as $filterUser) {
+                if ($filterUser->isDeleted()) {
+                    continue;
+                }
+                $users[$filterUser->getContactId()] = $filterUser;
+                $userDtos[$filterUser->getContactId()] = new statusUserDto($filterUser);
+            }
         } else {
             /** @var statusCheckinModel $checkinModel */
             $checkinModel = stts()->getModel(statusCheckin::class);
@@ -152,8 +157,8 @@ final class statusWeekFactory
                 $dayDto->isFromCurrentWeek = $weekDto->isCurrent;
 
                 // для фильтра по юзеру всегда userDto
-                if (!$projectId) {
-                    $contactIdsByDates[$dayDto->date] = [$user->getContactId()];
+                if (!$projectId && $users) {
+                    $contactIdsByDates[$dayDto->date] = array_keys($users);
                 }
 
                 if (!isset($contactIdsByDates[$dayDto->date])) {
@@ -197,10 +202,10 @@ final class statusWeekFactory
                 }
             }
 
-            if (!$projectId) {
-                $weekDto->donut = $weekDtoAssembler->getDonutUserStatDto($weekDto, $week, $user);
-            } else {
+            if ($projectId) {
                 $weekDto->donut = $weekDtoAssembler->getDonutProjectStatDto($weekDto, $week, $projectId);
+            } elseif ($users) {
+                $weekDto->donut = $weekDtoAssembler->getDonutUserStatDto($weekDto, $week, $filterRequestDto->getUsers() ?: []);
             }
 
             $weeksDto[] = $weekDto;

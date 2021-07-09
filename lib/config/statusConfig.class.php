@@ -257,6 +257,14 @@ class statusConfig extends waAppConfig
     {
         if ($this->user === null) {
             $this->user = $this->getEntityRepository(statusUser::class)->findByContact(wa()->getUser());
+            if (!$this->user->getId()) {
+                try {
+                    (new statusMissingUserFixer())->fix();
+                    $this->user = $this->getEntityRepository(statusUser::class)->findByContact(wa()->getUser());
+                } catch (Exception $e) {
+                    $this->getLogger()->error('Fail on fix users', $e);
+                }
+            }
         }
 
         return $this->user;
@@ -350,11 +358,6 @@ class statusConfig extends waAppConfig
             stts()->getLogger()->error('Error on auto trace handle', $ex);
         }
 
-        $force = (bool) waRequest::get('force', false);
-        if (!(new statusServiceStatusChecker())->hasActivityYesterday($user, $force)) {
-            return ['count' => 1, 'url' => $url.'#/y'];
-        }
-
         return ['count' => null, 'url' => $url];
     }
 
@@ -365,6 +368,11 @@ class statusConfig extends waAppConfig
     public function canShowTrace(): bool
     {
         return $this->getContextUser()->isMe() || $this->getRightConfig()->isAdmin($this->user);
+    }
+
+    public function getUI2TemplatePath(string $path): string
+    {
+        return sprintf($path, wa()->whichUI() === '1.3' ? '-legacy' : '');
     }
 
     private function registerGlobal(): void

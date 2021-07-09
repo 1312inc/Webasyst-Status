@@ -15,6 +15,7 @@ class statusBackendSidebarAction extends statusViewAction
     {
         $teammates = [];
         $users = stts()->getEntityRepository(statusUser::class)->findAllExceptMe();
+        $hiddenUsers = [];
 
         usort($users, function (statusUser $user) {
            return !$user->isExists();
@@ -48,7 +49,6 @@ class statusBackendSidebarAction extends statusViewAction
 
             if (!stts()->getRightConfig()->hasAccessToTeammate($user->getContactId())) {
                 unset($users[$id]);
-                continue;
             }
         }
 
@@ -62,6 +62,42 @@ class statusBackendSidebarAction extends statusViewAction
         }
 
         $stat = new statusStat();
+
+        $waGroups = (new waGroupModel())->select('*')
+            ->order('sort')
+            ->fetchAll('id');
+
+        $userGroupModel = new waUserGroupsModel();
+        $allUsers = stts()->getEntityRepository(statusUser::class)->findAll();
+        foreach ($waGroups as $i => $waGroup) {
+            $groupContactsIds = $userGroupModel->getContactIds($i);
+
+            $groupIsVisible = false;
+
+            if ($groupContactsIds) {
+                foreach ($allUsers as $user) {
+                    if (!$user->isExists()) {
+                        continue;
+                    }
+
+                    if (in_array($user->getContactId(), $groupContactsIds)) {
+                        $groupIsVisible = true;
+                        break;
+                    }
+                }
+            }
+
+            if ($groupIsVisible === false) {
+                unset($waGroups[$i]);
+            }
+        }
+
+        foreach ($users as $i => $user) {
+            if (!$user->isExists()) {
+                unset($users[$i]);
+                $hiddenUsers[] = $user;
+            }
+        }
 
         /**
          * UI in main sidebar
@@ -79,11 +115,13 @@ class statusBackendSidebarAction extends statusViewAction
             [
                 'teammates' => $teammates,
                 'users' => $users,
+                'hiddenUsers' => $hiddenUsers,
                 'projects' => $projects,
                 'backend_sidebar' => $eventResult,
                 'timeByUserStat' => $stat->usersTimeByWeek(new DateTime()),
                 'timeByProjectStat' => $stat->projectsTimeByWeek(new DateTime()),
                 'isAdmin' => (int)$this->getUser()->isAdmin('status'),
+                'groups' => $waGroups,
             ]
         );
     }

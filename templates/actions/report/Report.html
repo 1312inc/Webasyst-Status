@@ -1,55 +1,63 @@
 {** @var statusDatePeriodVO $currentPeriod **}
-<div class="content left200px"
-     data-status-wrapper="report"
+<div data-status-wrapper="report"
      data-status-report-start="{$currentPeriod->getDateStartFormat()}"
      data-status-report-end="{$currentPeriod->getDateEndFormat()}"
-     data-status-report-period="{$currentPeriod->getId()}">
-    <div class="float-right block half-padded s-reports-timeframe">
-        <ul class="menu-h dropdown">
-            <li>
-                <a href="#" class="inline-link nowrap"
-                   style="display: inline;"><b><i>{$currentPeriod->getName()|escape}</i></b> <i
-                            class="icon10 darr"></i></a>
-                <ul class="menu-v width300px">
-                    {foreach statusReportService::getPeriods() as $datePeriod}
-                        <li><a href="#/reports/{$datePeriod->getDateStartFormat()}/{$datePeriod->getDateEndFormat()}"
-                               data-status-report-period="{$datePeriod->getId()}"
-                               class="nowrap">{$datePeriod->getName()|escape}</a></li>
-                    {/foreach}
-                    <li class="bordered-top"><a href="#" data-status-report-period="custom">[`Select dates...`]</a></li>
-                </ul>
-            </li>
-        </ul>
-        <div data-status-report-period-custom style="display: none;" class="float-right">
-            <input type="text" name="start" value="{$currentPeriod->getDateStartFormat()}"/>
-            <input type="text" name="end" value="{$currentPeriod->getDateEndFormat()}"/>
-            <a href="#" data-status-report-action="load-custom-period" title="[`Update`]"><i class="icon16 update" style="margin-top: 5px;"></i></a>
-        </div>
-    </div>
+     data-status-report-period="{$currentPeriod->getId()}"
+     class="box contentbox s-mega-article">
 
-    <div class="s-title">
-        <h1>[`Reports`]</h1>
-    </div>
+     <div class="flexbox wrap">
+         <div class="wide custom-mb-8-mobile">
+            <h1>[`Reports`]</h1>
+         </div>
+         <div>
+            <div class="s-reports-timeframe flexbox wrap space-12">
+                <div class="dropdown custom-mb-8-mobile" id="reportSelect">
+                    <button class="dropdown-toggle button light-gray" type="button">{$currentPeriod->getName()|escape}</button>
+                    <div class="dropdown-body">
+                        <ul class="menu">
+                            {foreach statusReportService::getPeriods() as $datePeriod}
+                                <li><a href="#/reports/{$datePeriod->getDateStartFormat()}/{$datePeriod->getDateEndFormat()}"
+                                       data-status-report-period="{$datePeriod->getId()}"
+                                       class="nowrap">{$datePeriod->getName()|escape}</a></li>
+                            {/foreach}
+                            <li class="bordered-top"><a href="#" data-status-report-period="custom">[`Select dates...`]</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div data-status-report-period-custom style="display: none;" class="flexbox space-8 middle">
+                    <input type="text" name="start" value="{$currentPeriod->getDateStartFormat()}" style="width: 120px;" />
+                    <input type="text" name="end" value="{$currentPeriod->getDateEndFormat()}" style="width: 120px;" />
+                    <a href="#" data-status-report-action="load-custom-period" title="[`Update`]"><i class="fas fa-sync-alt"></i></a>
+                </div>
+            </div>
+         </div>
+     </div>
 
     {function reportTable reportData=[]}
-        <table class="light">
+        <table class="small">
             <thead>
             <tr>
                 <!-- <th class="heading align-left">[`Project`]</th> -->
-                <th class="heading align-right small" colspan="2">[`Hours`]</th>
+                <th class="align-right small" colspan="2">[`Hours`]</th>
             </tr>
             </thead>
 
             <tbody>
             {foreach $reportData as $reportDatum}
                 <tr>
-                    <td class="nowrap">{$reportDatum->icon}
-                        <a href="#"
-                           class="inline"
-                           data-status-report-action="load-data"
-                           data-status-load-data="{$reportDatum->type}"
-                           data-status-load-data-id="{$reportDatum->identity}"
-                        >{$reportDatum->nameEscaped}</a>
+                    <td>
+                        <div class="flexbox middle space-8">
+                            {$reportDatum->icon}
+                            <div>
+                                <a href="#"
+                                    class="inline"
+                                    data-status-report-action="load-data"
+                                    data-status-load-data="{$reportDatum->type}"
+                                    data-status-load-data-id="{$reportDatum->identity}"
+                                    >{$reportDatum->nameEscaped}</a>
+                            </div>
+                        </div>
                     </td>
                     <td class="align-right nowrap" title="{$reportDatum->durationStr}">{$reportDatum->durationFloat}</td>
                 </tr>
@@ -58,11 +66,11 @@
         </table>
     {/function}
 
-    <div class="s-reports-flexbox">
-        <div class="s-reports-table">
+    <div class="s-reports-flexbox flexbox wrap">
+        <div class="s-reports-table custom-m-0 custom-mr-24 custom-mr-0-mobile custom-mb-24-mobile">
         {reportTable reportData=$users}
         </div>
-        <div class="s-reports-table">
+        <div class="s-reports-table custom-m-0">
         {reportTable reportData=$projects}
         </div>
     </div>
@@ -105,7 +113,7 @@
                     if (r.status === 'ok') {
                         $.each(r.data, function () {
                             var newTr = '<tr data-status-report-loaded-from="' + hash + '" class="s-subrow">'
-                                + '<td>' + this.icon + ' ' + this.nameEscaped + '</td>'
+                                + '<td class="custom-pl-24"><div class="flexbox middle space-8">' + this.icon + ' <span>' + this.nameEscaped + '</span></div></td>'
                                 + '<td class="align-right" title="' + this.durationStr + '">' + this.durationFloat + '</td>'+
                                 +'</tr>',
                                 $lastTr = $w.find('[data-status-report-loaded-from="' + hash + '"]:last');
@@ -129,6 +137,7 @@
                 if (type === 'custom'){
                     e.preventDefault();
                     $w.find('[data-status-report-period-custom]').show();
+                    $("#reportSelect").data("dropdown").hide();
                 }
             });
 
@@ -142,7 +151,7 @@
                     showOtherMonths: true,
                     selectOtherMonths: true,
                     stepMonths: 1,
-                    numberOfMonths: 3,
+                    // numberOfMonths: 3,
                     gotoCurrent: true,
                     constrainInput: false,
                     dateFormat: dateFormat,
@@ -153,7 +162,7 @@
             $w.on('click.stts', '[data-status-report-action="load-custom-period"]', function (e) {
                 e.preventDefault();
 
-                window.location.hash = 'reports/' + $from.val() + '/' + $to.val();
+                window.location.hash = '#/reports/' + $from.val() + '/' + $to.val();
             });
         };
 
@@ -163,4 +172,12 @@
             $w.find('[data-status-report-period-custom]').show();
         }
     })();
+</script>
+
+<script>
+    (function($) {
+        $("#reportSelect").waDropdown({
+            hover: false
+        });
+    })(jQuery);
 </script>

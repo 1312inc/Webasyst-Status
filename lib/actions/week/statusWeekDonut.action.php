@@ -22,7 +22,7 @@ class statusWeekDonutAction extends statusChronologyAction
         $week = statusWeekFactory::createWeekByNum($weekNum);
 
         $weeksDto = new statusWeekDto($week);
-        $donut = $assembler->getDonutUserStatDto($weeksDto, $week, $this->user);
+        $donut = $assembler->getDonutUserStatDto($weeksDto, $week, $this->getWeekDataFilterRequestDto->getUsers());
 
         $this->view->assign(
             [
