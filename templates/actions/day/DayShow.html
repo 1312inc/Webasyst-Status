@@ -18,7 +18,7 @@
 
             <div class="s-checkin flexbox">
                 <span class="s-day-userpic">
-                    <i class="userpic userpic-32" id="s-day-userpic-{$userDayInfo->contactId}-{$day->date}" style="background-image: url({$day->users[$userDayInfo->contactId]->photoUrl})" data-wa-tooltip-content="{$day->users[$userDayInfo->contactId]->name|escape}" data-wa-tooltip-placement="right"></i>
+                    <i class="userpic userpic-32" id="s-day-userpic-{$userDayInfo->contactId}-{$day->date}" style="background-image: url({$day->users[$userDayInfo->contactId]->photoUrl})" data-wa-tooltip-content="{$day->users[$userDayInfo->contactId]->name|escape}{if $userDayInfo->checkinTimezones} @ GMT{$userDayInfo->checkinTimezones|implode:', '}{/if}" data-wa-tooltip-placement="right"></i>
                     <script>
                         ( function($) {
                             $("#s-day-userpic-{$userDayInfo->contactId}-{$day->date}").waTooltip();
@@ -97,7 +97,6 @@
                             {/strip}{/foreach}
                         </div>
                     </div>
-                    {if $userDayInfo->checkinTimezones} <span class="hint s-user-checkin-timezones">GMT{$userDayInfo->checkinTimezones|implode:', '}</span>{/if}
 
                     {if $userDayInfo->todayStatus->getCalendarId()}
                         <p class="s-day-summary-user-status">
