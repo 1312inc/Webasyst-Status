@@ -76,10 +76,10 @@ class statusDayDto
             ? waDateTime::format('humandatetime')
             : waDateTime::format('humandate', $this->date, date_default_timezone_get());
         $this->dayname = _w($day->getDate()->format('D'));
-        $this->yesterday = $day->getDate()->format('Y-m-d') === statusTimeHelper::createDatetimeForUser(
-                'Y-m-d',
-                new DateTime('yesterday')
-            )->format('Y-m-d');
+        $userYesterday = statusTimeHelper::createDatetimeForUser()
+            ->modify('yesterday')
+            ->format('Y-m-d');
+        $this->yesterday = $day->getDate()->format('Y-m-d') === $userYesterday;
         $this->weekNum = statusTimeHelper::getWeekNumberByDate($day->getDate());
     }
 }
