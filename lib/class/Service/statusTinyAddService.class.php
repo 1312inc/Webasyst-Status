@@ -18,7 +18,7 @@ final class statusTinyAddService
             : 'https://www.webasyst.com/';
         $_whichUI = (wa()->whichUI() == '1.3') ? '1' : '2'; //utm
 
-        if (1||!wa()->appExists('tasks')) {
+        if (!wa()->appExists('tasks')) {
             $_tinyAds[] = [
                 'adtype' => 'app',
                 'heading' => _w('Promocode'),
@@ -37,7 +37,7 @@ final class statusTinyAddService
             ];
         }
 
-        if (1||!wa()->appExists('cash')) {
+        if (!wa()->appExists('cash')) {
             $_tinyAds[] = [
                 'adtype' => 'app',
                 'heading' => _w('Promocode'),
