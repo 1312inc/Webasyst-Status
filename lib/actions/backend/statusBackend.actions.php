@@ -14,4 +14,9 @@ class statusBackendActions extends waJsonActions
 
         stts()->getCache()->set($key, true, $ttl);
     }
+
+    public function hideTinyAdAction()
+    {
+        (new statusTinyAddService())->setHideFlagForUser($this->getUser());
+    }
 }

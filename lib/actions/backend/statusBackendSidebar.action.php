@@ -99,7 +99,7 @@ class statusBackendSidebarAction extends statusViewAction
             }
         }
 
-        $tinyAd = (new statusTinyAddService())->getAd();
+        $tinyAd = (new statusTinyAddService())->getAd($this->getUser());
 
         /**
          * UI in main sidebar

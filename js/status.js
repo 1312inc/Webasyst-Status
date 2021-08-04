@@ -1303,7 +1303,7 @@
                     e.preventDefault();
 
                     $(this).closest('.s-tiny-ad').hide();
-                    // $.post('?module=backendJson&action=hideTinyAd');
+                    $.post('?module=backend&action=hideTinyAd');
                 });
 
             self.$status_content

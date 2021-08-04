@@ -5,12 +5,21 @@
  */
 final class statusTinyAddService
 {
+    public const MIN_CHECKINS_TO_SHOW = 40;
+
+    private const HIDE_FLAG = 'hide_tiny_ad_until';
+    private const AD_COUNT  = 'tiny_ad_checkin_count';
+
     /**
-     * @return array
+     * @return array<string, mixed>
      * @throws waException
      */
-    public function getAd(): array
+    public function getAd(waContact $user): array
     {
+        if (!$this->canShow($user)) {
+            return [];
+        }
+
         $_tinyAds = [];
 
         $_webasyst_base_url = (wa()->getLocale() === 'ru_RU')
@@ -58,5 +67,44 @@ final class statusTinyAddService
 
         //show random tiny
         return $_tinyAds ? $_tinyAds[array_rand($_tinyAds)] : [];
+    }
+
+    public function setHideFlagForUser(waContact $user): void
+    {
+        $user->setSettings(
+            statusConfig::APP_ID,
+            self::HIDE_FLAG,
+            date('Y-m-d', strtotime('+30 days'))
+        );
+    }
+
+    private function canShow(waContact $user): bool
+    {
+        if (date('Y-m-d') < $user->getSettings(
+                statusConfig::APP_ID,
+                self::HIDE_FLAG,
+                date('Y-m-d')
+            )
+        ) {
+            return false;
+        }
+
+        $itemsCount = $user->getSettings(
+            statusConfig::APP_ID,
+            self::AD_COUNT,
+            0
+        );
+
+        if ($itemsCount < self::MIN_CHECKINS_TO_SHOW) {
+            $user->setSettings(
+                statusConfig::APP_ID,
+                self::AD_COUNT,
+                stts()->getModel(statusCheckin::class)->countAll()
+            );
+
+            return false;
+        }
+
+        return true;
     }
 }
