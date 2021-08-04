@@ -1,4 +1,7 @@
 <div class="sidebar left200px s-navigation">
+    {if !empty($tinyAd)}
+        {include file='./../../include-legacy/tinyAds.html' tinyAd=$tinyAd inline}
+    {/if}
     <div class="block">
         <ul class="menu-v with-icons">
              <li class="selected bottom-padded">

@@ -347,3 +347,54 @@ msgstr ""
 
 msgid "Adjust time"
 msgstr ""
+
+msgid "Show promocode"
+msgstr ""
+
+msgid "Use this promocode until it expires:"
+msgstr ""
+
+msgid "Buy now with promocode"
+msgstr ""
+
+msgid "About the plugin"
+msgstr ""
+
+msgid "About the app"
+msgstr ""
+
+msgid "Promocode"
+msgstr ""
+
+msgid "Buy now"
+msgstr ""
+
+msgid "Teamwork"
+msgstr ""
+
+msgid "When tasks become bigger and more complex."
+msgstr ""
+
+msgid "Promocode for our flagship Webasyst app."
+msgstr ""
+
+msgid "Our flagship app."
+msgstr ""
+
+msgid "Amazing companion/upgrade for Pocket Lists when it’s time for real collaboration on <em>bigger and more complex tasks</em>. Assignments, task statuses, deadlines, kanban board, more — the app help bringing the order to any complex teamwork."
+msgstr ""
+
+msgid "Cash Flow"
+msgstr ""
+
+msgid "Forecasts and saves your business money."
+msgstr ""
+
+msgid "Promocode for managing money the smarter way."
+msgstr ""
+
+msgid "Forecasts and saves your money."
+msgstr ""
+
+msgid "Shows exact cash on hand balance for any date in the future. This app could have been a <em>life saver</em> for most businesses which did not survive a cash gap because of not knowing it’s coming."
+msgstr ""
