@@ -99,6 +99,8 @@ class statusBackendSidebarAction extends statusViewAction
             }
         }
 
+        $tinyAd = (new statusTinyAddService())->getAd();
+
         /**
          * UI in main sidebar
          *
@@ -122,6 +124,7 @@ class statusBackendSidebarAction extends statusViewAction
                 'timeByProjectStat' => $stat->projectsTimeByWeek(new DateTime()),
                 'isAdmin' => (int)$this->getUser()->isAdmin('status'),
                 'groups' => $waGroups,
+                'tinyAd' => $tinyAd,
             ]
         );
     }
