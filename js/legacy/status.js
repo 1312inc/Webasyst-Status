@@ -1069,9 +1069,17 @@
                 });
             };
 
-            self.$core_sidebar.on('click', '[data-status-project-action="add"]', projectDialog);
-            self.$status_content.on('click', '[data-status-project-action="add"]', projectDialog);
+            self.$core_sidebar
+                .on('click', '[data-status-project-action="add"]', projectDialog)
+                .on('click.stts', '.s-tiny-ad-close', function (e) {
+                    e.preventDefault();
 
+                    $(this).closest('.s-tiny-ad').hide();
+                    $.post('?module=backend&action=hideTinyAd');
+                });
+
+            self.$status_content.on('click', '[data-status-project-action="add"]', projectDialog);
+            s-tiny-ad-close
             self.$status_content
                 .on('click.stts', '[data-status-walog-app][data-status-walog-date]', function (e) {
                     e.preventDefault();

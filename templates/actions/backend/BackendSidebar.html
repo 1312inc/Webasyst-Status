@@ -100,7 +100,7 @@
     {/if}
 
     {if !count($users) && !count($teammates) && $wa->team}
-        <div class="box">
+        <div class="box custom-mt-16">
             <p class="hint align-center">{sprintf('[`Invite users via the <a href="%s">Team app</a> and start tracking time and status together.`]', $wa_backend_url|cat:'team/')}</p>
         </div>
     {/if}
@@ -125,7 +125,7 @@
                  {/foreach}
             </ul>
         {elseif $stts->getRightConfig()->isAdmin()}
-            <div class="box">
+            <div class="box custom-mt-16">
                 <p class="hint align-center">[`Add projects so everyone can add detalization on what they were working on.`]</p>
             </div>
         {/if}
@@ -154,4 +154,8 @@
              *}
         </ul>
     </div>
+{/if}
+
+{if !empty($tinyAd)}
+    {include file='./../../include/tinyAds.html' tinyAd=$tinyAd inline}
 {/if}

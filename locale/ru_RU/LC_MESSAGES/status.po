@@ -369,3 +369,54 @@ msgstr "Установить статус"
 
 msgid "Adjust time"
 msgstr "Точное время"
+
+msgid "Show promocode"
+msgstr "Показать промокод"
+
+msgid "Use this promocode until it expires:"
+msgstr "Используйте промокод, пока он не истек:"
+
+msgid "Buy now with promocode"
+msgstr "Купить с промокодом"
+
+msgid "About the plugin"
+msgstr "О плагине"
+
+msgid "About the app"
+msgstr "О приложении"
+
+msgid "Promocode"
+msgstr "Промокод"
+
+msgid "Buy now"
+msgstr "Купить сейчас"
+
+msgid "Teamwork"
+msgstr "Задачи"
+
+msgid "When tasks become bigger and more complex."
+msgstr "Наводит порядок в работе компании."
+
+msgid "Promocode for our flagship Webasyst app."
+msgstr "Промокод на наше главное приложение для Webasyst."
+
+msgid "Our flagship app."
+msgstr "Наше главное и лучшее приложение."
+
+msgid "Amazing companion/upgrade for Pocket Lists when it’s time for real collaboration on <em>bigger and more complex tasks</em>. Assignments, task statuses, deadlines, kanban board, more — the app help bringing the order to any complex teamwork."
+msgstr "Когда задач становится слишком много, и в списки и напоминания Pocket Lists они не помещаются, помогут «Webasyst Задачи» — мощный трекер задач (таск-менеджер), разработанный для команд от 2 до 100 человек. Реально помогает навести порядок в работе команды. Показывает дедлайны и текущий статус работ. Ни одна задача не потеряется."
+
+msgid "Cash Flow"
+msgstr "Деньги"
+
+msgid "Forecasts and saves your business money."
+msgstr "Прогнозирует расходы, помогает правильно вести финансовый учет."
+
+msgid "Promocode for managing money the smarter way."
+msgstr "Промокод для тех, кто хочет легко вести учет финансов и зарабатывать больше."
+
+msgid "Forecasts and saves your money."
+msgstr "Считает расходы. Прогнозирует прибыль."
+
+msgid "Shows exact cash on hand balance for any date in the future. This app could have been a <em>life saver</em> for most businesses which did not survive a cash gap because of not knowing it’s coming."
+msgstr "Показывает точный баланс в кассе на любой день в будущем. Приложение могло бы реально спасти жизни многих компанией, которые не пережили кассового разрыва из-за незнания, когда он наступит и почему."

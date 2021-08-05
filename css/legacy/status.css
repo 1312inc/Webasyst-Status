@@ -166,3 +166,17 @@ i.icon16.s-app-icon { background-size: 16px 16px; }
 .tooltip-anchor .tooltip { display: none; }
 .tooltip-anchor:hover .tooltip { display: block; left: auto; right: 20px; top: -10px; font-weight: normal; text-align: left; }
 .tooltip-anchor:hover .tooltip .body { display: block; }
+
+/* Some tiny promotions
+----------------------- */
+
+.s-tiny-ad { padding: 10px 5px 10px 10px; }
+.s-tiny-ad-box { background: #ffd; border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 5px 10px -5px rgba(0,0,0,0.1); border-radius: 4px; padding: 10px; }
+.s-tiny-ad .s-tiny-ad-close { float: right; font-size: 1.25rem; color: #886; position: relative; top: -0.35rem; margin-left: 1rem; }
+.s-tiny-ad h5 { font-size: 0.75rem; margin-bottom: 1rem; color: #bb9; }
+.s-tiny-ad p { font-size: 0.85em; line-height: 1.2em; font-family: 'Helvetica Neue', 'Liberation Sans', Arial, sans-serif; text-align: center; margin: 12px 4px 8px; }
+.s-tiny-ad img.s-app-icon { width: 72px; height: 72px; margin: 12px auto; display: block; }
+.s-tiny-ad img.s-app-icon.s-plugin-icon { width: 100%; height: auto; }
+.s-tiny-ad .s-badge-appstore { width: 112px; display: block; margin: 15px auto 10px; }
+.s-tiny-ad a.s-tiny-button { background: #fff; border: 1px solid black; border-radius: 4px; display: block; margin: 15px auto 10px; padding: 8px 10px; text-align: center; color: #03c; text-decoration: none; font-weight: bold; box-shadow: 0 5px 10px -5px rgba(0,0,0,0.15); }
+.s-tiny-ad .s-app-discount-badge { top: 0; background: red; color: #fff; }

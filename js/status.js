@@ -1298,6 +1298,12 @@
 
                     self.$core_sidebar.find('[data-status-sidebar-hidden-user]').show();
                     $(this).closest('li').hide();
+                })
+                .on('click.stts', '.s-tiny-ad-close', function (e) {
+                    e.preventDefault();
+
+                    $(this).closest('.s-tiny-ad').hide();
+                    $.post('?module=backend&action=hideTinyAd');
                 });
 
             self.$status_content

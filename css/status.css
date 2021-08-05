@@ -182,9 +182,9 @@
 .tooltip-anchor:hover .tooltip .body { display: block; }
 
 .s-editor .noUi-target.noUi-horizontal { background: var(--s-timeline-color); border: none; box-shadow: none; height: 32px; z-index: 3; padding-top: 11px; }
-.s-editor .noUi-target.noUi-horizontal .noUi-handle { z-index: 4; height: 24px; width: 24px; background: var(--background-color-blank); box-shadow: 0 0.25rem 0.5rem -0.25rem rgba(0,0,0,0.2); border-color: var(--s-editor-handle-border-color); outline: 0; top: -7px; }
-.s-editor .noUi-target.noUi-horizontal .noUi-handle::before { top: 5px; left: 8px; background: var(--s-editor-handle-border-color); height: 12px; width: 2px; opacity: 0.5; }
-.s-editor .noUi-target.noUi-horizontal .noUi-handle::after { top: 5px; left: 12px; background: var(--s-editor-handle-border-color); height: 12px; width: 2px; opacity: 0.5; }
+.s-editor .noUi-target.noUi-horizontal .noUi-handle { z-index: 4; height: 24px; width: 20px; background: var(--background-color-blank); box-shadow: 0 0.25rem 0.5rem -0.25rem rgba(0,0,0,0.2); border-color: var(--s-editor-handle-border-color); outline: 0; top: -7px; }
+.s-editor .noUi-target.noUi-horizontal .noUi-handle::before { top: 5px; left: 6px; background: var(--s-editor-handle-border-color); height: 12px; width: 2px; opacity: 0.5; }
+.s-editor .noUi-target.noUi-horizontal .noUi-handle::after { top: 5px; left: 10px; background: var(--s-editor-handle-border-color); height: 12px; width: 2px; opacity: 0.5; }
 
 .s-editor .noUi-connects { overflow: visible !important; }
 
@@ -200,6 +200,23 @@ input[type="time"] { display: inline-block; padding: 0.3125em 0.5em; border-radi
 
 button.light-gray:hover,
 .button.light-gray:hover { background: rgba(0,0,0,0.1); }
+
+/* Some tiny promotions
+----------------------- */
+
+.s-tiny-ad { font-size: 0.8125rem; line-height: 1.25; }
+.s-tiny-ad-box { border: 2px dashed var(--border-color-hard); border-radius: 0.5rem; padding: 10px; margin: 0.5rem 0.75rem 0.75rem; background: var(--background-color-blank); }
+.s-tiny-ad .s-tiny-ad-close { font-size: 1rem; color: #886; padding-right: 0.25rem; }
+.s-tiny-ad h5 { font-size: 1rem; }
+.s-tiny-ad img.s-app-icon { width: 64px; height: 64px; }
+.s-tiny-ad img.s-app-icon.s-plugin-icon { width: 100%; margin-bottom: 0.5rem; height: auto; box-shadow: 0 15px 25px rgba(40,40,80,0.1), 0 3px 8px rgba(0,0,0,0.07); }
+.s-tiny-ad .s-app-discount-badge { font-size: 0.6875rem; font-weight: bold; position: relative; top: -2px; }
+.s-tiny-ad .s-tiny-ad-action-button { display: block; width: 100%; text-align: center; font-size: 0.875rem; }
+
+.s-tiny-ad-dialog img.s-app-icon { width: 96px; height: 96px; }
+.s-tiny-ad-dialog img.s-app-icon.s-plugin-icon { width: 200px; height: 110px; box-shadow: 0 15px 25px rgba(40,40,80,0.1), 0 3px 8px rgba(0,0,0,0.07); }
+.s-tiny-ad-dialog .s-app-discount-badge { font-size: 1.25rem; font-weight: bold; }
+.s-tiny-ad-dialog p { font-size: 0.9375rem; line-height: 1.4; }
 
 @media screen and (max-width: 760px) { /* mobile */
 
