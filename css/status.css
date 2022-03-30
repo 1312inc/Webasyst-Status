@@ -175,7 +175,7 @@
 .s-editor-slider.s-editor-slider-exp .s-editor-slider-helpers .s-timeline-action-mark { position: absolute; z-index: 2; width: 2px; background: black; top: 0; bottom: 0; border-radius: 0; }
 .s-editor-slider.s-editor-slider-exp .s-editor-slider-helpers .s-timeline-action-mark:hover { width: 4px; margin-left: -1px; transition: 0.2s; }
 
-.s-walog-explained .s-walog-app-separator { border-top: 2px solid var(--border-color-soft); padding-top: 1rem; }
+.s-walog-explained .s-walog-app-separator { border-top: 2px solid var(--border-color-soft); padding-top: 1.5rem; }
 .s-walog-explained .activity-target { display: inline; word-break: break-word; }
 
 .s-reports-timeframe { margin-top: 4px; }

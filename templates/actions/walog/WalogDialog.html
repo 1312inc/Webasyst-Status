@@ -6,21 +6,22 @@
             </header>
 
             <div class="dialog-content">
+                {$_i = 0}
                 {foreach $walogs as $walog}
                     {if $walog->appId != 'webasyst'}
                         <section class="custom-mb-32">
-                            {$_i = 0}
-                            <h4 class="flexbox middle space-8 s-walog-app-separator">
+                            <h4 class="flexbox middle space-8{if $_i > 0} s-walog-app-separator{/if}">
                                 <i class="icon size-32"
                                     style="background-image: url('{$walog->appIcon}');"></i>
                                 <span class="gray uppercase custom-m-0">{$walog->appName|escape}</span>
+                                {$_i = $_i + 1}
                             </h4>
                             {foreach $walog->logs as $logs}
                                 <div class="flexbox space-8 custom-mb-16 custom-ml-8">
 
-                                    <i class="icon userpic size-16 top"
+                                    <i class="icon userpic size-20 top"
                                        style="background-image: url('{$logs['contact_photo_url']}');"></i>
-                                    <div class="small">
+                                    <div class="small" style="padding-top: 2px;">
                                         <span>{$logs['action_name']}</span>
                                         {if !empty($logs['params_html'])}
                                             <strong class="break-word">{$logs['params_html']}</strong>
@@ -30,7 +31,7 @@
                                     </div>
 
                                 </div>
-                                {$_i = $_i + 1}
+
                             {/foreach}
                         </section>
                     {/if}
