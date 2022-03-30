@@ -57,7 +57,8 @@
 ------------------- */
 
 .s-logged-apps { min-height: 1rem; background: var(--background-color-blank); position: relative; display: inline; }
-.s-logged-app-counter { display: inline-block; margin: 0 0.25rem 0.25rem; font-size: 0.875rem; }
+.s-logged-app-counter { display: inline-block; margin: 0.25rem 0.25rem 0.25rem; font-size: 0.875rem; }
+.s-logged-app-counter .icon { position: relative; top: -1px; }
 
 .s-timeline { width: 100%; height: 22px; background: var(--s-timeline-color); position: relative; margin: 0 0 2px; }
 .s-timeline .s-timeline-content { z-index: 2; position: absolute; top: -2px; bottom: -2px; background: rgb(209,59,179); background: linear-gradient(90deg, rgba(209,59,179,1) 0%, rgba(52,203,254,1) 100%, rgba(255,255,255,1) 100%); }
@@ -90,6 +91,7 @@
 .s-day .s-day-total > *:not(:last-child) { margin-right: .5rem; }
 
 .s-day .s-day-total h5 { font-size: 0.875rem; margin-top: 4px; }
+.s-day .s-day-total .s-day-online-time { margin-top: 2px; }
 /* .s-day .s-day-total .s-logged-apps { margin-top: -2px; } */
 /* .s-day .s-dimmed-due-to-daily-status { opacity: 0.8; transition: 0.1s; } */
 .s-day.s-this-week .s-day-date h6 { font-size: 1.125rem; }
@@ -135,6 +137,7 @@
 .s-editor .s-welcome-note strong { color: #000; }
 .s-editor .s-checkin-reminder { color: var(--red); font-weight: bold; margin-top: 0; }
 .s-editor .s-logged-app-counter { font-size: 1.125rem; }
+.s-editor .s-logged-app-counter .icon { top: 0px; }
 .s-editor-slider { display: flex; width: 100%; }
 .s-editor-slider--0:first-child { padding: 40px 0 10px; }
 .s-editor-slider form { overflow: visible; }
@@ -172,7 +175,7 @@
 .s-editor-slider.s-editor-slider-exp .s-editor-slider-helpers .s-timeline-action-mark { position: absolute; z-index: 2; width: 2px; background: black; top: 0; bottom: 0; border-radius: 0; }
 .s-editor-slider.s-editor-slider-exp .s-editor-slider-helpers .s-timeline-action-mark:hover { width: 4px; margin-left: -1px; transition: 0.2s; }
 
-.s-walog-explained .fields { margin-top: 10px; }
+.s-walog-explained .s-walog-app-separator { border-top: 2px solid var(--border-color-soft); padding-top: 1rem; }
 .s-walog-explained .activity-target { display: inline; word-break: break-word; }
 
 .s-reports-timeframe { margin-top: 4px; }
@@ -195,7 +198,7 @@
 .s-editor .noUi-connects { overflow: visible !important; }
 
 .s-editor .noUi-connect { background: rgb(209,59,179); background: linear-gradient(90deg, rgba(209,59,179,1) 0%, rgba(52,203,254,1) 100%, rgba(255,255,255,1) 100%); top: 0;  }
-.s-editor .noUi-connect.active { box-shadow: 0 0.125em 0.5em -0.25em rgba(0, 0, 0, 0.5); border: 2px solid rgba(0,0,0,0.4); }
+.s-editor .noUi-connect.active { box-shadow: 0 0.125em 0.5em -0.25em rgba(0, 0, 0, 0.5); border: 2px solid rgba(0,0,0,0.4); opacity: 0.85; }
 .s-editor .noUi-state-drag .noUi-connect.active { opacity: 0.6; }
 
 .s-editor [data-checkin=""] .noUi-connect { opacity: 0.5; }
@@ -245,23 +248,21 @@ button.light-gray:hover,
     .s-editor-slider .s-editor-slider-tools { width: 100%; flex-direction: row !important; }
     .s-editor-slider .s-editor-slider-total { flex: 0 0 auto; }
     .s-editor-slider .s-editor-slider-control { margin-bottom: 40px; margin-right: 0; }
+    .s-editor .noUi-target.noUi-horizontal .noUi-handle { width: 23px; border-radius: 8px; }
 
     .s-checkin { margin-top: 0.5rem; flex-wrap: wrap; }
     .s-day { margin-left: 0; margin-right: 0; padding-left: 0; padding-right: 0; }
-    .s-day .s-day-userpic { flex-basis: 40px; }
+    .s-day .s-day-userpic { flex-basis: 58px; }
     .s-day .s-day-summary-user-status { margin: 0.1875rem 0.5rem 0 0; }
     .s-day .s-day-summary-user-status .s-status { font-size: 0.8125rem; }
     .s-day .s-day-summary.wide { flex: 1; padding-top: 0.125rem; }
     .s-day .s-day-summary.wide.s-mobile-full-width { min-width: 100%; }
     .s-day .s-day-summary .s-timeline { top: -1px; }
-    .s-day .s-day-total { flex-basis: 100%; display: flex; flex-direction: row-reverse; padding: 0 0 0.5rem; margin-top: -0.125rem; }
-    .s-day .s-day-total h5 { font-size: 1rem; padding-top: 0; margin: 0 0 0 0.5rem !important; }
-    .s-day .s-day-total .s-day-no-activity { display: none; }
-    .s-day .s-day-total .s-logged-app-counter { padding: 0 0.25rem 0 0; }
+    .s-day .s-day-total { flex-basis: 100%; display: flex; }
     .s-day .s-day-summary-user-report { margin-bottom: 0.75rem; margin-top: 0.25rem; }
 
-    .s-day .s-day-date { display: flex; width: 100%; margin-bottom: 0.75rem; }
-    .s-day .s-day-date button { position: relative; top: -6px; }
+    .s-day .s-day-date { display: flex; width: 100%; margin-bottom: 0.5rem; }
+    .s-day .s-day-date button { position: relative; top: -8px; }
 
     .s-day.s-editable:hover { background: var(--background-color-blank); }
 

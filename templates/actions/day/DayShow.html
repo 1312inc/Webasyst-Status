@@ -112,7 +112,15 @@
                         {/if}
 
                         {if $userDayInfo->realCheckinCount}
-                            <h5>{$userDayInfo->dayDurationString}</h5>
+                            <h5 title="[`Checked in working time`]">
+                                {$userDayInfo->dayDurationString}
+                            </h5>
+                        {/if}
+
+                        {if $stts->canShowTrace() && !$isProject && $_day_trace_count > 0}
+                            <span title="{sprintf('[`Webasyst online time: %s active, %s idle`]', $userDayInfo->traceDurationString, $userDayInfo->traceBreakDurationString)}" class="hint s-day-online-time desktop-only">
+                                {sprintf('[`%s online`]', $userDayInfo->traceDurationWithBreakString)}
+                            </span>
                         {/if}
 
                     </div>
