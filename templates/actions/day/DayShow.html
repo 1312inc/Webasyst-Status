@@ -18,18 +18,14 @@
 
             <div class="s-checkin flexbox">
                 <span class="s-day-userpic">
-                    <i class="userpic userpic-32" id="s-day-userpic-{$userDayInfo->contactId}-{$day->date}" style="background-image: url({$day->users[$userDayInfo->contactId]->photoUrl})" data-wa-tooltip-content="{$day->users[$userDayInfo->contactId]->name|escape}{if $userDayInfo->checkinTimezones} @ GMT{$userDayInfo->checkinTimezones|implode:', '}{/if}" data-wa-tooltip-placement="right"></i>
+                    <i class="userpic userpic-48" id="s-day-userpic-{$userDayInfo->contactId}-{$day->date}" style="background-image: url({$day->users[$userDayInfo->contactId]->photoUrl})" data-wa-tooltip-content="{$day->users[$userDayInfo->contactId]->name|escape}{if $userDayInfo->checkinTimezones} @ GMT{$userDayInfo->checkinTimezones|implode:', '}{/if}" data-wa-tooltip-placement="right"></i>
                     <script>
                         ( function($) {
                             $("#s-day-userpic-{$userDayInfo->contactId}-{$day->date}").waTooltip();
                         })(jQuery);
                     </script>
                 </span>
-                {if $userDayInfo->todayStatus->getCalendarId()}
-                    <div class="s-day-summary-user-status">
-                        <span class="badge s-status" title="[`Daily status`]: {$userDayInfo->todayStatus->getName()|escape}" style="background-color: {$userDayInfo->todayStatus->getBgColor()}; color: {$userDayInfo->todayStatus->getFontColor()}">{$userDayInfo->todayStatus->getName()|escape|truncate:42}</span>
-                    </div>
-                {/if}
+
                 <div class="s-day-summary wide{if $userDayInfo->todayStatus->getCalendarId()} s-dimmed-due-to-daily-status{/if}{if $userDayInfo->firstCheckin->comment && $userDayInfo->todayStatus->getCalendarId()} s-mobile-full-width{/if}">
                     <div class="s-day-summary-timeline">
 
@@ -107,26 +103,23 @@
                         </div>
                     </div>
 
-                    {if $userDayInfo->firstCheckin->comment}
-                        <p class="s-day-summary-user-report">
-                            {$userDayInfo->firstCheckin->comment|escape|nl2br}
-                        </p>
-                    {/if}
+                    <div class="s-day-total">
 
-                </div>
+                        {if $userDayInfo->todayStatus->getCalendarId()}
+                            <div class="s-day-summary-user-status">
+                                <span class="badge s-status" title="[`Daily status`]: {$userDayInfo->todayStatus->getName()|escape}" style="background-color: {$userDayInfo->todayStatus->getBgColor()}; color: {$userDayInfo->todayStatus->getFontColor()}">{$userDayInfo->todayStatus->getName()|escape|truncate:42}</span>
+                            </div>
+                        {/if}
 
-                <div class="s-day-total">
+                        {if $userDayInfo->realCheckinCount}
+                            <h5>{$userDayInfo->dayDurationString}</h5>
+                        {/if}
 
-                    {$_total_is_shown = 0}
+                    </div>
 
-                    {if $userDayInfo->realCheckinCount}
-                        <h5 class="custom-mb-8 custom-mt-0{if $userDayInfo->todayStatus->getCalendarId()} s-dimmed-due-to-daily-status{/if}">{$userDayInfo->dayDurationString}</h5>
-                        {$_total_is_shown = 1}
-                    {/if}
-
-                    {if count($userDayInfo->walogs)}
-                        <div class="s-logged-apps">
-                            {$_cnt = 0}
+                    <div class="s-logged-apps">
+                        {$_cnt = 0}
+                        {if count($userDayInfo->walogs)}
                             {foreach $userDayInfo->walogs as $walog}
                                 {if $walog->count && $walog->appId != 'webasyst'}
                                     <a href="#"
@@ -135,32 +128,29 @@
                                        data-status-walog-app="{$walog->appId}"
                                        data-status-walog-date="{$day->date}"
                                         >
-                                        <span class="icon size-16">
+                                        <span class="icon size-14">
                                             <i style="background-image: url('{$walog->appIcon}');"></i>
                                         </span>
 
-                                        <span class="semibold">{$walog->count}</span>
+                                        <span class="bold">{$walog->count}</span>
                                     </a>
                                     {$_cnt = $_cnt + 1}
                                 {/if}
                             {/foreach}
-                        </div>
-                        {$_total_is_shown = 1}
-                    {/if}
-
-                    {if !$_total_is_shown}
-                        <h5 class="text-light-gray s-day-no-activity" title="[`No activity`]">&mdash;</h5>
-                    {/if}
-
-
-                    {* REQUIRES SOME ADDITIONAL RESEARCH ON BOTH DENSITY & CALCULATION if $stts->canShowTrace() && !$isProject && $_day_trace_count > 0}
-                    <div class="gray small{if $_cnt} custom-mt-8{/if}">
-                        <span title="{sprintf('[`Webasyst online time: %s active, %s idle`]', $userDayInfo->traceDurationString, $userDayInfo->traceBreakDurationString)}">
-                            {$userDayInfo->traceDurationString}
-                        </span>
+                        {/if}
+                        {if !$_cnt}
+                            <span class="hint">[`No activity`]</span>
+                        {/if}
                     </div>
-                    {/if *}
+
+                    {if $userDayInfo->firstCheckin->comment}
+                        <p class="s-day-summary-user-report">
+                            {$userDayInfo->firstCheckin->comment|escape|nl2br}
+                        </p>
+                    {/if}
+
                 </div>
+
             </div>
 
 
@@ -168,7 +158,7 @@
         {foreachelse}
             <div class="s-checkin flexbox">
                 <span class="s-day-userpic" title="[`No activity`]">
-                    <i class="userpic userpic-32" style="background-image: url('{$wa_url}wa-content/img/userpic.svg')"></i>
+                    <i class="userpic userpic-48" style="background-image: url('{$wa_url}wa-content/img/userpic.svg')"></i>
                 </span>
                 <div class="s-day-summary wide">
                     <div class="s-day-summary-timeline"><div class="s-timeline"></div></div>

@@ -30,7 +30,7 @@
                                            style="background-image: url('{$logs['contact_photo_url']}');"></i>
                                         <span>{$logs['action_name']}</span>
                                         {if !empty($logs['params_html'])}
-                                            <strong>{$logs['params_html']}</strong>
+                                            <strong class="break-word">{$logs['params_html']}</strong>
                                         {/if}
 
                                         <span class="hint">{$logs['datetime']|wa_datetime:'humandatetime'}</span>
