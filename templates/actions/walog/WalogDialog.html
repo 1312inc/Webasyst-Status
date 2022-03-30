@@ -11,8 +11,10 @@
                     {if $walog->appId != 'webasyst'}
                         <section class="custom-mb-32">
                             <h4 class="flexbox middle space-8{if $_i > 0} s-walog-app-separator{/if}">
-                                <i class="icon size-32"
-                                    style="background-image: url('{$walog->appIcon}');"></i>
+                                <span>
+                                    <i class="icon size-32"
+                                        style="background-image: url('{$walog->appIcon}');"></i>
+                                </span>
                                 <span class="gray uppercase custom-m-0">{$walog->appName|escape}</span>
                                 {$_i = $_i + 1}
                             </h4>
