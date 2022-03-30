@@ -228,6 +228,12 @@ button.light-gray:hover,
 .s-tiny-ad-dialog .s-app-discount-badge { font-size: 1.25rem; font-weight: bold; }
 .s-tiny-ad-dialog p { font-size: 0.9375rem; line-height: 1.4; }
 
+@media screen and (min-width: 761px) and (max-width: 1024px) { /* tablets */
+
+    .box.contentbox.s-mega-article { padding: 0.75em 1em; }
+
+}
+
 @media screen and (max-width: 760px) { /* mobile */
 
     .s-title { margin: 0; }
