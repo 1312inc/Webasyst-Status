@@ -228,9 +228,23 @@ button.light-gray:hover,
 .s-tiny-ad-dialog .s-app-discount-badge { font-size: 1.25rem; font-weight: bold; }
 .s-tiny-ad-dialog p { font-size: 0.9375rem; line-height: 1.4; }
 
+@media screen and (min-width: 1024px) and (max-width: 1280px) { /* mis-size laptops */
+
+    .box.contentbox.s-mega-article { padding: 1em 1.25em 1em 0.25em; }
+
+    .s-week-summary { margin-left: 0; }
+    .s-title { margin-left: 27px; }
+    .s-day { margin-right: 220px; margin-left: 15px; }
+
+}
+
 @media screen and (min-width: 761px) and (max-width: 1024px) { /* tablets */
 
-    .box.contentbox.s-mega-article { padding: 0.75em 1em; }
+    .box.contentbox.s-mega-article { padding: 0.75em 1em 0.75em 0; }
+
+    .s-week-summary { margin-left: 0; }
+    .s-title { margin-left: 17px; }
+    .s-day { margin-right: 200px; margin-left: 5px; }
 
 }
 
