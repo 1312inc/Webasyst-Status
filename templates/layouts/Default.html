@@ -61,12 +61,13 @@
     </script>
 
     <script>
-        ( function($) {
-            var $sidebar = $('#status-left-sidebar');
-            $sidebar.waShowSidebar({
-                direction: "down"
-            });
-        })(jQuery);
+        (function ($) {
+                var sidebar = $('#status-left-sidebar').waShowSidebar();
+                window.addEventListener('hashchange', function () {
+                    window.scrollTo(0, 0);
+                    sidebar.data('sidebar').$sidebar_content.hide();
+                });
+            })(jQuery);
     </script>
 
     <script>$.wa.locale = $.extend($.wa.locale || {}, {
