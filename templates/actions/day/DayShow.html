@@ -118,7 +118,7 @@
                         {/if}
 
                         {if $stts->canShowTrace() && !$isProject && $_day_trace_count > 0}
-                            <span title="{sprintf('[`Webasyst online time: %s active, %s idle`]', $userDayInfo->traceDurationString, $userDayInfo->traceBreakDurationString)}" class="hint s-day-online-time desktop-only">
+                            <span title="{sprintf('[`Webasyst online time: %s active, %s idle`]', $userDayInfo->traceDurationString, $userDayInfo->traceBreakDurationString)}" class="hint s-day-online-time">
                                 {sprintf('[`%s online`]', $userDayInfo->traceDurationWithBreakString)}
                             </span>
                         {/if}
@@ -131,7 +131,7 @@
                             {foreach $userDayInfo->walogs as $walog}
                                 {if $walog->count && $walog->appId != 'webasyst'}
                                     <a href="#"
-                                       class="s-logged-app-counter nowrap{if $userDayInfo->todayStatus->getCalendarId()} s-dimmed-due-to-daily-status{/if}"
+                                       class="s-logged-app-counter nowrap"
                                        data-status-walog-contact-id="{$day->users[$userDayInfo->contactId]->contactId}"
                                        data-status-walog-app="{$walog->appId}"
                                        data-status-walog-date="{$day->date}"

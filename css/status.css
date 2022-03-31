@@ -67,7 +67,7 @@
 .s-timeline.s-timeline-exp { height: 22px; background: var(--s-timeline-color); }
 .s-timeline.s-timeline-exp .s-timeline-content { top: 0px; bottom: 0px; border-radius: 4px; z-index: 7; }
 .s-timeline.s-timeline-exp .s-timeline-content.s-timeline-trace { z-index: 8; background: var(--s-online-trace-color); top: 6px; bottom: 6px; border-radius: 3px; min-width: 2px; }
-.s-timeline.s-timeline-exp .s-timeline-content.s-timeline-action-mark { z-index: 9; width: 3px; background: black; top: -4px; bottom: -4px; border-radius: 5px; border: 2px solid var(--background-color-blank); }
+.s-timeline.s-timeline-exp .s-timeline-content.s-timeline-action-mark { z-index: 9; width: 3px; background: black; top: -4px; bottom: -4px; border-radius: 5px; }
 .s-timeline.s-timeline-exp .s-timeline-content.s-timeline-action-mark:hover { width: 4px; margin-left: -1px; transition: 0.2s; }
 
 .s-timeline.s-timeline-exp .s-timeline-content-time-hint { position: absolute; top: 30px; font-size: 0.6125rem; font-weight: bold; color: var(--light-gray); }
@@ -91,9 +91,7 @@
 .s-day .s-day-total > *:not(:last-child) { margin-right: .5rem; }
 
 .s-day .s-day-total h5 { font-size: 0.875rem; margin-top: 4px; }
-.s-day .s-day-total .s-day-online-time { margin-top: 2px; }
-/* .s-day .s-day-total .s-logged-apps { margin-top: -2px; } */
-/* .s-day .s-dimmed-due-to-daily-status { opacity: 0.8; transition: 0.1s; } */
+.s-day .s-day-total .s-day-online-time { margin-top: 3px; }
 .s-day.s-this-week .s-day-date h6 { font-size: 1.125rem; }
 .s-day.s-editable:hover { cursor: pointer; }
 .s-day.s-editable:hover .s-timeline { background: var(--s-timeline-color-editable); transition: 0.1s; }
