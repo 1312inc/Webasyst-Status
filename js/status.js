@@ -556,13 +556,13 @@
                             connect.eq(checkinIndex).addClass('active');
 
                             var handler = function (e) {
-                                if ($(e.target).closest('.s-editor-slider-control, .dialog, [data-checkin-action="delete2.0"]').length === 0) {
+                                if ($(e.target).closest('.s-editor-slider-control, .dialog, [data-checkin-action="delete2.0"], .s-logged-apps').length === 0) {
                                     $(document).off('mousedown', handler);
                                     updateCheckinIndex(null);
                                 }
                             };
 
-                            $(document).on('mousedown', handler);
+                            $(document).off('mousedown.clickOutside').on('mousedown.clickOutside', handler);
                         }
 
                         $('.s-editor-slider-projects').hide();
