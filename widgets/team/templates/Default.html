@@ -1,0 +1,12 @@
+<div class="block">
+    {$link}
+
+    <link href="{$wa_app_static_url}css/status.css" rel="stylesheet" type="text/css" />
+
+    <div>
+        {include file='./DayInfo.html' dayDto=$todayDto}
+    </div>
+    <div>
+        {include file='./DayInfo.html' dayDto=$yesterdayDto}
+    </div>
+</div>
