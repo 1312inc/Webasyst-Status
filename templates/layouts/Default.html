@@ -60,6 +60,7 @@
         // });
     </script>
 
+    {if $wa->isMobile()}
     <script>
         (function ($) {
                 var sidebar = $('#status-left-sidebar').waShowSidebar();
@@ -69,6 +70,7 @@
                 });
             })(jQuery);
     </script>
+    {/if}
 
     <script>$.wa.locale = $.extend($.wa.locale || {}, {
         'Adjust time': "[`Adjust time`]",
