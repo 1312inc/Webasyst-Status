@@ -53,7 +53,7 @@ class statusTeamWidget extends waWidget
             'todayDto' => $today,
             'yesterdayDto' => $yesterday,
             'stts' => stts(),
-            'groupName' => $selectedGroup['name'],
+            'group' => $selectedGroup,
         ]);
     }
 
