@@ -62,3 +62,6 @@ msgstr ""
 #: /wa-widgets/clock/lib/config/settings.php:15
 msgid "Server"
 msgstr ""
+
+msgid "SwitchToWebasyst2"
+msgstr "Switch to Webasyst 2 UI mode to see the balance flow chart."

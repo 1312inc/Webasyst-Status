@@ -2,7 +2,7 @@
 * Source: http://bl.ocks.org/tomgp/6475678
 * */
 
-var RoundClock;
+var StatusRoundClock;
 
 ( function($) {
 
@@ -16,7 +16,7 @@ var RoundClock;
         }
 
         if (widget_size === "2x2") {
-            modifier = 8;
+            modifier = 7;
         }
 
         margin = ( that.show_town ) ?  ( widget_min_side / ( modifier * 2 ) ) : ( widget_min_side / modifier ) ;
@@ -67,7 +67,7 @@ var RoundClock;
         return new Date(timestamp + offset);
     };
 
-    RoundClock = function(options) {
+    StatusRoundClock = function(options) {
         var that = this;
 
         // Widget
@@ -91,14 +91,14 @@ var RoundClock;
         that.clockRadius = ( Math.min.apply(Math, [that.width, that.height]) ) / 2;
 
         that.hourScale = d3.scale.linear().range([0, 330]).domain([0, 11]);
-        that.hourHandLength = 2 * that.clockRadius / 3;
+        that.hourHandLength = 2 * that.clockRadius / 4;
         that.hourLabelRadius = that.clockRadius - ( that.margin * 0.8 ) ;
         that.hourLabelYOffset = ( that.margin * 0.14 );
         that.hourTickStart = that.clockRadius;
         that.hourTickLength = -( that.min_side/20 );
 
         that.minuteScale = d3.scale.linear().range([0, 354]).domain([0, 59]);
-        that.minuteHandLength = that.clockRadius;
+        that.minuteHandLength = that.clockRadius - 20;
 
         that.secondScale = that.minuteScale;
         that.secondHandLength = that.clockRadius - ( that.min_side / 20  );
@@ -134,7 +134,7 @@ var RoundClock;
         that.initClock();
     };
 
-    RoundClock.prototype.initClock = function() {
+    StatusRoundClock.prototype.initClock = function() {
         var that = this;
 
         that.drawClock();
@@ -142,7 +142,7 @@ var RoundClock;
         that.initController();
     };
 
-    RoundClock.prototype.drawClock = function() {
+    StatusRoundClock.prototype.drawClock = function() {
         var that = this;
 
         //draw them in the correct starting position
@@ -160,7 +160,7 @@ var RoundClock;
 
         //add marks for seconds
         face.selectAll(".second-tick")
-            .data(d3.range(0, 60))
+            .data(d3.range(0, 60, 3))
             .enter()
                 .append("line")
                     .attr("class", "second-tick")
@@ -174,34 +174,34 @@ var RoundClock;
 
         //and labels
         face.selectAll(".second-label")
-            .data(d3.range(5, 61, 5))
+            .data(d3.range(15, 61, 15))
             .enter()
                 .append("text")
                     .attr("class", "second-label")
                     .attr("text-anchor", "middle")
                     .attr("x", function(d){
-                        return that.secondLabelRadius*Math.sin(that.secondScale(d)*radians);
+                        return (that.secondLabelRadius - 34)*Math.sin(that.secondScale(d)*radians);
                     })
                     .attr("y", function(d){
-                        return -that.secondLabelRadius*Math.cos(that.secondScale(d)*radians) + that.secondLabelYOffset;
+                        return -(that.secondLabelRadius - 38)*Math.cos(that.secondScale(d)*radians) + that.secondLabelYOffset;
                     })
                     .text(function(d){
                         return ( d / 5 );
                     });
 
         //... and hours
-        face.selectAll(".hour-tick")
-            .data(d3.range(0, 12))
-            .enter()
-                .append("line")
-                    .attr("class", "hour-tick")
-                    .attr("x1", 0)
-                    .attr("x2", 0)
-                    .attr("y1", that.hourTickStart)
-                    .attr("y2", that.hourTickStart + that.hourTickLength)
-                    .attr("transform", function(d){
-                        return "rotate(" + that.hourScale(d) + ")";
-                    });
+        // face.selectAll(".hour-tick")
+        //     .data(d3.range(0, 12))
+        //     .enter()
+        //         .append("line")
+        //             .attr("class", "hour-tick")
+        //             .attr("x1", 0)
+        //             .attr("x2", 0)
+        //             .attr("y1", that.hourTickStart)
+        //             .attr("y2", that.hourTickStart + that.hourTickLength)
+        //             .attr("transform", function(d){
+        //                 return "rotate(" + that.hourScale(d) + ")";
+        //             });
 
         //face.selectAll(".hour-label")
         //    .data(d3.range(3, 13, 3))
@@ -248,7 +248,7 @@ var RoundClock;
                     });
     };
 
-    RoundClock.prototype.updateData = function() {
+    StatusRoundClock.prototype.updateData = function() {
         var that = this,
             date = getDate(that);
 
@@ -257,7 +257,7 @@ var RoundClock;
         that.handData[2].value = date.getSeconds();
     };
 
-    RoundClock.prototype.moveHands = function() {
+    StatusRoundClock.prototype.moveHands = function() {
         var that = this,
             $wrapper = that.$wrapper;
 
@@ -269,7 +269,7 @@ var RoundClock;
             });
     };
 
-    RoundClock.prototype.refreshClock = function() {
+    StatusRoundClock.prototype.refreshClock = function() {
         var that = this;
 
         that.updateData();
@@ -277,7 +277,7 @@ var RoundClock;
         that.moveHands();
     };
 
-    RoundClock.prototype.initController = function() {
+    StatusRoundClock.prototype.initController = function() {
         var that = this,
             controller_app,
             controller_widgets_array,

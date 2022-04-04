@@ -13,8 +13,8 @@
     {* Initialize *}
     <script>
     ( function() {
-        var is_loaded = (typeof RoundClock !== "undefined"),
-            js_href = "{$widget_url}js/roundClock.js?v={$wa->version()}",
+        var is_loaded = (typeof StatusRoundClock !== "undefined"),
+            js_href = "{$widget_url}js/statusRoundClock.js?v={$wa->version()}",
             widget = DashboardWidgets["{$widget_id}"],
             options = {
                 widget_id: "{$widget_id}",
@@ -27,12 +27,12 @@
             };
 
         if (is_loaded) {
-            widget.clock = new RoundClock(options);
+            widget.clock = new StatusRoundClock(options);
 
         } else {
 
             $.getScript(js_href, function() {
-                widget.clock = new RoundClock(options);
+                widget.clock = new StatusRoundClock(options);
             });
         }
     })();
@@ -41,10 +41,8 @@
     {* CSS *}
     <style>
         {include file="../css/roundClock.css" inline}
-        #round-clock-{$widget_id} .second-tick,
-        #round-clock-{$widget_id} .hour-tick,
-        #round-clock-{$widget_id} .second-label {
-            display: none;
+        #round-clock-{$widget_id} .second-tick {
+            stroke-width: 0.05em
         }
     </style>
 
@@ -63,56 +61,14 @@
         import { statusDayTimeline } from "{$widget_url}js/statusDayTimeline.js";
         const data = {$data|json_encode};
         if (typeof d3 !== 'undefined') {
-            statusDayTimeline().$el('#timeline_{$widget_id}').render(data.checkins);
+            statusDayTimeline().$el('#timeline_{$widget_id}').render(data);
         }
     </script>
     
 {else}
-    <div class="round-clock-wrapper {if !empty($town)}has-town{/if}">
-        <div class="round-clock-block" id="round-clock-{$widget_id}"></div>
-        {if !empty($town)}
-            <div class="town-name-wrapper">{$town|escape}</div>
-        {/if}
-    </div>
+    
+  <div class="block">
+    <div class="align-center hint" style="font-size: 1rem;width: 80%;position: absolute;top: 50%;left: 50%;transform: translateX(-50%) translateY(-50%);">[`SwitchToWebasyst2`]</div>
+  </div>
 
-    {* Init Controller *}
-    <script>{include file="../js/clockController.js" inline}</script>
-
-    {* Initialize *}
-    <script>
-        ( function() {
-            var is_loaded = (typeof RoundClock !== "undefined"),
-                js_href = "{$widget_url}js/roundClock.js?v={$wa->version()}",
-                widget = DashboardWidgets["{$widget_id}"],
-                options = {
-                    widget_id: "{$widget_id}",
-                    widget_name: "{$widget_name}",
-                    widget_app: "{$widget_app}",
-                    show_town: {if !empty($town)}true{else}false{/if},
-                    source: "local",
-                    offset: 0,
-                    size: "{$size}"
-                };
-
-            if (is_loaded) {
-                widget.clock = new RoundClock(options);
-
-            } else {
-
-                $.getScript(js_href, function() {
-                    widget.clock = new RoundClock(options);
-                });
-            }
-        })();
-    </script>
-
-    {* CSS *}
-    <style>{include file="../css/roundClock-legacy.css" inline}</style>
-
-    {if $wa->whichUI() == '2.0'}
-        <style>
-            .round-clock-wrapper .round-clock-block .hour-hand,
-            .round-clock-wrapper .round-clock-block .minute-hand { stroke: var(--text-color-strongest) !important; }
-        </style>
-    {/if}
 {/if}

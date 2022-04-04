@@ -29,6 +29,7 @@ class statusClockWidget extends waWidget
             'format' => $this->getFormat(),
             'size' => $this->info['size'],
             'day' => $dayDto,
+            'ui' => wa()->whichUI('webasyst'),
         ], $this->getTemplatePath(ucfirst($this->getType())) . '.html');
     }
 
