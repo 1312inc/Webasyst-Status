@@ -20,7 +20,6 @@ class statusTeamWidget extends waWidget
             null,
             $selectedGroup['id']
         );
-        $user = $getWeekDataFilterRequestDto->getUsers()[0];
 
         $userDate = statusTimeHelper::createDatetimeForUser('Y-m-d H:i:s', new DateTime(), stts()->getUser())
             ->setTime(0, 0, 0);
@@ -54,6 +53,7 @@ class statusTeamWidget extends waWidget
             'todayDto' => $today,
             'yesterdayDto' => $yesterday,
             'stts' => stts(),
+            'groupName' => $selectedGroup['name'],
         ]);
     }
 
