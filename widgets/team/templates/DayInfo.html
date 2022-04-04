@@ -1,19 +1,17 @@
-<div class="s-day-date">
-    <h6 class="bold wide">
-        {if $dayDto->yesterday}[`Yesterday`]
-        {elseif $dayDto->today}[`Today`]
-        {else}{$dayDto->dayHuman}{/if}
-        <span class="hint">{$dayDto->dayname}</span>
-    </h6>
+<div class="bold custom-mb-12">
+    {if $dayDto->yesterday}[`Yesterday`]
+    {elseif $dayDto->today}[`Today`]
+    {else}{$dayDto->dayHuman}{/if}
+    <span class="hint">{$dayDto->dayname}</span>
 </div>
 
-<div class="s-checkins wide">
+<div class="s-checkins wide hide-scrollbar" style="overflow-y: auto;">
     {foreach $dayDto->userDayInfos as $userDayInfo}
         {* @var statusDayUserInfoDto $userDayInfo *}
 
-        <div class="s-checkin flexbox">
+        <div class="s-checkin flexbox middle space-8 custom-mb-16">
                 <span class="s-day-userpic">
-                    <i class="userpic userpic-48" id="s-day-userpic-{$userDayInfo->contactId}-{$dayDto->date}" style="background-image: url({$dayDto->users[$userDayInfo->contactId]->photoUrl})" data-wa-tooltip-content="{$dayDto->users[$userDayInfo->contactId]->name|escape}{if $userDayInfo->checkinTimezones} @ GMT{$userDayInfo->checkinTimezones|implode:', '}{/if}" data-wa-tooltip-placement="right"></i>
+                    <i class="userpic userpic-32" id="s-day-userpic-{$userDayInfo->contactId}-{$dayDto->date}" style="background-image: url({$dayDto->users[$userDayInfo->contactId]->photoUrl})" data-wa-tooltip-content="{$dayDto->users[$userDayInfo->contactId]->name|escape}{if $userDayInfo->checkinTimezones} @ GMT{$userDayInfo->checkinTimezones|implode:', '}{/if}" data-wa-tooltip-placement="right"></i>
                     <script>
                         ( function($) {
                             $("#s-day-userpic-{$userDayInfo->contactId}-{$dayDto->date}").waTooltip();
@@ -98,45 +96,11 @@
                     </div>
                 </div>
 
-                <div class="s-day-total">
-
-                    {if $userDayInfo->todayStatus->getCalendarId()}
-                        <div class="s-day-summary-user-status">
-                            <span class="badge s-status" title="[`Daily status`]: {$userDayInfo->todayStatus->getName()|escape}" style="background-color: {$userDayInfo->todayStatus->getBgColor()}; color: {$userDayInfo->todayStatus->getFontColor()}">{$userDayInfo->todayStatus->getName()|escape|truncate:42}</span>
-                        </div>
-                    {/if}
-
-                    {if $userDayInfo->realCheckinCount}
-                        <h5 title="[`Checked in working time`]">
-                            {$userDayInfo->dayDurationString}
-                        </h5>
-                    {/if}
-
-                    {if $stts->canShowTrace() && $_day_trace_count > 0}
-                        <span title="{sprintf('[`Webasyst online time: %s active, %s idle`]', $userDayInfo->traceDurationString, $userDayInfo->traceBreakDurationString)}" class="hint s-day-online-time">
-                                {sprintf('[`%s online`]', $userDayInfo->traceDurationWithBreakString)}
-                            </span>
-                    {/if}
-
-                </div>
-
                 <div class="s-logged-apps">
                     {$_cnt = 0}
                     {if count($userDayInfo->walogs)}
                         {foreach $userDayInfo->walogs as $walog}
                             {if $walog->count && $walog->appId != 'webasyst'}
-                                <a href="#"
-                                   class="s-logged-app-counter nowrap"
-                                   data-status-walog-contact-id="{$dayDto->users[$userDayInfo->contactId]->contactId}"
-                                   data-status-walog-app="{$walog->appId}"
-                                   data-status-walog-date="{$dayDto->date}"
-                                >
-                                        <span class="icon size-14">
-                                            <i style="background-image: url('{$walog->appIcon}');"></i>
-                                        </span>
-
-                                    <span class="bold">{$walog->count}</span>
-                                </a>
                                 {$_cnt = $_cnt + 1}
                             {/if}
                         {/foreach}

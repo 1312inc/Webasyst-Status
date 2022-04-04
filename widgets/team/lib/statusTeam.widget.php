@@ -44,6 +44,7 @@ class statusTeamWidget extends waWidget
         }
 
         $this->display([
+            'widget_id' => $this->id,
             'link' => sprintf(
                 '%s#/team/%d',
 //                wa()->getRootUrl(true),
@@ -54,6 +55,7 @@ class statusTeamWidget extends waWidget
             'yesterdayDto' => $yesterday,
             'stts' => stts(),
             'group' => $selectedGroup,
+            'ui' => wa()->whichUI('webasyst'),
         ]);
     }
 
