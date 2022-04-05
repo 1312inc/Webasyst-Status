@@ -4,15 +4,21 @@ export function statusDayTimeline () {
   const HEIGHT = 300;
   const INNER_RADIUS = 110;
   const OUTER_RADIUS = 130;
-  const GRAY_COLOR = '#f3f3f3';
   const DEFAULT_COLOR = '#1a9afe';
 
   let containerElem;
   let svgElem;
 
-  function timestampToRadians (timestamp, isGmt = false) {
-    const hours = new Date(timestamp * 1000).getHours() + new Date(timestamp * 1000).getMinutes() / 60;
-    return 720 / 24 * (hours + new Date().getTimezoneOffset() * (isGmt ? -1 : 1) / 60) * Math.PI / 180;
+  function minutesToRadians (minutes) {
+    return 720 / 24 * minutes / 60 * Math.PI / 180;
+  }
+
+  function minutesToTime (minutes, inDigits = false) {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return inDigits 
+      ? `${hours}:${String(mins).padStart(2, '0')}`
+      : `${hours > 0 ? hours + ' ч ' : ''}${mins > 0 ? mins + ' мин ' : ''}`;
   };
 
   function showTooltip (el, text) {
@@ -45,9 +51,9 @@ export function statusDayTimeline () {
    */
   function drawProjectCheckinArc (checkin) {
 
-    let startTime = checkin.startTimestamp;
+    let startTime = checkin.min;
     let endTime;
-    let diff = checkin.endTimestamp - checkin.startTimestamp;
+    let diff = checkin.max - checkin.min;
 
     const colors = checkin.projectDurationCss.split(',');
 
@@ -55,22 +61,23 @@ export function statusDayTimeline () {
       let c = colors[color].trim().split(' ');
 
       if (c[1] !== '0%') {
-        endTime = checkin.startTimestamp + diff * Number.parseInt(c[1]) / 100;
+        endTime = checkin.min + diff * Number.parseInt(c[1]) / 100;
 
         const arc = d3.svg.arc()
           .innerRadius(INNER_RADIUS)
           .outerRadius(OUTER_RADIUS)
-          .startAngle(timestampToRadians(startTime))
-          .endAngle(timestampToRadians(endTime));
+          .startAngle(minutesToRadians(startTime))
+          .endAngle(minutesToRadians(endTime))
+          .cornerRadius(4);
 
         svgElem.append('path')
           .attr('d', arc)
-          .style('fill', c[0] === GRAY_COLOR ? DEFAULT_COLOR : c[0])
+          .style('fill', c[0] === "#f1f2f3" ? DEFAULT_COLOR : c[0])
+          .attr('data-start', startTime)
+          .attr('data-end', endTime)
           .on("mouseover", function () {
             const text = makeProjectsList(checkin.projectsDuration).find(p => p.color === c[0]);
-            if (text) {
-              showTooltip(this, `${text.name}<br>${text.duration} мин`);
-            }
+            showTooltip(this, `${minutesToTime($(this).data('start'), true)}–${minutesToTime($(this).data('end'), true)} / ${text ? `${text.name}: ${minutesToTime(text.duration)}` : `${minutesToTime(checkin.duration)} (проект не указан)`}`);
           })
           .on("mouseout", function () {
             removeTooltip(this);
@@ -88,12 +95,19 @@ export function statusDayTimeline () {
     const arc = d3.svg.arc()
       .innerRadius(INNER_RADIUS + 5)
       .outerRadius(OUTER_RADIUS - 5)
-      .startAngle(timestampToRadians(checkin.startTimestamp))
-      .endAngle(timestampToRadians(checkin.endTimestamp));
+      .startAngle(minutesToRadians(checkin.min))
+      .endAngle(minutesToRadians(checkin.max))
+      .cornerRadius(4);
 
     svgElem.append('path')
       .attr('d', arc)
-      .style('fill', 'rgba(0,0,0,0.12)');
+      .style('fill', 'var(--s-online-trace-color)')
+      .on("mouseover", function () {
+          showTooltip(this, `${minutesToTime(checkin.min, true)}–${minutesToTime(checkin.max, true)} / ${checkin.max - checkin.min} мин онлайн, ${checkin.durationString} активно, ${checkin.breakString} без действий`);
+      })
+      .on("mouseout", function () {
+        removeTooltip(this);
+      });
   }
 
   /**
@@ -103,20 +117,27 @@ export function statusDayTimeline () {
     for (const app in logs) {
       for (const log of logs[app].logs) {
 
-        const start = new Date(log.datetime).getTime() / 1000;
-        const end = start + 260;
+        const start = log.minutes_from_midnight;
+        const end = start + 5;
 
         const arc = d3.svg.arc()
           .innerRadius(INNER_RADIUS - 4)
           .outerRadius(OUTER_RADIUS + 4)
-          .startAngle(timestampToRadians(start, true))
-          .endAngle(timestampToRadians(end, true));
+          .startAngle(minutesToRadians(start))
+          .endAngle(minutesToRadians(end))
+          .cornerRadius(2);
 
         svgElem.append('path')
           .attr('d', arc)
           .attr("stroke", '#FFF')
           .attr("stroke-width", '2px')
-          .style('fill', '#f3c200');
+          .style('fill', '#f3c200')
+          .on("mouseover", function () {
+            showTooltip(this, `${log.app_id} @ ${minutesToTime(start, true)}`);
+          })
+          .on("mouseout", function () {
+            removeTooltip(this);
+          });
       }
     }
   }
@@ -139,7 +160,7 @@ export function statusDayTimeline () {
 
       svgElem.append('path')
         .attr('d', timeline)
-        .style('fill', GRAY_COLOR);
+        .style('fill', 'var(--s-timeline-color)');
 
       // Draw checkins
       for (const checkin of data.checkins) {

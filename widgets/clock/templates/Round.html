@@ -64,6 +64,16 @@
             statusDayTimeline().$el('#timeline_{$widget_id}').render(data);
         }
     </script>
+
+    <script>
+        (function () {
+            setTimeout(function () {
+                try {
+                    DashboardWidgets[{$widget_id}].renderWidget();
+                } catch (e) { }
+            }, 10 * 60 * 1000);
+        })();
+    </script>
     
 {else}
     
