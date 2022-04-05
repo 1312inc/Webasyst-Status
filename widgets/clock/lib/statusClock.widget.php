@@ -1,16 +1,16 @@
 <?php
 
-class statusClockWidget extends waWidget
+class statusClockWidget extends statusAbstractWidget
 {
     protected $params;
 
-    const TYPE_ROUND      = 'round';
-    const FORMAT_24       = '24';
+    const TYPE_ROUND = 'round';
+    const FORMAT_24  = '24';
 
     public function defaultAction()
     {
         $date = statusTimeHelper::createDatetimeForUser('Y-m-d')->format('Y-m-d');
-        $user = stts()->getUser();
+        $user = $this->getStatusUser();
 
         $week = statusWeekFactory::createWeekByDate(new DateTime($date));
         $day = new statusDay(new DateTime($date));
@@ -31,6 +31,8 @@ class statusClockWidget extends waWidget
             'day' => $dayDto,
             'ui' => wa()->whichUI('webasyst'),
         ], $this->getTemplatePath(ucfirst($this->getType())) . '.html');
+
+        $this->incognitoLogout();
     }
 
     public function getType()

@@ -1,19 +1,16 @@
 <?php
 
-class statusTeamWidget extends waWidget
+class statusTeamWidget extends statusAbstractWidget
 {
     /**
      * @var array
      */
     private static $groups;
 
-    /**
-     * @var waWidgetSettingsModel
-     */
-    private static $settingsModel;
-
     public function defaultAction()
     {
+        $user = $this->getStatusUser();
+
         $selectedGroup = self::getSettingsGroup($this->id);
         $getWeekDataFilterRequestDto = new statusGetWeekDataFilterRequestDto(
             $selectedGroup['id'] == 0 ? -1312 : null,
@@ -21,7 +18,7 @@ class statusTeamWidget extends waWidget
             $selectedGroup['id']
         );
 
-        $userDate = statusTimeHelper::createDatetimeForUser('Y-m-d H:i:s', new DateTime(), stts()->getUser())
+        $userDate = statusTimeHelper::createDatetimeForUser('Y-m-d H:i:s', new DateTime(), $user)
             ->setTime(0, 0, 0);
 
         $loadWeeksCount = $userDate->format('N') == 1 ? 2 : 1;
@@ -57,6 +54,8 @@ class statusTeamWidget extends waWidget
             'group' => $selectedGroup,
             'ui' => wa()->whichUI('webasyst'),
         ]);
+
+        $this->incognitoLogout();
     }
 
     public static function getGroupFilterControl($name, $params)
@@ -72,25 +71,6 @@ class statusTeamWidget extends waWidget
             'groups' => self::getGroups(),
             'current_group' => $params['value'] ?: self::getSettingsGroup($widgetId)['id'],
         ]);
-    }
-
-    private static function renderTemplate($template, $assign = []): string
-    {
-        if (!file_exists($template)) {
-            return '';
-        }
-        $assign['ui'] = wa()->whichUI(wa()->getConfig()->getApplication());
-        $assign['webasyst_ui'] = wa()->whichUI('webasyst');
-
-        $view = wa()->getView();
-        $old_vars = $view->getVars();
-        $view->clearAllAssign();
-        $view->assign($assign);
-        $html = $view->fetch($template);
-        $view->clearAllAssign();
-        $view->assign($old_vars);
-
-        return $html;
     }
 
     private static function getGroups(): array
@@ -120,14 +100,5 @@ class statusTeamWidget extends waWidget
         $savedGroup = $settings['group'] ?? 0;
 
         return $groups[$savedGroup];
-    }
-
-    private static function getSettingModel(): waWidgetSettingsModel
-    {
-        if (self::$settingsModel === null) {
-            self::$settingsModel = new waWidgetSettingsModel();
-        }
-
-        return self::$settingsModel;
     }
 }
