@@ -37,11 +37,17 @@ abstract class statusAbstractWidget extends waWidget
         return $html;
     }
 
-    protected function getStatusUser(): statusUser
+    protected function isIncognito(): bool
     {
         $user = wa()->getUser();
         $this->incognitoMode = !$user || !$user->isAuth();
-        if ($this->incognitoMode) {
+
+        return $this->incognitoMode;
+    }
+
+    protected function getStatusUser(): statusUser
+    {
+        if ($this->isIncognito()) {
             $appAdmins = (new waContactRightsModel())->getUsers('status');
             $user = stts()->getEntityRepository(statusUser::class)
                 ->findByContactId(array_shift($appAdmins));

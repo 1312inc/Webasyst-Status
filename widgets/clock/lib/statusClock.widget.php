@@ -10,15 +10,19 @@ class statusClockWidget extends statusAbstractWidget
     public function defaultAction()
     {
         $date = statusTimeHelper::createDatetimeForUser('Y-m-d')->format('Y-m-d');
-        $user = $this->getStatusUser();
 
-        $week = statusWeekFactory::createWeekByDate(new DateTime($date));
-        $day = new statusDay(new DateTime($date));
-        $week->setDays([$day]);
-        $dto = new statusGetWeekDataFilterRequestDto($user->getId(), null, null);
-        $weeksDto = statusWeekFactory::getWeeksDto([$week], $dto);
-        $weekDto = reset($weeksDto);
-        $dayDto = reset($weekDto->days);
+        $data = [];
+        if (!$this->isIncognito()) {
+            $user = $this->getUser();
+            $week = statusWeekFactory::createWeekByDate(new DateTime($date));
+            $day = new statusDay(new DateTime($date));
+            $week->setDays([$day]);
+            $dto = new statusGetWeekDataFilterRequestDto($user->getId(), null, null);
+            $weeksDto = statusWeekFactory::getWeeksDto([$week], $dto);
+            $weekDto = reset($weeksDto);
+            $dayDto = reset($weekDto->days);
+            $data = reset($dayDto->userDayInfos);
+        }
 
         $this->display([
             'widget_id' => $this->id,
@@ -28,11 +32,9 @@ class statusClockWidget extends statusAbstractWidget
             'type' => $this->getType(),
             'format' => $this->getFormat(),
             'size' => $this->info['size'],
-            'day' => $dayDto,
+            'data' => json_encode($data),
             'ui' => wa()->whichUI('webasyst'),
         ], $this->getTemplatePath(ucfirst($this->getType())) . '.html');
-
-        $this->incognitoLogout();
     }
 
     public function getType()

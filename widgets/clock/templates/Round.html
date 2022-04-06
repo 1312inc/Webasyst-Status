@@ -65,11 +65,9 @@
         <div id="timeline_{$widget_id}"></div>
     </a>
 
-    {$data = $day->userDayInfos['1']}
-
     <script async type="module">
         import { statusDayTimeline } from "{$widget_url}js/statusDayTimeline.js";
-        const data = {$data|json_encode};
+        const data = {$data};
         const messages = {
             h: '[`h`]',
             m: '[`m`]',
