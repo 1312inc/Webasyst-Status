@@ -21,7 +21,9 @@
                     }
             
                     sInterval_{$widget_id} = setInterval(function () {
-                        $(".s-widget-{$widget_id} .toggle span:not(.selected)").trigger('click');
+                        if ($('.s-widget-{$widget_id}:hover').length === 0) {
+                            $(".s-widget-{$widget_id} .toggle span:not(.selected)").trigger('click');
+                        }
                     }, 10000);
                 }
 
@@ -53,6 +55,16 @@
     <!-- {if $group.id}<h1>{$group.name|escape}</h1>{/if} -->
     
 </div>
+
+<script>
+    (function () {
+        setTimeout(function () {
+            try {
+                DashboardWidgets[{$widget_id}].renderWidget();
+            } catch (e) { }
+        }, 10 * 60 * 1000);
+    })();
+</script>
 
 {else}
     

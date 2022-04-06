@@ -160,7 +160,7 @@ var StatusRoundClock;
 
         //add marks for seconds
         face.selectAll(".second-tick")
-            .data(d3.range(0, 60, 3))
+            .data(d3.range(0, 60, 5))
             .enter()
                 .append("line")
                     .attr("class", "second-tick")

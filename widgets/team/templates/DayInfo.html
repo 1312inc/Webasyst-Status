@@ -5,7 +5,7 @@
     <span class="hint">{$dayDto->dayname}</span>
 </div>
 
-<div class="s-checkins wide hide-scrollbar" style="overflow-y: auto;">
+<div class="s-checkins wide hide-scrollbar" style="overflow-y: auto;position: absolute;width: 100%;top: 24px;bottom: 0;">
     {foreach $dayDto->userDayInfos as $userDayInfo}
         {* @var statusDayUserInfoDto $userDayInfo *}
 
