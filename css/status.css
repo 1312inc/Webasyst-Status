@@ -195,7 +195,7 @@
 
 .s-editor .noUi-connects { overflow: visible !important; }
 
-.s-editor .noUi-connect { background: rgb(209,59,179); background: linear-gradient(90deg, rgba(209,59,179,1) 0%, rgba(52,203,254,1) 100%, rgba(255,255,255,1) 100%); top: 0;  }
+.s-editor .noUi-connect { background: #ae7dff; background: linear-gradient(90deg, rgba(209,59,179,1) 0%, rgba(52,203,254,1) 100%, rgba(255,255,255,1) 100%); top: 0;  }
 .s-editor .noUi-connect.active { box-shadow: 0 0.125em 0.5em -0.25em rgba(0, 0, 0, 0.5); border: 2px solid rgba(0,0,0,0.4); opacity: 0.85; }
 .s-editor .noUi-state-drag .noUi-connect.active { opacity: 0.6; }
 

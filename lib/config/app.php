@@ -5,5 +5,7 @@ return array (
   'version' => '2.2.0',
   'vendor' => '1021997',
   'rights' => true,
-  'ui' => '2.0',
+  'license' => 'commercial',
+  'sash_color' => '#ae7dff',
+  'ui' => '2.0'
 );
