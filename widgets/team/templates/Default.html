@@ -4,14 +4,20 @@
 
     <div class="flexbox middle custom-p-16">
         <div class="flexbox middle space-8 wide">
-            <img src="{$wa_app_static_url}img/status.png" width="20" height="20" alt="" />
-            <div class="nowrap"><strong class="gray uppercase">[`Status`]</strong></div>
+            <img src="{$wa_app_static_url}img/status.png" style="width: 1.25rem; height: 1.25rem;" alt="" />
+            <div class="nowrap">
+                {if $group.id}
+                    <strong title="{$group.name|escape}">{$group.name|escape|truncate:20}</strong>
+                {else}
+                    <strong class="gray uppercase">[`Status`]</strong>
+                {/if}
+            </div>
         </div>
         <div class="toggle smallest">
             <span data-rel="today" class="selected">[`Today`]</span>
             <span data-rel="yesterday">[`Yesterday`]</span>
         </div>
-        
+
         <script>
             (function ($) {
 
@@ -19,7 +25,7 @@
                     if (typeof sInterval_{$widget_id} !== 'undefined') {
                         clearInterval(sInterval_{$widget_id});
                     }
-            
+
                     sInterval_{$widget_id} = setInterval(function () {
                         if ($('.s-widget-{$widget_id}:hover').length === 0) {
                             $(".s-widget-{$widget_id} .toggle span:not(.selected)").trigger('click');
@@ -49,7 +55,7 @@
             {include file='./DayInfo.html' dayDto=$yesterdayDto}
         </div>
     </div>
-    
+
 </div>
 
 <script>
@@ -63,7 +69,7 @@
 </script>
 
 {else}
-    
+
   <div class="block">
     <div class="align-center hint" style="font-size: 1rem;width: 80%;position: absolute;top: 50%;left: 50%;transform: translateX(-50%) translateY(-50%);">[`SwitchToWebasyst2`]</div>
   </div>

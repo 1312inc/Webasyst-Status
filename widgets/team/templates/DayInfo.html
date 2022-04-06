@@ -1,16 +1,10 @@
-<div class="bold custom-mb-12">
-    {if $dayDto->yesterday}[`Yesterday`]
-    {elseif $dayDto->today}[`Today`]
-    {else}{$dayDto->dayHuman}{/if}
-    <span class="hint">{$dayDto->dayname}</span>
-</div>
 
-<div class="s-checkins wide hide-scrollbar" style="overflow-y: auto;position: absolute;width: 100%;top: 24px;bottom: 0;">
+<div class="s-checkins wide hide-scrollbar" style="overflow-y: auto;position: absolute;width: 100%;top: 0.375rem;bottom: 0;">
     {foreach $dayDto->userDayInfos as $userDayInfo}
         {* @var statusDayUserInfoDto $userDayInfo *}
 
-        <div class="s-checkin flexbox middle space-8 custom-mb-16">
-                <span class="s-day-userpic">
+        <div class="s-checkin flexbox middle space-8" style="margin-bottom: 0.875rem;">
+                <span class="s-day-userpic" title="{$dayDto->users[$userDayInfo->contactId]->name}">
                     <i class="userpic userpic-32" id="s-day-userpic-{$userDayInfo->contactId}-{$dayDto->date}" style="background-image: url({$dayDto->users[$userDayInfo->contactId]->photoUrl})"></i>
                 </span>
 
@@ -51,7 +45,7 @@
                                 }
                             </style>
                         {/if}
-                        
+
                             <script>
                                 ( function($) {
                                     $(".s-widget-{$widget_id} #s-timeline-content-{$checkin->id}{if $checkin->isTrace}-trace{/if}").waTooltip( { 'class':'s-timeline-sontent-tooltip{if $checkin->isTrace}-trace{/if}' } );

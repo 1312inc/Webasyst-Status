@@ -1,13 +1,8 @@
 <?php
 return array (
-  'name' => 'team',
-  'size' => 
-  array (
-    0 => '2x2',
-    1 => '2x1',
-    2 => '1x1',
-  ),
+  'name' => /*_w*/('Team'),
+  'size' => array ('2x2'),
   'img' => 'img/team.png',
-  'version' => '0.0.1',
-  'vendor' => '--',
+  'version' => '1.0.0',
+  'vendor' => '1021997'
 );
