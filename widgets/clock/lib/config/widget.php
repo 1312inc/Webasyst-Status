@@ -1,8 +1,9 @@
 <?php
 
 return array(
-    'name' => /*_w*/('Clock'),
+    'name' => 'Clock',
     'size' => array('2x2'),
     'img' => 'img/clock.png',
-    'version' => '0.1',
+    'version' => '1.0.0',
+    'vendor' => '1021997'
 );
