@@ -68,6 +68,24 @@ class statusUserRepository extends statusBaseRepository
     }
 
     /**
+     * @return statusUser[]
+     * @throws waException
+     */
+    public function findAllWithMe(): array
+    {
+        $today = new DateTimeImmutable();
+
+        $userData = $this->getModel()->findAllOrderByLastCheckin();
+        $users = $this->generateWithData($userData, true);
+        /** @var statusUser $user */
+        foreach ($users as $i => $user) {
+            $user->setTodayStatus(statusTodayStatusFactory::getForContactId($user->getContactId(), $today));
+        }
+
+        return $users;
+    }
+
+    /**
      * @param int $id
      *
      * @return statusUser

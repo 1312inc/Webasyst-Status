@@ -87,7 +87,7 @@ final class statusUserWidget extends statusAbstractWidget
     {
         if (self::$users === null) {
             self::$users = [];
-            $users = stts()->getEntityRepository(statusUser::class)->findAllExceptMe();
+            $users = stts()->getEntityRepository(statusUser::class)->findAllWithMe();
             foreach ($users as $id => $user) {
                 if (!$user->isExists() && !$user->getContact()->exists()) {
                     unset($users[$id]);
