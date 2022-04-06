@@ -3,7 +3,7 @@
         {* @var statusDayUserInfoDto $userDayInfo *}
 
         <div class="s-checkin flexbox middle space-8 custom-mb-12" style="height: 28px;">
-                <div class="bold">
+                <div class="bold" title="{strtotime($date)|wa_datetime:"humandate"}">
                     {date('d', strtotime($date))}
                 </div>
 
@@ -44,7 +44,7 @@
                                 }
                             </style>
                         {/if}
-                        
+
                             <script>
                                 ( function($) {
                                     $(".s-widget-{$widget_id} #s-timeline-content-{$checkin->id}{if $checkin->isTrace}-trace{/if}").waTooltip( { 'class':'s-timeline-sontent-tooltip{if $checkin->isTrace}-trace{/if}' } );

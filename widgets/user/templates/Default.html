@@ -1,6 +1,10 @@
 {if $ui == 2.0}
     {if !$user.id}
-        иди-ка ты выбери пользователя, товарищ админ
+    <div class="block">
+        <div class="align-center hint"
+             style="font-size: 0.875rem;width: 80%;position: absolute;top: 50%;left: 50%;transform: translateX(-50%) translateY(-50%);">[`Please select a user in the widget settings.`]
+        </div>
+    </div>
     {else}
         <link href="{$wa_app_static_url}css/status.css" rel="stylesheet" type="text/css"/>
         <div class="s-widget-{$widget_id}">
@@ -32,7 +36,7 @@
 {else}
     <div class="block">
         <div class="align-center hint"
-             style="font-size: 1rem;width: 80%;position: absolute;top: 50%;left: 50%;transform: translateX(-50%) translateY(-50%);">[`SwitchToWebasyst2`]
+             style="font-size: 0.875rem;width: 80%;position: absolute;top: 50%;left: 50%;transform: translateX(-50%) translateY(-50%);">[`SwitchToWebasyst2`]
         </div>
     </div>
 {/if}
