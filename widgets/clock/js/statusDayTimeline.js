@@ -4,10 +4,11 @@ export function statusDayTimeline () {
   const HEIGHT = 300;
   const INNER_RADIUS = 110;
   const OUTER_RADIUS = 130;
-  const DEFAULT_COLOR = '#1a9afe';
+  const DEFAULT_COLOR = '#ae7dff80';
 
   let containerElem;
   let svgElem;
+  let locale;
 
   function minutesToRadians (minutes) {
     return 720 / 24 * minutes / 60 * Math.PI / 180;
@@ -15,10 +16,10 @@ export function statusDayTimeline () {
 
   function minutesToTime (minutes, inDigits = false) {
     const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return inDigits 
+    const mins = Math.floor(minutes % 60);
+    return inDigits
       ? `${hours}:${String(mins).padStart(2, '0')}`
-      : `${hours > 0 ? hours + ' ч ' : ''}${mins > 0 ? mins + ' мин ' : ''}`;
+      : `${hours > 0 ? `${hours}${locale.h}` : ''} ${mins > 0 ? `${mins}${locale.m}` : ''}`;
   };
 
   function showTooltip (el, text) {
@@ -60,8 +61,9 @@ export function statusDayTimeline () {
     for (let color = 1; color < colors.length; color += 2) {
       let c = colors[color].trim().split(' ');
 
-      if (c[1] !== '0%') {
-        endTime = checkin.min + diff * Number.parseInt(c[1]) / 100;
+      endTime = checkin.min + diff * Number.parseInt(c[1]) / 100;
+
+      if (endTime !== startTime) {
 
         const arc = d3.svg.arc()
           .innerRadius(INNER_RADIUS)
@@ -77,14 +79,15 @@ export function statusDayTimeline () {
           .attr('data-end', endTime)
           .on("mouseover", function () {
             const text = makeProjectsList(checkin.projectsDuration).find(p => p.color === c[0]);
-            showTooltip(this, `${minutesToTime($(this).data('start'), true)}–${minutesToTime($(this).data('end'), true)} / ${text ? `${text.name}: ${minutesToTime(text.duration)}` : `${minutesToTime(checkin.duration)} (проект не указан)`}`);
+            showTooltip(this, `${minutesToTime($(this).data('start'), true)}–${minutesToTime($(this).data('end'), true)} / ${text ? `${text.name}: ${minutesToTime(text.duration)}` : `${minutesToTime(checkin.duration)} ${locale.noProject}`}`);
           })
           .on("mouseout", function () {
             removeTooltip(this);
           });
 
-        startTime = endTime;
       }
+
+      startTime = endTime;
     }
   }
 
@@ -103,7 +106,7 @@ export function statusDayTimeline () {
       .attr('d', arc)
       .style('fill', 'var(--s-online-trace-color)')
       .on("mouseover", function () {
-          showTooltip(this, `${minutesToTime(checkin.min, true)}–${minutesToTime(checkin.max, true)} / ${checkin.max - checkin.min} мин онлайн, ${checkin.durationString} активно, ${checkin.breakString} без действий`);
+        showTooltip(this, `${minutesToTime(checkin.min, true)}–${minutesToTime(checkin.max, true)} / ${checkin.max - checkin.min} ${locale.m} ${locale.online}, ${checkin.durationString} ${locale.active}, ${checkin.breakString} ${locale.idle}`);
       })
       .on("mouseout", function () {
         removeTooltip(this);
@@ -163,7 +166,7 @@ export function statusDayTimeline () {
         .style('fill', 'var(--s-timeline-color)');
 
       // Draw checkins
-      for (const checkin of data.checkins) {
+      for (const checkin of data.checkins.filter(c => c.id)) {
         if (!checkin.isTrace) {
           drawProjectCheckinArc(checkin);
         } else {
@@ -174,6 +177,11 @@ export function statusDayTimeline () {
       // Draw User logs
       drawLogsArcs(data.walogs);
 
+    },
+
+    setLocale (messages) {
+      locale = messages;
+      return this;
     },
 
     $el (selector) {

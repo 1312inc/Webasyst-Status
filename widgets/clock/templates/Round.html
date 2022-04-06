@@ -44,6 +44,9 @@
         #round-clock-{$widget_id} .second-tick {
             stroke-width: 0.05em
         }
+        #timeline_{$widget_id} path:focus {
+            outline: none !important;
+        }
     </style>
 
     {if $wa->whichUI() == '2.0'}
@@ -53,15 +56,25 @@
         </style>
     {/if}
 
-    <div id="timeline_{$widget_id}"></div>
+    <a href="{$wa_backend_url}status/#" target="_blank">
+        <div id="timeline_{$widget_id}"></div>
+    </a>
     
     {$data = $day->userDayInfos['1']}
 
     <script async type="module">
         import { statusDayTimeline } from "{$widget_url}js/statusDayTimeline.js";
         const data = {$data|json_encode};
+        const messages = {
+            h: '[`h`]',
+            m: '[`m`]',
+            online: '[`online`]',
+            active: '[`active`]',
+            idle: '[`idle`]',
+            noProject: '[`noProject`]'
+        };
         if (typeof d3 !== 'undefined') {
-            statusDayTimeline().$el('#timeline_{$widget_id}').render(data);
+            statusDayTimeline().$el('#timeline_{$widget_id}').setLocale(messages).render(data);
         }
     </script>
 
