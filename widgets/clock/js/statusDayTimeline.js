@@ -1,13 +1,9 @@
 export function statusDayTimeline () {
 
-  const WIDTH = 300;
-  const HEIGHT = 300;
-  const INNER_RADIUS = 110;
-  const OUTER_RADIUS = 130;
-  const DEFAULT_COLOR = '#ae7dff80';
-
   let containerElem;
   let svgElem;
+  let innerRadius;
+  let outerRadius;
   let locale;
 
   function minutesToRadians (minutes) {
@@ -66,15 +62,15 @@ export function statusDayTimeline () {
       if (endTime !== startTime) {
 
         const arc = d3.svg.arc()
-          .innerRadius(INNER_RADIUS)
-          .outerRadius(OUTER_RADIUS)
+          .innerRadius(innerRadius)
+          .outerRadius(outerRadius)
           .startAngle(minutesToRadians(startTime))
           .endAngle(minutesToRadians(endTime))
           .cornerRadius(4);
 
         svgElem.append('path')
           .attr('d', arc)
-          .style('fill', c[0] === "#f1f2f3" ? DEFAULT_COLOR : c[0])
+          .style('fill', c[0] === "#f1f2f3" ? '#ae7dff80' : c[0])
           .attr('data-start', startTime)
           .attr('data-end', endTime)
           .on("mouseover", function () {
@@ -96,8 +92,8 @@ export function statusDayTimeline () {
    */
   function drawTraceCheckinArc (checkin) {
     const arc = d3.svg.arc()
-      .innerRadius(INNER_RADIUS + 5)
-      .outerRadius(OUTER_RADIUS - 5)
+      .innerRadius(innerRadius + 5)
+      .outerRadius(outerRadius - 5)
       .startAngle(minutesToRadians(checkin.min))
       .endAngle(minutesToRadians(checkin.max))
       .cornerRadius(4);
@@ -124,17 +120,17 @@ export function statusDayTimeline () {
         const end = start + 5;
 
         const arc = d3.svg.arc()
-          .innerRadius(INNER_RADIUS - 4)
-          .outerRadius(OUTER_RADIUS + 4)
+          .innerRadius(innerRadius - 4)
+          .outerRadius(outerRadius + 4)
           .startAngle(minutesToRadians(start))
           .endAngle(minutesToRadians(end))
           .cornerRadius(2);
 
         svgElem.append('path')
           .attr('d', arc)
-          .attr("stroke", '#FFF')
+          .attr("stroke", 'var(--background-color-blank)')
           .attr("stroke-width", '2px')
-          .style('fill', '#f3c200')
+          .style('fill', '#ffdc2f')
           .on("mouseover", function () {
             showTooltip(this, `${log.app_id} @ ${minutesToTime(start, true)}`);
           })
@@ -149,15 +145,13 @@ export function statusDayTimeline () {
 
     render (data) {
       svgElem = containerElem.append("svg")
-        .attr("width", WIDTH)
-        .attr("height", HEIGHT)
         .append("g")
-        .attr("transform", `translate(${WIDTH / 2},${HEIGHT / 2})`);
+        .attr("style", "transform: translateX(50%) translateY(50%)");
 
       // Draw gray full circle timeline
       const timeline = d3.svg.arc()
-        .innerRadius(INNER_RADIUS)
-        .outerRadius(OUTER_RADIUS)
+        .innerRadius(innerRadius)
+        .outerRadius(outerRadius)
         .startAngle(0)
         .endAngle(2 * Math.PI);
 
@@ -167,10 +161,12 @@ export function statusDayTimeline () {
 
       // Draw checkins
       for (const checkin of data.checkins.filter(c => c.id)) {
-        if (!checkin.isTrace) {
-          drawProjectCheckinArc(checkin);
-        } else {
-          drawTraceCheckinArc(checkin);
+        if (checkin.min !== checkin.max) {
+          if (!checkin.isTrace) {
+            drawProjectCheckinArc(checkin);
+          } else {
+            drawTraceCheckinArc(checkin);
+          }
         }
       }
 
@@ -186,6 +182,11 @@ export function statusDayTimeline () {
 
     $el (selector) {
       containerElem = d3.select(selector);
+
+      const containerWidth = document.querySelector(selector).offsetWidth;
+      outerRadius = (containerWidth - 30) / 2;
+      innerRadius = (containerWidth - 30) / 2 - 20;
+
       return this;
     }
   };
