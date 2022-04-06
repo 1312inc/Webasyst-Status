@@ -158,7 +158,7 @@ export function statusDayTimeline () {
       const timeline = d3.svg.arc()
         .innerRadius(INNER_RADIUS)
         .outerRadius(OUTER_RADIUS)
-        .startAngle(Math.PI / 180)
+        .startAngle(0)
         .endAngle(2 * Math.PI);
 
       svgElem.append('path')
