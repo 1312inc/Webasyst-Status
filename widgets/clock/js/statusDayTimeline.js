@@ -130,7 +130,7 @@ export function statusDayTimeline () {
           .attr('d', arc)
           .attr("stroke", 'var(--background-color-blank)')
           .attr("stroke-width", '2px')
-          .style('fill', '#ffdc2f')
+          .style('fill', log.app_color)
           .on("mouseover", function () {
             showTooltip(this, `${log.app_id} @ ${minutesToTime(start, true)}`);
           })
