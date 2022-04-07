@@ -180,10 +180,10 @@ var StatusRoundClock;
                     .attr("class", "second-label")
                     .attr("text-anchor", "middle")
                     .attr("x", function(d){
-                        return (that.secondLabelRadius - 34)*Math.sin(that.secondScale(d)*radians);
+                        return (that.secondLabelRadius - that.node_width / 9)*Math.sin(that.secondScale(d)*radians);
                     })
                     .attr("y", function(d){
-                        return -(that.secondLabelRadius - 38)*Math.cos(that.secondScale(d)*radians) + that.secondLabelYOffset;
+                        return -(that.secondLabelRadius - that.node_width / 8)*Math.cos(that.secondScale(d)*radians) + that.secondLabelYOffset;
                     })
                     .text(function(d){
                         return ( d / 5 );
