@@ -1,9 +1,11 @@
 <?php
 return array (
   'name' => 'Status',
-  'icon' => 'img/status-512.png',
-  'version' => '2.1.0',
+  'icon' => 'img/status.png',
+  'version' => '2.2.0',
   'vendor' => '1021997',
   'rights' => true,
-  'ui' => '1.3,2.0',
+  'license' => 'commercial',
+  'sash_color' => '#ae7dff',
+  'ui' => '2.0'
 );

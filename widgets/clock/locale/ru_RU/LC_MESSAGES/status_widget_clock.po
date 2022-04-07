@@ -1,0 +1,41 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: wa-widgets/clock/\n"
+"POT-Creation-Date: 2015-07-22 17:06+0300\n"
+"PO-Revision-Date: \n"
+"Last-Translator: wa-widgets/clock/\n"
+"Language-Team: wa-widgets/clock/\n"
+"Language: ru_RU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=((((n%10)==1)&&((n%100)!=11))?(0):(((((n%10)>=2)&&((n%10)<=4))&&(((n%100)<10)||((n%100)>=20)))?(1):2));\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: .\n"
+"X-Generator: Poedit 3.0.1\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: .\n"
+
+msgid "Clock"
+msgstr "Часы"
+
+msgid "h"
+msgstr " ч"
+
+msgid "m"
+msgstr " мин"
+
+msgid "online"
+msgstr "онлайн"
+
+msgid "active"
+msgstr "активно"
+
+msgid "idle"
+msgstr "без действий"
+
+msgid "noProject"
+msgstr "(проект не указан)"
+
+msgid "SwitchToWebasyst2"
+msgstr "Переключитесь в новый режим интерфейса Webasyst 2, чтобы этот виджет заработал."

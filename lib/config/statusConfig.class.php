@@ -207,7 +207,16 @@ class statusConfig extends waAppConfig
         $this->factories[''] = new statusBaseFactory();
         $this->repositories[''] = new statusBaseRepository();
 
-        $this->registerGlobal();
+        if (!function_exists('stts')) {
+            /**
+             * @return statusConfig|SystemConfig|waAppConfig
+             */
+            function stts()
+            {
+                return wa(statusConfig::APP_ID)->getConfig();
+            }
+        }
+
         $this->loadVendors();
     }
 
@@ -238,15 +247,6 @@ class statusConfig extends waAppConfig
         }
 
         return $name ? (isset($tasks[$name]) ? $tasks[$name] : null) : $tasks;
-    }
-
-    /**
-     * @return string
-     * @throws waException
-     */
-    public function getUtf8mb4ColumnsPath(): string
-    {
-        return wa()->getAppPath('lib/config/utf8mb4.php', pocketlistsHelper::APP_ID);
     }
 
     /**
@@ -373,19 +373,6 @@ class statusConfig extends waAppConfig
     public function getUI2TemplatePath(string $path): string
     {
         return sprintf($path, wa()->whichUI() === '1.3' ? '-legacy' : '');
-    }
-
-    private function registerGlobal(): void
-    {
-        if (!function_exists('stts')) {
-            /**
-             * @return statusConfig|SystemConfig|waAppConfig
-             */
-            function stts()
-            {
-                return wa(statusConfig::APP_ID)->getConfig();
-            }
-        }
     }
 
     protected function loadVendors(): void

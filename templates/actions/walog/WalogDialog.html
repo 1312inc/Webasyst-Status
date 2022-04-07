@@ -5,32 +5,28 @@
                 <h3>{$date|wa_date:humandate} <span class="hint">{$user->getName()|escape}</span></h3>
             </header>
 
-            <div class="dialog-content fields">
+            <div class="dialog-content">
+                {$_i = 0}
                 {foreach $walogs as $walog}
                     {if $walog->appId != 'webasyst'}
-                        <div class="fields-group">
-                            {$_i = 0}
+                        <section class="custom-mb-32">
+                            <h4 class="flexbox middle space-8{if $_i > 0} s-walog-app-separator{/if}">
+                                <span>
+                                    <i class="icon size-32"
+                                        style="background-image: url('{$walog->appIcon}');"></i>
+                                </span>
+                                <span class="gray uppercase custom-m-0">{$walog->appName|escape}</span>
+                                {$_i = $_i + 1}
+                            </h4>
                             {foreach $walog->logs as $logs}
-                            <div class="field">
-                                <div class="name">
-                                    {if $_i == 0}
-                                    <div class="flexbox middle space-8">
-                                        <i class="icon size-24"
-                                            style="background-image: url('{$walog->appIcon}');"></i>
-                                        <span>{$walog->appName|escape}</span>
-                                    </div>
-                                    {/if}
-                                </div>
+                                <div class="flexbox space-8 custom-mb-16 custom-ml-8">
 
-
-                                <div class="value">
-
-                                    <div class="small"{if $_i == 0} style="margin-top: 6px;"{/if}>
-                                        <i class="icon userpic top"
-                                           style="background-image: url('{$logs['contact_photo_url']}');"></i>
+                                    <i class="icon userpic size-20 top"
+                                       style="background-image: url('{$logs['contact_photo_url']}'); min-width: 1.25rem;"></i>
+                                    <div class="small" style="padding-top: 2px;">
                                         <span>{$logs['action_name']}</span>
                                         {if !empty($logs['params_html'])}
-                                            <strong>{$logs['params_html']}</strong>
+                                            <strong class="break-word">{$logs['params_html']}</strong>
                                         {/if}
 
                                         <span class="hint">{$logs['datetime']|wa_datetime:'humandatetime'}</span>
@@ -38,10 +34,8 @@
 
                                 </div>
 
-                            </div>
-                            {$_i = $_i + 1}
                             {/foreach}
-                        </div>
+                        </section>
                     {/if}
                 {/foreach}
             </div>

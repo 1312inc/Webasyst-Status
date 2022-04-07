@@ -1,0 +1,76 @@
+
+<div class="s-checkins wide hide-scrollbar" style="overflow-y: auto;position: absolute;width: 100%;top: 0.375rem;bottom: 0;">
+    {foreach $dayDto->userDayInfos as $userDayInfo}
+        {* @var statusDayUserInfoDto $userDayInfo *}
+
+        <div class="s-checkin flexbox middle space-8" style="margin-bottom: 0.875rem;">
+                <span class="s-day-userpic" title="{$dayDto->users[$userDayInfo->contactId]->name}">
+                    <i class="userpic userpic-32" id="s-day-userpic-{$userDayInfo->contactId}-{$dayDto->date}" style="background-image: url({$dayDto->users[$userDayInfo->contactId]->photoUrl})"></i>
+                </span>
+
+            <div class="s-day-summary wide{if $userDayInfo->todayStatus->getCalendarId()} s-dimmed-due-to-daily-status{/if}{if $userDayInfo->firstCheckin->comment && $userDayInfo->todayStatus->getCalendarId()} s-mobile-full-width{/if}">
+                <div class="s-day-summary-timeline">
+
+                    <div class="s-timeline s-timeline-exp">
+                        {$_timeline_time_hints_occupation_by_hr = []}{* [h] = 0/1 *}
+                        {if $wa->isMobile()}
+                            {$_mins_in_hr = 120}
+                        {else}
+                            {$_mins_in_hr = 60}
+                        {/if}
+                        {$_day_trace_count = 0}
+                        {foreach $userDayInfo->checkins as $checkin}{strip}
+                            {if $checkin->max > $checkin->min}
+                                {$__checkin_density = $checkin->duration / ($checkin->max - $checkin->min)}
+                            {else}
+                                {$__checkin_density = 0}
+                            {/if}
+                            <div class="s-timeline-content{if !$checkin->id} s-timeline-content-empty{/if}{if $checkin->isTrace} s-timeline-trace{/if}"
+                                 style="left: {min(100,$checkin->minPercent)}%; right: {max(0,100 - $checkin->maxPercent)}%;"
+                                 {if $checkin->id}id="s-timeline-content-{$checkin->id}{if $checkin->isTrace}-trace{/if}"{/if}
+                                    {if $checkin->hasProjects}data-wa-tooltip-content="{statusTimeHelper::renderIntAsHHMMTime($checkin->min)}—{statusTimeHelper::renderIntAsHHMMTime($checkin->max)} / {$checkin->projectDurationTitle|escape}"{elseif $checkin->isTrace}data-wa-tooltip-content="{statusTimeHelper::renderIntAsHHMMTime($checkin->min)}—{statusTimeHelper::renderIntAsHHMMTime($checkin->max)} / {sprintf('[`%d minutes of Webasyst online time: %s active, %s idle`]', $checkin->max-$checkin->min, $checkin->durationString, $checkin->breakString)}"{else}data-wa-tooltip-content="{statusTimeHelper::renderIntAsHHMMTime($checkin->min)}—{statusTimeHelper::renderIntAsHHMMTime($checkin->max)} / {sprintf('[`%s (project not specified)`]', $checkin->durationString)}"{/if}
+                                 data-trace-id="{$checkin->id}"
+                                 data-trace-start="{$checkin->startTimestamp|wa_datetime}"
+                                 data-trace-end="{$checkin->endTimestamp|wa_datetime}"
+                                 data-trace-start-server="{date('Y-m-d H:i:s', $checkin->startTimestamp)}"
+                                 data-trace-end-server="{date('Y-m-d H:i:s', $checkin->endTimestamp)}"
+                            ></div>
+                            {if $checkin->isTrace}
+                                {$_day_trace_count = $_day_trace_count + 1}
+                            {/if}
+                        {if $checkin->id && $checkin->hasProjects && !$checkin->isTrace}
+                            <style>
+                                #s-timeline-content-{$checkin->id} {
+                                    background: -webkit-linear-gradient(left, {$checkin->projectDurationCss});
+                                }
+                            </style>
+                        {/if}
+
+                            <script>
+                                ( function($) {
+                                    $(".s-widget-{$widget_id} #s-timeline-content-{$checkin->id}{if $checkin->isTrace}-trace{/if}").waTooltip( { 'class':'s-timeline-sontent-tooltip{if $checkin->isTrace}-trace{/if}' } );
+                                })(jQuery);
+                            </script>
+                        {/strip}{/foreach}
+                        {foreach $userDayInfo->walogsByDatetime as $walogByDatetime}{strip}
+                            <div class="s-timeline-content s-timeline-action-mark"
+                                 style="left: {$walogByDatetime.position}%; background: {$walogByDatetime.app_color};"
+                                 data-time="{$walogByDatetime.datetime|wa_datetime:datetime}"
+                                 id="s-timeline-action-mark-{$walogByDatetime.app_id}-{$walogByDatetime.datetime|strtotime}"
+                                 data-wa-tooltip-content="{$walogByDatetime.app_id} @ {$walogByDatetime.datetime|wa_datetime:humandatetime}"
+                            ></div>
+                            <script>
+                                ( function($) {
+                                    $(".s-widget-{$widget_id} #s-timeline-action-mark-{$walogByDatetime.app_id}-{$walogByDatetime.datetime|strtotime}").waTooltip( { 'style': 'background: {$walogByDatetime.app_color};' } );
+                                })(jQuery);
+                            </script>
+                        {/strip}{/foreach}
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    {/foreach}
+</div>

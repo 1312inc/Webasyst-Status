@@ -1,0 +1,42 @@
+{if $ui == 2.0}
+    {if !$user.id}
+    <div class="block">
+        <div class="align-center hint"
+             style="font-size: 0.875rem;width: 80%;position: absolute;top: 50%;left: 50%;transform: translateX(-50%) translateY(-50%);">[`Please select a user in the widget settings.`]
+        </div>
+    </div>
+    {else}
+        <link href="{$wa_app_static_url}css/status.css" rel="stylesheet" type="text/css"/>
+        <div class="s-widget-{$widget_id}">
+
+            <div class="flexbox middle space-8 custom-p-16">
+                <i class="userpic userpic-32"
+                    style="background-image: url({$user.photoUrl})"></i>
+                <span class="bold">{$user.name|escape}</span>
+            </div>
+
+            <div class="hide-scrollbar" style="position: absolute;top: 3.8rem;right: 1rem;bottom: 0;left: 1rem; overflow-y: auto;">
+                {foreach $days as $day}
+                    {include file='./DayInfo.html' dayDto=$day.day date=$day.date}
+                {/foreach}
+            </div>
+
+        </div>
+
+        <script>
+            (function () {
+                setTimeout(function () {
+                    try {
+                        DashboardWidgets[{$widget_id}].renderWidget();
+                    } catch (e) { }
+                }, 10 * 60 * 1000);
+            })();
+        </script>
+    {/if}
+{else}
+    <div class="block">
+        <div class="align-center hint"
+             style="font-size: 0.875rem;width: 80%;position: absolute;top: 50%;left: 50%;transform: translateX(-50%) translateY(-50%);">[`SwitchToWebasyst2`]
+        </div>
+    </div>
+{/if}

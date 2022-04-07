@@ -1,0 +1,8 @@
+{foreach $users as $user}
+    <div>
+        <label>
+            <input type="radio" name="{$name}" value="{$user.id}" {if $user.id == $current_user}checked{/if}>
+            {$user.name|escape}
+        </label>
+    </div>
+{/foreach}

@@ -1,0 +1,100 @@
+{* WA2 Widget*}
+{if $ui == '2.0'}
+    <div class="round-clock-wrapper {if !empty($town)}has-town{/if}" style="pointer-events: none;">
+        <div class="round-clock-block" id="round-clock-{$widget_id}"></div>
+        {if !empty($town)}
+            <div class="town-name-wrapper">{$town|escape}</div>
+        {/if}
+    </div>
+
+    {* Init Controller *}
+    <script>{include file="../js/clockController.js" inline}</script>
+
+    {* Initialize *}
+    <script>
+    ( function() {
+        var is_loaded = (typeof StatusRoundClock !== "undefined"),
+            js_href = "{$widget_url}js/statusRoundClock.js?v={$wa->version()}",
+            widget = DashboardWidgets["{$widget_id}"],
+            options = {
+                widget_id: "{$widget_id}",
+                widget_name: "{$widget_name}",
+                widget_app: "{$widget_app}",
+                show_town: {if !empty($town)}true{else}false{/if},
+                source: "local",
+                offset: 0,
+                size: "{$size}"
+            };
+
+        if (is_loaded) {
+            widget.clock = new StatusRoundClock(options);
+
+        } else {
+
+            $.getScript(js_href, function() {
+                widget.clock = new StatusRoundClock(options);
+            });
+        }
+    })();
+    </script>
+
+    {* CSS *}
+    <style>
+        {include file="../css/roundClock.css" inline}
+        #round-clock-{$widget_id} .second-tick {
+            stroke-width: 0.05em
+        }
+        #timeline_{$widget_id} path:focus {
+            outline: none !important;
+        }
+    </style>
+
+    {if $wa->whichUI() == '2.0'}
+        <style>
+            .round-clock-wrapper .round-clock-block .hour-hand,
+            .round-clock-wrapper .round-clock-block .minute-hand { stroke: var(--text-color-strongest) !important; }
+            #timeline_{$widget_id},
+            #timeline_{$widget_id} svg  {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+    {/if}
+
+    <a href="{$wa_backend_url}status/#" target="_blank">
+        <div id="timeline_{$widget_id}"></div>
+    </a>
+
+    <script async type="module">
+        import { statusDayTimeline } from "{$widget_url}js/statusDayTimeline.js";
+        const data = {$data};
+        const messages = {
+            h: '[`h`]',
+            m: '[`m`]',
+            online: '[`online`]',
+            active: '[`active`]',
+            idle: '[`idle`]',
+            noProject: '[`noProject`]'
+        };
+        if (typeof d3 !== 'undefined') {
+            statusDayTimeline().$el('#timeline_{$widget_id}').setLocale(messages).render(data);
+        }
+    </script>
+
+    <script>
+        (function () {
+            setTimeout(function () {
+                try {
+                    DashboardWidgets[{$widget_id}].renderWidget();
+                } catch (e) { }
+            }, 10 * 60 * 1000);
+        })();
+    </script>
+
+{else}
+
+  <div class="block">
+    <div class="align-center hint" style="font-size: 0.875rem;width: 80%;position: absolute;top: 50%;left: 50%;transform: translateX(-50%) translateY(-50%);">[`SwitchToWebasyst2`]</div>
+  </div>
+
+{/if}

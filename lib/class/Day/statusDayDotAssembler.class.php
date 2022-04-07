@@ -103,7 +103,7 @@ final class statusDayDotAssembler
             }
 
             $userDayInfoDto->walogs[$appId] = new statusWaLogDto($appId, $log);
-            foreach ($log as &$item) {
+            foreach ($userDayInfoDto->walogs[$appId]->logs as &$item) {
                 if ($item['app_id'] === 'webasyst'
                     || ($item['app_id'] === 'webasyst' && !in_array($item['action'], ['login', 'logout']))
                 ) {
@@ -125,6 +125,7 @@ final class statusDayDotAssembler
                     100,
                     max(0, round(100 * $secondsFromMidnight / statusTimeHelper::SECONDS_IN_DAY))
                 );
+                $item['minutes_from_midnight'] = (int) ($secondsFromMidnight / statusTimeHelper::SECONDS_IN_MINUTE);
 //                $secondsFromMidnight =  strtotime($item['datetime']) - strtotime($item['date']);
 //                $item['position'] = min(100, max(0, round(100 * $secondsFromMidnight / statusTimeHelper::SECONDS_IN_DAY)));
 

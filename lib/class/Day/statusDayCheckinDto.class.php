@@ -223,6 +223,10 @@ class statusDayCheckinDto implements JsonSerializable
             'durationString' => $this->durationString,
             'break' => $this->break,
             'breakString' => $this->breakString,
+            'projectsDuration' => $this->projectsDuration,
+            'projectDurationCss' => $this->projectDurationCss,
+            'hasProjects' => $this->hasProjects,
+            'isTrace' => $this->isTrace,
         ];
     }
 }
