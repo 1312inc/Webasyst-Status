@@ -9,11 +9,26 @@ class statusClockWidget extends statusAbstractWidget
 
     public function defaultAction()
     {
-        $date = statusTimeHelper::createDatetimeForUser('Y-m-d')->format('Y-m-d');
-
         $data = [];
         if (!$this->isIncognito()) {
             $user = $this->getUser();
+            $statusUser = stts()->getUser();
+
+            stts()->getLogger()->debug(sprintf('user timezone %s', $statusUser->getTimezone()), 'clock.widget');
+            $date = statusTimeHelper::createDatetimeForUser()->format('Y-m-d');
+            stts()->getLogger()->debug(sprintf('server date %s', date('Y-m-d H:i:s')), 'clock.widget');
+            stts()->getLogger()->debug(
+                sprintf(
+                    'user datetime %s',
+                    statusTimeHelper::createDatetimeForUser('Y-m-d H:i:s')->format('Y-m-d H:i:s')
+                ),
+                'clock.widget'
+            );
+            stts()->getLogger()->debug(
+                sprintf('user date %s', statusTimeHelper::createDatetimeForUser()->format('Y-m-d H:i:s')),
+                'clock.widget'
+            );
+
             $week = statusWeekFactory::createWeekByDate(new DateTime($date));
             $day = new statusDay(new DateTime($date));
             $week->setDays([$day]);

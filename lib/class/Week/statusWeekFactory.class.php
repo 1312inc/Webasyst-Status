@@ -76,6 +76,8 @@ final class statusWeekFactory
             return $weeksDto;
         }
 
+        statusTimeLogger::start('getWeeksDto', 'getWeeksDto');
+
         /** @var statusUserRepository $userRepository */
         $userRepository = stts()->getEntityRepository(statusUser::class);
         /** @var statusCheckinRepository $checkinRepository */
@@ -124,12 +126,21 @@ final class statusWeekFactory
             }
         }
 
+        statusTimeLogger::saveTick('Got userDtos');
+
         // получили чекины для каждого пользователя сгрупированные по дате/контакту
         if (stts()->canShowTrace()) {
-            $checkins = $checkinRepository->findWithTraceByPeriodAndContactIds($minDay, $maxDay, array_keys($users), $projectId);
+            $checkins = $checkinRepository->findWithTraceByPeriodAndContactIds(
+                $minDay,
+                $maxDay,
+                array_keys($users),
+                $projectId
+            );
         } else {
             $checkins = $checkinRepository->findByPeriodAndContactIds($minDay, $maxDay, array_keys($users), $projectId);
         }
+
+        statusTimeLogger::saveTick('Got checkins');
 
         /** @var statusProjectModel $projectModel */
         $projectModel = stts()->getModel(statusProject::class);
@@ -144,6 +155,8 @@ final class statusWeekFactory
                 $userDto->contactId
             );
         }
+
+        statusTimeLogger::saveTick('Got walogs');
 
         $dayDtoAssembler = new statusDayDotAssembler();
         $weekDtoAssembler = new statusWeekDtoAssembler();
@@ -183,20 +196,29 @@ final class statusWeekFactory
                         new DateTime($dayDto->date)
                     );
 
-                    $dayDtoAssembler
-                        ->fillWithCheckins(
-                            $userDayInfo,
-                            $checkins[$dayDto->date][$userDto->contactId] ?? [],
-                            $userDto
-                        )
-                        ->fillWithWalogs(
-                            $userDayInfo,
-                            $walogs[$userDto->contactId][$dayDto->date] ?? []
-                        )
-                        ->fillCheckinsWithProjects(
-                            $userDayInfo->checkins,
-                            $projectData[$userDto->contactId] ?? []
-                        );
+                    statusTimeLogger::saveTick(sprintf('User %d. Day filled with checkins', $contactIdsByDate));
+
+                    $dayDtoAssembler->fillWithCheckins(
+                        $userDayInfo,
+                        $checkins[$dayDto->date][$userDto->contactId] ?? [],
+                        $userDto
+                    );
+
+                    statusTimeLogger::saveTick(sprintf('User %d. Day filled with checkins', $contactIdsByDate));
+
+                    $dayDtoAssembler->fillWithWalogs(
+                        $userDayInfo,
+                        $walogs[$userDto->contactId][$dayDto->date] ?? []
+                    );
+
+                    statusTimeLogger::saveTick(sprintf('User %d. Day filled with walogs', $contactIdsByDate));
+
+                    $dayDtoAssembler->fillCheckinsWithProjects(
+                        $userDayInfo->checkins,
+                        $projectData[$userDto->contactId] ?? []
+                    );
+
+                    statusTimeLogger::saveTick(sprintf('User %d. Day filled with project checkins', $contactIdsByDate));
 
                     $dayDto->checkinCount += $userDayInfo->realCheckinCount;
                 }
@@ -205,11 +227,17 @@ final class statusWeekFactory
             if ($projectId) {
                 $weekDto->donut = $weekDtoAssembler->getDonutProjectStatDto($weekDto, $week, $projectId);
             } elseif ($users) {
-                $weekDto->donut = $weekDtoAssembler->getDonutUserStatDto($weekDto, $week, $filterRequestDto->getUsers() ?: []);
+                $weekDto->donut = $weekDtoAssembler->getDonutUserStatDto(
+                    $weekDto,
+                    $week,
+                    $filterRequestDto->getUsers() ?: []
+                );
             }
 
             $weeksDto[] = $weekDto;
         }
+
+        statusTimeLogger::stop('Got all weeksDtos');
 
         return $weeksDto;
     }
