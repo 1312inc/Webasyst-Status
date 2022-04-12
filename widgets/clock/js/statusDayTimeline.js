@@ -110,14 +110,14 @@ export function statusDayTimeline () {
   }
 
   /**
- * Draw user actions on the timeline  
+ * Draw user actions on the timeline
  */
   function drawLogsArcs (logs) {
     for (const app in logs) {
       for (const log of logs[app].logs) {
 
         const start = log.minutes_from_midnight;
-        const end = start + 5;
+        const end = start + 3;
 
         const arc = d3.svg.arc()
           .innerRadius(innerRadius - 4)
@@ -128,8 +128,6 @@ export function statusDayTimeline () {
 
         svgElem.append('path')
           .attr('d', arc)
-          .attr("stroke", 'var(--background-color-blank)')
-          .attr("stroke-width", '2px')
           .style('fill', log.app_color)
           .on("mouseover", function () {
             showTooltip(this, `${log.app_id} @ ${minutesToTime(start, true)}`);
