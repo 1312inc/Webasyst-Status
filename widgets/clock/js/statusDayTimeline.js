@@ -100,7 +100,7 @@ export function statusDayTimeline () {
 
     svgElem.append('path')
       .attr('d', arc)
-      .style('fill', 'var(--s-online-trace-color)')
+      .style('fill', 'var(--background-color-checkbox-border)')
       .on("mouseover", function () {
         showTooltip(this, `${minutesToTime(checkin.min, true)}–${minutesToTime(checkin.max, true)} / ${checkin.max - checkin.min} ${locale.m} ${locale.online}, ${checkin.durationString} ${locale.active}, ${checkin.breakString} ${locale.idle}`);
       })
@@ -155,7 +155,7 @@ export function statusDayTimeline () {
 
       svgElem.append('path')
         .attr('d', timeline)
-        .style('fill', 'var(--s-timeline-color)');
+        .style('fill', 'var(--background-color-input-solid)');
 
       // Draw checkins
       for (const checkin of data.checkins.filter(c => c.id)) {
