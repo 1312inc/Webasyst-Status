@@ -76,15 +76,18 @@
              {/foreach}
         {/if}
 
-        {if count($hiddenUsers) || $teammates && $wa->team && $stts->getRightConfig()->isAdmin()}
+        {if !empty($teammates) && $wa->team && $stts->getRightConfig()->isAdmin()}
             {foreach $teammates as $teammate}
-                <li style="display:none" data-status-sidebar-hidden-user>
-                    <a href="#/contact/{$teammate.id}">
-                        <span class="icon"><i class="userpic" style="background-image: url({$teammate.photo_url_32})"></i></span>
-                        <span class="gray">{$teammate.name|escape}</span>
-                    </a>
-                </li>
+            <li>
+                <a href="#/contact/{$teammate.id}">
+                    <span class="icon"><i class="userpic" style="background-image: url({$teammate.photo_url_32})"></i></span>
+                    <span class="gray">{$teammate.name|escape}</span>
+                </a>
+            </li>
             {/foreach}
+        {/if}
+
+        {if count($hiddenUsers) && $wa->team && $stts->getRightConfig()->isAdmin()}
 
             {foreach $hiddenUsers as $u}
             <li style="display:none" data-status-sidebar-hidden-user>
@@ -95,7 +98,7 @@
             </li>
             {/foreach}
 
-            <li><a href="#" data-status-action="sidebar-show-all-users"><span class="small text-gray">{sprintf('[`Show more (%d)`]', count($hiddenUsers) + count($teammates))}</span></a></li>
+            <li><a href="#" data-status-action="sidebar-show-all-users"><span class="small text-gray">{sprintf('[`Show more (%d)`]', count($hiddenUsers))}</span></a></li>
 
         {/if}
 
