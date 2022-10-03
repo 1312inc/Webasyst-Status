@@ -12,12 +12,15 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=((((n%10)==1)&&((n%100)!=11))?(0):(((((n%10)>=2)&&((n%10)<=4))&&(((n%100)<10)||((n%100)>=20)))?(1):2));\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: .\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.1\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: .\n"
 
 msgid "Status"
 msgstr "Статус"
+
+msgid "Remote"
+msgstr "Удаленка"
 
 msgid "Sorry. You are not allowed to see anything on this page."
 msgstr "Извините, но у вас нет доступа к данным на этой странице."
@@ -113,7 +116,7 @@ msgid "Access rights"
 msgstr "Права доступа"
 
 msgid "Use <a href=\"%s\">Team app</a> to configure access: select a user or a group of users &gt; Access tab &gt; Status app &gt; apply the proper access level."
-msgstr "Для настройки доступа используйте приложение «<a href=\"%s\">Команда</a>»: выберите пользователя или группу пользователей &gt; вкладка «Доступ» &gt; Статус &gt; настройте подходящий уровень доступа."
+msgstr "Для настройки доступа используйте приложение «<a href=\"%s\">Команда</a>»: выберите пользователя или группу пользователей &gt; вкладка «Доступ» &gt; Удаленка &gt; настройте подходящий уровень доступа."
 
 msgid "Delete project"
 msgstr "Удалить работу"
@@ -164,7 +167,7 @@ msgid "Project settings"
 msgstr "Настройки работы"
 
 msgid "The user does not have access to the Status app. Grant access rights in the <a href=\"%s\"><i class=\"icon16\" style=\"%s\"></i>Team app</a> so the user can check in too."
-msgstr "У пользователя нет доступа к приложению «Статус». Предоставьте доступ в приложении «<a href=\"%s\"><i class=\"icon16\" style=\"%s\"></i>Команда</a>» и ведите учет рабочего времени совместно."
+msgstr "У пользователя нет доступа к приложению «Удаленка». Предоставьте доступ в приложении «<a href=\"%s\"><i class=\"icon16\" style=\"%s\"></i>Команда</a>» и ведите учет рабочего времени совместно."
 
 msgid "Status for tomorrow"
 msgstr "Статус на завтра"
@@ -335,7 +338,7 @@ msgid "Webasyst online time: %s active, %s idle"
 msgstr "Онлайн в бекенде Webasyst: %s активно, %s без действий"
 
 msgid "Automatic backend online time tracking will be enabled only after access to the Status app is granted for the user."
-msgstr "Автоматический подсчет времени, проведенного онлайн в бекенде Webasyst, будет работать только после предоставления пользователю доступа к приложению «Статус»."
+msgstr "Автоматический подсчет времени, проведенного онлайн в бекенде Webasyst, будет работать только после предоставления пользователю доступа к приложению «Удаленка»."
 
 msgid "<strong class=\"highlighted\">Hello and welcome!</strong> Add your first work report by <strong>dragging the time slider</strong> or by <strong>selecting your daily status</strong> in the menu so all your teammates get to know what you are up to on this day."
 msgstr "<strong class=\"highlighted\">Добро пожаловать!</strong> Добавьте свой первый отчет о работе, <strong>указав рабочее время с помощью слайдера</strong> ниже или <strong>выбрав статус на день</strong> в меню справа."

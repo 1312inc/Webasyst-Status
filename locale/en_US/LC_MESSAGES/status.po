@@ -11,11 +11,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: .\n"
-"X-Generator: Poedit 3.0.1\n"
+"X-Generator: Poedit 3.1\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: .\n"
 
 msgid "Status"
+msgstr ""
+
+msgid "Remote"
 msgstr ""
 
 msgid "Sorry. You are not allowed to see anything on this page."
@@ -112,7 +115,7 @@ msgid "Access rights"
 msgstr ""
 
 msgid "Use <a href=\"%s\">Team app</a> to configure access: select a user or a group of users &gt; Access tab &gt; Status app &gt; apply the proper access level."
-msgstr ""
+msgstr "Use <a href=“%s”>Team app</a> to configure access: select a user or a group of users &gt; Access tab &gt; Remote app &gt; apply the proper access level."
 
 msgid "Delete project"
 msgstr ""
@@ -163,7 +166,7 @@ msgid "Project settings"
 msgstr ""
 
 msgid "The user does not have access to the Status app. Grant access rights in the <a href=\"%s\"><i class=\"icon16\" style=\"%s\"></i>Team app</a> so the user can check in too."
-msgstr ""
+msgstr "The user does not have access to the Remote app. Grant access rights in the <a href=“%s”><i class=“icon16” style=“%s”></i>Team app</a> so the user can check in too."
 
 msgid "Status for tomorrow"
 msgstr ""
@@ -295,7 +298,7 @@ msgid "Active time is counted when the user is browsing the Webasyst backend wit
 msgstr ""
 
 msgid "Only the user and the Status app admin can see this online time data."
-msgstr ""
+msgstr "Only the user and the Remote app admin can see this online time data."
 
 msgid "%s active"
 msgstr ""
@@ -313,7 +316,7 @@ msgid "Webasyst online time: %s active, %s idle"
 msgstr ""
 
 msgid "Automatic backend online time tracking will be enabled only after access to the Status app is granted for the user."
-msgstr ""
+msgstr "Automatic backend online time tracking will be enabled only after access to the Remote app is granted for the user."
 
 msgid "<strong class=\"highlighted\">Hello and welcome!</strong> Add your first work report by <strong>dragging the time slider</strong> or by <strong>selecting your daily status</strong> in the menu so all your teammates get to know what you are up to on this day."
 msgstr ""

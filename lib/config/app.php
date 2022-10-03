@@ -1,8 +1,8 @@
 <?php
 return array (
-  'name' => 'Status',
+  'name' => 'Remote',
   'icon' => 'img/status.png',
-  'version' => '2.2.1',
+  'version' => '2.3.0',
   'vendor' => '1021997',
   'rights' => true,
   'license' => 'commercial',

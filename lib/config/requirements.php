@@ -2,7 +2,7 @@
 return array(
     'php' => array(
         'strict'  => true,
-        'version' => '>=7.1',
+        'version' => '>=7.2',
     ),
     'app.installer' => array(
         'version' => '>=2.2.0',
